@@ -1,0 +1,73 @@
+{
+  "project_info": {
+    "project_number": "1067372497274",
+    "firebase_url": "https://planfit-1ab3e.firebaseio.com",
+    "project_id": "planfit-1ab3e",
+    "storage_bucket": "planfit-1ab3e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1067372497274:android:8375551907c0b391",
+        "android_client_info": {
+          "package_name": "com.javier.planfit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1067372497274-v6gp68jrptueu8vndrve8d9d4sc0v4v3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSUnOwIZw8tDpw_vCFm-BM3RuCd9evl00"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1067372497274:android:d8c43b236e9902c0",
+        "android_client_info": {
+          "package_name": "com.utad.david.planfit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1067372497274-v6gp68jrptueu8vndrve8d9d4sc0v4v3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSUnOwIZw8tDpw_vCFm-BM3RuCd9evl00"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
