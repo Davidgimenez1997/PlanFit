@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.R;
 
 
@@ -28,7 +29,7 @@ public class RegisterFragment extends Fragment {
 
     private EditText emailRegister;
     private EditText passwordRegister;
-    private Button buttonOk;
+    private Button buttonContinue;
     private Button buttonBack;
 
     @Override
@@ -39,7 +40,7 @@ public class RegisterFragment extends Fragment {
 
         findViewById(view);
         onClickButtonBack();
-        onClickButtonOk();
+        onClickButtonContinue();
 
         return view;
     }
@@ -47,16 +48,17 @@ public class RegisterFragment extends Fragment {
     private void findViewById(View view){
         emailRegister = view.findViewById(R.id.emailRegister);
         passwordRegister = view.findViewById(R.id.passwordRegister);
-        buttonOk = view.findViewById(R.id.buttonOk);
+        buttonContinue = view.findViewById(R.id.buttonContinue);
         buttonBack = view.findViewById(R.id.buttonBack);
     }
 
-    private void onClickButtonOk(){
-        buttonOk.setOnClickListener(new View.OnClickListener() {
+    private void onClickButtonContinue(){
+        buttonContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mListener!=null){
-                    mListener.clickButtonOk(emailRegister.getText().toString(),passwordRegister.getText().toString());
+                    SessionUser.getInstance().user.setEmail(emailRegister.getText().toString());
+                    mListener.clickButtonContinue(emailRegister.getText().toString(),passwordRegister.getText().toString());
                 }
             }
         });
@@ -92,7 +94,7 @@ public class RegisterFragment extends Fragment {
 
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void clickButtonOk(String emailRegister,String passwordRegister);
+        void clickButtonContinue(String emailRegister,String passwordRegister);
         void clickButtonBack();
     }
 }

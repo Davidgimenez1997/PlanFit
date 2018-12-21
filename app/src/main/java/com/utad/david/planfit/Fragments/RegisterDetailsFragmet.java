@@ -1,32 +1,29 @@
 package com.utad.david.planfit.Fragments;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Toast;
+import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.R;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link RegisterDetailsFragmet.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link RegisterDetailsFragmet#newInstance} factory method to
- * create an instance of this fragment.
- */
+import static android.app.Activity.RESULT_OK;
+
 public class RegisterDetailsFragmet extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     private OnFragmentInteractionListener mListener;
 
@@ -34,46 +31,102 @@ public class RegisterDetailsFragmet extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment RegisterDetailsFragmet.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static RegisterDetailsFragmet newInstance(String param1, String param2) {
-        RegisterDetailsFragmet fragment = new RegisterDetailsFragmet();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
+
+    private EditText fullName;
+    private EditText nickName;
+    private ImageView imageViewUser;
+    private Button buttonOk;
+    private Button buttonBackDetails;
+    private Uri imageUri;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_register_details, container, false);
+        View view = inflater.inflate(R.layout.fragment_register_details, container, false);
+
+        findViewById(view);
+        onClickButtonOk();
+        onClickButtonBackDetails();
+        openGallery();
+
+        return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+
+    private void findViewById(View view){
+        fullName = view.findViewById(R.id.fullName);
+        nickName = view.findViewById(R.id.nickName);
+        imageViewUser = view.findViewById(R.id.imageViewUser);
+        buttonOk = view.findViewById(R.id.buttonOk);
+        buttonBackDetails = view.findViewById(R.id.buttonBackDetails);
+    }
+
+    private void onClickButtonOk(){
+        buttonOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mListener!=null){
+                    setDataUser();
+                    mListener.clickButtonOk();
+                }
+            }
+        });
+    }
+
+    private void onClickButtonBackDetails(){
+        buttonBackDetails.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mListener!=null){
+                    mListener.clickButtonBackDetails();
+                }
+            }
+        });
+    }
+
+    private void openGallery(){
+        imageViewUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.setType("image/*");
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"),1);
+            }
+        });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            try {
+                imageUri = data.getData();
+                final InputStream imageStream = getActivity().getApplicationContext().getContentResolver().openInputStream(imageUri);
+                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+                imageViewUser.setImageBitmap(selectedImage);
+                if(imageUri!=null){
+                    SessionUser.getInstance().user.setImgUser(imageUri.toString());
+                }
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                Toast.makeText(getActivity().getApplicationContext(), "Something went wrong", Toast.LENGTH_LONG).show();
+            }
+        }else {
+            Toast.makeText(getActivity().getApplicationContext(), "You haven't picked Image",Toast.LENGTH_LONG).show();
         }
     }
+
+    private void setDataUser(){
+        SessionUser.getInstance().user.setFullName(fullName.getText().toString());
+        SessionUser.getInstance().user.setNickName(nickName.getText().toString());
+    }
+
 
     @Override
     public void onAttach(Context context) {
@@ -92,18 +145,8 @@ public class RegisterDetailsFragmet extends Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void clickButtonOk();
+        void clickButtonBackDetails();
     }
 }
