@@ -1,20 +1,9 @@
 package com.utad.david.planfit.Activitys;
 
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.Toast;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Fragments.LoginFragment;
 import com.utad.david.planfit.Fragments.RegisterDetailsFragmet;
 import com.utad.david.planfit.Fragments.RegisterFragment;
@@ -42,7 +31,6 @@ public class FirstActivity extends AppCompatActivity implements LoginFragment.On
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.frameLayout_FirstActivity, loginFragment).commit();
         }
-
     }
 
     @Override
