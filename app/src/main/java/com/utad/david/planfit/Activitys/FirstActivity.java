@@ -1,11 +1,19 @@
 package com.utad.david.planfit.Activitys;
 
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Fragments.LoginFragment;
 import com.utad.david.planfit.Fragments.RegisterDetailsFragmet;
@@ -13,7 +21,7 @@ import com.utad.david.planfit.Fragments.RegisterFragment;
 import com.utad.david.planfit.R;
 import com.utad.david.planfit.Data.SessionUser;
 
-public class FirstActivity extends AppCompatActivity implements LoginFragment.OnFragmentInteractionListener, RegisterFragment.OnFragmentInteractionListener, FirebaseAdmin.FirebaseAdminLisener, RegisterDetailsFragmet.OnFragmentInteractionListener {
+public class FirstActivity extends AppCompatActivity implements LoginFragment.OnFragmentInteractionListener, RegisterFragment.OnFragmentInteractionListener, RegisterDetailsFragmet.OnFragmentInteractionListener {
 
     private LoginFragment loginFragment;
     private RegisterFragment registerFragment;
@@ -35,12 +43,11 @@ public class FirstActivity extends AppCompatActivity implements LoginFragment.On
                     .add(R.id.frameLayout_FirstActivity, loginFragment).commit();
         }
 
-        SessionUser.getInstance().firebaseAdmin.setAdminLisener(this);
     }
 
     @Override
     public void clickButtonLogin(String email, String password) {
-        new LoginAsyncTask(email,password).execute();
+        new LoginAsyncTask(email, password).execute();
     }
 
     @Override
@@ -86,63 +93,39 @@ public class FirstActivity extends AppCompatActivity implements LoginFragment.On
         transaction.commit();
     }
 
-    @Override
-    public void singInWithEmailAndPassword(boolean end) {
-        if (end == true) {
-            Toast.makeText(this, "Login Completed", Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(this, "Login Fail", Toast.LENGTH_LONG).show();
-        }
-        Log.d("InfoUser", "Email: " + SessionUser.getInstance().user.getEmail() +
-                " FullName: " + SessionUser.getInstance().user.getFullName() +
-                " NickName: " + SessionUser.getInstance().user.getNickName() +
-                " StringImg: " + SessionUser.getInstance().user.getImgUser());
+}
+
+class LoginAsyncTask extends AsyncTask<Void, Void, Void> {
+
+    private String emailRegister;
+    private String passwordRegister;
+
+    public LoginAsyncTask(String emailRegister, String passwordRegister) {
+        this.emailRegister = emailRegister;
+        this.passwordRegister = passwordRegister;
     }
 
     @Override
-    public void registerWithEmailAndPassword(boolean end) {
-        if (end == true) {
-            Toast.makeText(this, "Register Completed", Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(this, "Register Fail", Toast.LENGTH_LONG).show();
-        }
-        Log.d("InfoUser", "Email: " + SessionUser.getInstance().user.getEmail() +
-                " FullName: " + SessionUser.getInstance().user.getFullName() +
-                " NickName: " + SessionUser.getInstance().user.getNickName() +
-                " StringImg: " + SessionUser.getInstance().user.getImgUser());
-    }
-
-    private class LoginAsyncTask extends AsyncTask<Void, Void, Void> {
-
-        private String emailRegister;
-        private String passwordRegister;
-
-        public LoginAsyncTask(String emailRegister, String passwordRegister) {
-            this.emailRegister = emailRegister;
-            this.passwordRegister = passwordRegister;
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            SessionUser.getInstance().firebaseAdmin.singInWithEmailAndPassword(emailRegister, passwordRegister);
-            return null;
-        }
-    }
-
-    private class RegisterAsyncTask extends AsyncTask<Void, Void, Void> {
-
-        private String emailRegister;
-        private String passwordRegister;
-
-        public RegisterAsyncTask(String emailRegister, String passwordRegister) {
-            this.emailRegister = emailRegister;
-            this.passwordRegister = passwordRegister;
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            SessionUser.getInstance().firebaseAdmin.registerWithEmailAndPassword(emailRegister, passwordRegister);
-            return null;
-        }
+    protected Void doInBackground(Void... voids) {
+        SessionUser.getInstance().firebaseAdmin.singInWithEmailAndPassword(emailRegister, passwordRegister);
+        return null;
     }
 }
+
+class RegisterAsyncTask extends AsyncTask<Void, Void, Void> {
+
+    private String emailRegister;
+    private String passwordRegister;
+
+    public RegisterAsyncTask(String emailRegister, String passwordRegister) {
+        this.emailRegister = emailRegister;
+        this.passwordRegister = passwordRegister;
+    }
+
+    @Override
+    protected Void doInBackground(Void... voids) {
+        SessionUser.getInstance().firebaseAdmin.registerWithEmailAndPassword(emailRegister, passwordRegister);
+        return null;
+    }
+}
+

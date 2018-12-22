@@ -1,5 +1,7 @@
 package com.utad.david.planfit.Data;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Model.User;
 

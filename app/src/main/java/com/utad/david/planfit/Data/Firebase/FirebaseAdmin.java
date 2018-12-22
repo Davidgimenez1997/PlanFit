@@ -4,19 +4,18 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.*;
 
 public class FirebaseAdmin {
 
-    public interface FirebaseAdminLisener{
+    public interface FirebaseAdminLisener {
         void singInWithEmailAndPassword(boolean end);
         void registerWithEmailAndPassword(boolean end);
     }
 
-    private FirebaseAuth mAuth;
-    private FirebaseUser currentUser;
+    public FirebaseAuth mAuth;
+    public FirebaseUser currentUser;
+    public FirebaseAuth.AuthStateListener authStateListener;
     private FirebaseAdmin.FirebaseAdminLisener adminLisener;
 
     public void setAdminLisener(FirebaseAdminLisener adminLisener) {
@@ -27,8 +26,8 @@ public class FirebaseAdmin {
         mAuth = FirebaseAuth.getInstance();
     }
 
-    public void registerWithEmailAndPassword(String email,String password){
-        if(adminLisener!=null){
+    public void registerWithEmailAndPassword(String email, String password) {
+        if (adminLisener != null) {
             mAuth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
@@ -49,8 +48,8 @@ public class FirebaseAdmin {
 
     }
 
-    public void singInWithEmailAndPassword(String email,String password){
-        if(adminLisener!=null){
+    public void singInWithEmailAndPassword(String email, String password) {
+        if (adminLisener != null) {
             mAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
