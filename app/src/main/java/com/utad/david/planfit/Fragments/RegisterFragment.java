@@ -49,6 +49,8 @@ public class RegisterFragment extends Fragment {
         findViewById(view);
         onClickButtonBack();
         onClickButtonContinue();
+        emailRegister.setText("");
+        passwordRegister.setText("");
 
         return view;
     }
@@ -105,7 +107,6 @@ public class RegisterFragment extends Fragment {
 
 
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void clickButtonContinue(String emailRegister,String passwordRegister);
         void clickButtonBack();
     }

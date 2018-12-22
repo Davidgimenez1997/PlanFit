@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+import com.utad.david.planfit.Activitys.FirstActivity;
 import com.utad.david.planfit.Activitys.MainMenuActivity;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
@@ -59,6 +60,10 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
         onClickButtonOk();
         onClickButtonBackDetails();
         openGallery();
+
+        fullName.setText("");
+        nickName.setText("");
+        imageViewUser.setImageResource(R.mipmap.ic_launcher);
 
         return view;
     }
@@ -168,19 +173,9 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
         builder.setMessage(title)
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        fullName.setText("");
-                        nickName.setText("");
-                        imageViewUser.setImageResource(R.drawable.ic_launcher_background);
-                    }
-                })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                            @Override
-                            public void onDismiss(DialogInterface dialog) {
-                                dialog.dismiss();
-                            }
-                        });
+                        Intent intent = new Intent(getContext(), FirstActivity.class);
+                        startActivity(intent);
+                        getActivity().finish();
                     }
                 });
         // Create the AlertDialog object and return it

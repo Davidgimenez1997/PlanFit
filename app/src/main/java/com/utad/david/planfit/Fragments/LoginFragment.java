@@ -8,7 +8,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +22,8 @@ import com.utad.david.planfit.Activitys.MainMenuActivity;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.R;
+
+import java.util.regex.Pattern;
 
 
 public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdminLisener {
@@ -39,6 +44,8 @@ public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
     private EditText passwordLogin;
     private Button buttonLogin;
     private Button buttonRegister;
+    private String emailUser;
+    private String passwordUser;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -48,8 +55,16 @@ public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
        findViewById(view);
        onClickButtonLogin();
        onClickButtonRegister();
+       configView();
 
        return view;
+    }
+
+    private void configView(){
+        emailLogin.setText("");
+        passwordLogin.setText("");
+        emailLogin.addTextChangedListener(textWatcherLoginFragment);
+        passwordLogin.addTextChangedListener(textWatcherLoginFragment);
     }
 
     private void findViewById(View view){
@@ -81,6 +96,58 @@ public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
                 }
             }
         });
+    }
+
+    private TextWatcher textWatcherLoginFragment = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            emailUser = emailLogin.getText().toString().trim();
+            passwordUser = passwordLogin.getText().toString().trim();
+            buttonLogin.setEnabled(enableButton());
+            if (!enableButton()) {
+                if (!emailValidate(emailUser)) {
+                    emailLogin.setError(getString(R.string.err_email));
+                }
+                if (!passValidate(emailUser)) {
+                    passwordLogin.setError(getString(R.string.err_password));
+                }
+            }
+        }
+    };
+
+    private boolean enableButton() {
+        if (emailValidate(emailUser) && passValidate(passwordUser)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private boolean emailValidate(String str_email) {
+        Pattern pattern = Patterns.EMAIL_ADDRESS;
+        if (pattern.matcher(str_email).matches()) {
+            return true;
+        } else {
+            return false;
+
+        }
+    }
+
+    public boolean passValidate(String str_password) {
+        if (str_password.length() >= 6) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
@@ -125,16 +192,6 @@ public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
                         public void onClick(DialogInterface dialog, int id) {
                             emailLogin.setText("");
                             passwordLogin.setText("");
-                        }
-                    })
-                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                                @Override
-                                public void onDismiss(DialogInterface dialog) {
-                                    dialog.dismiss();
-                                }
-                            });
                         }
                     });
             // Create the AlertDialog object and return it
