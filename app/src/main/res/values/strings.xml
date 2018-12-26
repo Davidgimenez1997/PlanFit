@@ -13,4 +13,6 @@
     <string name="info_dialog_err">Aceptar</string>
     <string name="continuar">Continuar</string>
     <string name="salir">Salir</string>
+    <string name="title_login">Iniciando Sesion...</string>
+    <string name="message_login">Porfavor espere...</string>
 </resources>

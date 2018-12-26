@@ -10,6 +10,7 @@
     <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:background="@drawable/backgroung_grad"
+            android:id="@+id/layout_login"
             android:layout_height="match_parent">
 
         <Button

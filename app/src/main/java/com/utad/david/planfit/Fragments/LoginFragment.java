@@ -1,15 +1,16 @@
 package com.utad.david.planfit.Fragments;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,10 +18,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.SignInButton;
 import com.google.firebase.auth.*;
+import com.utad.david.planfit.Activitys.FirstActivity;
 import com.utad.david.planfit.Activitys.MainMenuActivity;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
@@ -51,6 +50,7 @@ public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
     private Button buttonRegister;
     private String emailUser;
     private String passwordUser;
+    private ProgressDialog mProgress;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -61,8 +61,37 @@ public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
        onClickButtonLogin();
        onClickButtonRegister();
        configView();
+       checkStatusUserFirebase();
+       showDialog();
 
        return view;
+    }
+
+    private void checkStatusUserFirebase(){
+        SessionUser.getInstance().firebaseAdmin.authStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                SessionUser.getInstance().firebaseAdmin.currentUser = firebaseAuth.getCurrentUser();
+                if (SessionUser.getInstance().firebaseAdmin.currentUser != null) {
+                    Intent I = new Intent(getContext(), MainMenuActivity.class);
+                    startActivity(I);
+                }
+            }
+        };
+    }
+
+    private void showDialog(){
+        mProgress = new ProgressDialog(getContext());
+        mProgress.setTitle(getString(R.string.title_login));
+        mProgress.setMessage(getString(R.string.message_login));
+        mProgress.setCancelable(false);
+        mProgress.setIndeterminate(true);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        SessionUser.getInstance().firebaseAdmin.mAuth.addAuthStateListener(SessionUser.getInstance().firebaseAdmin.authStateListener);
     }
 
     private void configView(){
@@ -84,9 +113,12 @@ public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
             @Override
             public void onClick(View v) {
                 if (mListener!=null){
+                    mProgress.show();
                     SessionUser.getInstance().user.setEmail(emailLogin.getText().toString());
                     SessionUser.getInstance().user.setPassword(passwordLogin.getText().toString());
                     mListener.clickButtonLogin(emailLogin.getText().toString().trim(),passwordLogin.getText().toString().trim());
+                }else{
+                    mProgress.dismiss();
                 }
             }
         });
@@ -176,10 +208,12 @@ public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
     public void singInWithEmailAndPassword(boolean end) {
         if (end == true) {
             Toast.makeText(getContext(), "Login Completed", Toast.LENGTH_LONG).show();
+            mProgress.dismiss();
             Intent intent = new Intent(getContext(),MainMenuActivity.class);
             startActivity(intent);
             getActivity().finish();
         } else {
+            mProgress.dismiss();
             errorSingInRegister(getString(R.string.err_login_fail));
         }
     }
