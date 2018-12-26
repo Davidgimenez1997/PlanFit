@@ -8,13 +8,11 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="MyDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
-
-    </style>
-
     <style name="AlertDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
-        <item name="android:background">@color/backgroud_screen_login</item>
+        <item name="android:background">@drawable/backgroung_grad</item>
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textColorPrimary">@color/colorAccent</item>
     </style>
 
     <style name="PositiveButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">

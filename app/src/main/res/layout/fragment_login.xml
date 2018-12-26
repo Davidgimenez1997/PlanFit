@@ -40,7 +40,7 @@
                 android:textStyle="italic"
                 android:textSize="50dp"
                 android:textAlignment="center"
-                android:textColor="@color/black"
+                android:textColor="@color/colorAccent"
                 android:layout_width="318dp"
                 android:layout_height="78dp"
                 android:id="@+id/textView"

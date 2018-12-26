@@ -7,6 +7,7 @@
 
     <stroke
             android:color="@color/background_button"
+            android:width="2dp"
     />
 
     <size
