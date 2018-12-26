@@ -168,6 +168,7 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
                 " StringImg: " + SessionUser.getInstance().user.getImgUser());
     }
 
+
     private void errorSingInRegister(String title) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setMessage(title)

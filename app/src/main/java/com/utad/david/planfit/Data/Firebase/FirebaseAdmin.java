@@ -16,7 +16,7 @@ public class FirebaseAdmin {
     public FirebaseAuth mAuth;
     public FirebaseUser currentUser;
     public FirebaseAuth.AuthStateListener authStateListener;
-    private FirebaseAdmin.FirebaseAdminLisener adminLisener;
+    public FirebaseAdmin.FirebaseAdminLisener adminLisener;
 
     public void setAdminLisener(FirebaseAdminLisener adminLisener) {
         this.adminLisener = adminLisener;
@@ -68,4 +68,6 @@ public class FirebaseAdmin {
                     });
         }
     }
+
+
 }

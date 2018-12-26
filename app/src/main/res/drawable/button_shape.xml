@@ -2,11 +2,11 @@
     <corners
             android:radius="50dp"
     /><solid
-        android:color="@color/colorPrimary"
+        android:color="@color/background_button"
 />
 
     <stroke
-            android:color="@color/colorPrimaryDark"
+            android:color="@color/background_button"
     />
 
     <size

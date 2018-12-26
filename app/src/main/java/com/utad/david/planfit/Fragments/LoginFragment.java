@@ -17,6 +17,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.SignInButton;
+import com.google.firebase.auth.*;
 import com.utad.david.planfit.Activitys.MainMenuActivity;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
@@ -37,6 +41,8 @@ public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         SessionUser.getInstance().firebaseAdmin.setAdminLisener(this);
+        SessionUser.getInstance().firebaseAdmin.mAuth = FirebaseAuth.getInstance();
+        // Build a GoogleSignInClient with the options specified by gso.
     }
 
     private EditText emailLogin;
@@ -181,7 +187,7 @@ public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
     //Metodo que crea un dialogo de alerta cuando falla el inicio de Sesion con Firebase
     private void errorSingInRegister(String title){
         if(mListener!=null){
-            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
             builder.setMessage(title)
                     .setPositiveButton(R.string.info_dialog_err, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
@@ -201,6 +207,7 @@ public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
     public void registerWithEmailAndPassword(boolean end) {
         //Metodo implementado pero no se usa
     }
+
 
     public interface OnFragmentInteractionListener {
         void clickButtonLogin(String email,String password);
