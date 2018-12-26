@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -79,7 +80,7 @@ public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
                 if (mListener!=null){
                     SessionUser.getInstance().user.setEmail(emailLogin.getText().toString());
                     SessionUser.getInstance().user.setPassword(passwordLogin.getText().toString());
-                    mListener.clickButtonLogin(emailLogin.getText().toString(),passwordLogin.getText().toString());
+                    mListener.clickButtonLogin(emailLogin.getText().toString().trim(),passwordLogin.getText().toString().trim());
                 }
             }
         });
@@ -173,26 +174,24 @@ public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
             startActivity(intent);
             getActivity().finish();
         } else {
-            Toast.makeText(getContext(), "Login Fail", Toast.LENGTH_LONG).show();
-            errorSingInRegister("Login Fail");
+            errorSingInRegister(getString(R.string.err_login_fail));
         }
-        Log.d("InfoUser", "Email: " + SessionUser.getInstance().user.getEmail() +
-                " FullName: " + SessionUser.getInstance().user.getFullName() +
-                " NickName: " + SessionUser.getInstance().user.getNickName() +
-                " StringImg: " + SessionUser.getInstance().user.getImgUser());
     }
 
+    //Metodo que crea un dialogo de alerta cuando falla el inicio de Sesion con Firebase
     private void errorSingInRegister(String title){
         if(mListener!=null){
-            final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             builder.setMessage(title)
-                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    .setPositiveButton(R.string.info_dialog_err, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            emailLogin.setText("");
-                            passwordLogin.setText("");
+                            RegisterFragment registerFragment = new RegisterFragment();
+                            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                            transaction.replace(R.id.frameLayout_FirstActivity, registerFragment);
+                            transaction.addToBackStack(null);
+                            transaction.commit();
                         }
                     });
-            // Create the AlertDialog object and return it
             builder.create();
             builder.show();
         }
@@ -200,7 +199,7 @@ public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
 
     @Override
     public void registerWithEmailAndPassword(boolean end) {
-
+        //Metodo implementado pero no se usa
     }
 
     public interface OnFragmentInteractionListener {

@@ -4,6 +4,8 @@ import android.os.AsyncTask;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Window;
+import android.view.WindowManager;
 import com.utad.david.planfit.Fragments.LoginFragment;
 import com.utad.david.planfit.Fragments.RegisterDetailsFragmet;
 import com.utad.david.planfit.Fragments.RegisterFragment;
@@ -31,6 +33,7 @@ public class FirstActivity extends AppCompatActivity implements LoginFragment.On
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.frameLayout_FirstActivity, loginFragment).commit();
         }
+
     }
 
     @Override

@@ -5,6 +5,10 @@
     <string name="login">Login</string>
     <string name="register">Register</string>
 
-    <string name="err_email">incorrect e-mail</string>
-    <string name="err_password">password must have 6 characters</string>
+    <string name="err_email">Email invalido</string>
+    <string name="err_password">Contraseña con mas de 6 caracteres</string>
+    <string name="err_login_fail">Usuario no encontrado, por favor Registrese</string>
+
+    <string name="name_app_display">Plan Fit</string>
+    <string name="info_dialog_err">Aceptar</string>
 </resources>
