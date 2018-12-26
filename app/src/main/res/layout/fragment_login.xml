@@ -20,20 +20,20 @@
                 android:id="@+id/buttonLogin"
                 android:background="@drawable/button_selector"
                 android:textColor="@color/colorAccent"
-                android:layout_marginTop="40dp"
-                app:layout_constraintTop_toBottomOf="@+id/constraintLayout2" android:layout_marginStart="32dp"
-                app:layout_constraintStart_toStartOf="parent"/>
+                android:layout_marginTop="36dp"
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"
+                android:layout_marginEnd="32dp" app:layout_constraintEnd_toEndOf="parent"/>
 
         <Button
                 android:text="@string/register"
-                android:layout_width="132dp"
+                android:layout_width="131dp"
                 android:layout_height="77dp"
                 android:id="@+id/buttonRegister"
                 android:textColor="@color/colorAccent"
                 android:background="@drawable/button_selector"
-                android:layout_marginTop="40dp"
-                app:layout_constraintTop_toBottomOf="@+id/constraintLayout2" android:layout_marginEnd="32dp"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"
+                android:layout_marginTop="36dp" android:layout_marginStart="32dp"
+                app:layout_constraintStart_toStartOf="parent"/>
 
         <TextView
                 android:text="@string/name_app_display"
@@ -77,7 +77,7 @@
                         android:id="@+id/passwordLogin"/>
             </android.support.design.widget.TextInputLayout>
             <ImageView
-                    android:src="@drawable/iconn_password"
+                    android:src="@drawable/icon_password"
                     android:layout_width="52dp"
                     android:layout_height="58dp"
                     android:id="@+id/imageView3"

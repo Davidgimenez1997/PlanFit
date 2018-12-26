@@ -1,10 +1,9 @@
 <resources>
     <string name="app_name">PlanFit</string>
-    <string name="client_id_firebase">1067372497274-v6gp68jrptueu8vndrve8d9d4sc0v4v3.apps.googleusercontent.com></string>
     <string name="email">Email</string>
-    <string name="password">Password</string>
-    <string name="login">Login</string>
-    <string name="register">Register</string>
+    <string name="password">Contraseña</string>
+    <string name="login">Iniciar Sesion</string>
+    <string name="register">Registrar</string>
 
     <string name="err_email">Email invalido</string>
     <string name="err_password">Contraseña con mas de 6 caracteres</string>
@@ -12,4 +11,6 @@
 
     <string name="name_app_display">Plan Fit</string>
     <string name="info_dialog_err">Aceptar</string>
+    <string name="continuar">Continuar</string>
+    <string name="salir">Salir</string>
 </resources>
