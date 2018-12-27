@@ -1,5 +1,6 @@
 package com.utad.david.planfit.Fragments;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -8,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -52,6 +54,7 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
     private Button buttonOk;
     private Button buttonBackDetails;
     private Uri imageUri;
+    private ProgressDialog mProgress;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -62,14 +65,26 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
         onClickButtonOk();
         onClickButtonBackDetails();
         openGallery();
+        configView();
+        showDialog();
 
+        return view;
+    }
+
+    private void configView(){
         fullName.setText("");
         nickName.setText("");
         imageViewUser.setImageResource(R.drawable.icon_gallery);
         fullName.addTextChangedListener(textWatcherRegistreDetailsFragment);
         nickName.addTextChangedListener(textWatcherRegistreDetailsFragment);
+    }
 
-        return view;
+    private void showDialog(){
+        mProgress = new ProgressDialog(getContext());
+        mProgress.setTitle(getString(R.string.title_register));
+        mProgress.setMessage(getString(R.string.message_register));
+        mProgress.setCancelable(false);
+        mProgress.setIndeterminate(true);
     }
 
     private TextWatcher textWatcherRegistreDetailsFragment = new TextWatcher() {
@@ -119,7 +134,10 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
             public void onClick(View v) {
                 if (mListener!=null){
                     setDataUser();
+                    mProgress.show();
                     mListener.clickButtonOk();
+                }else{
+                    mProgress.dismiss();
                 }
             }
         });
@@ -194,6 +212,8 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
             endRegister=true;
             insertUserDataInFirebase(end);
         } else {
+            mProgress.dismiss();
+            insertUserDataInFirebase(end);
             endRegister=false;
         }
     }
@@ -203,17 +223,20 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
         if(endRegister==true){
             if(end==true){
                 SessionUser.getInstance().firebaseAdmin.addDataCouldFirestore();
+                mProgress.dismiss();
                 Toast.makeText(getContext(), "Register Completed", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(getContext(), MainMenuActivity.class);
                 startActivity(intent);
                 getActivity().finish();
             }else{
+                mProgress.dismiss();
                 Toast.makeText(getContext(), "Register Fail", Toast.LENGTH_LONG).show();
                 errorSingInRegister("Register Fail");
             }
         }else{
+            mProgress.dismiss();
             Toast.makeText(getContext(), "Register Fail", Toast.LENGTH_LONG).show();
-            errorSingInRegister("Register Fail");
+            errorSingInRegister(getString(R.string.err_register_fail));
         }
     }
 
@@ -222,9 +245,11 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
         builder.setMessage(title)
                 .setPositiveButton(R.string.info_dialog_err, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        Intent intent = new Intent(getContext(), FirstActivity.class);
-                        startActivity(intent);
-                        getActivity().finish();
+                        RegisterFragment registerFragment = new RegisterFragment();
+                        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                        transaction.replace(R.id.frameLayout_FirstActivity, registerFragment);
+                        transaction.addToBackStack(null);
+                        transaction.commit();
                     }
                 });
         // Create the AlertDialog object and return it

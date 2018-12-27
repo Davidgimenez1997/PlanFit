@@ -18,6 +18,7 @@
     <string name="err_email">Email invalido</string>
     <string name="err_password">Contraseña con mas de 6 caracteres</string>
     <string name="err_login_fail">Usuario no encontrado, por favor Registrese</string>
+    <string name="err_register_fail">Hubo un error, intentalo de nuevo por favor</string>
 
     <string name="name_app_display">Plan Fit</string>
     <string name="info_dialog_err">Aceptar</string>
@@ -25,6 +26,8 @@
     <string name="salir">Salir</string>
     <string name="title_login">Iniciando Sesion...</string>
     <string name="message_login">Porfavor espere...</string>
+    <string name="title_register">Registrando usuario...</string>
+    <string name="message_register">Porfavor espere...</string>
     <string name="escoja_una_foto_opcional">Escoja una foto (Opcional)</string>
     <string name="campos_obligatorios">Campos Obligatorios</string>
 </resources>
