@@ -3,7 +3,11 @@ package com.utad.david.planfit.Activitys;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
+import com.utad.david.planfit.Model.User;
 import com.utad.david.planfit.R;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -26,7 +30,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 
-public class MainMenuActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainMenuActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,FirebaseAdmin.FirebaseAdminLisener {
 
     private ImageView imagemenu;
     private TextView name;
@@ -67,6 +71,9 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
         //Nuestro título sera Lessons
         setTitle(R.string.first_nav_name);
         displaySelectedScreen(R.id.nav_deportes);
+
+        SessionUser.getInstance().firebaseAdmin.setAdminLisener(this);
+        SessionUser.getInstance().firebaseAdmin.dowloandDataUserFirebase();
 
     }
 
@@ -192,4 +199,25 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
         drawer.closeDrawer(GravityCompat.START);
     }
 
+    @Override
+    public void downloadUserDataInFirebase(boolean end,User user) {
+        if(end==true){
+            Log.d("DatosUsuarioFirebase"," "+user.toString());
+        }
+    }
+
+    @Override
+    public void singInWithEmailAndPassword(boolean end) {
+        //Metodo implementado pero no se usa
+    }
+
+    @Override
+    public void registerWithEmailAndPassword(boolean end) {
+        //Metodo implementado pero no se usa
+    }
+
+    @Override
+    public void insertUserDataInFirebase(boolean end) {
+        //Metodo implementado pero no se usa
+    }
 }

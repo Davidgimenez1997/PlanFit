@@ -20,10 +20,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import com.google.firebase.auth.*;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.utad.david.planfit.Activitys.FirstActivity;
 import com.utad.david.planfit.Activitys.MainMenuActivity;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
+import com.utad.david.planfit.Model.User;
 import com.utad.david.planfit.R;
 
 import java.util.regex.Pattern;
@@ -244,6 +246,11 @@ public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
 
     @Override
     public void insertUserDataInFirebase(boolean end) {
+        //Metodo implementado pero no se usa
+    }
+
+    @Override
+    public void downloadUserDataInFirebase(boolean end, User user) {
         //Metodo implementado pero no se usa
     }
 

@@ -47,4 +47,15 @@ public class User {
     public void setImgUser(String imgUser) {
         this.imgUser = imgUser;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", fullName='" + fullName + '\'' +
+                ", nickName='" + nickName + '\'' +
+                ", imgUser='" + imgUser + '\'' +
+                '}';
+    }
 }

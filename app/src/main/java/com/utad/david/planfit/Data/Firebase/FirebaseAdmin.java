@@ -7,9 +7,11 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.*;
-import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.*;
 import com.utad.david.planfit.Data.SessionUser;
+import com.utad.david.planfit.Model.User;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,6 +21,7 @@ public class FirebaseAdmin {
         void singInWithEmailAndPassword(boolean end);
         void registerWithEmailAndPassword(boolean end);
         void insertUserDataInFirebase(boolean end);
+        void downloadUserDataInFirebase(boolean end,User user);
     }
 
     public FirebaseAuth mAuth;
@@ -109,6 +112,31 @@ public class FirebaseAdmin {
                             adminLisener.insertUserDataInFirebase(false);
                         }
                     });
+        }
+    }
+
+    public void dowloandDataUserFirebase(){
+        if(adminLisener!=null){
+            DocumentReference myUserRef = firebaseFirestore.collection("users").document(currentUser.getUid());
+
+            myUserRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                @Override
+                public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException e) {
+                    if (e != null) {
+                        Log.w("FirebaseAdmin", "Listen failed.", e);
+                        adminLisener.downloadUserDataInFirebase(false,null);
+                    }
+
+                    if (snapshot != null && snapshot.exists()) {
+                        Log.d("FirebaseAdmin", "Current data: " + snapshot.getData());
+                        User user = snapshot.toObject(User.class);
+                        adminLisener.downloadUserDataInFirebase(true,user);
+                    } else {
+                        Log.d("FirebaseAdmin", "Current data: null");
+                        adminLisener.downloadUserDataInFirebase(false,null);
+                    }
+                }
+            });
         }
     }
 }
