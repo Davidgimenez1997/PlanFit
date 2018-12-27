@@ -227,6 +227,7 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
                 Toast.makeText(getContext(), "Register Completed", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(getContext(), MainMenuActivity.class);
                 startActivity(intent);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 getActivity().finish();
             }else{
                 mProgress.dismiss();

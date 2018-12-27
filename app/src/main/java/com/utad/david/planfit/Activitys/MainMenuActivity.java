@@ -150,8 +150,10 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
         int id = item.getItemId();
         if (id == R.id.action_logout) {
             SessionUser.getInstance().firebaseAdmin.mAuth.getInstance().signOut();
-            Intent I=new Intent(MainMenuActivity.this,FirstActivity.class);
-            startActivity(I);
+            Intent intent =new Intent(MainMenuActivity.this,FirstActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
         }
 
         return true;

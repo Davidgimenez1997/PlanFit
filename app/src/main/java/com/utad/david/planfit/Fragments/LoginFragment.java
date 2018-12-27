@@ -1,10 +1,13 @@
 package com.utad.david.planfit.Fragments;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -43,7 +46,6 @@ public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
         super.onCreate(savedInstanceState);
         SessionUser.getInstance().firebaseAdmin.setAdminLisener(this);
         SessionUser.getInstance().firebaseAdmin.mAuth = FirebaseAuth.getInstance();
-        // Build a GoogleSignInClient with the options specified by gso.
     }
 
     private EditText emailLogin;
@@ -53,6 +55,7 @@ public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
     private String emailUser;
     private String passwordUser;
     private ProgressDialog mProgress;
+    public Context context;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -75,8 +78,13 @@ public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 SessionUser.getInstance().firebaseAdmin.currentUser = firebaseAuth.getCurrentUser();
                 if (SessionUser.getInstance().firebaseAdmin.currentUser != null) {
-                    Intent I = new Intent(getContext(), MainMenuActivity.class);
-                    startActivity(I);
+                    Activity activity = getActivity();
+                    if(activity!=null){
+                        Intent intent = new Intent(context, MainMenuActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        activity.startActivity(intent);
+                        activity.finish();
+                    }
                 }
             }
         };
@@ -194,6 +202,7 @@ public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
+            this.context = context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -213,6 +222,7 @@ public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
             mProgress.dismiss();
             Intent intent = new Intent(getContext(),MainMenuActivity.class);
             startActivity(intent);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             getActivity().finish();
         } else {
             mProgress.dismiss();
