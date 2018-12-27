@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context = ".Activity.MainMenu"
+      tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+                android:id="@+id/nav_deportes"
+                android:title="@string/first_nav_name"
+        />
+        <item
+                android:id="@+id/nav_nutricion"
+                android:title="@string/two_nav_name"/>
+        <item
+                android:id="@+id/nav_crear_tu_plan"
+                android:title="@string/three_nav_name"/>
+        <item
+                android:id="@+id/nav_comunidad"
+                android:title="@string/four_nav_name"/>
+
+    </group>
+</menu>

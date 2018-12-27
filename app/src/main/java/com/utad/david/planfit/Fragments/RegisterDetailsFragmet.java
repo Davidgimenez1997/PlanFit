@@ -199,10 +199,6 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
             Toast.makeText(getContext(), "Register Fail", Toast.LENGTH_LONG).show();
             errorSingInRegister("Register Fail");
         }
-        Log.d("InfoUser", "Email: " + SessionUser.getInstance().user.getEmail() +
-                " FullName: " + SessionUser.getInstance().user.getFullName() +
-                " NickName: " + SessionUser.getInstance().user.getNickName() +
-                " StringImg: " + SessionUser.getInstance().user.getImgUser());
     }
 
 
