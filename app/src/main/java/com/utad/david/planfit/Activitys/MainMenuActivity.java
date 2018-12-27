@@ -33,8 +33,7 @@ import java.io.InputStream;
 public class MainMenuActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,FirebaseAdmin.FirebaseAdminLisener {
 
     private ImageView imagemenu;
-    private TextView name;
-    private TextView surname;
+    private TextView nickname;
     private TextView email;
     private Toolbar toolbar;
     private DrawerLayout drawer;
@@ -62,12 +61,6 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
 
         findByIdNavigetionView();
 
-
-        putInfoUserInHeaderMenu();
-
-        //Si la foto es null cogemos una por defecto
-        checkPhotoUserNull();
-
         //Nuestro título sera Lessons
         setTitle(R.string.first_nav_name);
         displaySelectedScreen(R.id.nav_deportes);
@@ -75,6 +68,18 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
         SessionUser.getInstance().firebaseAdmin.setAdminLisener(this);
         SessionUser.getInstance().firebaseAdmin.dowloandDataUserFirebase();
 
+    }
+
+    @Override
+    public void downloadUserDataInFirebase(boolean end,User user) {
+        if(end==true){
+            Log.d("DatosUsuarioFirebase"," "+user.toString());
+
+            putInfoUserInHeaderMenu(user);
+
+            //Si la foto es null cogemos una por defecto
+            checkPhotoUserNull(user);
+        }
     }
 
     public void findById() {
@@ -85,16 +90,22 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
 
     //Se tiene que buscar el id con el navigetionView delante ya que en este elemento se incluye el header del menu
     public void findByIdNavigetionView() {
-        imagemenu = navigationView.findViewById(R.id.imagemenu);
-        name = navigationView.findViewById(R.id.textviewname_menu);
-        surname = navigationView.findViewById(R.id.textviewsurname_menu);
-        email = navigationView.findViewById(R.id.textview_email);
+        imagemenu = navigationView.findViewById(R.id.imagemenuUser);
+        nickname = navigationView.findViewById(R.id.nickNameMenuUser);
+        email = navigationView.findViewById(R.id.emailUserMenu);
     }
 
-    public void putInfoUserInHeaderMenu() {
+    public void putInfoUserInHeaderMenu(User user) {
+        nickname.setText(user.getNickName());
+        email.setText(user.getEmail());
     }
 
-    public void checkPhotoUserNull() {
+    public void checkPhotoUserNull(User user) {
+        if(user.getImgUser().equals("")){
+            imagemenu.setImageResource(R.drawable.icon_user);
+        }else{
+            putPhotoUser(user.getImgUser());
+        }
     }
 
     //Sirve para poner la foto que hemos recogido en el PersonalData en la cabecera del menu
@@ -197,13 +208,6 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
         //Una vez cambiado el fragment cerramos el menu
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
-    }
-
-    @Override
-    public void downloadUserDataInFirebase(boolean end,User user) {
-        if(end==true){
-            Log.d("DatosUsuarioFirebase"," "+user.toString());
-        }
     }
 
     @Override
