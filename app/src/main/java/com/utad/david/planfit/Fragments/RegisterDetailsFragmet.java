@@ -11,7 +11,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +30,6 @@ import java.io.InputStream;
 import static android.app.Activity.RESULT_OK;
 
 public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.FirebaseAdminLisener {
-
 
     private OnFragmentInteractionListener mListener;
 
@@ -175,7 +173,6 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
         SessionUser.getInstance().user.setNickName(nickName.getText().toString());
     }
 
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -187,25 +184,41 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
         }
     }
 
+    private boolean endRegister=false;
+
     @Override
     public void registerWithEmailAndPassword(boolean end) {
         if (end == true) {
-            SessionUser.getInstance().firebaseAdmin.addDataCouldFirestore();
-            Toast.makeText(getContext(), "Register Completed", Toast.LENGTH_LONG).show();
-            Intent intent = new Intent(getContext(), MainMenuActivity.class);
-            startActivity(intent);
-            getActivity().finish();
+            endRegister=true;
+            insertUserDataInFirebase(end);
         } else {
+            endRegister=false;
+        }
+    }
+
+    @Override
+    public void insertUserDataInFirebase(boolean end) {
+        if(endRegister==true){
+            if(end==true){
+                SessionUser.getInstance().firebaseAdmin.addDataCouldFirestore();
+                Toast.makeText(getContext(), "Register Completed", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(getContext(), MainMenuActivity.class);
+                startActivity(intent);
+                getActivity().finish();
+            }else{
+                Toast.makeText(getContext(), "Register Fail", Toast.LENGTH_LONG).show();
+                errorSingInRegister("Register Fail");
+            }
+        }else{
             Toast.makeText(getContext(), "Register Fail", Toast.LENGTH_LONG).show();
             errorSingInRegister("Register Fail");
         }
     }
 
-
     private void errorSingInRegister(String title) {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(),R.style.AlertDialogTheme);
         builder.setMessage(title)
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.info_dialog_err, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         Intent intent = new Intent(getContext(), FirstActivity.class);
                         startActivity(intent);

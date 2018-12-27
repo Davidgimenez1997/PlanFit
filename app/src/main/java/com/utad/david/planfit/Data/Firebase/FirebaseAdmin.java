@@ -7,7 +7,6 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.*;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.utad.david.planfit.Data.SessionUser;
 
@@ -19,6 +18,7 @@ public class FirebaseAdmin {
     public interface FirebaseAdminLisener {
         void singInWithEmailAndPassword(boolean end);
         void registerWithEmailAndPassword(boolean end);
+        void insertUserDataInFirebase(boolean end);
     }
 
     public FirebaseAuth mAuth;
@@ -80,33 +80,35 @@ public class FirebaseAdmin {
     }
 
     public void addDataCouldFirestore(){
-        // Create a new user with a first and last name
-        Map<String, Object> user = new HashMap<>();
-        user.put("email", SessionUser.getInstance().user.getEmail());
-        user.put("fullName", SessionUser.getInstance().user.getFullName());
-        user.put("nickName", SessionUser.getInstance().user.getNickName());
-        if(SessionUser.getInstance().user.getImgUser()!=null){
-            user.put("imgUser",SessionUser.getInstance().user.getImgUser());
-        }else{
-            user.put("imgUser","");
+        if(adminLisener!=null){
+            // Create a new user with a first and last name
+            Map<String, Object> user = new HashMap<>();
+            user.put("email", SessionUser.getInstance().user.getEmail());
+            user.put("fullName", SessionUser.getInstance().user.getFullName());
+            user.put("nickName", SessionUser.getInstance().user.getNickName());
+            if(SessionUser.getInstance().user.getImgUser()!=null){
+                user.put("imgUser",SessionUser.getInstance().user.getImgUser());
+            }else{
+                user.put("imgUser","");
+            }
+
+            // Add a new document with a generated ID
+            firebaseFirestore.collection("users").document(currentUser.getUid())
+                    .set(user)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d("FirebaseAdmin", "DocumentSnapshot successfully written!");
+                            adminLisener.insertUserDataInFirebase(true);
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w("FirebaseAdmin", "Error writing document", e);
+                            adminLisener.insertUserDataInFirebase(false);
+                        }
+                    });
         }
-
-    // Add a new document with a generated ID
-        firebaseFirestore.collection("users").document(currentUser.getUid())
-                .set(user)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d("FirebaseAdmin", "DocumentSnapshot successfully written!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w("FirebaseAdmin", "Error writing document", e);
-                    }
-                });
     }
-
-
 }

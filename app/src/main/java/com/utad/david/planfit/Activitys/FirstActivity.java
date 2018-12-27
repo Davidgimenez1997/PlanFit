@@ -80,25 +80,26 @@ public class FirstActivity extends AppCompatActivity implements LoginFragment.On
         transaction.commit();
     }
 
-}
 
-class LoginAsyncTask extends AsyncTask<Void, Void, Void> {
+    private class LoginAsyncTask extends AsyncTask<Void, Void, Void> {
 
-    @Override
-    protected Void doInBackground(Void... voids) {
-        SessionUser.getInstance().firebaseAdmin.singInWithEmailAndPassword(SessionUser.getInstance().user.getEmail(),
-                SessionUser.getInstance().user.getPassword());
-        return null;
+        @Override
+        protected Void doInBackground(Void... voids) {
+            SessionUser.getInstance().firebaseAdmin.singInWithEmailAndPassword(SessionUser.getInstance().user.getEmail(),
+                    SessionUser.getInstance().user.getPassword());
+            return null;
+        }
     }
-}
 
-class RegisterAsyncTask extends AsyncTask<Void, Void, Void> {
+    private class RegisterAsyncTask extends AsyncTask<Void, Void, Void> {
 
-    @Override
-    protected Void doInBackground(Void... voids) {
-        SessionUser.getInstance().firebaseAdmin.registerWithEmailAndPassword(SessionUser.getInstance().user.getEmail(),
-                SessionUser.getInstance().user.getPassword());
-        return null;
+        @Override
+        protected Void doInBackground(Void... voids) {
+            SessionUser.getInstance().firebaseAdmin.registerWithEmailAndPassword(SessionUser.getInstance().user.getEmail(),
+                    SessionUser.getInstance().user.getPassword());
+            return null;
+        }
     }
-}
 
+
+}

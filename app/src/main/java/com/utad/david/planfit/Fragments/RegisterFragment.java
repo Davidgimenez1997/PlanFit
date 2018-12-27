@@ -1,26 +1,17 @@
 
 package com.utad.david.planfit.Fragments;
 
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
-import com.utad.david.planfit.Activitys.MainMenuActivity;
-import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.R;
 
@@ -169,9 +160,6 @@ public class RegisterFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
-
-
-
 
     public interface OnFragmentInteractionListener {
         void clickButtonContinue();

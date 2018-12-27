@@ -28,7 +28,6 @@ import com.utad.david.planfit.R;
 
 import java.util.regex.Pattern;
 
-
 public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdminLisener {
 
     private OnFragmentInteractionListener mListener;
@@ -243,6 +242,10 @@ public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
         //Metodo implementado pero no se usa
     }
 
+    @Override
+    public void insertUserDataInFirebase(boolean end) {
+        //Metodo implementado pero no se usa
+    }
 
     public interface OnFragmentInteractionListener {
         void clickButtonLogin();
