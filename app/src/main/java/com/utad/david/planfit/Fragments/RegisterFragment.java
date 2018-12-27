@@ -1,6 +1,7 @@
 
 package com.utad.david.planfit.Fragments;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -8,7 +9,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +23,8 @@ import com.utad.david.planfit.Activitys.MainMenuActivity;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.R;
+
+import java.util.regex.Pattern;
 
 
 public class RegisterFragment extends Fragment {
@@ -39,6 +45,8 @@ public class RegisterFragment extends Fragment {
     private EditText passwordRegister;
     private Button buttonContinue;
     private Button buttonBack;
+    private String emailUser;
+    private String passwordUser;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -49,10 +57,17 @@ public class RegisterFragment extends Fragment {
         findViewById(view);
         onClickButtonBack();
         onClickButtonContinue();
-        emailRegister.setText("");
-        passwordRegister.setText("");
+        configView();
 
         return view;
+    }
+
+
+    private void configView(){
+        emailRegister.setText("");
+        passwordRegister.setText("");
+        emailRegister.addTextChangedListener(textWatcherRegisterFragment);
+        passwordRegister.addTextChangedListener(textWatcherRegisterFragment);
     }
 
     private void findViewById(View view){
@@ -84,6 +99,58 @@ public class RegisterFragment extends Fragment {
                 }
             }
         });
+    }
+
+    private TextWatcher textWatcherRegisterFragment = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            emailUser = emailRegister.getText().toString().trim();
+            passwordUser = passwordRegister.getText().toString().trim();
+            buttonContinue.setEnabled(enableButton());
+            if (!enableButton()) {
+                if (!emailValidate(emailUser)) {
+                    emailRegister.setError(getString(R.string.err_email));
+                }
+                if (!passValidate(emailUser)) {
+                    passwordRegister.setError(getString(R.string.err_password));
+                }
+            }
+        }
+    };
+
+    private boolean enableButton() {
+        if (emailValidate(emailUser) && passValidate(passwordUser)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private boolean emailValidate(String str_email) {
+        Pattern pattern = Patterns.EMAIL_ADDRESS;
+        if (pattern.matcher(str_email).matches()) {
+            return true;
+        } else {
+            return false;
+
+        }
+    }
+
+    public boolean passValidate(String str_password) {
+        if (str_password.length() >= 6) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override

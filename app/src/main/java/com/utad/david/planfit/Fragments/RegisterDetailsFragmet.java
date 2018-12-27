@@ -9,6 +9,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -63,11 +65,45 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
 
         fullName.setText("");
         nickName.setText("");
-        imageViewUser.setImageResource(R.mipmap.ic_launcher);
+        imageViewUser.setImageResource(R.drawable.icon_gallery);
+        fullName.addTextChangedListener(textWatcherRegistreDetailsFragment);
+        nickName.addTextChangedListener(textWatcherRegistreDetailsFragment);
 
         return view;
     }
 
+    private TextWatcher textWatcherRegistreDetailsFragment = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            buttonOk.setEnabled(enableButton());
+        }
+    };
+
+    private boolean enableButton(){
+        if(!checkEditText()){
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    private boolean checkEditText(){
+        if(nickName.getText().toString().isEmpty() || fullName.getText().toString().isEmpty()){
+            return true;
+        }else{
+            return false;
+        }
+    }
 
     private void findViewById(View view){
         fullName = view.findViewById(R.id.fullName);
@@ -154,6 +190,7 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
     @Override
     public void registerWithEmailAndPassword(boolean end) {
         if (end == true) {
+            SessionUser.getInstance().firebaseAdmin.addDataCouldFirestore();
             Toast.makeText(getContext(), "Register Completed", Toast.LENGTH_LONG).show();
             Intent intent = new Intent(getContext(), MainMenuActivity.class);
             startActivity(intent);

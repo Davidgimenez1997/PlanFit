@@ -3,8 +3,16 @@ package com.utad.david.planfit.Data.Firebase;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.*;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.utad.david.planfit.Data.SessionUser;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class FirebaseAdmin {
 
@@ -17,6 +25,7 @@ public class FirebaseAdmin {
     public FirebaseUser currentUser;
     public FirebaseAuth.AuthStateListener authStateListener;
     public FirebaseAdmin.FirebaseAdminLisener adminLisener;
+    public FirebaseFirestore firebaseFirestore;
 
     public void setAdminLisener(FirebaseAdminLisener adminLisener) {
         this.adminLisener = adminLisener;
@@ -24,6 +33,7 @@ public class FirebaseAdmin {
 
     public FirebaseAdmin() {
         mAuth = FirebaseAuth.getInstance();
+        firebaseFirestore = FirebaseFirestore.getInstance();
     }
 
     public void registerWithEmailAndPassword(String email, String password) {
@@ -67,6 +77,35 @@ public class FirebaseAdmin {
                         }
                     });
         }
+    }
+
+    public void addDataCouldFirestore(){
+        // Create a new user with a first and last name
+        Map<String, Object> user = new HashMap<>();
+        user.put("email", SessionUser.getInstance().user.getEmail());
+        user.put("fullName", SessionUser.getInstance().user.getFullName());
+        user.put("nickName", SessionUser.getInstance().user.getNickName());
+        if(SessionUser.getInstance().user.getImgUser()!=null){
+            user.put("imgUser",SessionUser.getInstance().user.getImgUser());
+        }else{
+            user.put("imgUser","");
+        }
+
+    // Add a new document with a generated ID
+        firebaseFirestore.collection("users").document(currentUser.getUid())
+                .set(user)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("FirebaseAdmin", "DocumentSnapshot successfully written!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("FirebaseAdmin", "Error writing document", e);
+                    }
+                });
     }
 
 

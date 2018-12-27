@@ -15,4 +15,6 @@
     <string name="salir">Salir</string>
     <string name="title_login">Iniciando Sesion...</string>
     <string name="message_login">Porfavor espere...</string>
+    <string name="escoja_una_foto_opcional">Escoja una foto (Opcional)</string>
+    <string name="campos_obligatorios">Campos Obligatorios</string>
 </resources>
