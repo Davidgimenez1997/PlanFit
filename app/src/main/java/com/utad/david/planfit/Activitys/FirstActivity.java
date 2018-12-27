@@ -17,8 +17,6 @@ public class FirstActivity extends AppCompatActivity implements LoginFragment.On
     private LoginFragment loginFragment;
     private RegisterFragment registerFragment;
     private RegisterDetailsFragmet registerDetailsFragmet;
-    private String emailUser;
-    private String passwordUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,13 +35,13 @@ public class FirstActivity extends AppCompatActivity implements LoginFragment.On
     }
 
     @Override
-    public void clickButtonLogin(String email, String password) {
-        new LoginAsyncTask(email, password).execute();
+    public void clickButtonLogin() {
+        new LoginAsyncTask().execute();
     }
 
     @Override
     public void clickButtonOk() {
-        new RegisterAsyncTask(emailUser, passwordUser).execute();
+        new RegisterAsyncTask().execute();
     }
 
     @Override
@@ -56,14 +54,12 @@ public class FirstActivity extends AppCompatActivity implements LoginFragment.On
     }
 
     @Override
-    public void clickButtonContinue(String emailRegister, String passwordRegister) {
+    public void clickButtonContinue() {
         registerDetailsFragmet = new RegisterDetailsFragmet();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.frameLayout_FirstActivity, registerDetailsFragmet);
         transaction.addToBackStack(null);
         transaction.commit();
-        this.emailUser = emailRegister;
-        this.passwordUser = passwordRegister;
     }
 
     @Override
@@ -88,34 +84,20 @@ public class FirstActivity extends AppCompatActivity implements LoginFragment.On
 
 class LoginAsyncTask extends AsyncTask<Void, Void, Void> {
 
-    private String emailRegister;
-    private String passwordRegister;
-
-    public LoginAsyncTask(String emailRegister, String passwordRegister) {
-        this.emailRegister = emailRegister;
-        this.passwordRegister = passwordRegister;
-    }
-
     @Override
     protected Void doInBackground(Void... voids) {
-        SessionUser.getInstance().firebaseAdmin.singInWithEmailAndPassword(emailRegister, passwordRegister);
+        SessionUser.getInstance().firebaseAdmin.singInWithEmailAndPassword(SessionUser.getInstance().user.getEmail(),
+                SessionUser.getInstance().user.getPassword());
         return null;
     }
 }
 
 class RegisterAsyncTask extends AsyncTask<Void, Void, Void> {
 
-    private String emailRegister;
-    private String passwordRegister;
-
-    public RegisterAsyncTask(String emailRegister, String passwordRegister) {
-        this.emailRegister = emailRegister;
-        this.passwordRegister = passwordRegister;
-    }
-
     @Override
     protected Void doInBackground(Void... voids) {
-        SessionUser.getInstance().firebaseAdmin.registerWithEmailAndPassword(emailRegister, passwordRegister);
+        SessionUser.getInstance().firebaseAdmin.registerWithEmailAndPassword(SessionUser.getInstance().user.getEmail(),
+                SessionUser.getInstance().user.getPassword());
         return null;
     }
 }

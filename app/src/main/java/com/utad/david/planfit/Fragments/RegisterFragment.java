@@ -67,9 +67,9 @@ public class RegisterFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (mListener!=null){
-                    SessionUser.getInstance().user.setEmail(emailRegister.getText().toString());
-                    SessionUser.getInstance().user.setPassword(passwordRegister.getText().toString());
-                    mListener.clickButtonContinue(emailRegister.getText().toString(),passwordRegister.getText().toString());
+                    SessionUser.getInstance().user.setEmail(emailRegister.getText().toString().trim());
+                    SessionUser.getInstance().user.setPassword(passwordRegister.getText().toString().trim());
+                    mListener.clickButtonContinue();
                 }
             }
         });
@@ -107,7 +107,7 @@ public class RegisterFragment extends Fragment {
 
 
     public interface OnFragmentInteractionListener {
-        void clickButtonContinue(String emailRegister,String passwordRegister);
+        void clickButtonContinue();
         void clickButtonBack();
     }
 }

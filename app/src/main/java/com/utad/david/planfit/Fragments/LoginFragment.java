@@ -114,9 +114,9 @@ public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
             public void onClick(View v) {
                 if (mListener!=null){
                     mProgress.show();
-                    SessionUser.getInstance().user.setEmail(emailLogin.getText().toString());
-                    SessionUser.getInstance().user.setPassword(passwordLogin.getText().toString());
-                    mListener.clickButtonLogin(emailLogin.getText().toString().trim(),passwordLogin.getText().toString().trim());
+                    SessionUser.getInstance().user.setEmail(emailLogin.getText().toString().trim());
+                    SessionUser.getInstance().user.setPassword(passwordLogin.getText().toString().trim());
+                    mListener.clickButtonLogin();
                 }else{
                     mProgress.dismiss();
                 }
@@ -244,7 +244,7 @@ public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
 
 
     public interface OnFragmentInteractionListener {
-        void clickButtonLogin(String email,String password);
+        void clickButtonLogin();
         void clickButtonRegister();
     }
 }
