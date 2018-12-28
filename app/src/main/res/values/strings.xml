@@ -43,4 +43,14 @@
     <string name="actualizar_nombre">Actualizar Nombre</string>
     <string name="actualizar_nick">Actualizar Nick</string>
     <string name="borrar_cuenta">Borrar Cuenta</string>
+    <string name="info_update_email">Email actualizado correctamente</string>
+    <string name="info_update_password">Contraseña actualizada correctamente</string>
+    <string name="info_update_fullname">Nombre actualizado correctamente</string>
+    <string name="info_update_nickname">Nick actualizado correctamente</string>
+    <string name="action_delete">Borrar</string>
+    <string name="action_cancel">Cancelar</string>
+    <string name="info_delete_acount_1">¿Deseas borrar a</string>
+    <string name="info_delete_acount_2">\?</string>
+
+
 </resources>

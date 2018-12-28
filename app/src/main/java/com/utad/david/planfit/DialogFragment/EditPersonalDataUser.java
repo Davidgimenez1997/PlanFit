@@ -1,5 +1,6 @@
 package com.utad.david.planfit.DialogFragment;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,8 +10,10 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -26,6 +29,7 @@ import com.utad.david.planfit.Activitys.FirstActivity;
 import com.utad.david.planfit.Activitys.MainMenuActivity;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
+import com.utad.david.planfit.Fragments.RegisterFragment;
 import com.utad.david.planfit.Model.User;
 import com.utad.david.planfit.R;
 
@@ -69,20 +73,36 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
 
         findById(v);
         putData();
+        checkImageUser();
+        openGallery();
         onClickButtonDeletePhoto();
         onClickButtonUpdateEmail();
         onClickButtonUpdatePassword();
         onClickButtonUpdateNickName();
         onClickButtonUpdateFullName();
         onClickButtonDeleteAccount();
+        configView();
 
+        return v;
+    }
+
+    private void configView(){
+        editTextEmail.addTextChangedListener(textWatcherEditPesonalDataEmail);
+        editTextPassword.addTextChangedListener(textWatcherEditPesonalDataPassword);
+        editTextFullName.addTextChangedListener(textWatcherEditPesonalDataFullName);
+        editTextNickName.addTextChangedListener(textWatcherEditPesonalDataNickName);
+    }
+
+    private void checkImageUser(){
         if(userUpdate.getImgUser()!=null || !userUpdate.getImgUser().equals("")){
             buttonUpdatePhoto.setEnabled(false);
         }else{
             onClickButtonUpdatePhoto();
             buttonUpdatePhoto.setEnabled(true);
         }
+    }
 
+    private void openGallery(){
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,13 +117,6 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
                 startActivityForResult(Intent.createChooser(intent, "Selecciona imagen..."),1);
             }
         });
-
-        editTextEmail.addTextChangedListener(textWatcherEditPesonalDataEmail);
-        editTextPassword.addTextChangedListener(textWatcherEditPesonalDataPassword);
-        editTextFullName.addTextChangedListener(textWatcherEditPesonalDataFullName);
-        editTextNickName.addTextChangedListener(textWatcherEditPesonalDataNickName);
-
-        return v;
     }
 
     private TextWatcher textWatcherEditPesonalDataEmail = new TextWatcher() {
@@ -353,7 +366,8 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
         buttonDeleteAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SessionUser.getInstance().firebaseAdmin.deleteAccountInFirebase();
+                createAndShowAlertDialogUpdateDeleteUser(getString(R.string.info_delete_acount_1)+userUpdate.getNickName()+
+                        getString(R.string.info_delete_acount_2));
             }
         });
     }
@@ -368,20 +382,14 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
     @Override
     public void updateEmailInFirebase(boolean end) {
         if(end==true){
-            Intent intent =new Intent(getContext(),FirstActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            getActivity().finish();
+            createAndShowAlertDialogUpdate(getString(R.string.info_update_email));
         }
     }
 
     @Override
     public void updatePasswordInFirebase(boolean end) {
         if(end==true){
-            Intent intent =new Intent(getContext(),FirstActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            getActivity().finish();
+            createAndShowAlertDialogUpdate(getString(R.string.info_update_password));
         }
     }
 
@@ -389,6 +397,7 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
     public void updateNickNameInFirebase(boolean end) {
         if(end){
             buttonUpdateNickName.setEnabled(false);
+            createAndShowAlertDialogUpdateFullNameOrNickName(getString(R.string.info_update_nickname));
             editTextNickName.setText(userUpdate.getNickName());
         }
     }
@@ -397,6 +406,7 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
     public void updateFullNameInFirebase(boolean end) {
         if(end){
             buttonUpdateFullName.setEnabled(false);
+            createAndShowAlertDialogUpdateFullNameOrNickName(getString(R.string.info_update_fullname));
             editTextFullName.setText(userUpdate.getFullName());
         }
     }
@@ -404,10 +414,7 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
     @Override
     public void deleteUserInFirebase(boolean end) {
         if(end==true){
-            Intent intent =new Intent(getContext(),FirstActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            getActivity().finish();
+            navigatedUserLoginRegister();
         }
     }
 
@@ -434,5 +441,55 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
         }else {
             Toast.makeText(getActivity().getApplicationContext(), "You haven't picked Image",Toast.LENGTH_LONG).show();
         }
+    }
+
+    private void createAndShowAlertDialogUpdate(String message){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
+        builder.setMessage(message)
+                .setPositiveButton(R.string.info_dialog_err, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                        navigatedUserLoginRegister();
+                    }
+                });
+        builder.create();
+        builder.show();
+    }
+
+    private void createAndShowAlertDialogUpdateFullNameOrNickName(String message){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
+        builder.setMessage(message)
+                .setPositiveButton(R.string.info_dialog_err, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                });
+        builder.create();
+        builder.show();
+    }
+
+    private void createAndShowAlertDialogUpdateDeleteUser(String message){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
+        builder.setMessage(message)
+                .setPositiveButton(R.string.action_delete, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        SessionUser.getInstance().firebaseAdmin.deleteAccountInFirebase();
+                    }
+                })
+                .setNegativeButton(R.string.action_cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+        });
+        builder.create();
+        builder.show();
+    }
+
+    private void navigatedUserLoginRegister(){
+        Intent intent =new Intent(getContext(),FirstActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        getActivity().finish();
     }
 }
