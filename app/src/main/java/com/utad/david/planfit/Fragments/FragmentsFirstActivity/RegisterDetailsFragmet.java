@@ -1,4 +1,4 @@
-package com.utad.david.planfit.Fragments;
+package com.utad.david.planfit.Fragments.FragmentsFirstActivity;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -24,7 +24,6 @@ import android.widget.Toast;
 import com.utad.david.planfit.Activitys.MainMenuActivity;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
-import com.utad.david.planfit.Model.User;
 import com.utad.david.planfit.R;
 
 import java.io.FileNotFoundException;

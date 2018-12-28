@@ -1,20 +1,17 @@
-package com.utad.david.planfit.Fragments;
+package com.utad.david.planfit.Fragments.FragmentsFirstActivity;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,12 +20,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import com.google.firebase.auth.*;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.utad.david.planfit.Activitys.FirstActivity;
 import com.utad.david.planfit.Activitys.MainMenuActivity;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
-import com.utad.david.planfit.Model.User;
 import com.utad.david.planfit.R;
 
 import java.util.regex.Pattern;

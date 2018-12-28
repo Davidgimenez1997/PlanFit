@@ -4,11 +4,9 @@ import android.os.AsyncTask;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Window;
-import android.view.WindowManager;
-import com.utad.david.planfit.Fragments.LoginFragment;
-import com.utad.david.planfit.Fragments.RegisterDetailsFragmet;
-import com.utad.david.planfit.Fragments.RegisterFragment;
+import com.utad.david.planfit.Fragments.FragmentsFirstActivity.LoginFragment;
+import com.utad.david.planfit.Fragments.FragmentsFirstActivity.RegisterDetailsFragmet;
+import com.utad.david.planfit.Fragments.FragmentsFirstActivity.RegisterFragment;
 import com.utad.david.planfit.R;
 import com.utad.david.planfit.Data.SessionUser;
 

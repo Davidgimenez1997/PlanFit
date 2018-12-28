@@ -1,5 +1,5 @@
 
-package com.utad.david.planfit.Fragments;
+package com.utad.david.planfit.Fragments.FragmentsFirstActivity;
 
 import android.content.Context;
 import android.os.Bundle;

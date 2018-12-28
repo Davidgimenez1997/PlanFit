@@ -55,6 +55,16 @@
     <string name="cerrar">Cerrar</string>
     <string name="desarollado_dise_ado">Desarollado/Diseñado</string>
     <string name="message_email_developer">Plan Fit, desarollador : </string>
+    <string name="qu_buscas">¿Qué Buscas?</string>
+    <string name="adelgazar">Adelgazar</string>
+    <string name="tonificar">Tonificar</string>
+    <string name="ganar_volumen">Ganar Volumen</string>
+    <string name="estas_preparado">¿Estás Preparado?</string>
+    <string name="crear_plan">Crear tu plan</string>
+    <string name="ver_tu_plan">Ver tu plan</string>
+    <string name="mensajes">Mensajes</string>
+    <string name="mensajes_deportes">Mensajes Deportes</string>
+    <string name="mensajes_nutricion">Mensajes Nutricion</string>
 
 
 </resources>

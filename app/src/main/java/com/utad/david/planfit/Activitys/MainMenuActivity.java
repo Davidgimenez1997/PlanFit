@@ -8,6 +8,7 @@ import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.DialogFragment.EditPersonalDataUser;
 import com.utad.david.planfit.DialogFragment.InfoAboutApp;
+import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.FirstFragment;
 import com.utad.david.planfit.Model.User;
 import com.utad.david.planfit.R;
 import android.graphics.Bitmap;
@@ -203,22 +204,29 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
         Fragment fragment = null;
 
         //iniciamos los fragments dependiendo del item selecionado
+
+        int seleted;
+
         switch (itemId) {
             case R.id.nav_deportes:
                 setTitle(R.string.first_nav_name);
-                //fragment = new LessonsFragment();
+                seleted = 0;
+                fragment = FirstFragment.newInstance(seleted);
                 break;
             case R.id.nav_nutricion:
                 setTitle(R.string.two_nav_name);
-                //fragment = new NotificationFragment();
+                seleted = 1;
+                fragment = FirstFragment.newInstance(seleted);
                 break;
             case R.id.nav_crear_tu_plan:
                 setTitle(R.string.three_nav_name);
-                //fragment = new NotesFragment();
+                seleted = 2;
+                fragment = FirstFragment.newInstance(seleted);
                 break;
             case R.id.nav_comunidad:
                 setTitle(R.string.four_nav_name);
-                //fragment = new TeachersFragment();
+                seleted = 3;
+                fragment = FirstFragment.newInstance(seleted);
                 break;
         }
 
