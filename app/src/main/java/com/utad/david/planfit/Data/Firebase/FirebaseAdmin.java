@@ -9,6 +9,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.*;
 import com.google.firebase.firestore.*;
 import com.utad.david.planfit.Data.SessionUser;
+import com.utad.david.planfit.Model.Developer;
 import com.utad.david.planfit.Model.User;
 
 import javax.annotation.Nullable;
@@ -18,6 +19,7 @@ import java.util.Map;
 public class FirebaseAdmin {
 
     private static String COLLECTION_USER_FIREBASE ="users";
+    private static String COLLECTION_DEVELOPER_INFO_FIREBASE ="developer_info";
 
     public interface FirebaseAdminLoginAndRegisterListener {
         void singInWithEmailAndPassword(boolean end);
@@ -27,6 +29,8 @@ public class FirebaseAdmin {
     public interface FirebaseAdminInsertAndDownloandListener {
         void insertUserDataInFirebase(boolean end);
         void downloadUserDataInFirebase(boolean end);
+        void downloadInfoFirstDeveloper(boolean end);
+        void downloadInfoSecondDeveloper(boolean end);
     }
 
     public interface FirebaseAdminUpdateAndDeleteUserListener{
@@ -46,6 +50,8 @@ public class FirebaseAdmin {
     public FirebaseAdmin.FirebaseAdminLoginAndRegisterListener firebaseAdminLoginAndRegisterListener;
     public FirebaseAdmin.FirebaseAdminUpdateAndDeleteUserListener firebaseAdminUpdateAndDeleteUserListener;
     public User userDataFirebase;
+    public Developer developerFirst;
+    public Developer developerSecond;
     private AuthCredential credential;
 
     public void setFirebaseAdminInsertAndDownloandListener(FirebaseAdminInsertAndDownloandListener firebaseAdminInsertAndDownloandListener) {
@@ -355,5 +361,55 @@ public class FirebaseAdmin {
                         Log.d("FirebaseAdmin", "User re-authenticated.");
                     }
                 });
+    }
+
+    public void dowloandDataFirstDeveloperFirebase(){
+        DocumentReference myDeveloperRef = firebaseFirestore.collection(COLLECTION_DEVELOPER_INFO_FIREBASE).document("first");
+        if(firebaseAdminInsertAndDownloandListener!=null){
+            myDeveloperRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                @Override
+                public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException e) {
+                    if (e != null) {
+                        Log.w("FirebaseAdmin", "Listen failed.", e);
+                        firebaseAdminInsertAndDownloandListener.downloadInfoFirstDeveloper(false);
+                    }
+
+                    if (snapshot != null && snapshot.exists()) {
+                        Log.d("FirebaseAdmin", "Current data: " + snapshot.getData());
+                        Developer developer = snapshot.toObject(Developer.class);
+                        developerFirst = developer;
+                        firebaseAdminInsertAndDownloandListener.downloadInfoFirstDeveloper(true);
+                    } else {
+                        Log.d("FirebaseAdmin", "Current data: null");
+                        firebaseAdminInsertAndDownloandListener.downloadInfoFirstDeveloper(false);
+                    }
+                }
+            });
+        }
+    }
+
+    public void dowloandDataSecondDeveloperFirebase(){
+        DocumentReference myDeveloperRef = firebaseFirestore.collection(COLLECTION_DEVELOPER_INFO_FIREBASE).document("second");
+        if(firebaseAdminInsertAndDownloandListener!=null){
+            myDeveloperRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                @Override
+                public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException e) {
+                    if (e != null) {
+                        Log.w("FirebaseAdmin", "Listen failed.", e);
+                        firebaseAdminInsertAndDownloandListener.downloadInfoSecondDeveloper(false);
+                    }
+
+                    if (snapshot != null && snapshot.exists()) {
+                        Log.d("FirebaseAdmin", "Current data: " + snapshot.getData());
+                        Developer developer = snapshot.toObject(Developer.class);
+                        developerSecond = developer;
+                        firebaseAdminInsertAndDownloandListener.downloadInfoSecondDeveloper(true);
+                    } else {
+                        Log.d("FirebaseAdmin", "Current data: null");
+                        firebaseAdminInsertAndDownloandListener.downloadInfoSecondDeveloper(false);
+                    }
+                }
+            });
+        }
     }
 }

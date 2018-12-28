@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<android.support.constraint.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:background="@drawable/backgroung_grad"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_height="match_parent">
+
+    <ScrollView
+            android:layout_width="wrap_content"
+            android:background="@drawable/backgroung_grad"
+            android:layout_height="wrap_content" app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+    >
+        <android.support.constraint.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:background="@drawable/corner_layout"
+                android:layout_height="wrap_content">
+
+            <Button
+                    android:text="@string/cerrar"
+                    android:textColor="@color/colorAccent"
+                    android:background="@drawable/button_selector"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:id="@+id/close_about"
+                    android:layout_marginStart="8dp" app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="32dp" app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_marginTop="100dp" app:layout_constraintTop_toBottomOf="@+id/name_second_developer"/>
+            <TextView
+                    android:text="@string/name_app_display"
+                    android:textStyle="italic"
+                    android:textSize="50dp"
+                    android:textAlignment="center"
+                    android:textColor="@color/colorAccent"
+                    android:layout_width="318dp"
+                    android:layout_height="78dp"
+                    android:id="@+id/textView"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="24dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginEnd="24dp"
+                    app:layout_constraintHorizontal_bias="0.48" android:layout_marginTop="32dp"/>
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="20dp"
+                    android:maxLines="2"
+                    android:layout_height="51dp" android:id="@+id/name_first_developer"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="24dp" android:layout_marginTop="48dp"
+                    app:layout_constraintTop_toBottomOf="@+id/textView8" android:layout_marginEnd="24dp"
+                    app:layout_constraintEnd_toEndOf="parent" app:layout_constraintHorizontal_bias="0.0"/>
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="20dp"
+                    android:maxLines="2"
+                    android:layout_height="51dp" android:id="@+id/name_second_developer"
+                    android:layout_marginTop="96dp"
+                    app:layout_constraintTop_toBottomOf="@+id/name_first_developer" app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginEnd="24dp" app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="24dp"/>
+            <TextView
+                    android:text="@string/desarollado_dise_ado"
+                    android:layout_width="wrap_content"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="20dp"
+                    android:layout_height="wrap_content" android:id="@+id/textView8"
+                    android:layout_marginTop="32dp"
+                    app:layout_constraintTop_toBottomOf="@+id/textView" android:layout_marginStart="32dp"
+                    app:layout_constraintStart_toStartOf="parent" android:layout_marginEnd="32dp"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+            <Button
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:id="@+id/emailFirstDeveloper"
+                    android:background="@drawable/icon_email"
+                    android:layout_marginTop="24dp"
+                    app:layout_constraintTop_toBottomOf="@+id/name_first_developer" app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="96dp"
+                    android:layout_marginEnd="24dp" app:layout_constraintEnd_toStartOf="@+id/likedinFirstDeveloper"
+                    android:layout_marginBottom="24dp" app:layout_constraintBottom_toTopOf="@+id/name_second_developer"/>
+            <Button
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:id="@+id/emailSecondDeveloper"
+                    android:background="@drawable/icon_email"
+                    app:layout_constraintEnd_toStartOf="@+id/likedinSecondDeveloper"
+                    android:layout_marginEnd="24dp" app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="96dp"
+                    android:layout_marginTop="24dp"
+                    app:layout_constraintTop_toBottomOf="@+id/name_second_developer"
+                    app:layout_constraintHorizontal_chainStyle="spread_inside"/>
+            <Button
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:id="@+id/likedinFirstDeveloper"
+                    android:background="@drawable/linkedin"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginEnd="96dp"
+                    android:layout_marginTop="24dp"
+                    app:layout_constraintTop_toBottomOf="@+id/name_first_developer"
+                    app:layout_constraintStart_toEndOf="@+id/emailFirstDeveloper" android:layout_marginStart="24dp"
+                    android:layout_marginBottom="24dp" app:layout_constraintBottom_toTopOf="@+id/name_second_developer"/>
+            <Button
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:id="@+id/likedinSecondDeveloper"
+                    android:background="@drawable/linkedin"
+                    android:layout_marginStart="24dp"
+                    app:layout_constraintStart_toEndOf="@+id/emailSecondDeveloper" app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginEnd="96dp" android:layout_marginTop="24dp"
+                    app:layout_constraintTop_toBottomOf="@+id/name_second_developer"
+            />
+
+        </android.support.constraint.ConstraintLayout>
+    </ScrollView>
+
+</android.support.constraint.ConstraintLayout>

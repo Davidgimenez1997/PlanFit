@@ -7,6 +7,7 @@ import android.util.Log;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.DialogFragment.EditPersonalDataUser;
+import com.utad.david.planfit.DialogFragment.InfoAboutApp;
 import com.utad.david.planfit.Model.User;
 import com.utad.david.planfit.R;
 import android.graphics.Bitmap;
@@ -160,7 +161,6 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
             startActivity(intent);
             finish();
         }else if (id == R.id.action_edit_user){
-
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             Fragment fragment = getSupportFragmentManager().findFragmentByTag("dialog");
             if (fragment != null) {
@@ -168,6 +168,14 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
             }
             EditPersonalDataUser editPersonalDataUser = new EditPersonalDataUser();
             editPersonalDataUser.show(transaction,"dialog");
+        }else if(id == R.id.action_about_app){
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            Fragment fragment = getSupportFragmentManager().findFragmentByTag("dialog");
+            if (fragment != null) {
+                transaction.remove(fragment);
+            }
+            InfoAboutApp infoAboutApp = new InfoAboutApp();
+            infoAboutApp.show(transaction,"dialog");
         }
 
         return true;
@@ -228,6 +236,17 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
 
     @Override
     public void insertUserDataInFirebase(boolean end) {
+        //Metodo implementado pero no se usa
+    }
+
+
+    @Override
+    public void downloadInfoFirstDeveloper(boolean end) {
+        //Metodo implementado pero no se usa
+    }
+
+    @Override
+    public void downloadInfoSecondDeveloper(boolean end) {
         //Metodo implementado pero no se usa
     }
 }

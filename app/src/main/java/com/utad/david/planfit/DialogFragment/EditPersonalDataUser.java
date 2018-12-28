@@ -366,7 +366,7 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
         buttonDeleteAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                createAndShowAlertDialogUpdateDeleteUser(getString(R.string.info_delete_acount_1)+userUpdate.getNickName()+
+                createAndShowAlertDialogUpdateDeleteUser(getString(R.string.info_delete_acount_1)+" "+userUpdate.getNickName()+
                         getString(R.string.info_delete_acount_2));
             }
         });
@@ -462,6 +462,7 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
                 .setPositiveButton(R.string.info_dialog_err, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.dismiss();
+                        navigatedUserLoginRegister();
                     }
                 });
         builder.create();

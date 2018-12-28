@@ -274,6 +274,16 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
     }
 
     @Override
+    public void downloadInfoFirstDeveloper(boolean end) {
+        //Metodo implementado pero no se usa
+    }
+
+    @Override
+    public void downloadInfoSecondDeveloper(boolean end) {
+        //Metodo implementado pero no se usa
+    }
+
+    @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
