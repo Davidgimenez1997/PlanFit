@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -20,8 +21,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.utad.david.planfit.Activitys.FirstActivity;
 import com.utad.david.planfit.Activitys.MainMenuActivity;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
@@ -33,7 +32,7 @@ import java.io.InputStream;
 
 import static android.app.Activity.RESULT_OK;
 
-public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.FirebaseAdminLisener {
+public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.FirebaseAdminLoginAndRegisterListener,FirebaseAdmin.FirebaseAdminInsertAndDownloandListener {
 
     private OnFragmentInteractionListener mListener;
 
@@ -44,7 +43,8 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SessionUser.getInstance().firebaseAdmin.setAdminLisener(this);
+        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminLoginAndRegisterListener(this);
+        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminInsertAndDownloandListener(this);
 
     }
 
@@ -158,10 +158,15 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
         imageViewUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                Intent intent = new Intent();
+                if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+                    intent.setAction(Intent.ACTION_GET_CONTENT);
+                } else {
+                    intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                }
                 intent.setType("image/*");
-                startActivityForResult(Intent.createChooser(intent, "Select Picture"),1);
+                startActivityForResult(Intent.createChooser(intent, "Selecciona imagen..."),1);
             }
         });
     }
@@ -222,7 +227,7 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
     public void insertUserDataInFirebase(boolean end) {
         if(endRegister==true){
             if(end==true){
-                SessionUser.getInstance().firebaseAdmin.addDataCouldFirestore();
+                SessionUser.getInstance().firebaseAdmin.addDataUserCouldFirestore();
                 mProgress.dismiss();
                 Toast.makeText(getContext(), "Register Completed", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(getContext(), MainMenuActivity.class);
@@ -264,7 +269,7 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
     }
 
     @Override
-    public void downloadUserDataInFirebase(boolean end, User user) {
+    public void downloadUserDataInFirebase(boolean end) {
         //Metodo implementado pero no se usa
     }
 

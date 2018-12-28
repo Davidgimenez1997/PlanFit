@@ -5,7 +5,7 @@
     <string name="login">Iniciar Sesion</string>
     <string name="register">Registrar</string>
 
-    <string name="action_logout">Logout</string>
+    <string name="action_logout">Cerrar Sesion</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_desc">Navigation header</string>
@@ -30,4 +30,17 @@
     <string name="message_register">Porfavor espere...</string>
     <string name="escoja_una_foto_opcional">Escoja una foto (Opcional)</string>
     <string name="campos_obligatorios">Campos Obligatorios</string>
+    <string name="editar_perfil">Editar Perfil</string>
+    <string name="escoja_una_foto">Escoja una foto</string>
+    <string name="actualize_los_campos">Actualize los campos</string>
+    <string name="nombre_completo">Nombre Completo</string>
+    <string name="nick">Nick</string>
+    <string name="aceptar">Aceptar</string>
+    <string name="actualizar_email">Actualizar Email</string>
+    <string name="actualizar_foto">Actualizar Foto</string>
+    <string name="borrar_foto">Borrar Foto</string>
+    <string name="actualizar_contrase_a">Actualizar Contraseña</string>
+    <string name="actualizar_nombre">Actualizar Nombre</string>
+    <string name="actualizar_nick">Actualizar Nick</string>
+    <string name="borrar_cuenta">Borrar Cuenta</string>
 </resources>

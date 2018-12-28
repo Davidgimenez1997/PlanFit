@@ -33,7 +33,7 @@ import com.utad.david.planfit.R;
 
 import java.util.regex.Pattern;
 
-public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdminLisener {
+public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdminLoginAndRegisterListener {
 
     private OnFragmentInteractionListener mListener;
 
@@ -44,7 +44,7 @@ public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SessionUser.getInstance().firebaseAdmin.setAdminLisener(this);
+        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminLoginAndRegisterListener(this);
         SessionUser.getInstance().firebaseAdmin.mAuth = FirebaseAuth.getInstance();
     }
 
@@ -251,16 +251,6 @@ public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
 
     @Override
     public void registerWithEmailAndPassword(boolean end) {
-        //Metodo implementado pero no se usa
-    }
-
-    @Override
-    public void insertUserDataInFirebase(boolean end) {
-        //Metodo implementado pero no se usa
-    }
-
-    @Override
-    public void downloadUserDataInFirebase(boolean end, User user) {
         //Metodo implementado pero no se usa
     }
 

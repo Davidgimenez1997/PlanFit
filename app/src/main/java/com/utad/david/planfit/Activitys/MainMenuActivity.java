@@ -4,9 +4,9 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
+import com.utad.david.planfit.DialogFragment.EditPersonalDataUser;
 import com.utad.david.planfit.Model.User;
 import com.utad.david.planfit.R;
 import android.graphics.Bitmap;
@@ -30,7 +30,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 
-public class MainMenuActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,FirebaseAdmin.FirebaseAdminLisener {
+public class MainMenuActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,FirebaseAdmin.FirebaseAdminInsertAndDownloandListener{
 
     private ImageView imagemenu;
     private TextView nickname;
@@ -39,9 +39,8 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
     private DrawerLayout drawer;
     private NavigationView navigationView;
     private ActionBarDrawerToggle toggle;
-    @Override
 
-    //Definimos el Toolbar, el DrawerLayout y el NavigationView
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
@@ -65,20 +64,20 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
         setTitle(R.string.first_nav_name);
         displaySelectedScreen(R.id.nav_deportes);
 
-        SessionUser.getInstance().firebaseAdmin.setAdminLisener(this);
+        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminInsertAndDownloandListener(this);
         SessionUser.getInstance().firebaseAdmin.dowloandDataUserFirebase();
 
     }
 
     @Override
-    public void downloadUserDataInFirebase(boolean end,User user) {
+    public void downloadUserDataInFirebase(boolean end) {
         if(end==true){
-            Log.d("DatosUsuarioFirebase"," "+user.toString());
+            Log.d("DatosUsuarioFirebase"," "+SessionUser.getInstance().firebaseAdmin.userDataFirebase.toString());
 
-            putInfoUserInHeaderMenu(user);
+            putInfoUserInHeaderMenu(SessionUser.getInstance().firebaseAdmin.userDataFirebase);
 
             //Si la foto es null cogemos una por defecto
-            checkPhotoUserNull(user);
+            checkPhotoUserNull(SessionUser.getInstance().firebaseAdmin.userDataFirebase);
         }
     }
 
@@ -101,29 +100,34 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
     }
 
     public void checkPhotoUserNull(User user) {
-        if(user.getImgUser().equals("")){
-            imagemenu.setImageResource(R.drawable.icon_user);
+        if(user!=null){
+            if(user.getImgUser().equals("")){
+                imagemenu.setImageResource(R.drawable.icon_user);
+            }else{
+                putPhotoUser(user.getImgUser());
+            }
         }else{
-            putPhotoUser(user.getImgUser());
+            imagemenu.setImageResource(R.drawable.icon_user);
         }
     }
 
     //Sirve para poner la foto que hemos recogido en el PersonalData en la cabecera del menu
     public void putPhotoUser(String stringUri) {
         Uri uri = Uri.parse(stringUri);
-        final InputStream imageStream;
-        try {
-            imageStream = getContentResolver().openInputStream(uri);
-            final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-            RoundedBitmapDrawable roundedDrawable1 =
-                    RoundedBitmapDrawableFactory.create(getResources(), selectedImage);
+            final InputStream imageStream;
+            try {
+                imageStream = getContentResolver().openInputStream(uri);
+                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+                RoundedBitmapDrawable roundedDrawable1 =
+                        RoundedBitmapDrawableFactory.create(getResources(), selectedImage);
 
-            //asignamos el CornerRadius
-            roundedDrawable1.setCornerRadius(selectedImage.getHeight());
-            imagemenu.setImageDrawable(roundedDrawable1);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+                //asignamos el CornerRadius
+                roundedDrawable1.setCornerRadius(selectedImage.getHeight());
+                imagemenu.setImageDrawable(roundedDrawable1);
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
     }
 
     //Cuando le damos hacia atrás con el menu abierto se cierra el menu
@@ -150,10 +154,20 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
         int id = item.getItemId();
         if (id == R.id.action_logout) {
             SessionUser.getInstance().firebaseAdmin.mAuth.getInstance().signOut();
+            setEmptyItems();
             Intent intent =new Intent(MainMenuActivity.this,FirstActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             finish();
+        }else if (id == R.id.action_edit_user){
+
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            Fragment fragment = getSupportFragmentManager().findFragmentByTag("dialog");
+            if (fragment != null) {
+                transaction.remove(fragment);
+            }
+            EditPersonalDataUser editPersonalDataUser = new EditPersonalDataUser();
+            editPersonalDataUser.show(transaction,"dialog");
         }
 
         return true;
@@ -208,18 +222,8 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
         }
 
         //Una vez cambiado el fragment cerramos el menu
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
-    }
-
-    @Override
-    public void singInWithEmailAndPassword(boolean end) {
-        //Metodo implementado pero no se usa
-    }
-
-    @Override
-    public void registerWithEmailAndPassword(boolean end) {
-        //Metodo implementado pero no se usa
     }
 
     @Override
