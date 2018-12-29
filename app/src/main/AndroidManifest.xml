@@ -2,9 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.utad.david.planfit">
 
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.MANAGE_DOCUMENTS"></uses-permission>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.MANAGE_DOCUMENTS"/>
 
     <application
             android:allowBackup="true"
@@ -21,6 +20,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".Activitys.MainMenuActivity">
+        </activity>
+        <activity android:name=".Activitys.YoutubeActivity">
         </activity>
     </application>
 

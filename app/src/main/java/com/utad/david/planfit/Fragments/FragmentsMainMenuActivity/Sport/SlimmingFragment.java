@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import com.utad.david.planfit.Adapter.SlimmingAdapter;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
-import com.utad.david.planfit.DialogFragment.Sport.SlimmingDialogFragment;
+import com.utad.david.planfit.DialogFragment.Sport.SportDetailsDialogFragment;
 import com.utad.david.planfit.Model.Sport.Slimming;
 import com.utad.david.planfit.R;
 
@@ -71,9 +71,7 @@ public class SlimmingFragment extends Fragment implements FirebaseAdmin.Firebase
                         transaction.remove(prev);
                     }
                     transaction.addToBackStack(null);
-                    //Pasamos la información del item en el que se está pinchando
-                    // Creamos el dialogo y lo mostramos
-                    SlimmingDialogFragment newFragment = SlimmingDialogFragment.newInstance(item);
+                    SportDetailsDialogFragment newFragment = SportDetailsDialogFragment.newInstanceSlimming(item,0);
                     newFragment.show(transaction, "dialog");
                 }
             });

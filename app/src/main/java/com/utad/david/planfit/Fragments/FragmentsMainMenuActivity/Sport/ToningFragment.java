@@ -3,6 +3,7 @@ package com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Sport;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.view.ViewGroup;
 import com.utad.david.planfit.Adapter.ToningAdapter;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
+import com.utad.david.planfit.DialogFragment.Sport.SportDetailsDialogFragment;
 import com.utad.david.planfit.Model.Sport.Toning;
 import com.utad.david.planfit.R;
 
@@ -60,8 +62,20 @@ public class ToningFragment extends Fragment implements FirebaseAdmin.FirebaseAd
     public void downloandCollectionSportToning(boolean end) {
         if(end){
             List<Toning> tonings = SessionUser.getInstance().firebaseAdmin.toningListSport;
-            ToningAdapter toningAdapter = new ToningAdapter(tonings);
-            mRecyclerView.setAdapter(toningAdapter);
+            mAdapter = new ToningAdapter(tonings, new ToningAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(Toning item) {
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                    Fragment prev = getFragmentManager().findFragmentByTag("dialog");
+                    if (prev != null) {
+                        transaction.remove(prev);
+                    }
+                    transaction.addToBackStack(null);
+                    SportDetailsDialogFragment newFragment = SportDetailsDialogFragment.newInstanceToning(item,2);
+                    newFragment.show(transaction, "dialog");
+                }
+            });
+            mRecyclerView.setAdapter(mAdapter);
         }
     }
 

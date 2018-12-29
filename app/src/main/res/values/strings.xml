@@ -68,6 +68,9 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_youtube">YoutubeActivity</string>
+    <string name="abrir_video">Abrir Video</string>
+    <string name="agregar_a_favoritos">Agregar a favoritos</string>
 
 
 </resources>

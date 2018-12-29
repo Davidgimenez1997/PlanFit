@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.utad.david.planfit.Model.Sport.GainVolume;
+import com.utad.david.planfit.Model.Sport.Toning;
 import com.utad.david.planfit.R;
 
 import java.util.List;
@@ -16,9 +17,16 @@ import java.util.List;
 public class GainVolumeAdapter extends RecyclerView.Adapter<GainVolumeAdapter.GainVolumeViewHolder>  {
 
     private List<GainVolume> gainVolumeList;
+    private GainVolumeAdapter.OnItemClickListener listener;
 
-    public GainVolumeAdapter(List<GainVolume> gainVolumes) {
+    //Obtenemos información del item
+    public interface OnItemClickListener {
+        void onItemClick(GainVolume item);
+    }
+
+    public GainVolumeAdapter(List<GainVolume> gainVolumes,GainVolumeAdapter.OnItemClickListener listener) {
         this.gainVolumeList = gainVolumes;
+        this.listener = listener;
     }
 
     @Override
@@ -30,8 +38,15 @@ public class GainVolumeAdapter extends RecyclerView.Adapter<GainVolumeAdapter.Ga
 
     @Override
     public void onBindViewHolder(GainVolumeViewHolder holder, int position) {
-        GainVolume current = gainVolumeList.get(position);
+        final GainVolume current = gainVolumeList.get(position);
         holder.setData(current);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(listener != null)
+                    listener.onItemClick(current);
+            }
+        });
     }
 
     @Override

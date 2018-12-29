@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.utad.david.planfit.Model.Sport.Slimming;
 import com.utad.david.planfit.Model.Sport.Toning;
 import com.utad.david.planfit.R;
 
@@ -16,9 +17,16 @@ import java.util.List;
 public class ToningAdapter extends RecyclerView.Adapter<ToningAdapter.ToningViewHolder>  {
 
     private List<Toning> toningList;
+    private ToningAdapter.OnItemClickListener listener;
 
-    public ToningAdapter(List<Toning> toningList) {
+    //Obtenemos información del item
+    public interface OnItemClickListener {
+        void onItemClick(Toning item);
+    }
+
+    public ToningAdapter(List<Toning> toningList,ToningAdapter.OnItemClickListener listener) {
         this.toningList = toningList;
+        this.listener = listener;
     }
 
     @Override
@@ -30,8 +38,15 @@ public class ToningAdapter extends RecyclerView.Adapter<ToningAdapter.ToningView
 
     @Override
     public void onBindViewHolder(ToningViewHolder holder, int position) {
-        Toning current = toningList.get(position);
+        final Toning current = toningList.get(position);
         holder.setData(current);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(listener != null)
+                    listener.onItemClick(current);
+            }
+        });
     }
 
     @Override
