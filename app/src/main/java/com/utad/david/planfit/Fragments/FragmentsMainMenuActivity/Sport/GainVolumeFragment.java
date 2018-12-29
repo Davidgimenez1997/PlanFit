@@ -9,17 +9,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.utad.david.planfit.Adapter.ToningAdapter;
+import com.utad.david.planfit.Adapter.GainVolumeAdapter;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
-import com.utad.david.planfit.Model.Sport.Toning;
+import com.utad.david.planfit.Model.Sport.GainVolume;
 import com.utad.david.planfit.R;
 
 import java.util.List;
 
-public class ToningFragment extends Fragment implements FirebaseAdmin.FirebaseAdminDownloandFragmentData {
+public class GainVolumeFragment extends Fragment implements FirebaseAdmin.FirebaseAdminDownloandFragmentData {
 
-    public ToningFragment() {
+    public GainVolumeFragment() {
         // Required empty public constructor
     }
 
@@ -37,7 +37,7 @@ public class ToningFragment extends Fragment implements FirebaseAdmin.FirebaseAd
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_sport_recycleview, container, false);
-        SessionUser.getInstance().firebaseAdmin.downloadTiningSport();
+        SessionUser.getInstance().firebaseAdmin.downloadGainVolumeSport();
         mRecyclerView = view.findViewById(R.id.recycler_view_slimming);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new GridLayoutManager(getContext(), 2);
@@ -56,22 +56,22 @@ public class ToningFragment extends Fragment implements FirebaseAdmin.FirebaseAd
         super.onDetach();
     }
 
+
     @Override
-    public void downloandCollectionSportToning(boolean end) {
+    public void downloandCollectionSportGainVolume(boolean end) {
         if(end){
-            List<Toning> tonings = SessionUser.getInstance().firebaseAdmin.toningListSport;
-            ToningAdapter toningAdapter = new ToningAdapter(tonings);
-            mRecyclerView.setAdapter(toningAdapter);
+            List<GainVolume> gainVolumes = SessionUser.getInstance().firebaseAdmin.gainVolumeListSport;
+            mAdapter = new GainVolumeAdapter(gainVolumes);
+            mRecyclerView.setAdapter(mAdapter);
         }
     }
 
     @Override
     public void downloandCollectionSportSlimming(boolean end) {
-       //Metodo implementado pero no se usa
     }
 
     @Override
-    public void downloandCollectionSportGainVolume(boolean end) {
+    public void downloandCollectionSportToning(boolean end) {
 
     }
 }

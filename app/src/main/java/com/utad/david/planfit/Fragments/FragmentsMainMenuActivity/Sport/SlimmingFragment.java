@@ -1,7 +1,6 @@
 package com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Sport;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -13,7 +12,7 @@ import android.view.ViewGroup;
 import com.utad.david.planfit.Adapter.SlimmingAdapter;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
-import com.utad.david.planfit.Model.Slimming;
+import com.utad.david.planfit.Model.Sport.Slimming;
 import com.utad.david.planfit.R;
 
 import java.util.List;
@@ -37,7 +36,7 @@ public class SlimmingFragment extends Fragment implements FirebaseAdmin.Firebase
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-       View view = inflater.inflate(R.layout.fragment_slimming, container, false);
+       View view = inflater.inflate(R.layout.fragment_sport_recycleview, container, false);
         SessionUser.getInstance().firebaseAdmin.downloadSlimmingSport();
         mRecyclerView = view.findViewById(R.id.recycler_view_slimming);
         mRecyclerView.setHasFixedSize(true);
@@ -68,6 +67,11 @@ public class SlimmingFragment extends Fragment implements FirebaseAdmin.Firebase
 
     @Override
     public void downloandCollectionSportToning(boolean end) {
+
+    }
+
+    @Override
+    public void downloandCollectionSportGainVolume(boolean end) {
 
     }
 }

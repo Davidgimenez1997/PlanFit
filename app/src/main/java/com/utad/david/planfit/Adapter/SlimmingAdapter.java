@@ -7,7 +7,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
-import com.utad.david.planfit.Model.Slimming;
+import com.bumptech.glide.request.RequestOptions;
+import com.utad.david.planfit.Model.Sport.Slimming;
 import com.utad.david.planfit.R;
 
 import java.util.List;
@@ -23,7 +24,7 @@ public class SlimmingAdapter extends RecyclerView.Adapter<SlimmingAdapter.Slimmi
     @Override
     public SlimmingAdapter.SlimmingViewHolder onCreateViewHolder(ViewGroup parent,
                                                         int viewType) {
-        View rootView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_slimming, parent, false);
+        View rootView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recycleview, parent, false);
         return new SlimmingViewHolder(rootView);
     }
 
@@ -50,7 +51,9 @@ public class SlimmingAdapter extends RecyclerView.Adapter<SlimmingAdapter.Slimmi
 
         public void setData(Slimming slimming){
             nameSlimming.setText(slimming.getName());
-            Glide.with(itemView).load(slimming.getPhoto()).into(photoSlimming);
+            RequestOptions requestOptions = new RequestOptions();
+            requestOptions.placeholder(R.drawable.icon_gallery);
+            Glide.with(itemView).setDefaultRequestOptions(requestOptions).load(slimming.getPhoto()).into(photoSlimming);
         }
     }
 

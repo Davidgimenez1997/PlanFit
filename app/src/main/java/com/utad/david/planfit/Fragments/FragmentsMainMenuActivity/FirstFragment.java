@@ -76,6 +76,8 @@ public class FirstFragment extends Fragment {
         three_button.setText(getString(R.string.ganar_volumen));
         onClickAdelgazarSport();
         onClickTonificarSport();
+        onClickGainVolumeSport();
+
     }
 
     private void onClickAdelgazarSport(){
@@ -95,6 +97,17 @@ public class FirstFragment extends Fragment {
             public void onClick(View v) {
                 if(mListener!=null){
                     mListener.clickOnTonificarSport();
+                }
+            }
+        });
+    }
+
+    private void onClickGainVolumeSport(){
+        three_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mListener!=null){
+                    mListener.clickOnGanarVolumenSport();
                 }
             }
         });
@@ -150,6 +163,7 @@ public class FirstFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         void clickOnAdelgazarSport();
         void clickOnTonificarSport();
+        void clickOnGanarVolumenSport();
     }
 }
 

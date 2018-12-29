@@ -8,52 +8,52 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.utad.david.planfit.Model.Sport.Toning;
+import com.utad.david.planfit.Model.Sport.GainVolume;
 import com.utad.david.planfit.R;
 
 import java.util.List;
 
-public class ToningAdapter extends RecyclerView.Adapter<ToningAdapter.ToningViewHolder>  {
+public class GainVolumeAdapter extends RecyclerView.Adapter<GainVolumeAdapter.GainVolumeViewHolder>  {
 
-    private List<Toning> toningList;
+    private List<GainVolume> gainVolumeList;
 
-    public ToningAdapter(List<Toning> toningList) {
-        this.toningList = toningList;
+    public GainVolumeAdapter(List<GainVolume> gainVolumes) {
+        this.gainVolumeList = gainVolumes;
     }
 
     @Override
-    public ToningAdapter.ToningViewHolder onCreateViewHolder(ViewGroup parent,
+    public GainVolumeAdapter.GainVolumeViewHolder onCreateViewHolder(ViewGroup parent,
                                                                  int viewType) {
         View rootView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recycleview, parent, false);
-        return new ToningViewHolder(rootView);
+        return new GainVolumeViewHolder(rootView);
     }
 
     @Override
-    public void onBindViewHolder(ToningViewHolder holder, int position) {
-        Toning current = toningList.get(position);
+    public void onBindViewHolder(GainVolumeViewHolder holder, int position) {
+        GainVolume current = gainVolumeList.get(position);
         holder.setData(current);
     }
 
     @Override
     public int getItemCount() {
-        return toningList.size();
+        return gainVolumeList.size();
     }
 
-    public static class ToningViewHolder extends RecyclerView.ViewHolder {
+    public static class GainVolumeViewHolder extends RecyclerView.ViewHolder {
         public TextView nameSlimming;
         private ImageView photoSlimming;
 
-        public ToningViewHolder(View v) {
+        public GainVolumeViewHolder(View v) {
             super(v);
             nameSlimming = v.findViewById(R.id.nameSlimming);
             photoSlimming = v.findViewById(R.id.imageSlimming);
         }
 
-        public void setData(Toning toning){
-            nameSlimming.setText(toning.getName());
+        public void setData(GainVolume gainVolume){
+            nameSlimming.setText(gainVolume.getName());
             RequestOptions requestOptions = new RequestOptions();
             requestOptions.placeholder(R.drawable.icon_gallery);
-            Glide.with(itemView).setDefaultRequestOptions(requestOptions).load(toning.getPhoto()).into(photoSlimming);
+            Glide.with(itemView).setDefaultRequestOptions(requestOptions).load(gainVolume.getPhoto()).into(photoSlimming);
         }
     }
 

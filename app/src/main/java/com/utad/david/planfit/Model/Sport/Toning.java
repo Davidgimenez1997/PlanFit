@@ -1,13 +1,13 @@
-package com.utad.david.planfit.Model;
+package com.utad.david.planfit.Model.Sport;
 
-public class Slimming {
+public class Toning {
 
     private String name;
     private String photo;
     private String video;
     private String description;
 
-    public Slimming() {
+    public Toning() {
     }
 
     public String getName() {

@@ -10,8 +10,9 @@ import com.google.firebase.auth.*;
 import com.google.firebase.firestore.*;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Model.Developer;
-import com.utad.david.planfit.Model.Slimming;
-import com.utad.david.planfit.Model.Toning;
+import com.utad.david.planfit.Model.Sport.GainVolume;
+import com.utad.david.planfit.Model.Sport.Slimming;
+import com.utad.david.planfit.Model.Sport.Toning;
 import com.utad.david.planfit.Model.User;
 
 import javax.annotation.Nullable;
@@ -57,8 +58,8 @@ public class FirebaseAdmin {
 
     public interface FirebaseAdminDownloandFragmentData {
         void downloandCollectionSportSlimming(boolean end);
-
         void downloandCollectionSportToning(boolean end);
+        void downloandCollectionSportGainVolume(boolean end);
     }
 
     public FirebaseAuth mAuth;
@@ -76,6 +77,7 @@ public class FirebaseAdmin {
 
     public List<Slimming> slimmingListSport;
     public List<Toning> toningListSport;
+    public List<GainVolume> gainVolumeListSport;
 
     public void setFirebaseAdminInsertAndDownloandListener(FirebaseAdminInsertAndDownloandListener firebaseAdminInsertAndDownloandListener) {
         this.firebaseAdminInsertAndDownloandListener = firebaseAdminInsertAndDownloandListener;
@@ -481,6 +483,29 @@ public class FirebaseAdmin {
                     toningListSport = toningList;
 
                     firebaseAdminDownloandFragmentData.downloandCollectionSportToning(true);
+                }
+            });
+        }
+    }
+
+    public void downloadGainVolumeSport() {
+        if(firebaseAdminDownloandFragmentData!=null){
+            CollectionReference  collectionReference = firebaseFirestore.collection("deportes/ganarVolumen/detalles");
+            collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+                @Override
+                public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                    if (e != null) {
+                        Log.w("FirebaseAdmin", "Listen failed.", e);
+                        firebaseAdminDownloandFragmentData.downloandCollectionSportGainVolume(false);
+                    }
+
+                    List<GainVolume> gainVolumes = new ArrayList<>();
+                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                        gainVolumes.add(doc.toObject(GainVolume.class));
+                    }
+                    gainVolumeListSport = gainVolumes;
+
+                    firebaseAdminDownloandFragmentData.downloandCollectionSportGainVolume(true);
                 }
             });
         }

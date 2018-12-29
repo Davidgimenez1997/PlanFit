@@ -1,13 +1,13 @@
-package com.utad.david.planfit.Model;
+package com.utad.david.planfit.Model.Sport;
 
-public class Toning {
+public class GainVolume {
 
     private String name;
     private String photo;
     private String video;
     private String description;
 
-    public Toning() {
+    public GainVolume() {
     }
 
     public String getName() {
