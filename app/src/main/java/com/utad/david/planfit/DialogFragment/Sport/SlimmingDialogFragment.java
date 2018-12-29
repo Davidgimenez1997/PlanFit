@@ -9,8 +9,7 @@ import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
-import com.google.android.gms.common.internal.Constants;
+import android.widget.TextView;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerSupportFragment;
@@ -18,23 +17,17 @@ import com.utad.david.planfit.Model.Sport.Slimming;
 
 import com.utad.david.planfit.R;
 
-import java.util.ArrayList;
-
-public class SlimmingDialogFragment extends DialogFragment{
+public class SlimmingDialogFragment extends DialogFragment {
 
     public Slimming slimming;
     private static String KEY = "Item";
 
     public static final String API_KEY = "AIzaSyDSXa5CPSaAJKDCFUgBLWXCYT8fU3QBZUc";
 
-    public static final String VIDEO_ID = "G3IpRgeS9c8";
-
-    //Creamos una nueva instancia de esta clase y le pasamos por parámetro un objeto de
-    // communities para más adelante recogerlo con los argumentos
     public static SlimmingDialogFragment newInstance(Slimming slimming) {
         SlimmingDialogFragment fragment = new SlimmingDialogFragment();
         Bundle args = new Bundle();
-        args.putParcelable(KEY,slimming);
+        args.putParcelable(KEY, slimming);
         fragment.setArguments(args);
         return fragment;
     }
@@ -51,35 +44,35 @@ public class SlimmingDialogFragment extends DialogFragment{
     private YouTubePlayer youTubePlayer;
 
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        if (view != null) {
-            ViewGroup parent = (ViewGroup) view.getParent();
-            if (parent != null)
-                parent.removeView(view);
-        }
-        try {
             view = inflater.inflate(R.layout.sport_dialog_fragment, container, false);
             view.setBackgroundResource(R.drawable.corner_dialog_fragment);
             getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             initializeYoutubePlayer();
 
+            TextView textView = view.findViewById(R.id.textViewnamedialogSport);
+            textView.setText(slimming.getName());
             findById(view);
-        } catch (InflateException e) {
-            /* map is already there, just return view as it is */
-        }
-
-
-
         return view;
+
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        youTubePlayerFragment = (YouTubePlayerSupportFragment) getFragmentManager()
+                .findFragmentById(R.id.youtubesupportfragment);
+        if (youTubePlayer != null)
+            getFragmentManager().beginTransaction().remove(youTubePlayerFragment).commit();
     }
 
     private void initializeYoutubePlayer() {
 
         youTubePlayerFragment = (YouTubePlayerSupportFragment) getFragmentManager()
                 .findFragmentById(R.id.youtubesupportfragment);
+
 
         if (youTubePlayerFragment == null)
             return;
@@ -110,7 +103,7 @@ public class SlimmingDialogFragment extends DialogFragment{
         });
     }
 
-    public void findById(View v){
+    public void findById(View v) {
 
     }
 }
