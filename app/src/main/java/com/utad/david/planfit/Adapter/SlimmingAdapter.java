@@ -16,9 +16,16 @@ import java.util.List;
 public class SlimmingAdapter extends RecyclerView.Adapter<SlimmingAdapter.SlimmingViewHolder>  {
 
     private List<Slimming> slimmingListm;
+    private SlimmingAdapter.OnItemClickListener listener;
 
-    public SlimmingAdapter(List<Slimming> slimmingListm) {
+    //Obtenemos información del item
+    public interface OnItemClickListener {
+        void onItemClick(Slimming item);
+    }
+
+    public SlimmingAdapter(List<Slimming> slimmingListm,SlimmingAdapter.OnItemClickListener listener) {
         this.slimmingListm = slimmingListm;
+        this.listener = listener;
     }
 
     @Override
@@ -30,8 +37,15 @@ public class SlimmingAdapter extends RecyclerView.Adapter<SlimmingAdapter.Slimmi
 
     @Override
     public void onBindViewHolder(SlimmingViewHolder holder, int position) {
-        Slimming current = slimmingListm.get(position);
+        final Slimming current = slimmingListm.get(position);
         holder.setData(current);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(listener != null)
+                    listener.onItemClick(current);
+            }
+        });
     }
 
     @Override

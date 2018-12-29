@@ -3,6 +3,7 @@ package com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Sport;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.view.ViewGroup;
 import com.utad.david.planfit.Adapter.SlimmingAdapter;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
+import com.utad.david.planfit.DialogFragment.Sport.SlimmingDialogFragment;
 import com.utad.david.planfit.Model.Sport.Slimming;
 import com.utad.david.planfit.R;
 
@@ -60,7 +62,21 @@ public class SlimmingFragment extends Fragment implements FirebaseAdmin.Firebase
     public void downloandCollectionSportSlimming(boolean end) {
         if(end){
             List<Slimming> slimmingList = SessionUser.getInstance().firebaseAdmin.slimmingListSport;
-            mAdapter = new SlimmingAdapter(slimmingList);
+            mAdapter = new SlimmingAdapter(slimmingList, new SlimmingAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(Slimming item) {
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                    Fragment prev = getFragmentManager().findFragmentByTag("dialog");
+                    if (prev != null) {
+                        transaction.remove(prev);
+                    }
+                    transaction.addToBackStack(null);
+                    //Pasamos la información del item en el que se está pinchando
+                    // Creamos el dialogo y lo mostramos
+                    SlimmingDialogFragment newFragment = SlimmingDialogFragment.newInstance(item);
+                    newFragment.show(transaction, "dialog");
+                }
+            });
             mRecyclerView.setAdapter(mAdapter);
         }
     }

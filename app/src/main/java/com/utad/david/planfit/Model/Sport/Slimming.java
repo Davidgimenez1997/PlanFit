@@ -1,6 +1,9 @@
 package com.utad.david.planfit.Model.Sport;
 
-public class Slimming {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Slimming implements Parcelable {
 
     private String name;
     private String photo;
@@ -9,6 +12,25 @@ public class Slimming {
 
     public Slimming() {
     }
+
+    protected Slimming(Parcel in) {
+        name = in.readString();
+        photo = in.readString();
+        video = in.readString();
+        description = in.readString();
+    }
+
+    public static final Creator<Slimming> CREATOR = new Creator<Slimming>() {
+        @Override
+        public Slimming createFromParcel(Parcel in) {
+            return new Slimming(in);
+        }
+
+        @Override
+        public Slimming[] newArray(int size) {
+            return new Slimming[size];
+        }
+    };
 
     public String getName() {
         return name;
@@ -40,5 +62,18 @@ public class Slimming {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeString(photo);
+        dest.writeString(video);
+        dest.writeString(description);
     }
 }
