@@ -9,6 +9,8 @@ import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.DialogFragment.EditPersonalDataUser;
 import com.utad.david.planfit.DialogFragment.InfoAboutApp;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.FirstFragment;
+import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Sport.SlimmingFragment;
+import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Sport.ToningFragment;
 import com.utad.david.planfit.Model.User;
 import com.utad.david.planfit.R;
 import android.graphics.Bitmap;
@@ -32,7 +34,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 
-public class MainMenuActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,FirebaseAdmin.FirebaseAdminInsertAndDownloandListener{
+public class MainMenuActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,FirebaseAdmin.FirebaseAdminInsertAndDownloandListener,FirstFragment.OnFragmentInteractionListener{
 
     private ImageView imagemenu;
     private TextView nickname;
@@ -243,6 +245,24 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
     }
 
     @Override
+    public void clickOnAdelgazarSport() {
+        SlimmingFragment slimmingFragment = new SlimmingFragment();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.content_frame, slimmingFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    @Override
+    public void clickOnTonificarSport() {
+        ToningFragment toningFragment = new ToningFragment();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.content_frame, toningFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    @Override
     public void insertUserDataInFirebase(boolean end) {
         //Metodo implementado pero no se usa
     }
@@ -257,4 +277,5 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
     public void downloadInfoSecondDeveloper(boolean end) {
         //Metodo implementado pero no se usa
     }
+
 }

@@ -4,11 +4,13 @@ package com.utad.david.planfit.Fragments.FragmentsMainMenuActivity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Sport.SlimmingFragment;
 import com.utad.david.planfit.R;
 
 
@@ -38,6 +40,9 @@ public class FirstFragment extends Fragment {
 
     }
 
+    public void setmListener(OnFragmentInteractionListener mListener) {
+        this.mListener = mListener;
+    }
 
     private TextView textViewInfo;
     private Button first_button;
@@ -69,6 +74,30 @@ public class FirstFragment extends Fragment {
         first_button.setText(getString(R.string.adelgazar));
         second_button.setText(getString(R.string.tonificar));
         three_button.setText(getString(R.string.ganar_volumen));
+        onClickAdelgazarSport();
+        onClickTonificarSport();
+    }
+
+    private void onClickAdelgazarSport(){
+        first_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mListener!=null){
+                    mListener.clickOnAdelgazarSport();
+                }
+            }
+        });
+    }
+
+    private void onClickTonificarSport(){
+        second_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mListener!=null){
+                    mListener.clickOnTonificarSport();
+                }
+            }
+        });
     }
 
     private void configViewNutrition(){
@@ -104,14 +133,12 @@ public class FirstFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        /*
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
-        */
     }
 
     @Override
@@ -121,6 +148,8 @@ public class FirstFragment extends Fragment {
     }
 
     public interface OnFragmentInteractionListener {
+        void clickOnAdelgazarSport();
+        void clickOnTonificarSport();
     }
 }
 

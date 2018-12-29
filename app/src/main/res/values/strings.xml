@@ -54,7 +54,7 @@
     <string name="sobre_nosotros">Sobre Nosotros</string>
     <string name="cerrar">Cerrar</string>
     <string name="desarollado_dise_ado">Desarollado/Diseñado</string>
-    <string name="message_email_developer">Plan Fit, desarollador : </string>
+    <string name="message_email_developer">Plan Fit, desarollador :</string>
     <string name="qu_buscas">¿Qué Buscas?</string>
     <string name="adelgazar">Adelgazar</string>
     <string name="tonificar">Tonificar</string>
@@ -65,6 +65,9 @@
     <string name="mensajes">Mensajes</string>
     <string name="mensajes_deportes">Mensajes Deportes</string>
     <string name="mensajes_nutricion">Mensajes Nutricion</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
 </resources>

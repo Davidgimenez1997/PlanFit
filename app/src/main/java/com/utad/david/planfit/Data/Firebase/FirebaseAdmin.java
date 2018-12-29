@@ -10,36 +10,55 @@ import com.google.firebase.auth.*;
 import com.google.firebase.firestore.*;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Model.Developer;
+import com.utad.david.planfit.Model.Slimming;
+import com.utad.david.planfit.Model.Toning;
 import com.utad.david.planfit.Model.User;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class FirebaseAdmin {
 
-    private static String COLLECTION_USER_FIREBASE ="users";
-    private static String COLLECTION_DEVELOPER_INFO_FIREBASE ="developer_info";
+    private static String COLLECTION_USER_FIREBASE = "users";
+    private static String COLLECTION_DEVELOPER_INFO_FIREBASE = "developer_info";
 
     public interface FirebaseAdminLoginAndRegisterListener {
         void singInWithEmailAndPassword(boolean end);
+
         void registerWithEmailAndPassword(boolean end);
     }
 
     public interface FirebaseAdminInsertAndDownloandListener {
         void insertUserDataInFirebase(boolean end);
+
         void downloadUserDataInFirebase(boolean end);
+
         void downloadInfoFirstDeveloper(boolean end);
+
         void downloadInfoSecondDeveloper(boolean end);
     }
 
-    public interface FirebaseAdminUpdateAndDeleteUserListener{
+    public interface FirebaseAdminUpdateAndDeleteUserListener {
         void updatePhotoInFirebase(boolean end);
+
         void updateEmailInFirebase(boolean end);
+
         void updatePasswordInFirebase(boolean end);
+
         void updateNickNameInFirebase(boolean end);
+
         void updateFullNameInFirebase(boolean end);
+
         void deleteUserInFirebase(boolean end);
+    }
+
+    public interface FirebaseAdminDownloandFragmentData {
+        void downloandCollectionSportSlimming(boolean end);
+
+        void downloandCollectionSportToning(boolean end);
     }
 
     public FirebaseAuth mAuth;
@@ -49,10 +68,14 @@ public class FirebaseAdmin {
     public FirebaseAdmin.FirebaseAdminInsertAndDownloandListener firebaseAdminInsertAndDownloandListener;
     public FirebaseAdmin.FirebaseAdminLoginAndRegisterListener firebaseAdminLoginAndRegisterListener;
     public FirebaseAdmin.FirebaseAdminUpdateAndDeleteUserListener firebaseAdminUpdateAndDeleteUserListener;
+    public FirebaseAdmin.FirebaseAdminDownloandFragmentData firebaseAdminDownloandFragmentData;
     public User userDataFirebase;
     public Developer developerFirst;
     public Developer developerSecond;
     private AuthCredential credential;
+
+    public List<Slimming> slimmingListSport;
+    public List<Toning> toningListSport;
 
     public void setFirebaseAdminInsertAndDownloandListener(FirebaseAdminInsertAndDownloandListener firebaseAdminInsertAndDownloandListener) {
         this.firebaseAdminInsertAndDownloandListener = firebaseAdminInsertAndDownloandListener;
@@ -64,6 +87,10 @@ public class FirebaseAdmin {
 
     public void setFirebaseAdminUpdateUserListener(FirebaseAdminUpdateAndDeleteUserListener firebaseAdminUpdateAndDeleteUserListener) {
         this.firebaseAdminUpdateAndDeleteUserListener = firebaseAdminUpdateAndDeleteUserListener;
+    }
+
+    public void setFirebaseAdminDownloandFragmentData(FirebaseAdminDownloandFragmentData firebaseAdminDownloandFragmentData) {
+        this.firebaseAdminDownloandFragmentData = firebaseAdminDownloandFragmentData;
     }
 
     public FirebaseAdmin() {
@@ -114,18 +141,18 @@ public class FirebaseAdmin {
         }
     }
 
-    public void addDataUserCouldFirestore(){
-        if(firebaseAdminInsertAndDownloandListener!=null){
+    public void addDataUserCouldFirestore() {
+        if (firebaseAdminInsertAndDownloandListener != null) {
             // Create a new user with a first and last name
             Map<String, Object> user = new HashMap<>();
             user.put("email", SessionUser.getInstance().user.getEmail());
             user.put("password", SessionUser.getInstance().user.getPassword());
             user.put("fullName", SessionUser.getInstance().user.getFullName());
             user.put("nickName", SessionUser.getInstance().user.getNickName());
-            if(SessionUser.getInstance().user.getImgUser()!=null){
-                user.put("imgUser",SessionUser.getInstance().user.getImgUser());
-            }else{
-                user.put("imgUser","");
+            if (SessionUser.getInstance().user.getImgUser() != null) {
+                user.put("imgUser", SessionUser.getInstance().user.getImgUser());
+            } else {
+                user.put("imgUser", "");
             }
 
             insertDataUserIntoFirebase(user);
@@ -133,7 +160,7 @@ public class FirebaseAdmin {
         }
     }
 
-    public void insertDataUserIntoFirebase(Map<String, Object> user){
+    public void insertDataUserIntoFirebase(Map<String, Object> user) {
         firebaseFirestore.collection(COLLECTION_USER_FIREBASE).document(currentUser.getUid())
                 .set(user)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -152,9 +179,9 @@ public class FirebaseAdmin {
                 });
     }
 
-    public void dowloandDataUserFirebase(){
+    public void dowloandDataUserFirebase() {
         DocumentReference myUserRef = firebaseFirestore.collection(COLLECTION_USER_FIREBASE).document(currentUser.getUid());
-        if(firebaseAdminInsertAndDownloandListener!=null){
+        if (firebaseAdminInsertAndDownloandListener != null) {
             myUserRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
                 @Override
                 public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException e) {
@@ -177,8 +204,8 @@ public class FirebaseAdmin {
         }
     }
 
-    public void updatePhotoUserInFirebase(){
-        if(firebaseAdminUpdateAndDeleteUserListener!=null){
+    public void updatePhotoUserInFirebase() {
+        if (firebaseAdminUpdateAndDeleteUserListener != null) {
             DocumentReference myUserRef = firebaseFirestore.collection(COLLECTION_USER_FIREBASE).document(currentUser.getUid());
             Map<String, Object> user = new HashMap<>();
             user.put("imgUser", userDataFirebase.getImgUser());
@@ -200,8 +227,8 @@ public class FirebaseAdmin {
         }
     }
 
-    public void updateFullNameUserInFirebase(){
-        if(firebaseAdminUpdateAndDeleteUserListener!=null){
+    public void updateFullNameUserInFirebase() {
+        if (firebaseAdminUpdateAndDeleteUserListener != null) {
             DocumentReference myUserRef = firebaseFirestore.collection(COLLECTION_USER_FIREBASE).document(currentUser.getUid());
             Map<String, Object> user = new HashMap<>();
             user.put("fullName", userDataFirebase.getFullName());
@@ -223,8 +250,8 @@ public class FirebaseAdmin {
         }
     }
 
-    public void updateNickNameUserInFirebase(){
-        if(firebaseAdminUpdateAndDeleteUserListener!=null){
+    public void updateNickNameUserInFirebase() {
+        if (firebaseAdminUpdateAndDeleteUserListener != null) {
             DocumentReference myUserRef = firebaseFirestore.collection(COLLECTION_USER_FIREBASE).document(currentUser.getUid());
             Map<String, Object> user = new HashMap<>();
             user.put("nickName", userDataFirebase.getNickName());
@@ -246,8 +273,8 @@ public class FirebaseAdmin {
         }
     }
 
-    public void updateEmailUserInFirebase(){
-        if(firebaseAdminUpdateAndDeleteUserListener!=null){
+    public void updateEmailUserInFirebase() {
+        if (firebaseAdminUpdateAndDeleteUserListener != null) {
             reauthenticateUserInFirebaseWithEmailAndPassword();
             currentUser = FirebaseAuth.getInstance().getCurrentUser();
             currentUser.updateEmail(userDataFirebase.getEmail())
@@ -281,8 +308,8 @@ public class FirebaseAdmin {
 
     }
 
-    public void updatePasswordUserInFirebase(){
-        if(firebaseAdminUpdateAndDeleteUserListener!=null){
+    public void updatePasswordUserInFirebase() {
+        if (firebaseAdminUpdateAndDeleteUserListener != null) {
             currentUser = FirebaseAuth.getInstance().getCurrentUser();
             String newPassword = userDataFirebase.getPassword();
 
@@ -316,8 +343,8 @@ public class FirebaseAdmin {
         }
     }
 
-    public void deleteAccountInFirebase(){
-        if(firebaseAdminUpdateAndDeleteUserListener!=null){
+    public void deleteAccountInFirebase() {
+        if (firebaseAdminUpdateAndDeleteUserListener != null) {
             final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             firebaseFirestore.collection(COLLECTION_USER_FIREBASE).document(currentUser.getUid())
                     .delete()
@@ -350,9 +377,9 @@ public class FirebaseAdmin {
         }
     }
 
-    private void reauthenticateUserInFirebaseWithEmailAndPassword(){
+    private void reauthenticateUserInFirebaseWithEmailAndPassword() {
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
-       credential  = EmailAuthProvider
+        credential = EmailAuthProvider
                 .getCredential(userDataFirebase.getEmail(), userDataFirebase.getPassword());
         currentUser.reauthenticate(credential)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -363,9 +390,9 @@ public class FirebaseAdmin {
                 });
     }
 
-    public void dowloandDataFirstDeveloperFirebase(){
+    public void dowloandDataFirstDeveloperFirebase() {
         DocumentReference myDeveloperRef = firebaseFirestore.collection(COLLECTION_DEVELOPER_INFO_FIREBASE).document("first");
-        if(firebaseAdminInsertAndDownloandListener!=null){
+        if (firebaseAdminInsertAndDownloandListener != null) {
             myDeveloperRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
                 @Override
                 public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException e) {
@@ -388,9 +415,9 @@ public class FirebaseAdmin {
         }
     }
 
-    public void dowloandDataSecondDeveloperFirebase(){
+    public void dowloandDataSecondDeveloperFirebase() {
         DocumentReference myDeveloperRef = firebaseFirestore.collection(COLLECTION_DEVELOPER_INFO_FIREBASE).document("second");
-        if(firebaseAdminInsertAndDownloandListener!=null){
+        if (firebaseAdminInsertAndDownloandListener != null) {
             myDeveloperRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
                 @Override
                 public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException e) {
@@ -408,6 +435,52 @@ public class FirebaseAdmin {
                         Log.d("FirebaseAdmin", "Current data: null");
                         firebaseAdminInsertAndDownloandListener.downloadInfoSecondDeveloper(false);
                     }
+                }
+            });
+        }
+    }
+
+    public void downloadSlimmingSport() {
+        if (firebaseAdminDownloandFragmentData != null) {
+            CollectionReference collectionReference = firebaseFirestore.collection("deportes/adelgazar/detalles");
+            collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+                @Override
+                public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                    if (e != null) {
+                        Log.w("FirebaseAdmin", "Listen failed.", e);
+                        firebaseAdminDownloandFragmentData.downloandCollectionSportSlimming(false);
+                    }
+
+                    List<Slimming> slimmingList = new ArrayList<>();
+                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                        slimmingList.add(doc.toObject(Slimming.class));
+                    }
+                    slimmingListSport = slimmingList;
+
+                    firebaseAdminDownloandFragmentData.downloandCollectionSportSlimming(true);
+                }
+            });
+        }
+    }
+
+    public void downloadTiningSport() {
+        if(firebaseAdminDownloandFragmentData!=null){
+            CollectionReference  collectionReference = firebaseFirestore.collection("deportes/tonificar/detalles");
+            collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+                @Override
+                public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                    if (e != null) {
+                        Log.w("FirebaseAdmin", "Listen failed.", e);
+                        firebaseAdminDownloandFragmentData.downloandCollectionSportToning(false);
+                    }
+
+                    List<Toning> toningList = new ArrayList<>();
+                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                        toningList.add(doc.toObject(Toning.class));
+                    }
+                    toningListSport = toningList;
+
+                    firebaseAdminDownloandFragmentData.downloandCollectionSportToning(true);
                 }
             });
         }
