@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class FirebaseAdmin {
 
@@ -599,7 +600,7 @@ public class FirebaseAdmin {
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Log.w("FirebaseAdmin", "Error writing document", e);
+                            Log.w("", "Error writing document", e);
                             firebaseAdminInsertFavoriteSportAndNutrition.inserSportFavoriteFirebase(false);
                         }
                     });
@@ -705,7 +706,7 @@ public class FirebaseAdmin {
                         }
                     });
         }
-    }
 
+    }
 
 }
