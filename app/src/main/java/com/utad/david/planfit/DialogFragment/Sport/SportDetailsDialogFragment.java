@@ -43,6 +43,8 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
         args.putParcelable(SLIMMING, slimming);
         args.putInt(OPTION, option);
         fragment.setArguments(args);
+        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminInsertFavoriteSportAndNutrition(fragment);
+        SessionUser.getInstance().firebaseAdmin.downloadSlimmingSportFavorite();
         return fragment;
     }
 
@@ -52,6 +54,8 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
         args.putParcelable(GAINVOLUME, gainVolume);
         args.putInt(OPTION, option);
         fragment.setArguments(args);
+        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminInsertFavoriteSportAndNutrition(fragment);
+        SessionUser.getInstance().firebaseAdmin.downloadGainVolumeSportFavorite();
         return fragment;
     }
 
@@ -61,6 +65,8 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
         args.putParcelable(TONING, toning);
         args.putInt(OPTION, option);
         fragment.setArguments(args);
+        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminInsertFavoriteSportAndNutrition(fragment);
+        SessionUser.getInstance().firebaseAdmin.downloadToningSportFavorite();
         return fragment;
     }
 
@@ -72,7 +78,7 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
         toning = getArguments().getParcelable(TONING);
         gainVolume = getArguments().getParcelable(GAINVOLUME);
         option = getArguments().getInt(OPTION);
-        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminInsertFavoriteSportAndNutrition(this);
+
     }
 
     private TextView textViewTitle;
@@ -91,10 +97,6 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
         View view = inflater.inflate(R.layout.sport_dialog_fragment, container, false);
         view.setBackgroundResource(R.drawable.corner_dialog_fragment);
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
-        SessionUser.getInstance().firebaseAdmin.downloadSlimmingSportFavorite();
-        SessionUser.getInstance().firebaseAdmin.downloadToningSportFavorite();
-        SessionUser.getInstance().firebaseAdmin.downloadGainVolumeSportFavorite();
 
         findById(view);
         putData();
@@ -186,34 +188,31 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
         if(end){
             switch (option){
                 case 0:
-                    if(slimmingList!=null){
+                    slimmingList = new ArrayList<>();
                         slimmingList = SessionUser.getInstance().firebaseAdmin.slimmingListSportFavorite;
                         for(int i=0;i<slimmingList.size();i++){
                             if(slimmingList.get(i).getName().equals(slimming.getName())){
                                 buttonInsert.setEnabled(false);
                             }
                         }
-                    }
                     break;
                 case 1:
-                    if(toningList!=null){
+                    toningList = new ArrayList<>();
                         toningList = SessionUser.getInstance().firebaseAdmin.toningListSportFavorite;
                         for(int i=0;i<toningList.size();i++){
                             if(toningList.get(i).getName().equals(toning.getName())){
                                 buttonInsert.setEnabled(false);
                             }
                         }
-                    }
                     break;
                 case 2:
-                    if(gainVolumeList!=null){
-                        gainVolumeList = SessionUser.getInstance().firebaseAdmin.gainVolumeListSportFavorite;
+                    gainVolumeList = new ArrayList<>();
+                     gainVolumeList = SessionUser.getInstance().firebaseAdmin.gainVolumeListSportFavorite;
                         for(int i=0;i<gainVolumeList.size();i++){
                             if(gainVolumeList.get(i).getName().equals(gainVolume.getName())){
                                 buttonInsert.setEnabled(false);
                             }
                         }
-                    }
                     break;
             }
 

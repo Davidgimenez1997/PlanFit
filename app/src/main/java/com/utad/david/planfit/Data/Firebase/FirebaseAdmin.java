@@ -575,6 +575,8 @@ public class FirebaseAdmin {
                             toningList.add(doc.toObject(Slimming.class));
                         }
                     }
+                    Log.w("FirebaseAdmin", "Data."+toningList.toString());
+
                     slimmingListSportFavorite = toningList;
 
                     firebaseAdminInsertFavoriteSportAndNutrition.downloandCollectionSportFavorite(true);
@@ -635,6 +637,8 @@ public class FirebaseAdmin {
                                 }
                             }
                             toningListSportFavorite = toningList;
+                            Log.w("FirebaseAdmin", "Data."+toningList.toString());
+
 
                             firebaseAdminInsertFavoriteSportAndNutrition.downloandCollectionSportFavorite(true);
                         }
@@ -671,7 +675,7 @@ public class FirebaseAdmin {
             slimmingMap.put("video",gainVolume.getVideo());
             slimmingMap.put("description", gainVolume.getDescription());
             slimmingMap.put("type","ganarVolumen");
-            insertFavoriteSportToning(slimmingMap);
+            insertFavoriteSportGainVolume(slimmingMap);
         }
     }
 
@@ -694,6 +698,8 @@ public class FirebaseAdmin {
                                 }
                             }
                             gainVolumeListSportFavorite = gainVolumes;
+                            Log.w("FirebaseAdmin", "Data."+gainVolumes.toString());
+
 
                             firebaseAdminInsertFavoriteSportAndNutrition.downloandCollectionSportFavorite(true);
                         }
