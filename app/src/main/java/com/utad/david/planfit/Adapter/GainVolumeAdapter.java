@@ -8,24 +8,23 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.utad.david.planfit.Model.Sport.GainVolume;
-import com.utad.david.planfit.Model.Sport.Toning;
+import com.utad.david.planfit.Model.Sport.SportGainVolume;
 import com.utad.david.planfit.R;
 
 import java.util.List;
 
 public class GainVolumeAdapter extends RecyclerView.Adapter<GainVolumeAdapter.GainVolumeViewHolder>  {
 
-    private List<GainVolume> gainVolumeList;
+    private List<SportGainVolume> sportGainVolumeList;
     private GainVolumeAdapter.OnItemClickListener listener;
 
     //Obtenemos información del item
     public interface OnItemClickListener {
-        void onItemClick(GainVolume item);
+        void onItemClick(SportGainVolume item);
     }
 
-    public GainVolumeAdapter(List<GainVolume> gainVolumes,GainVolumeAdapter.OnItemClickListener listener) {
-        this.gainVolumeList = gainVolumes;
+    public GainVolumeAdapter(List<SportGainVolume> sportGainVolumes, GainVolumeAdapter.OnItemClickListener listener) {
+        this.sportGainVolumeList = sportGainVolumes;
         this.listener = listener;
     }
 
@@ -38,7 +37,7 @@ public class GainVolumeAdapter extends RecyclerView.Adapter<GainVolumeAdapter.Ga
 
     @Override
     public void onBindViewHolder(GainVolumeViewHolder holder, int position) {
-        final GainVolume current = gainVolumeList.get(position);
+        final SportGainVolume current = sportGainVolumeList.get(position);
         holder.setData(current);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,7 +50,7 @@ public class GainVolumeAdapter extends RecyclerView.Adapter<GainVolumeAdapter.Ga
 
     @Override
     public int getItemCount() {
-        return gainVolumeList.size();
+        return sportGainVolumeList.size();
     }
 
     public static class GainVolumeViewHolder extends RecyclerView.ViewHolder {
@@ -64,11 +63,11 @@ public class GainVolumeAdapter extends RecyclerView.Adapter<GainVolumeAdapter.Ga
             photoSlimming = v.findViewById(R.id.imageSlimming);
         }
 
-        public void setData(GainVolume gainVolume){
-            nameSlimming.setText(gainVolume.getName());
+        public void setData(SportGainVolume sportGainVolume){
+            nameSlimming.setText(sportGainVolume.getName());
             RequestOptions requestOptions = new RequestOptions();
             requestOptions.placeholder(R.drawable.icon_gallery);
-            Glide.with(itemView).setDefaultRequestOptions(requestOptions).load(gainVolume.getPhoto()).into(photoSlimming);
+            Glide.with(itemView).setDefaultRequestOptions(requestOptions).load(sportGainVolume.getPhoto()).into(photoSlimming);
         }
     }
 

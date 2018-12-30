@@ -14,14 +14,14 @@ import com.utad.david.planfit.Adapter.ToningAdapter;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.DialogFragment.Sport.SportDetailsDialogFragment;
-import com.utad.david.planfit.Model.Sport.Toning;
+import com.utad.david.planfit.Model.Sport.SportToning;
 import com.utad.david.planfit.R;
 
 import java.util.List;
 
-public class ToningFragment extends Fragment implements FirebaseAdmin.FirebaseAdminDownloandFragmentData {
+public class SportToningFragment extends Fragment implements FirebaseAdmin.FirebaseAdminDownloandFragmentData {
 
-    public ToningFragment() {
+    public SportToningFragment() {
         // Required empty public constructor
     }
 
@@ -61,10 +61,10 @@ public class ToningFragment extends Fragment implements FirebaseAdmin.FirebaseAd
     @Override
     public void downloandCollectionSportToning(boolean end) {
         if(end){
-            List<Toning> tonings = SessionUser.getInstance().firebaseAdmin.toningListSport;
-            mAdapter = new ToningAdapter(tonings, new ToningAdapter.OnItemClickListener() {
+            List<SportToning> sportTonings = SessionUser.getInstance().firebaseAdmin.sportToningListSport;
+            mAdapter = new ToningAdapter(sportTonings, new ToningAdapter.OnItemClickListener() {
                 @Override
-                public void onItemClick(Toning item) {
+                public void onItemClick(SportToning item) {
                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
                     Fragment prev = getFragmentManager().findFragmentByTag("dialog");
                     if (prev != null) {

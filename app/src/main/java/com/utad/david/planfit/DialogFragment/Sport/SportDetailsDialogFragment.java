@@ -15,10 +15,10 @@ import com.bumptech.glide.Glide;
 import com.utad.david.planfit.Activitys.YoutubeActivity;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
-import com.utad.david.planfit.Model.Sport.GainVolume;
-import com.utad.david.planfit.Model.Sport.Slimming;
+import com.utad.david.planfit.Model.Sport.SportGainVolume;
+import com.utad.david.planfit.Model.Sport.SportSlimming;
 
-import com.utad.david.planfit.Model.Sport.Toning;
+import com.utad.david.planfit.Model.Sport.SportToning;
 import com.utad.david.planfit.R;
 
 import java.util.ArrayList;
@@ -27,9 +27,9 @@ import java.util.List;
 
 public class SportDetailsDialogFragment extends DialogFragment implements FirebaseAdmin.FirebaseAdminInsertFavoriteSportAndNutrition {
 
-    public Slimming slimming;
-    public GainVolume gainVolume;
-    public Toning toning;
+    public SportSlimming sportSlimming;
+    public SportGainVolume sportGainVolume;
+    public SportToning sportToning;
     public int option;
     private static String SLIMMING = "SLIMMING";
     private static String GAINVOLUME = "GAINVOLUME";
@@ -37,10 +37,10 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
     private static String OPTION = "OPTION";
 
 
-    public static SportDetailsDialogFragment newInstanceSlimming(Slimming slimming, int option) {
+    public static SportDetailsDialogFragment newInstanceSlimming(SportSlimming sportSlimming, int option) {
         SportDetailsDialogFragment fragment = new SportDetailsDialogFragment();
         Bundle args = new Bundle();
-        args.putParcelable(SLIMMING, slimming);
+        args.putParcelable(SLIMMING, sportSlimming);
         args.putInt(OPTION, option);
         fragment.setArguments(args);
         SessionUser.getInstance().firebaseAdmin.setFirebaseAdminInsertFavoriteSportAndNutrition(fragment);
@@ -48,10 +48,10 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
         return fragment;
     }
 
-    public static SportDetailsDialogFragment newInstanceGainVolume(GainVolume gainVolume, int option) {
+    public static SportDetailsDialogFragment newInstanceGainVolume(SportGainVolume sportGainVolume, int option) {
         SportDetailsDialogFragment fragment = new SportDetailsDialogFragment();
         Bundle args = new Bundle();
-        args.putParcelable(GAINVOLUME, gainVolume);
+        args.putParcelable(GAINVOLUME, sportGainVolume);
         args.putInt(OPTION, option);
         fragment.setArguments(args);
         SessionUser.getInstance().firebaseAdmin.setFirebaseAdminInsertFavoriteSportAndNutrition(fragment);
@@ -59,10 +59,10 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
         return fragment;
     }
 
-    public static SportDetailsDialogFragment newInstanceToning(Toning toning, int option) {
+    public static SportDetailsDialogFragment newInstanceToning(SportToning sportToning, int option) {
         SportDetailsDialogFragment fragment = new SportDetailsDialogFragment();
         Bundle args = new Bundle();
-        args.putParcelable(TONING, toning);
+        args.putParcelable(TONING, sportToning);
         args.putInt(OPTION, option);
         fragment.setArguments(args);
         SessionUser.getInstance().firebaseAdmin.setFirebaseAdminInsertFavoriteSportAndNutrition(fragment);
@@ -74,9 +74,9 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        slimming = getArguments().getParcelable(SLIMMING);
-        toning = getArguments().getParcelable(TONING);
-        gainVolume = getArguments().getParcelable(GAINVOLUME);
+        sportSlimming = getArguments().getParcelable(SLIMMING);
+        sportToning = getArguments().getParcelable(TONING);
+        sportGainVolume = getArguments().getParcelable(GAINVOLUME);
         option = getArguments().getInt(OPTION);
 
     }
@@ -86,9 +86,9 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
     private TextView textViewDescription;
     private ImageView imageViewSport;
     private Button buttonInsert;
-    private List<Slimming> slimmingList;
-    private List<Toning> toningList;
-    private List<GainVolume> gainVolumeList;
+    private List<SportSlimming> sportSlimmingList;
+    private List<SportToning> sportToningList;
+    private List<SportGainVolume> sportGainVolumeList;
 
 
     @Override
@@ -118,19 +118,19 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
     private void putData() {
         switch (option){
             case 0:
-                textViewTitle.setText(slimming.getName());
-                textViewDescription.setText(slimming.getDescription());
-                Glide.with(this).load(slimming.getPhoto()).into(imageViewSport);
+                textViewTitle.setText(sportSlimming.getName());
+                textViewDescription.setText(sportSlimming.getDescription());
+                Glide.with(this).load(sportSlimming.getPhoto()).into(imageViewSport);
                 break;
             case 1:
-                textViewTitle.setText(toning.getName());
-                textViewDescription.setText(toning.getDescription());
-                Glide.with(this).load(toning.getPhoto()).into(imageViewSport);
+                textViewTitle.setText(sportToning.getName());
+                textViewDescription.setText(sportToning.getDescription());
+                Glide.with(this).load(sportToning.getPhoto()).into(imageViewSport);
                 break;
             case 2:
-                textViewTitle.setText(gainVolume.getName());
-                textViewDescription.setText(gainVolume.getDescription());
-                Glide.with(this).load(gainVolume.getPhoto()).into(imageViewSport);
+                textViewTitle.setText(sportGainVolume.getName());
+                textViewDescription.setText(sportGainVolume.getDescription());
+                Glide.with(this).load(sportGainVolume.getPhoto()).into(imageViewSport);
             break;
         }
     }
@@ -142,13 +142,13 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
                 Intent intent = new Intent(getContext(), YoutubeActivity.class);
                 switch (option){
                     case 0:
-                        intent.putExtra("url", slimming.getVideo());
+                        intent.putExtra("url", sportSlimming.getVideo());
                         break;
                     case 1:
-                        intent.putExtra("url", toning.getVideo());
+                        intent.putExtra("url", sportToning.getVideo());
                         break;
                     case 2:
-                        intent.putExtra("url", gainVolume.getVideo());
+                        intent.putExtra("url", sportGainVolume.getVideo());
                         break;
                 }
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -163,13 +163,13 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
                 public void onClick(View v) {
                     switch (option){
                         case 0:
-                            SessionUser.getInstance().firebaseAdmin.addFavoriteSportSlimmingCouldFirestore(slimming);
+                            SessionUser.getInstance().firebaseAdmin.addFavoriteSportSlimmingCouldFirestore(sportSlimming);
                             break;
                         case 1:
-                            SessionUser.getInstance().firebaseAdmin.addFavoriteSportToningCouldFirestore(toning);
+                            SessionUser.getInstance().firebaseAdmin.addFavoriteSportToningCouldFirestore(sportToning);
                             break;
                         case 2:
-                            SessionUser.getInstance().firebaseAdmin.addFavoriteSportGainVolumeCouldFirestore(gainVolume);
+                            SessionUser.getInstance().firebaseAdmin.addFavoriteSportGainVolumeCouldFirestore(sportGainVolume);
                             break;
                     }
                 }
@@ -188,28 +188,28 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
         if(end){
             switch (option){
                 case 0:
-                    slimmingList = new ArrayList<>();
-                        slimmingList = SessionUser.getInstance().firebaseAdmin.slimmingListSportFavorite;
-                        for(int i=0;i<slimmingList.size();i++){
-                            if(slimmingList.get(i).getName().equals(slimming.getName())){
+                    sportSlimmingList = new ArrayList<>();
+                        sportSlimmingList = SessionUser.getInstance().firebaseAdmin.sportSlimmingListSportFavorite;
+                        for(int i = 0; i< sportSlimmingList.size(); i++){
+                            if(sportSlimmingList.get(i).getName().equals(sportSlimming.getName())){
                                 buttonInsert.setEnabled(false);
                             }
                         }
                     break;
                 case 1:
-                    toningList = new ArrayList<>();
-                        toningList = SessionUser.getInstance().firebaseAdmin.toningListSportFavorite;
-                        for(int i=0;i<toningList.size();i++){
-                            if(toningList.get(i).getName().equals(toning.getName())){
+                    sportToningList = new ArrayList<>();
+                        sportToningList = SessionUser.getInstance().firebaseAdmin.sportToningListSportFavorite;
+                        for(int i = 0; i< sportToningList.size(); i++){
+                            if(sportToningList.get(i).getName().equals(sportToning.getName())){
                                 buttonInsert.setEnabled(false);
                             }
                         }
                     break;
                 case 2:
-                    gainVolumeList = new ArrayList<>();
-                     gainVolumeList = SessionUser.getInstance().firebaseAdmin.gainVolumeListSportFavorite;
-                        for(int i=0;i<gainVolumeList.size();i++){
-                            if(gainVolumeList.get(i).getName().equals(gainVolume.getName())){
+                    sportGainVolumeList = new ArrayList<>();
+                     sportGainVolumeList = SessionUser.getInstance().firebaseAdmin.sportGainVolumeListSportFavorite;
+                        for(int i = 0; i< sportGainVolumeList.size(); i++){
+                            if(sportGainVolumeList.get(i).getName().equals(sportGainVolume.getName())){
                                 buttonInsert.setEnabled(false);
                             }
                         }

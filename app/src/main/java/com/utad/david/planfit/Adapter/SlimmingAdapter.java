@@ -8,23 +8,23 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.utad.david.planfit.Model.Sport.Slimming;
+import com.utad.david.planfit.Model.Sport.SportSlimming;
 import com.utad.david.planfit.R;
 
 import java.util.List;
 
 public class SlimmingAdapter extends RecyclerView.Adapter<SlimmingAdapter.SlimmingViewHolder>  {
 
-    private List<Slimming> slimmingListm;
+    private List<SportSlimming> sportSlimmingListm;
     private SlimmingAdapter.OnItemClickListener listener;
 
     //Obtenemos información del item
     public interface OnItemClickListener {
-        void onItemClick(Slimming item);
+        void onItemClick(SportSlimming item);
     }
 
-    public SlimmingAdapter(List<Slimming> slimmingListm,SlimmingAdapter.OnItemClickListener listener) {
-        this.slimmingListm = slimmingListm;
+    public SlimmingAdapter(List<SportSlimming> sportSlimmingListm, SlimmingAdapter.OnItemClickListener listener) {
+        this.sportSlimmingListm = sportSlimmingListm;
         this.listener = listener;
     }
 
@@ -37,7 +37,7 @@ public class SlimmingAdapter extends RecyclerView.Adapter<SlimmingAdapter.Slimmi
 
     @Override
     public void onBindViewHolder(SlimmingViewHolder holder, int position) {
-        final Slimming current = slimmingListm.get(position);
+        final SportSlimming current = sportSlimmingListm.get(position);
         holder.setData(current);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,7 +50,7 @@ public class SlimmingAdapter extends RecyclerView.Adapter<SlimmingAdapter.Slimmi
 
     @Override
     public int getItemCount() {
-        return slimmingListm.size();
+        return sportSlimmingListm.size();
     }
 
     public static class SlimmingViewHolder extends RecyclerView.ViewHolder {
@@ -63,11 +63,11 @@ public class SlimmingAdapter extends RecyclerView.Adapter<SlimmingAdapter.Slimmi
             photoSlimming = v.findViewById(R.id.imageSlimming);
         }
 
-        public void setData(Slimming slimming){
-            nameSlimming.setText(slimming.getName());
+        public void setData(SportSlimming sportSlimming){
+            nameSlimming.setText(sportSlimming.getName());
             RequestOptions requestOptions = new RequestOptions();
             requestOptions.placeholder(R.drawable.icon_gallery);
-            Glide.with(itemView).setDefaultRequestOptions(requestOptions).load(slimming.getPhoto()).into(photoSlimming);
+            Glide.with(itemView).setDefaultRequestOptions(requestOptions).load(sportSlimming.getPhoto()).into(photoSlimming);
         }
     }
 

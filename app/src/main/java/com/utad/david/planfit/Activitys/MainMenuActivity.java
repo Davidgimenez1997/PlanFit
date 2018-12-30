@@ -9,9 +9,9 @@ import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.DialogFragment.EditPersonalDataUser;
 import com.utad.david.planfit.DialogFragment.InfoAboutApp;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.FirstFragment;
-import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Sport.GainVolumeFragment;
-import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Sport.SlimmingFragment;
-import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Sport.ToningFragment;
+import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Sport.SportGainVolumeFragment;
+import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Sport.SportSlimmingFragment;
+import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Sport.SportToningFragment;
 import com.utad.david.planfit.Model.User;
 import com.utad.david.planfit.R;
 import android.graphics.Bitmap;
@@ -247,27 +247,27 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
 
     @Override
     public void clickOnAdelgazarSport() {
-        SlimmingFragment slimmingFragment = new SlimmingFragment();
+        SportSlimmingFragment sportSlimmingFragment = new SportSlimmingFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.content_frame, slimmingFragment);
+        transaction.replace(R.id.content_frame, sportSlimmingFragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }
 
     @Override
     public void clickOnTonificarSport() {
-        ToningFragment toningFragment = new ToningFragment();
+        SportToningFragment sportToningFragment = new SportToningFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.content_frame, toningFragment);
+        transaction.replace(R.id.content_frame, sportToningFragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }
 
     @Override
     public void clickOnGanarVolumenSport() {
-        GainVolumeFragment gainVolumeFragment = new GainVolumeFragment();
+        SportGainVolumeFragment sportGainVolumeFragment = new SportGainVolumeFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.content_frame, gainVolumeFragment);
+        transaction.replace(R.id.content_frame, sportGainVolumeFragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }
