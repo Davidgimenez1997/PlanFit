@@ -190,8 +190,10 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
                 case 0:
                     slimmingList = new ArrayList<>();
                         slimmingList = SessionUser.getInstance().firebaseAdmin.slimmingListSportFavorite;
+                        Slimming current;
                         for(int i=0;i<slimmingList.size();i++){
-                            if(slimmingList.get(i).getName().equals(slimming.getName())){
+                            current = slimmingList.get(i);
+                            if(current.getName().equals(slimming.getName())){
                                 buttonInsert.setEnabled(false);
                             }
                         }
