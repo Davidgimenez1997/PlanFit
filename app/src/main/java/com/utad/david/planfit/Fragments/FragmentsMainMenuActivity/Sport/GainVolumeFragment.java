@@ -74,7 +74,7 @@ public class GainVolumeFragment extends Fragment implements FirebaseAdmin.Fireba
                         transaction.remove(prev);
                     }
                     transaction.addToBackStack(null);
-                    SportDetailsDialogFragment newFragment = SportDetailsDialogFragment.newInstanceGainVolume(item,1);
+                    SportDetailsDialogFragment newFragment = SportDetailsDialogFragment.newInstanceGainVolume(item,2);
                     newFragment.show(transaction, "dialog");
                 }
             });

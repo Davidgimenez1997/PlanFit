@@ -9,6 +9,7 @@ public class GainVolume implements Parcelable {
     private String photo;
     private String video;
     private String description;
+    private String type;
 
     public GainVolume() {
     }
@@ -31,6 +32,14 @@ public class GainVolume implements Parcelable {
             return new GainVolume[size];
         }
     };
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public String getName() {
         return name;

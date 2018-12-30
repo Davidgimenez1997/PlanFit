@@ -71,7 +71,7 @@ public class ToningFragment extends Fragment implements FirebaseAdmin.FirebaseAd
                         transaction.remove(prev);
                     }
                     transaction.addToBackStack(null);
-                    SportDetailsDialogFragment newFragment = SportDetailsDialogFragment.newInstanceToning(item,2);
+                    SportDetailsDialogFragment newFragment = SportDetailsDialogFragment.newInstanceToning(item,1);
                     newFragment.show(transaction, "dialog");
                 }
             });

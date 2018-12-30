@@ -62,6 +62,11 @@ public class FirebaseAdmin {
         void downloandCollectionSportGainVolume(boolean end);
     }
 
+    public interface FirebaseAdminInsertFavoriteSportAndNutrition{
+        void inserSportFavoriteFirebase(boolean end);
+        void downloandCollectionSportFavorite(boolean end);
+    }
+
     public FirebaseAuth mAuth;
     public FirebaseUser currentUser;
     public FirebaseAuth.AuthStateListener authStateListener;
@@ -70,14 +75,18 @@ public class FirebaseAdmin {
     public FirebaseAdmin.FirebaseAdminLoginAndRegisterListener firebaseAdminLoginAndRegisterListener;
     public FirebaseAdmin.FirebaseAdminUpdateAndDeleteUserListener firebaseAdminUpdateAndDeleteUserListener;
     public FirebaseAdmin.FirebaseAdminDownloandFragmentData firebaseAdminDownloandFragmentData;
+    public FirebaseAdmin.FirebaseAdminInsertFavoriteSportAndNutrition firebaseAdminInsertFavoriteSportAndNutrition;
     public User userDataFirebase;
     public Developer developerFirst;
     public Developer developerSecond;
     private AuthCredential credential;
 
     public List<Slimming> slimmingListSport;
+    public List<Slimming> slimmingListSportFavorite;
     public List<Toning> toningListSport;
+    public List<Toning> toningListSportFavorite;
     public List<GainVolume> gainVolumeListSport;
+    public List<GainVolume> gainVolumeListSportFavorite;
 
     public void setFirebaseAdminInsertAndDownloandListener(FirebaseAdminInsertAndDownloandListener firebaseAdminInsertAndDownloandListener) {
         this.firebaseAdminInsertAndDownloandListener = firebaseAdminInsertAndDownloandListener;
@@ -93,6 +102,10 @@ public class FirebaseAdmin {
 
     public void setFirebaseAdminDownloandFragmentData(FirebaseAdminDownloandFragmentData firebaseAdminDownloandFragmentData) {
         this.firebaseAdminDownloandFragmentData = firebaseAdminDownloandFragmentData;
+    }
+
+    public void setFirebaseAdminInsertFavoriteSportAndNutrition(FirebaseAdminInsertFavoriteSportAndNutrition firebaseAdminInsertFavoriteSportAndNutrition) {
+        this.firebaseAdminInsertFavoriteSportAndNutrition = firebaseAdminInsertFavoriteSportAndNutrition;
     }
 
     public FirebaseAdmin() {
@@ -510,4 +523,183 @@ public class FirebaseAdmin {
             });
         }
     }
+
+    public void insertFavoriteSportSlimming(Map<String, Object> slimming){
+        if(firebaseAdminInsertFavoriteSportAndNutrition!=null){
+            firebaseFirestore.collection("users/"+currentUser.getUid()+"/deporteFavorito").document()
+                    .set(slimming)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d("FirebaseAdmin", "DocumentSnapshot successfully written!");
+                            firebaseAdminInsertFavoriteSportAndNutrition.inserSportFavoriteFirebase(true);
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w("FirebaseAdmin", "Error writing document", e);
+                            firebaseAdminInsertFavoriteSportAndNutrition.inserSportFavoriteFirebase(false);
+                        }
+                    });
+        }
+    }
+
+    public void addFavoriteSportSlimmingCouldFirestore(Slimming slimming) {
+        if (firebaseAdminInsertFavoriteSportAndNutrition != null) {
+            Map<String, Object> slimmingMap = new HashMap<>();
+            slimmingMap.put("name", slimming.getName());
+            slimmingMap.put("photo", slimming.getPhoto());
+            slimmingMap.put("video",slimming.getVideo());
+            slimmingMap.put("description", slimming.getDescription());
+            slimmingMap.put("type","adelgazar");
+            insertFavoriteSportSlimming(slimmingMap);
+        }
+    }
+
+    public void downloadSlimmingSportFavorite() {
+        if(firebaseAdminInsertFavoriteSportAndNutrition!=null){
+            CollectionReference  collectionReference = firebaseFirestore.collection("users/"+currentUser.getUid()+"/deporteFavorito");
+            collectionReference.whereEqualTo("type", "adelgazar")
+                    .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                @Override
+                public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                    if (e != null) {
+                        Log.w("FirebaseAdmin", "Listen failed.", e);
+                        firebaseAdminInsertFavoriteSportAndNutrition.downloandCollectionSportFavorite(false);
+                    }
+
+                    List<Slimming> toningList = new ArrayList<>();
+                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                        if (doc.get("type") != null) {
+                            toningList.add(doc.toObject(Slimming.class));
+                        }
+                    }
+                    slimmingListSportFavorite = toningList;
+
+                    firebaseAdminInsertFavoriteSportAndNutrition.downloandCollectionSportFavorite(true);
+                }
+            });
+        }
+    }
+
+    public void insertFavoriteSportToning(Map<String, Object> toning){
+        if(firebaseAdminInsertFavoriteSportAndNutrition!=null){
+            firebaseFirestore.collection("users/"+currentUser.getUid()+"/deporteFavorito").document()
+                    .set(toning)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d("FirebaseAdmin", "DocumentSnapshot successfully written!");
+                            firebaseAdminInsertFavoriteSportAndNutrition.inserSportFavoriteFirebase(true);
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w("FirebaseAdmin", "Error writing document", e);
+                            firebaseAdminInsertFavoriteSportAndNutrition.inserSportFavoriteFirebase(false);
+                        }
+                    });
+        }
+    }
+
+    public void addFavoriteSportToningCouldFirestore(Toning toning) {
+        if (firebaseAdminInsertFavoriteSportAndNutrition != null) {
+            Map<String, Object> slimmingMap = new HashMap<>();
+            slimmingMap.put("name", toning.getName());
+            slimmingMap.put("photo", toning.getPhoto());
+            slimmingMap.put("video",toning.getVideo());
+            slimmingMap.put("description", toning.getDescription());
+            slimmingMap.put("type","tonificar");
+            insertFavoriteSportToning(slimmingMap);
+        }
+    }
+
+    public void downloadToningSportFavorite() {
+        if(firebaseAdminInsertFavoriteSportAndNutrition!=null){
+            CollectionReference  collectionReference = firebaseFirestore.collection("users/"+currentUser.getUid()+"/deporteFavorito");
+            collectionReference.whereEqualTo("type", "tonificar")
+                    .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                        @Override
+                        public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                            if (e != null) {
+                                Log.w("FirebaseAdmin", "Listen failed.", e);
+                                firebaseAdminInsertFavoriteSportAndNutrition.downloandCollectionSportFavorite(false);
+                            }
+
+                            List<Toning> toningList = new ArrayList<>();
+                            for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                                if (doc.get("type") != null) {
+                                    toningList.add(doc.toObject(Toning.class));
+                                }
+                            }
+                            toningListSportFavorite = toningList;
+
+                            firebaseAdminInsertFavoriteSportAndNutrition.downloandCollectionSportFavorite(true);
+                        }
+                    });
+        }
+    }
+
+    public void insertFavoriteSportGainVolume(Map<String, Object> gainVolume){
+        if(firebaseAdminInsertFavoriteSportAndNutrition!=null){
+            firebaseFirestore.collection("users/"+currentUser.getUid()+"/deporteFavorito").document()
+                    .set(gainVolume)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d("FirebaseAdmin", "DocumentSnapshot successfully written!");
+                            firebaseAdminInsertFavoriteSportAndNutrition.inserSportFavoriteFirebase(true);
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w("FirebaseAdmin", "Error writing document", e);
+                            firebaseAdminInsertFavoriteSportAndNutrition.inserSportFavoriteFirebase(false);
+                        }
+                    });
+        }
+    }
+
+    public void addFavoriteSportGainVolumeCouldFirestore(GainVolume gainVolume) {
+        if (firebaseAdminInsertFavoriteSportAndNutrition != null) {
+            Map<String, Object> slimmingMap = new HashMap<>();
+            slimmingMap.put("name", gainVolume.getName());
+            slimmingMap.put("photo", gainVolume.getPhoto());
+            slimmingMap.put("video",gainVolume.getVideo());
+            slimmingMap.put("description", gainVolume.getDescription());
+            slimmingMap.put("type","ganarVolumen");
+            insertFavoriteSportToning(slimmingMap);
+        }
+    }
+
+    public void downloadGainVolumeSportFavorite() {
+        if(firebaseAdminInsertFavoriteSportAndNutrition!=null){
+            CollectionReference  collectionReference = firebaseFirestore.collection("users/"+currentUser.getUid()+"/deporteFavorito");
+            collectionReference.whereEqualTo("type", "ganarVolumen")
+                    .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                        @Override
+                        public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                            if (e != null) {
+                                Log.w("FirebaseAdmin", "Listen failed.", e);
+                                firebaseAdminInsertFavoriteSportAndNutrition.downloandCollectionSportFavorite(false);
+                            }
+
+                            List<GainVolume> gainVolumes = new ArrayList<>();
+                            for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                                if (doc.get("type") != null) {
+                                    gainVolumes.add(doc.toObject(GainVolume.class));
+                                }
+                            }
+                            gainVolumeListSportFavorite = gainVolumes;
+
+                            firebaseAdminInsertFavoriteSportAndNutrition.downloandCollectionSportFavorite(true);
+                        }
+                    });
+        }
+    }
+
+
 }

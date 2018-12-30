@@ -13,14 +13,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.utad.david.planfit.Activitys.YoutubeActivity;
+import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
+import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Model.Sport.GainVolume;
 import com.utad.david.planfit.Model.Sport.Slimming;
 
 import com.utad.david.planfit.Model.Sport.Toning;
 import com.utad.david.planfit.R;
 
+import java.util.ArrayList;
+import java.util.List;
 
-public class SportDetailsDialogFragment extends DialogFragment {
+
+public class SportDetailsDialogFragment extends DialogFragment implements FirebaseAdmin.FirebaseAdminInsertFavoriteSportAndNutrition {
 
     public Slimming slimming;
     public GainVolume gainVolume;
@@ -67,12 +72,18 @@ public class SportDetailsDialogFragment extends DialogFragment {
         toning = getArguments().getParcelable(TONING);
         gainVolume = getArguments().getParcelable(GAINVOLUME);
         option = getArguments().getInt(OPTION);
+        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminInsertFavoriteSportAndNutrition(this);
     }
 
     private TextView textViewTitle;
     private Button buttonOpenYoutube;
     private TextView textViewDescription;
     private ImageView imageViewSport;
+    private Button buttonInsert;
+    private List<Slimming> slimmingList;
+    private List<Toning> toningList;
+    private List<GainVolume> gainVolumeList;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -81,9 +92,14 @@ public class SportDetailsDialogFragment extends DialogFragment {
         view.setBackgroundResource(R.drawable.corner_dialog_fragment);
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
+        SessionUser.getInstance().firebaseAdmin.downloadSlimmingSportFavorite();
+        SessionUser.getInstance().firebaseAdmin.downloadToningSportFavorite();
+        SessionUser.getInstance().firebaseAdmin.downloadGainVolumeSportFavorite();
+
         findById(view);
         putData();
         onClickButtonOpenYoutube();
+        onClickButtonOpenInsertFavorite();
 
         return view;
 
@@ -94,21 +110,26 @@ public class SportDetailsDialogFragment extends DialogFragment {
         buttonOpenYoutube = v.findViewById(R.id.open_youtube);
         textViewDescription = v.findViewById(R.id.textviewDescription);
         imageViewSport = v.findViewById(R.id.imageViewSport);
+        buttonInsert = v.findViewById(R.id.insert_favorite);
     }
 
     private void putData() {
-        if (option == 0) {
-            textViewTitle.setText(slimming.getName());
-            textViewDescription.setText(slimming.getDescription());
-            Glide.with(this).load(slimming.getPhoto()).into(imageViewSport);
-        } else if (option == 1) {
-            textViewTitle.setText(gainVolume.getName());
-            textViewDescription.setText(gainVolume.getDescription());
-            Glide.with(this).load(gainVolume.getPhoto()).into(imageViewSport);
-        } else if (option == 2) {
-            textViewTitle.setText(toning.getName());
-            textViewDescription.setText(toning.getDescription());
-            Glide.with(this).load(toning.getPhoto()).into(imageViewSport);
+        switch (option){
+            case 0:
+                textViewTitle.setText(slimming.getName());
+                textViewDescription.setText(slimming.getDescription());
+                Glide.with(this).load(slimming.getPhoto()).into(imageViewSport);
+                break;
+            case 1:
+                textViewTitle.setText(toning.getName());
+                textViewDescription.setText(toning.getDescription());
+                Glide.with(this).load(toning.getPhoto()).into(imageViewSport);
+                break;
+            case 2:
+                textViewTitle.setText(gainVolume.getName());
+                textViewDescription.setText(gainVolume.getDescription());
+                Glide.with(this).load(gainVolume.getPhoto()).into(imageViewSport);
+            break;
         }
     }
 
@@ -117,16 +138,85 @@ public class SportDetailsDialogFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), YoutubeActivity.class);
-                if (option == 0) {
-                    intent.putExtra("url", slimming.getVideo());
-                } else if (option == 1) {
-                    intent.putExtra("url", gainVolume.getVideo());
-                } else if (option == 2) {
-                    intent.putExtra("url", toning.getVideo());
+                switch (option){
+                    case 0:
+                        intent.putExtra("url", slimming.getVideo());
+                        break;
+                    case 1:
+                        intent.putExtra("url", toning.getVideo());
+                        break;
+                    case 2:
+                        intent.putExtra("url", gainVolume.getVideo());
+                        break;
                 }
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
             }
         });
+    }
+
+    private void onClickButtonOpenInsertFavorite() {
+            buttonInsert.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    switch (option){
+                        case 0:
+                            SessionUser.getInstance().firebaseAdmin.addFavoriteSportSlimmingCouldFirestore(slimming);
+                            break;
+                        case 1:
+                            SessionUser.getInstance().firebaseAdmin.addFavoriteSportToningCouldFirestore(toning);
+                            break;
+                        case 2:
+                            SessionUser.getInstance().firebaseAdmin.addFavoriteSportGainVolumeCouldFirestore(gainVolume);
+                            break;
+                    }
+                }
+            });
+    }
+
+    @Override
+    public void inserSportFavoriteFirebase(boolean end) {
+        if(end){
+            buttonInsert.setEnabled(false);
+        }
+    }
+
+    @Override
+    public void downloandCollectionSportFavorite(boolean end) {
+        if(end){
+            switch (option){
+                case 0:
+                    if(slimmingList!=null){
+                        slimmingList = SessionUser.getInstance().firebaseAdmin.slimmingListSportFavorite;
+                        for(int i=0;i<slimmingList.size();i++){
+                            if(slimmingList.get(i).getName().equals(slimming.getName())){
+                                buttonInsert.setEnabled(false);
+                            }
+                        }
+                    }
+                    break;
+                case 1:
+                    if(toningList!=null){
+                        toningList = SessionUser.getInstance().firebaseAdmin.toningListSportFavorite;
+                        for(int i=0;i<toningList.size();i++){
+                            if(toningList.get(i).getName().equals(toning.getName())){
+                                buttonInsert.setEnabled(false);
+                            }
+                        }
+                    }
+                    break;
+                case 2:
+                    if(gainVolumeList!=null){
+                        gainVolumeList = SessionUser.getInstance().firebaseAdmin.gainVolumeListSportFavorite;
+                        for(int i=0;i<gainVolumeList.size();i++){
+                            if(gainVolumeList.get(i).getName().equals(gainVolume.getName())){
+                                buttonInsert.setEnabled(false);
+                            }
+                        }
+                    }
+                    break;
+            }
+
+        }
     }
 }
