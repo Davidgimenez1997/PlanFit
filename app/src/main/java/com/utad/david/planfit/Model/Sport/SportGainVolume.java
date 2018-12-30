@@ -3,7 +3,7 @@ package com.utad.david.planfit.Model.Sport;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Slimming implements Parcelable {
+public class SportGainVolume implements Parcelable {
 
     private String name;
     private String photo;
@@ -11,27 +11,35 @@ public class Slimming implements Parcelable {
     private String description;
     private String type;
 
-    public Slimming() {
+    public SportGainVolume() {
     }
 
-    protected Slimming(Parcel in) {
+    protected SportGainVolume(Parcel in) {
         name = in.readString();
         photo = in.readString();
         video = in.readString();
         description = in.readString();
     }
 
-    public static final Creator<Slimming> CREATOR = new Creator<Slimming>() {
+    public static final Creator<SportGainVolume> CREATOR = new Creator<SportGainVolume>() {
         @Override
-        public Slimming createFromParcel(Parcel in) {
-            return new Slimming(in);
+        public SportGainVolume createFromParcel(Parcel in) {
+            return new SportGainVolume(in);
         }
 
         @Override
-        public Slimming[] newArray(int size) {
-            return new Slimming[size];
+        public SportGainVolume[] newArray(int size) {
+            return new SportGainVolume[size];
         }
     };
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public String getName() {
         return name;
@@ -76,13 +84,5 @@ public class Slimming implements Parcelable {
         dest.writeString(photo);
         dest.writeString(video);
         dest.writeString(description);
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 }

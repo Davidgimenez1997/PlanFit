@@ -3,7 +3,7 @@ package com.utad.david.planfit.Model.Sport;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Toning implements Parcelable {
+public class SportToning implements Parcelable {
 
     private String name;
     private String photo;
@@ -11,25 +11,25 @@ public class Toning implements Parcelable {
     private String description;
     private String type;
 
-    public Toning() {
+    public SportToning() {
     }
 
-    protected Toning(Parcel in) {
+    protected SportToning(Parcel in) {
         name = in.readString();
         photo = in.readString();
         video = in.readString();
         description = in.readString();
     }
 
-    public static final Creator<Toning> CREATOR = new Creator<Toning>() {
+    public static final Creator<SportToning> CREATOR = new Creator<SportToning>() {
         @Override
-        public Toning createFromParcel(Parcel in) {
-            return new Toning(in);
+        public SportToning createFromParcel(Parcel in) {
+            return new SportToning(in);
         }
 
         @Override
-        public Toning[] newArray(int size) {
-            return new Toning[size];
+        public SportToning[] newArray(int size) {
+            return new SportToning[size];
         }
     };
 

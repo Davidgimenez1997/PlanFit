@@ -8,24 +8,23 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.utad.david.planfit.Model.Sport.Slimming;
-import com.utad.david.planfit.Model.Sport.Toning;
+import com.utad.david.planfit.Model.Sport.SportToning;
 import com.utad.david.planfit.R;
 
 import java.util.List;
 
 public class ToningAdapter extends RecyclerView.Adapter<ToningAdapter.ToningViewHolder>  {
 
-    private List<Toning> toningList;
+    private List<SportToning> sportToningList;
     private ToningAdapter.OnItemClickListener listener;
 
     //Obtenemos información del item
     public interface OnItemClickListener {
-        void onItemClick(Toning item);
+        void onItemClick(SportToning item);
     }
 
-    public ToningAdapter(List<Toning> toningList,ToningAdapter.OnItemClickListener listener) {
-        this.toningList = toningList;
+    public ToningAdapter(List<SportToning> sportToningList, ToningAdapter.OnItemClickListener listener) {
+        this.sportToningList = sportToningList;
         this.listener = listener;
     }
 
@@ -38,7 +37,7 @@ public class ToningAdapter extends RecyclerView.Adapter<ToningAdapter.ToningView
 
     @Override
     public void onBindViewHolder(ToningViewHolder holder, int position) {
-        final Toning current = toningList.get(position);
+        final SportToning current = sportToningList.get(position);
         holder.setData(current);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,7 +50,7 @@ public class ToningAdapter extends RecyclerView.Adapter<ToningAdapter.ToningView
 
     @Override
     public int getItemCount() {
-        return toningList.size();
+        return sportToningList.size();
     }
 
     public static class ToningViewHolder extends RecyclerView.ViewHolder {
@@ -64,11 +63,11 @@ public class ToningAdapter extends RecyclerView.Adapter<ToningAdapter.ToningView
             photoSlimming = v.findViewById(R.id.imageSlimming);
         }
 
-        public void setData(Toning toning){
-            nameSlimming.setText(toning.getName());
+        public void setData(SportToning sportToning){
+            nameSlimming.setText(sportToning.getName());
             RequestOptions requestOptions = new RequestOptions();
             requestOptions.placeholder(R.drawable.icon_gallery);
-            Glide.with(itemView).setDefaultRequestOptions(requestOptions).load(toning.getPhoto()).into(photoSlimming);
+            Glide.with(itemView).setDefaultRequestOptions(requestOptions).load(sportToning.getPhoto()).into(photoSlimming);
         }
     }
 

@@ -10,9 +10,9 @@ import com.google.firebase.auth.*;
 import com.google.firebase.firestore.*;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Model.Developer;
-import com.utad.david.planfit.Model.Sport.GainVolume;
-import com.utad.david.planfit.Model.Sport.Slimming;
-import com.utad.david.planfit.Model.Sport.Toning;
+import com.utad.david.planfit.Model.Sport.SportGainVolume;
+import com.utad.david.planfit.Model.Sport.SportSlimming;
+import com.utad.david.planfit.Model.Sport.SportToning;
 import com.utad.david.planfit.Model.User;
 
 import javax.annotation.Nullable;
@@ -82,12 +82,12 @@ public class FirebaseAdmin {
     public Developer developerSecond;
     private AuthCredential credential;
 
-    public List<Slimming> slimmingListSport;
-    public List<Slimming> slimmingListSportFavorite;
-    public List<Toning> toningListSport;
-    public List<Toning> toningListSportFavorite;
-    public List<GainVolume> gainVolumeListSport;
-    public List<GainVolume> gainVolumeListSportFavorite;
+    public List<SportSlimming> sportSlimmingListSport;
+    public List<SportSlimming> sportSlimmingListSportFavorite;
+    public List<SportToning> sportToningListSport;
+    public List<SportToning> sportToningListSportFavorite;
+    public List<SportGainVolume> sportGainVolumeListSport;
+    public List<SportGainVolume> sportGainVolumeListSportFavorite;
 
     public void setFirebaseAdminInsertAndDownloandListener(FirebaseAdminInsertAndDownloandListener firebaseAdminInsertAndDownloandListener) {
         this.firebaseAdminInsertAndDownloandListener = firebaseAdminInsertAndDownloandListener;
@@ -467,11 +467,11 @@ public class FirebaseAdmin {
                         firebaseAdminDownloandFragmentData.downloandCollectionSportSlimming(false);
                     }
 
-                    List<Slimming> slimmingList = new ArrayList<>();
+                    List<SportSlimming> sportSlimmingList = new ArrayList<>();
                     for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                        slimmingList.add(doc.toObject(Slimming.class));
+                        sportSlimmingList.add(doc.toObject(SportSlimming.class));
                     }
-                    slimmingListSport = slimmingList;
+                    sportSlimmingListSport = sportSlimmingList;
 
                     firebaseAdminDownloandFragmentData.downloandCollectionSportSlimming(true);
                 }
@@ -490,11 +490,11 @@ public class FirebaseAdmin {
                         firebaseAdminDownloandFragmentData.downloandCollectionSportToning(false);
                     }
 
-                    List<Toning> toningList = new ArrayList<>();
+                    List<SportToning> sportToningList = new ArrayList<>();
                     for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                        toningList.add(doc.toObject(Toning.class));
+                        sportToningList.add(doc.toObject(SportToning.class));
                     }
-                    toningListSport = toningList;
+                    sportToningListSport = sportToningList;
 
                     firebaseAdminDownloandFragmentData.downloandCollectionSportToning(true);
                 }
@@ -513,11 +513,11 @@ public class FirebaseAdmin {
                         firebaseAdminDownloandFragmentData.downloandCollectionSportGainVolume(false);
                     }
 
-                    List<GainVolume> gainVolumes = new ArrayList<>();
+                    List<SportGainVolume> sportGainVolumes = new ArrayList<>();
                     for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                        gainVolumes.add(doc.toObject(GainVolume.class));
+                        sportGainVolumes.add(doc.toObject(SportGainVolume.class));
                     }
-                    gainVolumeListSport = gainVolumes;
+                    sportGainVolumeListSport = sportGainVolumes;
 
                     firebaseAdminDownloandFragmentData.downloandCollectionSportGainVolume(true);
                 }
@@ -546,13 +546,13 @@ public class FirebaseAdmin {
         }
     }
 
-    public void addFavoriteSportSlimmingCouldFirestore(Slimming slimming) {
+    public void addFavoriteSportSlimmingCouldFirestore(SportSlimming sportSlimming) {
         if (firebaseAdminInsertFavoriteSportAndNutrition != null) {
             Map<String, Object> slimmingMap = new HashMap<>();
-            slimmingMap.put("name", slimming.getName());
-            slimmingMap.put("photo", slimming.getPhoto());
-            slimmingMap.put("video",slimming.getVideo());
-            slimmingMap.put("description", slimming.getDescription());
+            slimmingMap.put("name", sportSlimming.getName());
+            slimmingMap.put("photo", sportSlimming.getPhoto());
+            slimmingMap.put("video", sportSlimming.getVideo());
+            slimmingMap.put("description", sportSlimming.getDescription());
             slimmingMap.put("type","adelgazar");
             insertFavoriteSportSlimming(slimmingMap);
         }
@@ -570,15 +570,15 @@ public class FirebaseAdmin {
                         firebaseAdminInsertFavoriteSportAndNutrition.downloandCollectionSportFavorite(false);
                     }
 
-                    List<Slimming> toningList = new ArrayList<>();
+                    List<SportSlimming> toningList = new ArrayList<>();
                     for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                         if (doc.get("type") != null) {
-                            toningList.add(doc.toObject(Slimming.class));
+                            toningList.add(doc.toObject(SportSlimming.class));
                         }
                     }
                     Log.w("FirebaseAdmin", "Data."+toningList.toString());
 
-                    slimmingListSportFavorite = toningList;
+                    sportSlimmingListSportFavorite = toningList;
 
                     firebaseAdminInsertFavoriteSportAndNutrition.downloandCollectionSportFavorite(true);
                 }
@@ -607,13 +607,13 @@ public class FirebaseAdmin {
         }
     }
 
-    public void addFavoriteSportToningCouldFirestore(Toning toning) {
+    public void addFavoriteSportToningCouldFirestore(SportToning sportToning) {
         if (firebaseAdminInsertFavoriteSportAndNutrition != null) {
             Map<String, Object> slimmingMap = new HashMap<>();
-            slimmingMap.put("name", toning.getName());
-            slimmingMap.put("photo", toning.getPhoto());
-            slimmingMap.put("video",toning.getVideo());
-            slimmingMap.put("description", toning.getDescription());
+            slimmingMap.put("name", sportToning.getName());
+            slimmingMap.put("photo", sportToning.getPhoto());
+            slimmingMap.put("video", sportToning.getVideo());
+            slimmingMap.put("description", sportToning.getDescription());
             slimmingMap.put("type","tonificar");
             insertFavoriteSportToning(slimmingMap);
         }
@@ -631,14 +631,14 @@ public class FirebaseAdmin {
                                 firebaseAdminInsertFavoriteSportAndNutrition.downloandCollectionSportFavorite(false);
                             }
 
-                            List<Toning> toningList = new ArrayList<>();
+                            List<SportToning> sportToningList = new ArrayList<>();
                             for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                                 if (doc.get("type") != null) {
-                                    toningList.add(doc.toObject(Toning.class));
+                                    sportToningList.add(doc.toObject(SportToning.class));
                                 }
                             }
-                            toningListSportFavorite = toningList;
-                            Log.w("FirebaseAdmin", "Data."+toningList.toString());
+                            sportToningListSportFavorite = sportToningList;
+                            Log.w("FirebaseAdmin", "Data."+ sportToningList.toString());
 
 
                             firebaseAdminInsertFavoriteSportAndNutrition.downloandCollectionSportFavorite(true);
@@ -668,13 +668,13 @@ public class FirebaseAdmin {
         }
     }
 
-    public void addFavoriteSportGainVolumeCouldFirestore(GainVolume gainVolume) {
+    public void addFavoriteSportGainVolumeCouldFirestore(SportGainVolume sportGainVolume) {
         if (firebaseAdminInsertFavoriteSportAndNutrition != null) {
             Map<String, Object> slimmingMap = new HashMap<>();
-            slimmingMap.put("name", gainVolume.getName());
-            slimmingMap.put("photo", gainVolume.getPhoto());
-            slimmingMap.put("video",gainVolume.getVideo());
-            slimmingMap.put("description", gainVolume.getDescription());
+            slimmingMap.put("name", sportGainVolume.getName());
+            slimmingMap.put("photo", sportGainVolume.getPhoto());
+            slimmingMap.put("video", sportGainVolume.getVideo());
+            slimmingMap.put("description", sportGainVolume.getDescription());
             slimmingMap.put("type","ganarVolumen");
             insertFavoriteSportGainVolume(slimmingMap);
         }
@@ -692,14 +692,14 @@ public class FirebaseAdmin {
                                 firebaseAdminInsertFavoriteSportAndNutrition.downloandCollectionSportFavorite(false);
                             }
 
-                            List<GainVolume> gainVolumes = new ArrayList<>();
+                            List<SportGainVolume> sportGainVolumes = new ArrayList<>();
                             for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                                 if (doc.get("type") != null) {
-                                    gainVolumes.add(doc.toObject(GainVolume.class));
+                                    sportGainVolumes.add(doc.toObject(SportGainVolume.class));
                                 }
                             }
-                            gainVolumeListSportFavorite = gainVolumes;
-                            Log.w("FirebaseAdmin", "Data."+gainVolumes.toString());
+                            sportGainVolumeListSportFavorite = sportGainVolumes;
+                            Log.w("FirebaseAdmin", "Data."+ sportGainVolumes.toString());
 
 
                             firebaseAdminInsertFavoriteSportAndNutrition.downloandCollectionSportFavorite(true);
