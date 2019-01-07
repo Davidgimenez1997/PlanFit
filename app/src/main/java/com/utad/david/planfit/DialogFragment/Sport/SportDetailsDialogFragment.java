@@ -218,4 +218,14 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
 
         }
     }
+
+    @Override
+    public void inserNutritionFavoriteFirebase(boolean end) {
+
+    }
+
+    @Override
+    public void downloandCollectionNutritionFavorite(boolean end) {
+
+    }
 }

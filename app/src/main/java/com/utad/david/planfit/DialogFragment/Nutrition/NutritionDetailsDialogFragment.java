@@ -46,7 +46,7 @@ public class NutritionDetailsDialogFragment extends DialogFragment implements Fi
         args.putInt(OPTION, option);
         fragment.setArguments(args);
         SessionUser.getInstance().firebaseAdmin.setFirebaseAdminInsertFavoriteSportAndNutrition(fragment);
-        //SessionUser.getInstance().firebaseAdmin.downloadSlimmingSportFavorite();
+        SessionUser.getInstance().firebaseAdmin.downloadSlimmingNutritionFavorite();
         return fragment;
     }
 
@@ -57,7 +57,7 @@ public class NutritionDetailsDialogFragment extends DialogFragment implements Fi
         args.putInt(OPTION, option);
         fragment.setArguments(args);
         SessionUser.getInstance().firebaseAdmin.setFirebaseAdminInsertFavoriteSportAndNutrition(fragment);
-        //SessionUser.getInstance().firebaseAdmin.downloadGainVolumeSportFavorite();
+        SessionUser.getInstance().firebaseAdmin.downloadGainVolumeNutritionFavorite();
         return fragment;
     }
 
@@ -68,7 +68,7 @@ public class NutritionDetailsDialogFragment extends DialogFragment implements Fi
         args.putInt(OPTION, option);
         fragment.setArguments(args);
         SessionUser.getInstance().firebaseAdmin.setFirebaseAdminInsertFavoriteSportAndNutrition(fragment);
-        //SessionUser.getInstance().firebaseAdmin.downloadToningSportFavorite();
+        SessionUser.getInstance().firebaseAdmin.downloadToningNutritionFavorite();
         return fragment;
     }
 
@@ -165,13 +165,13 @@ public class NutritionDetailsDialogFragment extends DialogFragment implements Fi
             public void onClick(View v) {
                 switch (option){
                     case 0:
-                        //SessionUser.getInstance().firebaseAdmin.addFavoriteSportSlimmingCouldFirestore(sportSlimming);
+                        SessionUser.getInstance().firebaseAdmin.addFavoriteNutritionCouldFirestore(nutritionSlimming);
                         break;
                     case 1:
-                        //SessionUser.getInstance().firebaseAdmin.addFavoriteSportToningCouldFirestore(sportToning);
+                        SessionUser.getInstance().firebaseAdmin.addFavoriteNutritionToningCouldFirestore(nutritionToning);
                         break;
                     case 2:
-                        //SessionUser.getInstance().firebaseAdmin.addFavoriteSportGainVolumeCouldFirestore(sportGainVolume);
+                        SessionUser.getInstance().firebaseAdmin.addFavoriteNutritionGainVolumeCouldFirestore(nutritionGainVolume);
                         break;
                 }
             }
@@ -179,14 +179,14 @@ public class NutritionDetailsDialogFragment extends DialogFragment implements Fi
     }
 
     @Override
-    public void inserSportFavoriteFirebase(boolean end) {
+    public void inserNutritionFavoriteFirebase(boolean end) {
         if(end){
             buttonInsert.setEnabled(false);
         }
     }
 
     @Override
-    public void downloandCollectionSportFavorite(boolean end) {
+    public void downloandCollectionNutritionFavorite(boolean end) {
         if(end){
             switch (option){
                 case 0:
@@ -219,5 +219,15 @@ public class NutritionDetailsDialogFragment extends DialogFragment implements Fi
             }
 
         }
+    }
+
+    @Override
+    public void inserSportFavoriteFirebase(boolean end) {
+
+    }
+
+    @Override
+    public void downloandCollectionSportFavorite(boolean end) {
+
     }
 }
