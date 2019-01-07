@@ -1,4 +1,4 @@
-package com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Sport;
+package com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Nutrition;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -9,19 +9,21 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
+import com.utad.david.planfit.Adapter.Nutrition.NutritionSlimmingAdapter;
 import com.utad.david.planfit.Adapter.Sport.SportSlimmingAdapter;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
+import com.utad.david.planfit.DialogFragment.Nutrition.NutritionDetailsDialogFragment;
 import com.utad.david.planfit.DialogFragment.Sport.SportDetailsDialogFragment;
+import com.utad.david.planfit.Model.Nutrition.NutritionSlimming;
 import com.utad.david.planfit.Model.Sport.SportSlimming;
 import com.utad.david.planfit.R;
 
 import java.util.List;
 
-public class SportSlimmingFragment extends Fragment implements FirebaseAdmin.FirebaseAdminDownloandFragmentData {
+public class NutritionSlimmingFragment extends Fragment implements FirebaseAdmin.FirebaseAdminDownloandFragmentData {
 
-    public SportSlimmingFragment() {
+    public NutritionSlimmingFragment() {
         // Required empty public constructor
     }
 
@@ -38,14 +40,14 @@ public class SportSlimmingFragment extends Fragment implements FirebaseAdmin.Fir
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-       View view = inflater.inflate(R.layout.fragment_sport_recycleview, container, false);
-        SessionUser.getInstance().firebaseAdmin.downloadSlimmingSport();
-        mRecyclerView = view.findViewById(R.id.recycler_view_sport);
+        View view = inflater.inflate(R.layout.fragment_nutrition_recycleview, container, false);
+        SessionUser.getInstance().firebaseAdmin.downloadSlimmingNutrition();
+        mRecyclerView = view.findViewById(R.id.recycler_view_nutrition);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new GridLayoutManager(getContext(), 2);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-       return view;
+        return view;
     }
 
     @Override
@@ -58,25 +60,31 @@ public class SportSlimmingFragment extends Fragment implements FirebaseAdmin.Fir
         super.onDetach();
     }
 
+
     @Override
-    public void downloandCollectionSportSlimming(boolean end) {
+    public void downloandCollectionNutritionSlimming(boolean end) {
         if(end){
-            List<SportSlimming> sportSlimmingList = SessionUser.getInstance().firebaseAdmin.sportSlimmingListSport;
-            mAdapter = new SportSlimmingAdapter(sportSlimmingList, new SportSlimmingAdapter.OnItemClickListener() {
+            List<NutritionSlimming> nutritionSlimmingList = SessionUser.getInstance().firebaseAdmin.nutritionSlimmingListNutrition;
+            mAdapter = new NutritionSlimmingAdapter(nutritionSlimmingList, new NutritionSlimmingAdapter.OnItemClickListener() {
                 @Override
-                public void onItemClick(SportSlimming item) {
+                public void onItemClick(NutritionSlimming item) {
                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
                     Fragment prev = getFragmentManager().findFragmentByTag("dialog");
                     if (prev != null) {
                         transaction.remove(prev);
                     }
                     transaction.addToBackStack(null);
-                    SportDetailsDialogFragment newFragment = SportDetailsDialogFragment.newInstanceSlimming(item,0);
+                    NutritionDetailsDialogFragment newFragment = NutritionDetailsDialogFragment.newInstanceSlimming(item,0);
                     newFragment.show(transaction, "dialog");
                 }
             });
             mRecyclerView.setAdapter(mAdapter);
         }
+    }
+
+    @Override
+    public void downloandCollectionSportSlimming(boolean end) {
+
     }
 
     @Override
@@ -90,11 +98,6 @@ public class SportSlimmingFragment extends Fragment implements FirebaseAdmin.Fir
     }
 
     @Override
-    public void downloandCollectionNutritionSlimming(boolean end) {
-
-    }
-
-    @Override
     public void downloandCollectionNutritionToning(boolean end) {
 
     }
@@ -104,3 +107,4 @@ public class SportSlimmingFragment extends Fragment implements FirebaseAdmin.Fir
 
     }
 }
+

@@ -1,4 +1,4 @@
-package com.utad.david.planfit.Adapter;
+package com.utad.david.planfit.Adapter.Sport;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,24 +13,24 @@ import com.utad.david.planfit.R;
 
 import java.util.List;
 
-public class GainVolumeAdapter extends RecyclerView.Adapter<GainVolumeAdapter.GainVolumeViewHolder>  {
+public class SportGainVolumeAdapter extends RecyclerView.Adapter<SportGainVolumeAdapter.GainVolumeViewHolder>  {
 
     private List<SportGainVolume> sportGainVolumeList;
-    private GainVolumeAdapter.OnItemClickListener listener;
+    private SportGainVolumeAdapter.OnItemClickListener listener;
 
     //Obtenemos información del item
     public interface OnItemClickListener {
         void onItemClick(SportGainVolume item);
     }
 
-    public GainVolumeAdapter(List<SportGainVolume> sportGainVolumes, GainVolumeAdapter.OnItemClickListener listener) {
+    public SportGainVolumeAdapter(List<SportGainVolume> sportGainVolumes, SportGainVolumeAdapter.OnItemClickListener listener) {
         this.sportGainVolumeList = sportGainVolumes;
         this.listener = listener;
     }
 
     @Override
-    public GainVolumeAdapter.GainVolumeViewHolder onCreateViewHolder(ViewGroup parent,
-                                                                 int viewType) {
+    public SportGainVolumeAdapter.GainVolumeViewHolder onCreateViewHolder(ViewGroup parent,
+                                                                          int viewType) {
         View rootView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recycleview, parent, false);
         return new GainVolumeViewHolder(rootView);
     }

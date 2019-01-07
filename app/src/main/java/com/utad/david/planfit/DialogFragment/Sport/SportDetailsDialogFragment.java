@@ -108,11 +108,11 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
     }
 
     public void findById(View v) {
-        textViewTitle = v.findViewById(R.id.textTitle);
-        buttonOpenYoutube = v.findViewById(R.id.open_youtube);
-        textViewDescription = v.findViewById(R.id.textviewDescription);
+        textViewTitle = v.findViewById(R.id.textTitleSport);
+        buttonOpenYoutube = v.findViewById(R.id.open_youtube_sport);
+        textViewDescription = v.findViewById(R.id.textviewDescriptionSport);
         imageViewSport = v.findViewById(R.id.imageViewSport);
-        buttonInsert = v.findViewById(R.id.insert_favorite);
+        buttonInsert = v.findViewById(R.id.insert_favorite_sport);
     }
 
     private void putData() {

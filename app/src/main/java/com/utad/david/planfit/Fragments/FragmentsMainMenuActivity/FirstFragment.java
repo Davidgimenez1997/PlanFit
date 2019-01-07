@@ -116,6 +116,42 @@ public class FirstFragment extends Fragment {
         first_button.setText(getString(R.string.adelgazar));
         second_button.setText(getString(R.string.tonificar));
         three_button.setText(getString(R.string.ganar_volumen));
+        onClickAdelgazarNutrition();
+        onClickTonificarNutrition();
+        onClickGainVolumeNutrition();
+    }
+
+    private void onClickAdelgazarNutrition(){
+        first_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mListener!=null){
+                    mListener.clickOnAdelgazarNutrition();
+                }
+            }
+        });
+    }
+
+    private void onClickTonificarNutrition(){
+        second_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mListener!=null){
+                    mListener.clickOnTonificarNutrition();
+                }
+            }
+        });
+    }
+
+    private void onClickGainVolumeNutrition(){
+        three_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mListener!=null){
+                    mListener.clickOnGanarVolumenNutrition();
+                }
+            }
+        });
     }
 
     private void configViewPlan(){
@@ -162,6 +198,9 @@ public class FirstFragment extends Fragment {
         void clickOnAdelgazarSport();
         void clickOnTonificarSport();
         void clickOnGanarVolumenSport();
+        void clickOnAdelgazarNutrition();
+        void clickOnTonificarNutrition();
+        void clickOnGanarVolumenNutrition();
     }
 }
 

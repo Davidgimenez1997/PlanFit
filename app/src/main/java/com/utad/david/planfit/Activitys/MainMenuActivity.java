@@ -9,9 +9,13 @@ import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.DialogFragment.EditPersonalDataUser;
 import com.utad.david.planfit.DialogFragment.InfoAboutApp;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.FirstFragment;
+import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Nutrition.NutritionGainVolumeFragment;
+import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Nutrition.NutritionSlimmingFragment;
+import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Nutrition.NutritionToningFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Sport.SportGainVolumeFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Sport.SportSlimmingFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Sport.SportToningFragment;
+import com.utad.david.planfit.Model.Nutrition.NutritionGainVolume;
 import com.utad.david.planfit.Model.User;
 import com.utad.david.planfit.R;
 import android.graphics.Bitmap;
@@ -268,6 +272,33 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
         SportGainVolumeFragment sportGainVolumeFragment = new SportGainVolumeFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.content_frame, sportGainVolumeFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    @Override
+    public void clickOnAdelgazarNutrition() {
+        NutritionSlimmingFragment nutritionSlimmingFragment = new NutritionSlimmingFragment();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.content_frame, nutritionSlimmingFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    @Override
+    public void clickOnTonificarNutrition() {
+        NutritionToningFragment nutritionToningFragment = new NutritionToningFragment();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.content_frame, nutritionToningFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    @Override
+    public void clickOnGanarVolumenNutrition() {
+        NutritionGainVolumeFragment nutritionGainVolumeFragment = new NutritionGainVolumeFragment();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.content_frame, nutritionGainVolumeFragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }

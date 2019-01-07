@@ -10,6 +10,9 @@ import com.google.firebase.auth.*;
 import com.google.firebase.firestore.*;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Model.Developer;
+import com.utad.david.planfit.Model.Nutrition.NutritionGainVolume;
+import com.utad.david.planfit.Model.Nutrition.NutritionSlimming;
+import com.utad.david.planfit.Model.Nutrition.NutritionToning;
 import com.utad.david.planfit.Model.Sport.SportGainVolume;
 import com.utad.david.planfit.Model.Sport.SportSlimming;
 import com.utad.david.planfit.Model.Sport.SportToning;
@@ -61,6 +64,9 @@ public class FirebaseAdmin {
         void downloandCollectionSportSlimming(boolean end);
         void downloandCollectionSportToning(boolean end);
         void downloandCollectionSportGainVolume(boolean end);
+        void downloandCollectionNutritionSlimming(boolean end);
+        void downloandCollectionNutritionToning(boolean end);
+        void downloandCollectionNutritionGainVolume(boolean end);
     }
 
     public interface FirebaseAdminInsertFavoriteSportAndNutrition{
@@ -88,6 +94,13 @@ public class FirebaseAdmin {
     public List<SportToning> sportToningListSportFavorite;
     public List<SportGainVolume> sportGainVolumeListSport;
     public List<SportGainVolume> sportGainVolumeListSportFavorite;
+
+    public List<NutritionSlimming> nutritionSlimmingListNutrition;
+    public List<NutritionSlimming> nutritionSlimmingListNutritionFavorite;
+    public List<NutritionToning> nutritionToningsListNutrition;
+    public List<NutritionToning> nutritionToningListNutritionFavorite;
+    public List<NutritionGainVolume> nutritionGainVolumeListNutrition;
+    public List<NutritionGainVolume> nutritionGainVolumeListNutritionFavorite;
 
     public void setFirebaseAdminInsertAndDownloandListener(FirebaseAdminInsertAndDownloandListener firebaseAdminInsertAndDownloandListener) {
         this.firebaseAdminInsertAndDownloandListener = firebaseAdminInsertAndDownloandListener;
@@ -520,6 +533,77 @@ public class FirebaseAdmin {
                     sportGainVolumeListSport = sportGainVolumes;
 
                     firebaseAdminDownloandFragmentData.downloandCollectionSportGainVolume(true);
+                }
+            });
+        }
+    }
+
+    public void downloadSlimmingNutrition() {
+        if (firebaseAdminDownloandFragmentData != null) {
+            CollectionReference collectionReference = firebaseFirestore.collection("nutricion/adelgazar/detalles");
+            collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+                @Override
+                public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                    if (e != null) {
+                        Log.w("FirebaseAdmin", "Listen failed.", e);
+                        firebaseAdminDownloandFragmentData.downloandCollectionNutritionSlimming(false);
+                    }
+
+                    List<NutritionSlimming> nutritionSlimmingList = new ArrayList<>();
+                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                        nutritionSlimmingList.add(doc.toObject(NutritionSlimming.class));
+                    }
+                    Log.d("FirebaseAdmin", "Data: "+nutritionSlimmingList.toString());
+
+                    nutritionSlimmingListNutrition = nutritionSlimmingList;
+
+                    firebaseAdminDownloandFragmentData.downloandCollectionNutritionSlimming(true);
+                }
+            });
+        }
+    }
+
+    public void downloadTiningNutrition() {
+        if(firebaseAdminDownloandFragmentData!=null){
+            CollectionReference  collectionReference = firebaseFirestore.collection("nutricion/tonificar/detalles");
+            collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+                @Override
+                public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                    if (e != null) {
+                        Log.w("FirebaseAdmin", "Listen failed.", e);
+                        firebaseAdminDownloandFragmentData.downloandCollectionNutritionToning(false);
+                    }
+
+                    List<NutritionToning> nutritionTonings = new ArrayList<>();
+                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                        nutritionTonings.add(doc.toObject(NutritionToning.class));
+                    }
+                    nutritionToningsListNutrition = nutritionTonings;
+
+                    firebaseAdminDownloandFragmentData.downloandCollectionNutritionToning(true);
+                }
+            });
+        }
+    }
+
+    public void downloadGainVolumeNutrition() {
+        if(firebaseAdminDownloandFragmentData!=null){
+            CollectionReference  collectionReference = firebaseFirestore.collection("nutricion/ganarVolumen/detalles");
+            collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+                @Override
+                public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                    if (e != null) {
+                        Log.w("FirebaseAdmin", "Listen failed.", e);
+                        firebaseAdminDownloandFragmentData.downloandCollectionNutritionGainVolume(false);
+                    }
+
+                    List<NutritionGainVolume> nutritionGainVolumes = new ArrayList<>();
+                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                        nutritionGainVolumes.add(doc.toObject(NutritionGainVolume.class));
+                    }
+                    nutritionGainVolumeListNutrition = nutritionGainVolumes;
+
+                    firebaseAdminDownloandFragmentData.downloandCollectionNutritionGainVolume(true);
                 }
             });
         }

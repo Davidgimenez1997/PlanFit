@@ -10,7 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.utad.david.planfit.Adapter.GainVolumeAdapter;
+import com.utad.david.planfit.Adapter.Sport.SportGainVolumeAdapter;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.DialogFragment.Sport.SportDetailsDialogFragment;
@@ -40,7 +40,7 @@ public class SportGainVolumeFragment extends Fragment implements FirebaseAdmin.F
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_sport_recycleview, container, false);
         SessionUser.getInstance().firebaseAdmin.downloadGainVolumeSport();
-        mRecyclerView = view.findViewById(R.id.recycler_view_slimming);
+        mRecyclerView = view.findViewById(R.id.recycler_view_sport);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new GridLayoutManager(getContext(), 2);
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -63,7 +63,7 @@ public class SportGainVolumeFragment extends Fragment implements FirebaseAdmin.F
     public void downloandCollectionSportGainVolume(boolean end) {
         if(end){
             List<SportGainVolume> sportGainVolumes = SessionUser.getInstance().firebaseAdmin.sportGainVolumeListSport;
-            mAdapter = new GainVolumeAdapter(sportGainVolumes, new GainVolumeAdapter.OnItemClickListener() {
+            mAdapter = new SportGainVolumeAdapter(sportGainVolumes, new SportGainVolumeAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(SportGainVolume item) {
                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
@@ -86,6 +86,20 @@ public class SportGainVolumeFragment extends Fragment implements FirebaseAdmin.F
 
     @Override
     public void downloandCollectionSportToning(boolean end) {
+    }
+
+    @Override
+    public void downloandCollectionNutritionSlimming(boolean end) {
+
+    }
+
+    @Override
+    public void downloandCollectionNutritionToning(boolean end) {
+
+    }
+
+    @Override
+    public void downloandCollectionNutritionGainVolume(boolean end) {
 
     }
 }

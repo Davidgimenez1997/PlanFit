@@ -1,4 +1,4 @@
-package com.utad.david.planfit.Adapter;
+package com.utad.david.planfit.Adapter.Nutrition;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,36 +8,36 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.utad.david.planfit.Model.Sport.SportToning;
+import com.utad.david.planfit.Model.Nutrition.NutritionToning;
 import com.utad.david.planfit.R;
 
 import java.util.List;
 
-public class ToningAdapter extends RecyclerView.Adapter<ToningAdapter.ToningViewHolder>  {
+public class NutritionToningAdapter extends RecyclerView.Adapter<NutritionToningAdapter.ToningViewHolder>  {
 
-    private List<SportToning> sportToningList;
-    private ToningAdapter.OnItemClickListener listener;
+    private List<NutritionToning> nutritionTonings;
+    private NutritionToningAdapter.OnItemClickListener listener;
 
     //Obtenemos información del item
     public interface OnItemClickListener {
-        void onItemClick(SportToning item);
+        void onItemClick(NutritionToning item);
     }
 
-    public ToningAdapter(List<SportToning> sportToningList, ToningAdapter.OnItemClickListener listener) {
-        this.sportToningList = sportToningList;
+    public NutritionToningAdapter(List<NutritionToning> nutritionTonings, NutritionToningAdapter.OnItemClickListener listener) {
+        this.nutritionTonings = nutritionTonings;
         this.listener = listener;
     }
 
     @Override
-    public ToningAdapter.ToningViewHolder onCreateViewHolder(ViewGroup parent,
-                                                                 int viewType) {
+    public NutritionToningAdapter.ToningViewHolder onCreateViewHolder(ViewGroup parent,
+                                                                  int viewType) {
         View rootView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recycleview, parent, false);
-        return new ToningViewHolder(rootView);
+        return new NutritionToningAdapter.ToningViewHolder(rootView);
     }
 
     @Override
-    public void onBindViewHolder(ToningViewHolder holder, int position) {
-        final SportToning current = sportToningList.get(position);
+    public void onBindViewHolder(NutritionToningAdapter.ToningViewHolder holder, int position) {
+        final NutritionToning current = nutritionTonings.get(position);
         holder.setData(current);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,7 +50,7 @@ public class ToningAdapter extends RecyclerView.Adapter<ToningAdapter.ToningView
 
     @Override
     public int getItemCount() {
-        return sportToningList.size();
+        return nutritionTonings.size();
     }
 
     public static class ToningViewHolder extends RecyclerView.ViewHolder {
@@ -63,11 +63,11 @@ public class ToningAdapter extends RecyclerView.Adapter<ToningAdapter.ToningView
             photoSlimming = v.findViewById(R.id.imageSlimming);
         }
 
-        public void setData(SportToning sportToning){
-            nameSlimming.setText(sportToning.getName());
+        public void setData(NutritionToning nutritionToning){
+            nameSlimming.setText(nutritionToning.getName());
             RequestOptions requestOptions = new RequestOptions();
             requestOptions.placeholder(R.drawable.icon_gallery);
-            Glide.with(itemView).setDefaultRequestOptions(requestOptions).load(sportToning.getPhoto()).into(photoSlimming);
+            Glide.with(itemView).setDefaultRequestOptions(requestOptions).load(nutritionToning.getPhoto()).into(photoSlimming);
         }
     }
 
