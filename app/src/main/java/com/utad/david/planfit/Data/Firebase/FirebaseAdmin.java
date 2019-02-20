@@ -27,55 +27,6 @@ import java.util.function.Consumer;
 
 public class FirebaseAdmin {
 
-    private static String COLLECTION_USER_FIREBASE = "users";
-    private static String COLLECTION_DEVELOPER_INFO_FIREBASE = "developer_info";
-
-    public interface FirebaseAdminLoginAndRegisterListener {
-        void singInWithEmailAndPassword(boolean end);
-
-        void registerWithEmailAndPassword(boolean end);
-    }
-
-    public interface FirebaseAdminInsertAndDownloandListener {
-        void insertUserDataInFirebase(boolean end);
-
-        void downloadUserDataInFirebase(boolean end);
-
-        void downloadInfoFirstDeveloper(boolean end);
-
-        void downloadInfoSecondDeveloper(boolean end);
-    }
-
-    public interface FirebaseAdminUpdateAndDeleteUserListener {
-        void updatePhotoInFirebase(boolean end);
-
-        void updateEmailInFirebase(boolean end);
-
-        void updatePasswordInFirebase(boolean end);
-
-        void updateNickNameInFirebase(boolean end);
-
-        void updateFullNameInFirebase(boolean end);
-
-        void deleteUserInFirebase(boolean end);
-    }
-
-    public interface FirebaseAdminDownloandFragmentData {
-        void downloandCollectionSportSlimming(boolean end);
-        void downloandCollectionSportToning(boolean end);
-        void downloandCollectionSportGainVolume(boolean end);
-        void downloandCollectionNutritionSlimming(boolean end);
-        void downloandCollectionNutritionToning(boolean end);
-        void downloandCollectionNutritionGainVolume(boolean end);
-    }
-
-    public interface FirebaseAdminInsertFavoriteSportAndNutrition{
-        void inserSportFavoriteFirebase(boolean end);
-        void downloandCollectionSportFavorite(boolean end);
-        void inserNutritionFavoriteFirebase(boolean end);
-        void downloandCollectionNutritionFavorite(boolean end);
-    }
-
     public FirebaseAuth mAuth;
     public FirebaseUser currentUser;
     public FirebaseAuth.AuthStateListener authStateListener;
@@ -104,6 +55,93 @@ public class FirebaseAdmin {
     public List<NutritionGainVolume> nutritionGainVolumeListNutrition;
     public List<NutritionGainVolume> nutritionGainVolumeListNutritionFavorite;
 
+    private static String COLLECTION_USER_FIREBASE = "users";
+    private static String COLLECTION_DEVELOPER_INFO_FIREBASE = "developer_info";
+    private static String COLLECTION_SPORT_SLIMMING = "deportes/adelgazar/detalles";
+    private static String COLLECTION_SPORT_TONING = "deportes/tonificar/detalles";
+    private static String COLLECTION_SPORT_GAIN_VOLUME = "deportes/ganarVolumen/detalles";
+    private static String COLLECTION_NUTRITION_SLIMMING = "nutricion/adelgazar/detalles";
+    private static String COLLECTION_NUTRITION_TONING = "nutricion/tonificar/detalles";
+    private static String COLLECTION_NUTRITION_GAIN_VOLUME = "nutricion/ganarVolumen/detalles";
+
+    private String COLLECTION_FAVORITE_SPORT;
+    private String COLLECTION_FAVORITE_NUTRITION;
+
+    public FirebaseAdmin() {
+        mAuth = FirebaseAuth.getInstance();
+        firebaseFirestore = FirebaseFirestore.getInstance();
+    }
+
+    /*
+    INTERFACES
+     */
+
+    //Login y registro
+
+    public interface FirebaseAdminLoginAndRegisterListener {
+        void singInWithEmailAndPassword(boolean end);
+
+        void registerWithEmailAndPassword(boolean end);
+    }
+
+    //Insert and download user info and developed info
+
+    public interface FirebaseAdminInsertAndDownloandListener {
+        void insertUserDataInFirebase(boolean end);
+
+        void downloadUserDataInFirebase(boolean end);
+
+        void downloadInfoFirstDeveloper(boolean end);
+
+        void downloadInfoSecondDeveloper(boolean end);
+    }
+
+    //Update user info and delete
+
+    public interface FirebaseAdminUpdateAndDeleteUserListener {
+        void updatePhotoInFirebase(boolean end);
+
+        void updateEmailInFirebase(boolean end);
+
+        void updatePasswordInFirebase(boolean end);
+
+        void updateNickNameInFirebase(boolean end);
+
+        void updateFullNameInFirebase(boolean end);
+
+        void deleteUserInFirebase(boolean end);
+    }
+
+    //Download sport and nutrition data
+
+    public interface FirebaseAdminDownloandFragmentData {
+        void downloandCollectionSportSlimming(boolean end);
+
+        void downloandCollectionSportToning(boolean end);
+
+        void downloandCollectionSportGainVolume(boolean end);
+
+        void downloandCollectionNutritionSlimming(boolean end);
+
+        void downloandCollectionNutritionToning(boolean end);
+
+        void downloandCollectionNutritionGainVolume(boolean end);
+    }
+
+    //Insert and download favorite sport and nutrition data
+
+    public interface FirebaseAdminInsertFavoriteSportAndNutrition {
+        void inserSportFavoriteFirebase(boolean end);
+
+        void downloandCollectionSportFavorite(boolean end);
+
+        void inserNutritionFavoriteFirebase(boolean end);
+
+        void downloandCollectionNutritionFavorite(boolean end);
+    }
+
+    //Setters
+
     public void setFirebaseAdminInsertAndDownloandListener(FirebaseAdminInsertAndDownloandListener firebaseAdminInsertAndDownloandListener) {
         this.firebaseAdminInsertAndDownloandListener = firebaseAdminInsertAndDownloandListener;
     }
@@ -124,10 +162,7 @@ public class FirebaseAdmin {
         this.firebaseAdminInsertFavoriteSportAndNutrition = firebaseAdminInsertFavoriteSportAndNutrition;
     }
 
-    public FirebaseAdmin() {
-        mAuth = FirebaseAuth.getInstance();
-        firebaseFirestore = FirebaseFirestore.getInstance();
-    }
+    //Login y registro
 
     public void registerWithEmailAndPassword(String email, String password) {
         if (firebaseAdminLoginAndRegisterListener != null) {
@@ -139,6 +174,10 @@ public class FirebaseAdmin {
                                 // Sign in success, update UI with the signed-in user's information
                                 Log.d("FirebaseAdmin", "createUserWithEmail:success");
                                 currentUser = mAuth.getCurrentUser();
+
+                                COLLECTION_FAVORITE_SPORT = "users/" + currentUser.getUid() + "/deporteFavorito";
+                                COLLECTION_FAVORITE_NUTRITION = "users/" + currentUser.getUid() + "/nutricionFavorita";
+
                                 firebaseAdminLoginAndRegisterListener.registerWithEmailAndPassword(true);
                             } else {
                                 // If sign in fails, display a message to the user.
@@ -161,6 +200,7 @@ public class FirebaseAdmin {
                                 // Sign in success, update UI with the signed-in user's information
                                 Log.d("FirebaseAdmin", "signInWithEmail:success");
                                 currentUser = mAuth.getCurrentUser();
+
                                 firebaseAdminLoginAndRegisterListener.singInWithEmailAndPassword(true);
                             } else {
                                 // If sign in fails, display a message to the user.
@@ -171,6 +211,8 @@ public class FirebaseAdmin {
                     });
         }
     }
+
+    //Insert user info
 
     public void addDataUserCouldFirestore() {
         if (firebaseAdminInsertAndDownloandListener != null) {
@@ -210,6 +252,8 @@ public class FirebaseAdmin {
                 });
     }
 
+    //Download user info
+
     public void dowloandDataUserFirebase() {
         DocumentReference myUserRef = firebaseFirestore.collection(COLLECTION_USER_FIREBASE).document(currentUser.getUid());
         if (firebaseAdminInsertAndDownloandListener != null) {
@@ -234,6 +278,8 @@ public class FirebaseAdmin {
             });
         }
     }
+
+    //Update info user
 
     public void updatePhotoUserInFirebase() {
         if (firebaseAdminUpdateAndDeleteUserListener != null) {
@@ -374,6 +420,8 @@ public class FirebaseAdmin {
         }
     }
 
+    //Delete user account
+
     public void deleteAccountInFirebase() {
         if (firebaseAdminUpdateAndDeleteUserListener != null) {
             final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -408,6 +456,8 @@ public class FirebaseAdmin {
         }
     }
 
+    //Reauthenticate User
+
     private void reauthenticateUserInFirebaseWithEmailAndPassword() {
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         credential = EmailAuthProvider
@@ -420,6 +470,8 @@ public class FirebaseAdmin {
                     }
                 });
     }
+
+    //Download developer data
 
     public void dowloandDataFirstDeveloperFirebase() {
         DocumentReference myDeveloperRef = firebaseFirestore.collection(COLLECTION_DEVELOPER_INFO_FIREBASE).document("first");
@@ -471,9 +523,11 @@ public class FirebaseAdmin {
         }
     }
 
+    //Download Sport data
+
     public void downloadSlimmingSport() {
         if (firebaseAdminDownloandFragmentData != null) {
-            CollectionReference collectionReference = firebaseFirestore.collection("deportes/adelgazar/detalles");
+            CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_SPORT_SLIMMING);
             collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
                 @Override
                 public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
@@ -495,8 +549,8 @@ public class FirebaseAdmin {
     }
 
     public void downloadTiningSport() {
-        if(firebaseAdminDownloandFragmentData!=null){
-            CollectionReference  collectionReference = firebaseFirestore.collection("deportes/tonificar/detalles");
+        if (firebaseAdminDownloandFragmentData != null) {
+            CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_SPORT_TONING);
             collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
                 @Override
                 public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
@@ -518,8 +572,8 @@ public class FirebaseAdmin {
     }
 
     public void downloadGainVolumeSport() {
-        if(firebaseAdminDownloandFragmentData!=null){
-            CollectionReference  collectionReference = firebaseFirestore.collection("deportes/ganarVolumen/detalles");
+        if (firebaseAdminDownloandFragmentData != null) {
+            CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_SPORT_GAIN_VOLUME);
             collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
                 @Override
                 public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
@@ -540,9 +594,11 @@ public class FirebaseAdmin {
         }
     }
 
+    //Download nutrition data
+
     public void downloadSlimmingNutrition() {
         if (firebaseAdminDownloandFragmentData != null) {
-            CollectionReference collectionReference = firebaseFirestore.collection("nutricion/adelgazar/detalles");
+            CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_NUTRITION_SLIMMING);
             collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
                 @Override
                 public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
@@ -555,7 +611,7 @@ public class FirebaseAdmin {
                     for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                         nutritionSlimmingList.add(doc.toObject(NutritionSlimming.class));
                     }
-                    Log.d("FirebaseAdmin", "Data: "+nutritionSlimmingList.toString());
+                    Log.d("FirebaseAdmin", "Data: " + nutritionSlimmingList.toString());
 
                     nutritionSlimmingListNutrition = nutritionSlimmingList;
 
@@ -566,8 +622,8 @@ public class FirebaseAdmin {
     }
 
     public void downloadTiningNutrition() {
-        if(firebaseAdminDownloandFragmentData!=null){
-            CollectionReference  collectionReference = firebaseFirestore.collection("nutricion/tonificar/detalles");
+        if (firebaseAdminDownloandFragmentData != null) {
+            CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_NUTRITION_TONING);
             collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
                 @Override
                 public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
@@ -589,8 +645,8 @@ public class FirebaseAdmin {
     }
 
     public void downloadGainVolumeNutrition() {
-        if(firebaseAdminDownloandFragmentData!=null){
-            CollectionReference  collectionReference = firebaseFirestore.collection("nutricion/ganarVolumen/detalles");
+        if (firebaseAdminDownloandFragmentData != null) {
+            CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_NUTRITION_GAIN_VOLUME);
             collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
                 @Override
                 public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
@@ -611,9 +667,14 @@ public class FirebaseAdmin {
         }
     }
 
-    public void insertFavoriteSportSlimming(Map<String, Object> slimming){
-        if(firebaseAdminInsertFavoriteSportAndNutrition!=null){
-            firebaseFirestore.collection("users/"+currentUser.getUid()+"/deporteFavorito").document()
+    //Insert favorite Sport
+
+    public void insertFavoriteSportSlimming(Map<String, Object> slimming) {
+
+        COLLECTION_FAVORITE_SPORT = "users/" + currentUser.getUid() + "/deporteFavorito";
+
+        if (firebaseAdminInsertFavoriteSportAndNutrition != null) {
+            firebaseFirestore.collection(COLLECTION_FAVORITE_SPORT).document()
                     .set(slimming)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
@@ -639,103 +700,17 @@ public class FirebaseAdmin {
             slimmingMap.put("photo", sportSlimming.getPhoto());
             slimmingMap.put("video", sportSlimming.getVideo());
             slimmingMap.put("description", sportSlimming.getDescription());
-            slimmingMap.put("type","adelgazar");
+            slimmingMap.put("type", "adelgazar");
             insertFavoriteSportSlimming(slimmingMap);
         }
     }
 
-    public void downloadSlimmingSportFavorite() {
-        if(firebaseAdminInsertFavoriteSportAndNutrition!=null){
-            CollectionReference  collectionReference = firebaseFirestore.collection("users/"+currentUser.getUid()+"/deporteFavorito");
-            collectionReference.whereEqualTo("type", "adelgazar")
-                    .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                @Override
-                public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                    if (e != null) {
-                        Log.w("FirebaseAdmin", "Listen failed.", e);
-                        firebaseAdminInsertFavoriteSportAndNutrition.downloandCollectionSportFavorite(false);
-                    }
+    public void insertFavoriteSportToning(Map<String, Object> toning) {
 
-                    List<SportSlimming> toningList = new ArrayList<>();
-                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                        if (doc.get("type") != null) {
-                            toningList.add(doc.toObject(SportSlimming.class));
-                        }
-                    }
-                    Log.w("FirebaseAdmin", "Data."+toningList.toString());
+        COLLECTION_FAVORITE_SPORT = "users/" + currentUser.getUid() + "/deporteFavorito";
 
-                    sportSlimmingListSportFavorite = toningList;
-
-                    firebaseAdminInsertFavoriteSportAndNutrition.downloandCollectionSportFavorite(true);
-                }
-            });
-        }
-    }
-
-    public void insertFavoriteNutritionnSlimming(Map<String, Object> slimming){
-        if(firebaseAdminInsertFavoriteSportAndNutrition!=null){
-            firebaseFirestore.collection("users/"+currentUser.getUid()+"/nutricionFavorita").document()
-                    .set(slimming)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Log.d("FirebaseAdmin", "DocumentSnapshot successfully written!");
-                            firebaseAdminInsertFavoriteSportAndNutrition.inserNutritionFavoriteFirebase(true);
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.w("FirebaseAdmin", "Error writing document", e);
-                            firebaseAdminInsertFavoriteSportAndNutrition.inserNutritionFavoriteFirebase(false);
-                        }
-                    });
-        }
-    }
-
-    public void addFavoriteNutritionCouldFirestore(NutritionSlimming nutritionSlimming) {
         if (firebaseAdminInsertFavoriteSportAndNutrition != null) {
-            Map<String, Object> slimmingMap = new HashMap<>();
-            slimmingMap.put("name", nutritionSlimming.getName());
-            slimmingMap.put("photo", nutritionSlimming.getPhoto());
-            slimmingMap.put("video", nutritionSlimming.getVideo());
-            slimmingMap.put("description", nutritionSlimming.getDescription());
-            slimmingMap.put("type","adelgazar");
-            insertFavoriteNutritionnSlimming(slimmingMap);
-        }
-    }
-
-    public void downloadSlimmingNutritionFavorite() {
-        if(firebaseAdminInsertFavoriteSportAndNutrition!=null){
-            CollectionReference  collectionReference = firebaseFirestore.collection("users/"+currentUser.getUid()+"/nutricionFavorita");
-            collectionReference.whereEqualTo("type", "adelgazar")
-                    .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                        @Override
-                        public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                            if (e != null) {
-                                Log.w("FirebaseAdmin", "Listen failed.", e);
-                                firebaseAdminInsertFavoriteSportAndNutrition.downloandCollectionNutritionFavorite(false);
-                            }
-
-                            List<NutritionSlimming> nutritionSlimmings = new ArrayList<>();
-                            for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                                if (doc.get("type") != null) {
-                                    nutritionSlimmings.add(doc.toObject(NutritionSlimming.class));
-                                }
-                            }
-                            Log.w("FirebaseAdmin", "Data."+nutritionSlimmings.toString());
-
-                            nutritionSlimmingListNutritionFavorite = nutritionSlimmings;
-
-                            firebaseAdminInsertFavoriteSportAndNutrition.downloandCollectionNutritionFavorite(true);
-                        }
-                    });
-        }
-    }
-
-    public void insertFavoriteSportToning(Map<String, Object> toning){
-        if(firebaseAdminInsertFavoriteSportAndNutrition!=null){
-            firebaseFirestore.collection("users/"+currentUser.getUid()+"/deporteFavorito").document()
+            firebaseFirestore.collection(COLLECTION_FAVORITE_SPORT).document()
                     .set(toning)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
@@ -761,103 +736,17 @@ public class FirebaseAdmin {
             slimmingMap.put("photo", sportToning.getPhoto());
             slimmingMap.put("video", sportToning.getVideo());
             slimmingMap.put("description", sportToning.getDescription());
-            slimmingMap.put("type","tonificar");
+            slimmingMap.put("type", "tonificar");
             insertFavoriteSportToning(slimmingMap);
         }
     }
 
-    public void downloadToningSportFavorite() {
-        if(firebaseAdminInsertFavoriteSportAndNutrition!=null){
-            CollectionReference  collectionReference = firebaseFirestore.collection("users/"+currentUser.getUid()+"/deporteFavorito");
-            collectionReference.whereEqualTo("type", "tonificar")
-                    .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                        @Override
-                        public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                            if (e != null) {
-                                Log.w("FirebaseAdmin", "Listen failed.", e);
-                                firebaseAdminInsertFavoriteSportAndNutrition.downloandCollectionSportFavorite(false);
-                            }
+    public void insertFavoriteSportGainVolume(Map<String, Object> gainVolume) {
 
-                            List<SportToning> sportToningList = new ArrayList<>();
-                            for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                                if (doc.get("type") != null) {
-                                    sportToningList.add(doc.toObject(SportToning.class));
-                                }
-                            }
-                            sportToningListSportFavorite = sportToningList;
-                            Log.w("FirebaseAdmin", "Data."+ sportToningList.toString());
+        COLLECTION_FAVORITE_SPORT = "users/" + currentUser.getUid() + "/deporteFavorito";
 
-
-                            firebaseAdminInsertFavoriteSportAndNutrition.downloandCollectionSportFavorite(true);
-                        }
-                    });
-        }
-    }
-
-    public void insertFavoriteNutritionToning(Map<String, Object> toning){
-        if(firebaseAdminInsertFavoriteSportAndNutrition!=null){
-            firebaseFirestore.collection("users/"+currentUser.getUid()+"/nutricionFavorita").document()
-                    .set(toning)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Log.d("FirebaseAdmin", "DocumentSnapshot successfully written!");
-                            firebaseAdminInsertFavoriteSportAndNutrition.inserNutritionFavoriteFirebase(true);
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.w("", "Error writing document", e);
-                            firebaseAdminInsertFavoriteSportAndNutrition.inserNutritionFavoriteFirebase(false);
-                        }
-                    });
-        }
-    }
-
-    public void addFavoriteNutritionToningCouldFirestore(NutritionToning nutritionToning) {
         if (firebaseAdminInsertFavoriteSportAndNutrition != null) {
-            Map<String, Object> slimmingMap = new HashMap<>();
-            slimmingMap.put("name", nutritionToning.getName());
-            slimmingMap.put("photo", nutritionToning.getPhoto());
-            slimmingMap.put("video", nutritionToning.getVideo());
-            slimmingMap.put("description", nutritionToning.getDescription());
-            slimmingMap.put("type","tonificar");
-            insertFavoriteNutritionToning(slimmingMap);
-        }
-    }
-
-    public void downloadToningNutritionFavorite() {
-        if(firebaseAdminInsertFavoriteSportAndNutrition!=null){
-            CollectionReference  collectionReference = firebaseFirestore.collection("users/"+currentUser.getUid()+"/nutricionFavorita");
-            collectionReference.whereEqualTo("type", "tonificar")
-                    .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                        @Override
-                        public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                            if (e != null) {
-                                Log.w("FirebaseAdmin", "Listen failed.", e);
-                                firebaseAdminInsertFavoriteSportAndNutrition.downloandCollectionNutritionFavorite(false);
-                            }
-
-                            List<NutritionToning> nutritionTonings = new ArrayList<>();
-                            for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                                if (doc.get("type") != null) {
-                                    nutritionTonings.add(doc.toObject(NutritionToning.class));
-                                }
-                            }
-                            nutritionToningListNutritionFavorite = nutritionTonings;
-                            Log.w("FirebaseAdmin", "Data."+ nutritionTonings.toString());
-
-
-                            firebaseAdminInsertFavoriteSportAndNutrition.downloandCollectionNutritionFavorite(true);
-                        }
-                    });
-        }
-    }
-
-    public void insertFavoriteSportGainVolume(Map<String, Object> gainVolume){
-        if(firebaseAdminInsertFavoriteSportAndNutrition!=null){
-            firebaseFirestore.collection("users/"+currentUser.getUid()+"/deporteFavorito").document()
+            firebaseFirestore.collection(COLLECTION_FAVORITE_SPORT).document()
                     .set(gainVolume)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
@@ -883,43 +772,91 @@ public class FirebaseAdmin {
             slimmingMap.put("photo", sportGainVolume.getPhoto());
             slimmingMap.put("video", sportGainVolume.getVideo());
             slimmingMap.put("description", sportGainVolume.getDescription());
-            slimmingMap.put("type","ganarVolumen");
+            slimmingMap.put("type", "ganarVolumen");
             insertFavoriteSportGainVolume(slimmingMap);
         }
     }
 
-    public void downloadGainVolumeSportFavorite() {
-        if(firebaseAdminInsertFavoriteSportAndNutrition!=null){
-            CollectionReference  collectionReference = firebaseFirestore.collection("users/"+currentUser.getUid()+"/deporteFavorito");
-            collectionReference.whereEqualTo("type", "ganarVolumen")
-                    .addSnapshotListener(new EventListener<QuerySnapshot>() {
+    //Insert favorite Nutrition
+
+    public void insertFavoriteNutritionnSlimming(Map<String, Object> slimming) {
+
+        COLLECTION_FAVORITE_NUTRITION = "users/" + currentUser.getUid() + "/nutricionFavorita";
+
+        if (firebaseAdminInsertFavoriteSportAndNutrition != null) {
+            firebaseFirestore.collection(COLLECTION_FAVORITE_NUTRITION).document()
+                    .set(slimming)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
-                        public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                            if (e != null) {
-                                Log.w("FirebaseAdmin", "Listen failed.", e);
-                                firebaseAdminInsertFavoriteSportAndNutrition.downloandCollectionSportFavorite(false);
-                            }
-
-                            List<SportGainVolume> sportGainVolumes = new ArrayList<>();
-                            for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                                if (doc.get("type") != null) {
-                                    sportGainVolumes.add(doc.toObject(SportGainVolume.class));
-                                }
-                            }
-                            sportGainVolumeListSportFavorite = sportGainVolumes;
-                            Log.w("FirebaseAdmin", "Data."+ sportGainVolumes.toString());
-
-
-                            firebaseAdminInsertFavoriteSportAndNutrition.downloandCollectionSportFavorite(true);
+                        public void onSuccess(Void aVoid) {
+                            Log.d("FirebaseAdmin", "DocumentSnapshot successfully written!");
+                            firebaseAdminInsertFavoriteSportAndNutrition.inserNutritionFavoriteFirebase(true);
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w("FirebaseAdmin", "Error writing document", e);
+                            firebaseAdminInsertFavoriteSportAndNutrition.inserNutritionFavoriteFirebase(false);
                         }
                     });
         }
-
     }
 
-    public void insertFavoriteNutritionGainVolume(Map<String, Object> gainVolume){
-        if(firebaseAdminInsertFavoriteSportAndNutrition!=null){
-            firebaseFirestore.collection("users/"+currentUser.getUid()+"/nutricionFavorita").document()
+    public void addFavoriteNutritionCouldFirestore(NutritionSlimming nutritionSlimming) {
+        if (firebaseAdminInsertFavoriteSportAndNutrition != null) {
+            Map<String, Object> slimmingMap = new HashMap<>();
+            slimmingMap.put("name", nutritionSlimming.getName());
+            slimmingMap.put("photo", nutritionSlimming.getPhoto());
+            slimmingMap.put("video", nutritionSlimming.getVideo());
+            slimmingMap.put("description", nutritionSlimming.getDescription());
+            slimmingMap.put("type", "adelgazar");
+            insertFavoriteNutritionnSlimming(slimmingMap);
+        }
+    }
+
+    public void insertFavoriteNutritionToning(Map<String, Object> toning) {
+
+        COLLECTION_FAVORITE_NUTRITION = "users/" + currentUser.getUid() + "/nutricionFavorita";
+
+        if (firebaseAdminInsertFavoriteSportAndNutrition != null) {
+            firebaseFirestore.collection(COLLECTION_FAVORITE_NUTRITION).document()
+                    .set(toning)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d("FirebaseAdmin", "DocumentSnapshot successfully written!");
+                            firebaseAdminInsertFavoriteSportAndNutrition.inserNutritionFavoriteFirebase(true);
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w("", "Error writing document", e);
+                            firebaseAdminInsertFavoriteSportAndNutrition.inserNutritionFavoriteFirebase(false);
+                        }
+                    });
+        }
+    }
+
+    public void addFavoriteNutritionToningCouldFirestore(NutritionToning nutritionToning) {
+        if (firebaseAdminInsertFavoriteSportAndNutrition != null) {
+            Map<String, Object> slimmingMap = new HashMap<>();
+            slimmingMap.put("name", nutritionToning.getName());
+            slimmingMap.put("photo", nutritionToning.getPhoto());
+            slimmingMap.put("video", nutritionToning.getVideo());
+            slimmingMap.put("description", nutritionToning.getDescription());
+            slimmingMap.put("type", "tonificar");
+            insertFavoriteNutritionToning(slimmingMap);
+        }
+    }
+
+    public void insertFavoriteNutritionGainVolume(Map<String, Object> gainVolume) {
+
+        COLLECTION_FAVORITE_NUTRITION = "users/" + currentUser.getUid() + "/nutricionFavorita";
+
+        if (firebaseAdminInsertFavoriteSportAndNutrition != null) {
+            firebaseFirestore.collection(COLLECTION_FAVORITE_NUTRITION).document()
                     .set(gainVolume)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
@@ -945,14 +882,177 @@ public class FirebaseAdmin {
             slimmingMap.put("photo", nutritionGainVolume.getPhoto());
             slimmingMap.put("video", nutritionGainVolume.getVideo());
             slimmingMap.put("description", nutritionGainVolume.getDescription());
-            slimmingMap.put("type","ganarVolumen");
+            slimmingMap.put("type", "ganarVolumen");
             insertFavoriteNutritionGainVolume(slimmingMap);
         }
     }
 
+    //Download favorite Sport
+
+    public void downloadSlimmingSportFavorite() {
+
+        COLLECTION_FAVORITE_SPORT = "users/" + currentUser.getUid() + "/deporteFavorito";
+
+        if (firebaseAdminInsertFavoriteSportAndNutrition != null) {
+            CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_FAVORITE_SPORT);
+            collectionReference.whereEqualTo("type", "adelgazar")
+                    .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                        @Override
+                        public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                            if (e != null) {
+                                Log.w("FirebaseAdmin", "Listen failed.", e);
+                                firebaseAdminInsertFavoriteSportAndNutrition.downloandCollectionSportFavorite(false);
+                            }
+
+                            List<SportSlimming> toningList = new ArrayList<>();
+                            for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                                if (doc.get("type") != null) {
+                                    toningList.add(doc.toObject(SportSlimming.class));
+                                }
+                            }
+                            Log.w("FirebaseAdmin", "Data." + toningList.toString());
+
+                            sportSlimmingListSportFavorite = toningList;
+
+                            firebaseAdminInsertFavoriteSportAndNutrition.downloandCollectionSportFavorite(true);
+                        }
+                    });
+        }
+    }
+
+    public void downloadToningSportFavorite() {
+
+        COLLECTION_FAVORITE_SPORT = "users/" + currentUser.getUid() + "/deporteFavorito";
+
+        if (firebaseAdminInsertFavoriteSportAndNutrition != null) {
+            CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_FAVORITE_SPORT);
+            collectionReference.whereEqualTo("type", "tonificar")
+                    .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                        @Override
+                        public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                            if (e != null) {
+                                Log.w("FirebaseAdmin", "Listen failed.", e);
+                                firebaseAdminInsertFavoriteSportAndNutrition.downloandCollectionSportFavorite(false);
+                            }
+
+                            List<SportToning> sportToningList = new ArrayList<>();
+                            for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                                if (doc.get("type") != null) {
+                                    sportToningList.add(doc.toObject(SportToning.class));
+                                }
+                            }
+                            sportToningListSportFavorite = sportToningList;
+                            Log.w("FirebaseAdmin", "Data." + sportToningList.toString());
+
+
+                            firebaseAdminInsertFavoriteSportAndNutrition.downloandCollectionSportFavorite(true);
+                        }
+                    });
+        }
+    }
+
+    public void downloadGainVolumeSportFavorite() {
+
+        COLLECTION_FAVORITE_SPORT = "users/" + currentUser.getUid() + "/deporteFavorito";
+
+        if (firebaseAdminInsertFavoriteSportAndNutrition != null) {
+            CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_FAVORITE_SPORT);
+            collectionReference.whereEqualTo("type", "ganarVolumen")
+                    .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                        @Override
+                        public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                            if (e != null) {
+                                Log.w("FirebaseAdmin", "Listen failed.", e);
+                                firebaseAdminInsertFavoriteSportAndNutrition.downloandCollectionSportFavorite(false);
+                            }
+
+                            List<SportGainVolume> sportGainVolumes = new ArrayList<>();
+                            for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                                if (doc.get("type") != null) {
+                                    sportGainVolumes.add(doc.toObject(SportGainVolume.class));
+                                }
+                            }
+                            sportGainVolumeListSportFavorite = sportGainVolumes;
+                            Log.w("FirebaseAdmin", "Data." + sportGainVolumes.toString());
+
+
+                            firebaseAdminInsertFavoriteSportAndNutrition.downloandCollectionSportFavorite(true);
+                        }
+                    });
+        }
+
+    }
+
+    //Download favorite Nutrition
+
+    public void downloadSlimmingNutritionFavorite() {
+
+        COLLECTION_FAVORITE_NUTRITION = "users/" + currentUser.getUid() + "/nutricionFavorita";
+
+        if (firebaseAdminInsertFavoriteSportAndNutrition != null) {
+            CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_FAVORITE_SPORT);
+            collectionReference.whereEqualTo("type", "adelgazar")
+                    .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                        @Override
+                        public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                            if (e != null) {
+                                Log.w("FirebaseAdmin", "Listen failed.", e);
+                                firebaseAdminInsertFavoriteSportAndNutrition.downloandCollectionNutritionFavorite(false);
+                            }
+
+                            List<NutritionSlimming> nutritionSlimmings = new ArrayList<>();
+                            for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                                if (doc.get("type") != null) {
+                                    nutritionSlimmings.add(doc.toObject(NutritionSlimming.class));
+                                }
+                            }
+                            Log.w("FirebaseAdmin", "Data." + nutritionSlimmings.toString());
+
+                            nutritionSlimmingListNutritionFavorite = nutritionSlimmings;
+
+                            firebaseAdminInsertFavoriteSportAndNutrition.downloandCollectionNutritionFavorite(true);
+                        }
+                    });
+        }
+    }
+
+    public void downloadToningNutritionFavorite() {
+
+        COLLECTION_FAVORITE_NUTRITION = "users/" + currentUser.getUid() + "/nutricionFavorita";
+
+        if (firebaseAdminInsertFavoriteSportAndNutrition != null) {
+            CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_FAVORITE_NUTRITION);
+            collectionReference.whereEqualTo("type", "tonificar")
+                    .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                        @Override
+                        public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                            if (e != null) {
+                                Log.w("FirebaseAdmin", "Listen failed.", e);
+                                firebaseAdminInsertFavoriteSportAndNutrition.downloandCollectionNutritionFavorite(false);
+                            }
+
+                            List<NutritionToning> nutritionTonings = new ArrayList<>();
+                            for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                                if (doc.get("type") != null) {
+                                    nutritionTonings.add(doc.toObject(NutritionToning.class));
+                                }
+                            }
+                            nutritionToningListNutritionFavorite = nutritionTonings;
+                            Log.w("FirebaseAdmin", "Data." + nutritionTonings.toString());
+
+
+                            firebaseAdminInsertFavoriteSportAndNutrition.downloandCollectionNutritionFavorite(true);
+                        }
+                    });
+        }
+    }
+
     public void downloadGainVolumeNutritionFavorite() {
-        if(firebaseAdminInsertFavoriteSportAndNutrition!=null){
-            CollectionReference  collectionReference = firebaseFirestore.collection("users/"+currentUser.getUid()+"/nutricionFavorita");
+        
+        COLLECTION_FAVORITE_NUTRITION = "users/" + currentUser.getUid() + "/nutricionFavorita";
+
+        if (firebaseAdminInsertFavoriteSportAndNutrition != null) {
+            CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_FAVORITE_NUTRITION);
             collectionReference.whereEqualTo("type", "ganarVolumen")
                     .addSnapshotListener(new EventListener<QuerySnapshot>() {
                         @Override
@@ -969,7 +1069,7 @@ public class FirebaseAdmin {
                                 }
                             }
                             nutritionGainVolumeListNutritionFavorite = nutritionGainVolumes;
-                            Log.w("FirebaseAdmin", "Data."+ nutritionGainVolumes.toString());
+                            Log.w("FirebaseAdmin", "Data." + nutritionGainVolumes.toString());
 
 
                             firebaseAdminInsertFavoriteSportAndNutrition.downloandCollectionNutritionFavorite(true);
