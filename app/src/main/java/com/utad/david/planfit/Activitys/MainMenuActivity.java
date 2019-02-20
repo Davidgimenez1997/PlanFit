@@ -230,11 +230,6 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
                 seleted = 2;
                 fragment = FirstFragment.newInstance(seleted);
                 break;
-            case R.id.nav_comunidad:
-                setTitle(R.string.four_nav_name);
-                seleted = 3;
-                fragment = FirstFragment.newInstance(seleted);
-                break;
         }
 
         //Remplazamos el fragment

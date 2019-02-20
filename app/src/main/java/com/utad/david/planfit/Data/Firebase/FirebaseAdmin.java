@@ -1048,7 +1048,7 @@ public class FirebaseAdmin {
     }
 
     public void downloadGainVolumeNutritionFavorite() {
-        
+
         COLLECTION_FAVORITE_NUTRITION = "users/" + currentUser.getUid() + "/nutricionFavorita";
 
         if (firebaseAdminInsertFavoriteSportAndNutrition != null) {

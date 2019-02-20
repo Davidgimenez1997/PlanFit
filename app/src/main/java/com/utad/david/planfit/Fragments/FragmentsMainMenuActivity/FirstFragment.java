@@ -60,8 +60,6 @@ public class FirstFragment extends Fragment {
             configViewNutrition();
         }else if(selected == 2){
             configViewPlan();
-        }else if(selected == 3){
-            configViewCommunities();
         }
 
         return view;
@@ -161,15 +159,7 @@ public class FirstFragment extends Fragment {
         second_button.setText(getString(R.string.ver_tu_plan));
         three_button.setVisibility(View.INVISIBLE);
     }
-
-    private void configViewCommunities(){
-        textViewInfo.setText(getString(R.string.mensajes));
-        first_button.setText(getString(R.string.mensajes_deportes));
-        second_button.setText(getString(R.string.mensajes_nutricion));
-        three_button.setVisibility(View.INVISIBLE);
-    }
-
-
+    
     private void findViewById(View view){
         textViewInfo = view.findViewById(R.id.textViewInfo);
         first_button = view.findViewById(R.id.first_button);
