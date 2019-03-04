@@ -201,6 +201,9 @@ public class FirebaseAdmin {
                                 Log.d("FirebaseAdmin", "signInWithEmail:success");
                                 currentUser = mAuth.getCurrentUser();
 
+                                COLLECTION_FAVORITE_SPORT = "users/" + currentUser.getUid() + "/deporteFavorito";
+                                COLLECTION_FAVORITE_NUTRITION = "users/" + currentUser.getUid() + "/nutricionFavorita";
+
                                 firebaseAdminLoginAndRegisterListener.singInWithEmailAndPassword(true);
                             } else {
                                 // If sign in fails, display a message to the user.

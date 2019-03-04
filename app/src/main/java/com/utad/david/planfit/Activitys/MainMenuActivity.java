@@ -35,8 +35,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.security.MessageDigest;
 
 
 public class MainMenuActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,FirebaseAdmin.FirebaseAdminInsertAndDownloandListener,FirstFragment.OnFragmentInteractionListener{

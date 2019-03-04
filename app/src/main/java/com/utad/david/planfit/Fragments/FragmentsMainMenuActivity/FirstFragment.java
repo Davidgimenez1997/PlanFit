@@ -159,7 +159,7 @@ public class FirstFragment extends Fragment {
         second_button.setText(getString(R.string.ver_tu_plan));
         three_button.setVisibility(View.INVISIBLE);
     }
-    
+
     private void findViewById(View view){
         textViewInfo = view.findViewById(R.id.textViewInfo);
         first_button = view.findViewById(R.id.first_button);
