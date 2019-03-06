@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.DialogFragment.EditPersonalDataUser;
@@ -113,7 +115,7 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
     }
 
     public void checkPhotoUserNull(User user) {
-        if(user!=null){
+        if(user.getImgUser()!=null){
             if(user.getImgUser().equals("")){
                 imagemenu.setImageResource(R.drawable.icon_user);
             }else{
@@ -124,6 +126,13 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
         }
     }
 
+    private void putPhotoUser(String imgUser) {
+        RequestOptions requestOptions = new RequestOptions();
+        requestOptions.placeholder(R.drawable.icon_user);
+        Glide.with(this).setDefaultRequestOptions(requestOptions).load(imgUser).into(imagemenu);
+    }
+
+    /*
     //Sirve para poner la foto que hemos recogido en el PersonalData en la cabecera del menu
     public void putPhotoUser(String stringUri) {
         Uri uri = Uri.parse(stringUri);
@@ -142,6 +151,7 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
                 e.printStackTrace();
             }
     }
+*/
 
     //Cuando le damos hacia atrás con el menu abierto se cierra el menu
     @Override
