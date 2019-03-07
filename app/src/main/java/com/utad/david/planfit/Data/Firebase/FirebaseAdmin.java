@@ -112,6 +112,8 @@ public class FirebaseAdmin {
     public interface FirebaseAdminUpdateAndDeleteUserListener {
         void updatePhotoInFirebase(boolean end);
 
+        void deletePhotoInFirebase(boolean end);
+
         void updateEmailInFirebase(boolean end);
 
         void updatePasswordInFirebase(boolean end);
@@ -246,7 +248,7 @@ public class FirebaseAdmin {
             */
 
             insertDataUserIntoFirebase(user);
-            uploadImage();
+            uploadImage(SessionUser.getInstance().user.getImgUser());
 
         }
     }
@@ -270,9 +272,9 @@ public class FirebaseAdmin {
                 });
     }
 
-    private void uploadImage() {
+    private void uploadImage(String image) {
 
-        Uri uri = Uri.parse(SessionUser.getInstance().user.getImgUser());
+        Uri uri = Uri.parse(image);
 
         if(uri != null)
         {
@@ -282,7 +284,6 @@ public class FirebaseAdmin {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             Log.d("FirebaseAdmin", "Photo update successfully written!");
-                            //SessionUser.getInstance().user.setImgUser(taskSnapshot.getUploadSessionUri().toString());
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -345,26 +346,45 @@ public class FirebaseAdmin {
 
     //Update info user
 
+    public void deletePhoto(){
+        if(firebaseAdminUpdateAndDeleteUserListener!=null){
+            StorageReference desertRef = storageReference.child("images/"+ currentUser.getUid());
+
+            // Delete the file
+            desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    // File deleted successfully
+                    firebaseAdminUpdateAndDeleteUserListener.deletePhotoInFirebase(true);
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    firebaseAdminUpdateAndDeleteUserListener.deletePhotoInFirebase(false);
+                }
+            });
+        }
+    }
+
     public void updatePhotoUserInFirebase() {
-        if (firebaseAdminUpdateAndDeleteUserListener != null) {
-            DocumentReference myUserRef = firebaseFirestore.collection(COLLECTION_USER_FIREBASE).document(currentUser.getUid());
-            Map<String, Object> user = new HashMap<>();
-            user.put("imgUser", userDataFirebase.getImgUser());
-            myUserRef.update(user)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Log.d("FirebaseAdmin", "DocumentSnapshot successfully updated!");
-                            firebaseAdminUpdateAndDeleteUserListener.updatePhotoInFirebase(true);
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.w("FirebaseAdmin", "Error updating document", e);
-                            firebaseAdminUpdateAndDeleteUserListener.updatePhotoInFirebase(false);
-                        }
-                    });
+        if(firebaseAdminUpdateAndDeleteUserListener!=null){
+            StorageReference desertRef = storageReference.child("images/"+ currentUser.getUid());
+
+            // Delete the file
+            desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    // File deleted successfully
+                    uploadImage(userDataFirebase.getImgUser());
+                    firebaseAdminUpdateAndDeleteUserListener.updatePhotoInFirebase(true);
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    firebaseAdminUpdateAndDeleteUserListener.updatePhotoInFirebase(false);
+                }
+            });
+
         }
     }
 

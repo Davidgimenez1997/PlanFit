@@ -23,6 +23,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.utad.david.planfit.Activitys.FirstActivity;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
@@ -268,7 +270,7 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
     }
 
     private void checkAndPhotoUser(User user){
-        if(user.getImgUser().equals("")){
+        if(user.getImgUser()!=null){
             imageView.setImageResource(R.drawable.icon_gallery);
         }else{
             putPhotoUser(user.getImgUser());
@@ -276,34 +278,20 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
     }
 
     public void putPhotoUser(String stringUri) {
-        Uri uri = Uri.parse(stringUri);
-        final InputStream imageStream;
-        try {
-            imageStream = getActivity().getContentResolver().openInputStream(uri);
-            final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-            RoundedBitmapDrawable roundedDrawable1 =
-                    RoundedBitmapDrawableFactory.create(getResources(), selectedImage);
 
-            //asignamos el CornerRadius
-            roundedDrawable1.setCornerRadius(selectedImage.getHeight());
-            imageView.setImageDrawable(roundedDrawable1);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+        RequestOptions requestOptions = new RequestOptions();
+        requestOptions.placeholder(R.drawable.icon_user);
+        Glide.with(this).setDefaultRequestOptions(requestOptions).load(stringUri).into(imageView);
+
     }
 
     private void onClickButtonDeletePhoto(){
+
         buttonDeletePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                imageView.setImageResource(R.drawable.icon_gallery);
-                if(!userUpdate.getImgUser().equals("")){
-                    buttonUpdatePhoto.setEnabled(true);
-                    userUpdate.setImgUser("");
-                    onClickButtonUpdatePhoto();
-                }else{
-                    buttonUpdatePhoto.setEnabled(false);
-                }
+                SessionUser.getInstance().firebaseAdmin.userDataFirebase = userUpdate;
+                SessionUser.getInstance().firebaseAdmin.deletePhoto();
             }
         });
     }
@@ -372,6 +360,14 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
     public void updatePhotoInFirebase(boolean end) {
         if(end){
             buttonUpdatePhoto.setEnabled(false);
+            putPhotoUser(userUpdate.getImgUser());
+        }
+    }
+
+    @Override
+    public void deletePhotoInFirebase(boolean end) {
+        if(end){
+            imageView.setImageResource(R.drawable.icon_gallery);
         }
     }
 
