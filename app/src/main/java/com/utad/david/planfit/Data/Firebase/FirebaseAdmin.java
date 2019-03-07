@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 
 public class FirebaseAdmin {
 
@@ -892,7 +891,7 @@ public class FirebaseAdmin {
             Map<String, Object> slimmingMap = new HashMap<>();
             slimmingMap.put("name", nutritionSlimming.getName());
             slimmingMap.put("photo", nutritionSlimming.getPhoto());
-            slimmingMap.put("video", nutritionSlimming.getVideo());
+            slimmingMap.put("url", nutritionSlimming.getUrl());
             slimmingMap.put("description", nutritionSlimming.getDescription());
             slimmingMap.put("type", "adelgazar");
             insertFavoriteNutritionnSlimming(slimmingMap);
@@ -928,7 +927,7 @@ public class FirebaseAdmin {
             Map<String, Object> slimmingMap = new HashMap<>();
             slimmingMap.put("name", nutritionToning.getName());
             slimmingMap.put("photo", nutritionToning.getPhoto());
-            slimmingMap.put("video", nutritionToning.getVideo());
+            slimmingMap.put("url", nutritionToning.getUrl());
             slimmingMap.put("description", nutritionToning.getDescription());
             slimmingMap.put("type", "tonificar");
             insertFavoriteNutritionToning(slimmingMap);
@@ -964,7 +963,7 @@ public class FirebaseAdmin {
             Map<String, Object> slimmingMap = new HashMap<>();
             slimmingMap.put("name", nutritionGainVolume.getName());
             slimmingMap.put("photo", nutritionGainVolume.getPhoto());
-            slimmingMap.put("video", nutritionGainVolume.getVideo());
+            slimmingMap.put("url", nutritionGainVolume.getUrl());
             slimmingMap.put("description", nutritionGainVolume.getDescription());
             slimmingMap.put("type", "ganarVolumen");
             insertFavoriteNutritionGainVolume(slimmingMap);
@@ -975,9 +974,10 @@ public class FirebaseAdmin {
 
     public void downloadSlimmingSportFavorite() {
 
-        COLLECTION_FAVORITE_SPORT = "users/" + currentUser.getUid() + "/deporteFavorito";
-
         if (firebaseAdminInsertFavoriteSportAndNutrition != null) {
+
+            COLLECTION_FAVORITE_SPORT = "users/" + currentUser.getUid() + "/deporteFavorito";
+
             CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_FAVORITE_SPORT);
             collectionReference.whereEqualTo("type", "adelgazar")
                     .addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -1006,9 +1006,10 @@ public class FirebaseAdmin {
 
     public void downloadToningSportFavorite() {
 
-        COLLECTION_FAVORITE_SPORT = "users/" + currentUser.getUid() + "/deporteFavorito";
-
         if (firebaseAdminInsertFavoriteSportAndNutrition != null) {
+
+            COLLECTION_FAVORITE_SPORT = "users/" + currentUser.getUid() + "/deporteFavorito";
+
             CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_FAVORITE_SPORT);
             collectionReference.whereEqualTo("type", "tonificar")
                     .addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -1037,9 +1038,10 @@ public class FirebaseAdmin {
 
     public void downloadGainVolumeSportFavorite() {
 
-        COLLECTION_FAVORITE_SPORT = "users/" + currentUser.getUid() + "/deporteFavorito";
-
         if (firebaseAdminInsertFavoriteSportAndNutrition != null) {
+
+            COLLECTION_FAVORITE_SPORT = "users/" + currentUser.getUid() + "/deporteFavorito";
+
             CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_FAVORITE_SPORT);
             collectionReference.whereEqualTo("type", "ganarVolumen")
                     .addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -1071,9 +1073,11 @@ public class FirebaseAdmin {
 
     public void downloadSlimmingNutritionFavorite() {
 
-        COLLECTION_FAVORITE_NUTRITION = "users/" + currentUser.getUid() + "/nutricionFavorita";
-
         if (firebaseAdminInsertFavoriteSportAndNutrition != null) {
+
+            COLLECTION_FAVORITE_NUTRITION = "users/" + currentUser.getUid() + "/nutricionFavorita";
+
+
             CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_FAVORITE_SPORT);
             collectionReference.whereEqualTo("type", "adelgazar")
                     .addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -1102,9 +1106,10 @@ public class FirebaseAdmin {
 
     public void downloadToningNutritionFavorite() {
 
-        COLLECTION_FAVORITE_NUTRITION = "users/" + currentUser.getUid() + "/nutricionFavorita";
-
         if (firebaseAdminInsertFavoriteSportAndNutrition != null) {
+
+            COLLECTION_FAVORITE_NUTRITION = "users/" + currentUser.getUid() + "/nutricionFavorita";
+
             CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_FAVORITE_NUTRITION);
             collectionReference.whereEqualTo("type", "tonificar")
                     .addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -1133,9 +1138,10 @@ public class FirebaseAdmin {
 
     public void downloadGainVolumeNutritionFavorite() {
 
-        COLLECTION_FAVORITE_NUTRITION = "users/" + currentUser.getUid() + "/nutricionFavorita";
-
         if (firebaseAdminInsertFavoriteSportAndNutrition != null) {
+
+            COLLECTION_FAVORITE_NUTRITION = "users/" + currentUser.getUid() + "/nutricionFavorita";
+
             CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_FAVORITE_NUTRITION);
             collectionReference.whereEqualTo("type", "ganarVolumen")
                     .addSnapshotListener(new EventListener<QuerySnapshot>() {
