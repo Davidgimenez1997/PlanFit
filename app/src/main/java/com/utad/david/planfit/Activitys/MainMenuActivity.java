@@ -10,10 +10,12 @@ import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.DialogFragment.EditPersonalDataUser;
 import com.utad.david.planfit.DialogFragment.InfoAboutApp;
+import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.CreatePlan.FragmentCreatePlan;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.FirstFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Nutrition.NutritionGainVolumeFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Nutrition.NutritionSlimmingFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Nutrition.NutritionToningFragment;
+import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.ShowPlan.FragmentShowPlan;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Sport.SportGainVolumeFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Sport.SportSlimmingFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Sport.SportToningFragment;
@@ -45,7 +47,11 @@ import java.io.InputStream;
 import java.security.MessageDigest;
 
 
-public class MainMenuActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,FirebaseAdmin.FirebaseAdminInsertAndDownloandListener,FirstFragment.OnFragmentInteractionListener{
+public class MainMenuActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener,
+        FirebaseAdmin.FirebaseAdminInsertAndDownloandListener,
+        FirstFragment.OnFragmentInteractionListener,
+        EditPersonalDataUser.OnFragmentInteractionListener{
 
     private ImageView imagemenu;
     private TextView nickname;
@@ -93,6 +99,15 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
 
             //Si la foto es null cogemos una por defecto
             checkPhotoUserNull(SessionUser.getInstance().firebaseAdmin.userDataFirebase);
+        }else{
+            if(SessionUser.getInstance().firebaseAdmin.userDataFirebase.getImgUser()==null){
+                Log.d("DatosUsuarioFirebase"," "+SessionUser.getInstance().firebaseAdmin.userDataFirebase.toString());
+
+                putInfoUserInHeaderMenu(SessionUser.getInstance().firebaseAdmin.userDataFirebase);
+
+                //Si la foto es null cogemos una por defecto
+                checkPhotoUserNull(SessionUser.getInstance().firebaseAdmin.userDataFirebase);
+            }
         }
     }
 
@@ -116,11 +131,7 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
 
     public void checkPhotoUserNull(User user) {
         if(user.getImgUser()!=null){
-            if(user.getImgUser().equals("")){
-                imagemenu.setImageResource(R.drawable.icon_user);
-            }else{
-                putPhotoUser(user.getImgUser());
-            }
+            putPhotoUser(user.getImgUser());
         }else{
             imagemenu.setImageResource(R.drawable.icon_user);
         }
@@ -313,6 +324,24 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
     }
 
     @Override
+    public void clickOnCreatePlan() {
+        FragmentCreatePlan fragmentCreatePlan = new FragmentCreatePlan();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.content_frame, fragmentCreatePlan);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    @Override
+    public void clickOnShowPlan() {
+        FragmentShowPlan fragmentShowPlan = new FragmentShowPlan();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.content_frame, fragmentShowPlan);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    @Override
     public void insertUserDataInFirebase(boolean end) {
         //Metodo implementado pero no se usa
     }
@@ -328,4 +357,12 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
         //Metodo implementado pero no se usa
     }
 
+    @Override
+    public void updateData(User user) {
+
+        putInfoUserInHeaderMenu(user);
+
+        checkPhotoUserNull(user);
+
+    }
 }

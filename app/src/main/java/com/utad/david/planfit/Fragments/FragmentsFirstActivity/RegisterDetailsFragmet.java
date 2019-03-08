@@ -181,6 +181,8 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
                 imageViewUser.setImageBitmap(selectedImage);
                 if(imageUri!=null){
                     SessionUser.getInstance().user.setImgUser(imageUri.toString());
+                }else{
+                    SessionUser.getInstance().user.setImgUser(null);
                 }
 
             } catch (FileNotFoundException e) {
@@ -195,6 +197,11 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
     private void setDataUser(){
         SessionUser.getInstance().user.setFullName(fullName.getText().toString());
         SessionUser.getInstance().user.setNickName(nickName.getText().toString());
+        if(SessionUser.getInstance().user.getImgUser()!=null){
+            SessionUser.getInstance().user.setImgUser(imageUri.toString());
+        }else{
+            SessionUser.getInstance().user.setImgUser(null);
+        }
     }
 
     @Override

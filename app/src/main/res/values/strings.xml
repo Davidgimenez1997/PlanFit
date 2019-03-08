@@ -70,8 +70,12 @@
     <string name="title_activity_youtube">YoutubeActivity</string>
     <string name="abrir_video">Abrir Video</string>
     <string name="agregar_a_favoritos">Agregar a favoritos</string>
-    <string name="borrar_de_favoritos">Borrar de favoritos</string>
     <string name="abrir_receta">Abrir receta</string>
+
+    <string-array name="timePlan">
+        <item>Dia</item>
+        <item>Semana</item>
+    </string-array>
 
 
 </resources>

@@ -1,5 +1,6 @@
 package com.utad.david.planfit.DialogFragment;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -28,6 +29,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.utad.david.planfit.Activitys.FirstActivity;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
+import com.utad.david.planfit.Fragments.FragmentsFirstActivity.RegisterDetailsFragmet;
 import com.utad.david.planfit.Model.User;
 import com.utad.david.planfit.R;
 
@@ -59,6 +61,8 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
     private Button buttonUpdatePhoto;
     private Button buttonDeleteAccount;
     private User userUpdate;
+    private EditPersonalDataUser.OnFragmentInteractionListener mListener;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -92,7 +96,7 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
     }
 
     private void checkImageUser(){
-        if(userUpdate.getImgUser()!=null || !userUpdate.getImgUser().equals("")){
+        if(userUpdate.getImgUser()==null || userUpdate.getImgUser().equals("")){
             buttonUpdatePhoto.setEnabled(false);
         }else{
             onClickButtonUpdatePhoto();
@@ -270,7 +274,7 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
     }
 
     private void checkAndPhotoUser(User user){
-        if(user.getImgUser()!=null){
+        if(user.getImgUser()==null){
             imageView.setImageResource(R.drawable.icon_gallery);
         }else{
             putPhotoUser(user.getImgUser());
@@ -359,22 +363,34 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
     @Override
     public void updatePhotoInFirebase(boolean end) {
         if(end){
-            buttonUpdatePhoto.setEnabled(false);
-            putPhotoUser(userUpdate.getImgUser());
+            if(mListener!=null){
+                buttonUpdatePhoto.setEnabled(false);
+                putPhotoUser(userUpdate.getImgUser());
+                SessionUser.getInstance().user.setImgUser(userUpdate.getImgUser());
+                mListener.updateData(userUpdate);
+            }
         }
     }
 
     @Override
     public void deletePhotoInFirebase(boolean end) {
         if(end){
-            imageView.setImageResource(R.drawable.icon_gallery);
+            if(mListener!=null){
+                imageView.setImageResource(R.drawable.icon_gallery);
+                SessionUser.getInstance().user.setImgUser(null);
+                userUpdate.setImgUser(null);
+                mListener.updateData(userUpdate);
+            }
         }
     }
 
     @Override
     public void updateEmailInFirebase(boolean end) {
         if(end==true){
-            createAndShowAlertDialogUpdate(getString(R.string.info_update_email));
+            if(mListener!=null){
+                createAndShowAlertDialogUpdate(getString(R.string.info_update_email));
+                mListener.updateData(userUpdate);
+            }
         }
     }
 
@@ -388,18 +404,24 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
     @Override
     public void updateNickNameInFirebase(boolean end) {
         if(end){
-            buttonUpdateNickName.setEnabled(false);
-            createAndShowAlertDialogUpdateFullNameOrNickName(getString(R.string.info_update_nickname));
-            editTextNickName.setText(userUpdate.getNickName());
+            if(mListener!=null){
+                buttonUpdateNickName.setEnabled(false);
+                createAndShowAlertDialogUpdateFullNameOrNickName(getString(R.string.info_update_nickname));
+                editTextNickName.setText(userUpdate.getNickName());
+                mListener.updateData(userUpdate);
+            }
         }
     }
 
     @Override
     public void updateFullNameInFirebase(boolean end) {
         if(end){
-            buttonUpdateFullName.setEnabled(false);
-            createAndShowAlertDialogUpdateFullNameOrNickName(getString(R.string.info_update_fullname));
-            editTextFullName.setText(userUpdate.getFullName());
+            if(mListener!=null){
+                buttonUpdateFullName.setEnabled(false);
+                createAndShowAlertDialogUpdateFullNameOrNickName(getString(R.string.info_update_fullname));
+                editTextFullName.setText(userUpdate.getFullName());
+                mListener.updateData(userUpdate);
+            }
         }
     }
 
@@ -484,5 +506,26 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         getActivity().finish();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof EditPersonalDataUser.OnFragmentInteractionListener) {
+            mListener = (EditPersonalDataUser.OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+    public interface OnFragmentInteractionListener {
+       void updateData(User user);
     }
 }

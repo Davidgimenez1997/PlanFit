@@ -158,6 +158,30 @@ public class FirstFragment extends Fragment {
         first_button.setText(getString(R.string.crear_plan));
         second_button.setText(getString(R.string.ver_tu_plan));
         three_button.setVisibility(View.INVISIBLE);
+        onClickCreatePlan();
+        onClickShowPlan();
+    }
+
+    private void onClickCreatePlan() {
+        first_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mListener!=null){
+                    mListener.clickOnCreatePlan();
+                }
+            }
+        });
+    }
+
+    private void onClickShowPlan() {
+        second_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mListener!=null){
+                    mListener.clickOnShowPlan();
+                }
+            }
+        });
     }
 
     private void findViewById(View view){
@@ -191,6 +215,8 @@ public class FirstFragment extends Fragment {
         void clickOnAdelgazarNutrition();
         void clickOnTonificarNutrition();
         void clickOnGanarVolumenNutrition();
+        void clickOnCreatePlan();
+        void clickOnShowPlan();
     }
 }
 
