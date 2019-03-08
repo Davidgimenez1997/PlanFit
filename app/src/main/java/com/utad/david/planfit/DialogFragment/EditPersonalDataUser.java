@@ -366,9 +366,12 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
             if(mListener!=null){
                 buttonUpdatePhoto.setEnabled(false);
                 putPhotoUser(userUpdate.getImgUser());
-                SessionUser.getInstance().user.setImgUser(userUpdate.getImgUser());
+                //SessionUser.getInstance().firebaseAdmin.uploadImage(userUpdate.getImgUser());
                 mListener.updateData(userUpdate);
             }
+        }
+        else{
+            mListener.updateData(userUpdate);
         }
     }
 
@@ -444,7 +447,7 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
                 imageView.setImageBitmap(selectedImage);
                 buttonUpdatePhoto.setEnabled(true);
                 if(imageUri!=null){
-                   SessionUser.getInstance().firebaseAdmin.userDataFirebase.setImgUser(imageUri.toString());
+                   userUpdate.setImgUser(imageUri.toString());
                    onClickButtonUpdatePhoto();
                 }
 
@@ -526,6 +529,6 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
     }
 
     public interface OnFragmentInteractionListener {
-       void updateData(User user);
+        void  updateData(User user);
     }
 }
