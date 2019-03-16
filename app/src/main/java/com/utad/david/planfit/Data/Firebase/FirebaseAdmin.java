@@ -1112,7 +1112,7 @@ public class FirebaseAdmin {
             COLLECTION_FAVORITE_NUTRITION = "users/" + currentUser.getUid() + "/nutricionFavorita";
 
 
-            CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_FAVORITE_SPORT);
+            CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_FAVORITE_NUTRITION);
             collectionReference.whereEqualTo("type", "adelgazar")
                     .addSnapshotListener(new EventListener<QuerySnapshot>() {
                         @Override
