@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
@@ -209,6 +210,8 @@ public class MainMenuActivity extends AppCompatActivity
             }
             InfoAboutApp infoAboutApp = new InfoAboutApp();
             infoAboutApp.show(transaction,"dialog");
+        }else if(id == R.id.nav_favorite){
+            Toast.makeText(this,"favoritos",Toast.LENGTH_LONG).show();
         }
 
         return true;

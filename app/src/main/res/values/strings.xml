@@ -71,6 +71,7 @@
     <string name="abrir_video">Abrir Video</string>
     <string name="agregar_a_favoritos">Agregar a favoritos</string>
     <string name="abrir_receta">Abrir receta</string>
+    <string name="itemfavoritos">Favoritos</string>
 
     <string-array name="timePlan">
         <item>Dia</item>
