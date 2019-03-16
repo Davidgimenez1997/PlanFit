@@ -3,6 +3,7 @@ package com.utad.david.planfit.DialogFragment.Nutrition;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
@@ -12,16 +13,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
-import com.utad.david.planfit.Activitys.YoutubeActivity;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
-import com.utad.david.planfit.DialogFragment.Sport.SportDetailsDialogFragment;
 import com.utad.david.planfit.Model.Nutrition.NutritionGainVolume;
 import com.utad.david.planfit.Model.Nutrition.NutritionSlimming;
 import com.utad.david.planfit.Model.Nutrition.NutritionToning;
-import com.utad.david.planfit.Model.Sport.SportGainVolume;
-import com.utad.david.planfit.Model.Sport.SportSlimming;
-import com.utad.david.planfit.Model.Sport.SportToning;
 import com.utad.david.planfit.R;
 
 import java.util.ArrayList;
@@ -84,7 +80,7 @@ public class NutritionDetailsDialogFragment extends DialogFragment implements Fi
     }
 
     private TextView textViewTitle;
-    private Button buttonOpenYoutube;
+    private Button buttonOpenRecipe;
     private TextView textViewDescription;
     private ImageView imageViewSport;
     private Button buttonInsert;
@@ -111,7 +107,7 @@ public class NutritionDetailsDialogFragment extends DialogFragment implements Fi
 
     public void findById(View v) {
         textViewTitle = v.findViewById(R.id.textTitleNutrition);
-        buttonOpenYoutube = v.findViewById(R.id.open_youtube_nutrition);
+        buttonOpenRecipe = v.findViewById(R.id.open_recipe_nutrition);
         textViewDescription = v.findViewById(R.id.textviewDescriptionNutrition);
         imageViewSport = v.findViewById(R.id.imageViewNutrition);
         buttonInsert = v.findViewById(R.id.insert_favoriteNutrition);
@@ -138,23 +134,22 @@ public class NutritionDetailsDialogFragment extends DialogFragment implements Fi
     }
 
     private void onClickButtonOpenYoutube() {
-        buttonOpenYoutube.setOnClickListener(new View.OnClickListener() {
+        buttonOpenRecipe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(), YoutubeActivity.class);
+                Intent i = new Intent(Intent.ACTION_VIEW);
                 switch (option){
                     case 0:
-                        intent.putExtra("url", nutritionSlimming.getVideo());
+                        i.setData(Uri.parse(nutritionSlimming.getUrl()));
                         break;
                     case 1:
-                        intent.putExtra("url", nutritionToning.getVideo());
+                        i.setData(Uri.parse(nutritionToning.getUrl()));
                         break;
                     case 2:
-                        intent.putExtra("url", nutritionGainVolume.getVideo());
+                        i.setData(Uri.parse(nutritionGainVolume.getUrl()));
                         break;
                 }
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
+                startActivity(i);
             }
         });
     }

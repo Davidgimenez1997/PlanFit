@@ -7,7 +7,7 @@ public class NutritionSlimming implements Parcelable {
 
     private String name;
     private String photo;
-    private String video;
+    private String url;
     private String description;
     private String type;
 
@@ -17,7 +17,7 @@ public class NutritionSlimming implements Parcelable {
     protected NutritionSlimming(Parcel in) {
         name = in.readString();
         photo = in.readString();
-        video = in.readString();
+        url = in.readString();
         description = in.readString();
     }
 
@@ -49,12 +49,12 @@ public class NutritionSlimming implements Parcelable {
         this.photo = photo;
     }
 
-    public String getVideo() {
-        return video;
+    public String getUrl() {
+        return url;
     }
 
-    public void setVideo(String video) {
-        this.video = video;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public String getDescription() {
@@ -74,7 +74,7 @@ public class NutritionSlimming implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
         dest.writeString(photo);
-        dest.writeString(video);
+        dest.writeString(url);
         dest.writeString(description);
     }
 

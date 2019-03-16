@@ -4,14 +4,18 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.DialogFragment.EditPersonalDataUser;
 import com.utad.david.planfit.DialogFragment.InfoAboutApp;
+import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.CreatePlan.FragmentCreatePlan;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.FirstFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Nutrition.NutritionGainVolumeFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Nutrition.NutritionSlimmingFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Nutrition.NutritionToningFragment;
+import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.ShowPlan.FragmentShowPlan;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Sport.SportGainVolumeFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Sport.SportSlimmingFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Sport.SportToningFragment;
@@ -35,11 +39,19 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.security.MessageDigest;
 
 
-public class MainMenuActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,FirebaseAdmin.FirebaseAdminInsertAndDownloandListener,FirstFragment.OnFragmentInteractionListener{
+public class MainMenuActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener,
+        FirebaseAdmin.FirebaseAdminInsertAndDownloandListener,
+        FirstFragment.OnFragmentInteractionListener,
+        EditPersonalDataUser.OnFragmentInteractionListener{
 
     private ImageView imagemenu;
     private TextView nickname;
@@ -87,6 +99,15 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
 
             //Si la foto es null cogemos una por defecto
             checkPhotoUserNull(SessionUser.getInstance().firebaseAdmin.userDataFirebase);
+        }else{
+            if(SessionUser.getInstance().firebaseAdmin.userDataFirebase.getImgUser()==null){
+                Log.d("DatosUsuarioFirebase"," "+SessionUser.getInstance().firebaseAdmin.userDataFirebase.toString());
+
+                putInfoUserInHeaderMenu(SessionUser.getInstance().firebaseAdmin.userDataFirebase);
+
+                //Si la foto es null cogemos una por defecto
+                checkPhotoUserNull(SessionUser.getInstance().firebaseAdmin.userDataFirebase);
+            }
         }
     }
 
@@ -109,17 +130,20 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
     }
 
     public void checkPhotoUserNull(User user) {
-        if(user!=null){
-            if(user.getImgUser().equals("")){
-                imagemenu.setImageResource(R.drawable.icon_user);
-            }else{
-                putPhotoUser(user.getImgUser());
-            }
+        if(user.getImgUser()!=null){
+            putPhotoUser(user.getImgUser());
         }else{
             imagemenu.setImageResource(R.drawable.icon_user);
         }
     }
 
+    private void putPhotoUser(String imgUser) {
+        RequestOptions requestOptions = new RequestOptions();
+        requestOptions.placeholder(R.drawable.icon_user);
+        Glide.with(this).setDefaultRequestOptions(requestOptions).load(imgUser).into(imagemenu);
+    }
+
+    /*
     //Sirve para poner la foto que hemos recogido en el PersonalData en la cabecera del menu
     public void putPhotoUser(String stringUri) {
         Uri uri = Uri.parse(stringUri);
@@ -138,6 +162,7 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
                 e.printStackTrace();
             }
     }
+*/
 
     //Cuando le damos hacia atrás con el menu abierto se cierra el menu
     @Override
@@ -230,11 +255,6 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
                 seleted = 2;
                 fragment = FirstFragment.newInstance(seleted);
                 break;
-            case R.id.nav_comunidad:
-                setTitle(R.string.four_nav_name);
-                seleted = 3;
-                fragment = FirstFragment.newInstance(seleted);
-                break;
         }
 
         //Remplazamos el fragment
@@ -304,19 +324,40 @@ public class MainMenuActivity extends AppCompatActivity implements NavigationVie
     }
 
     @Override
+    public void clickOnCreatePlan() {
+        FragmentCreatePlan fragmentCreatePlan = new FragmentCreatePlan();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.content_frame, fragmentCreatePlan);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    @Override
+    public void clickOnShowPlan() {
+        FragmentShowPlan fragmentShowPlan = new FragmentShowPlan();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.content_frame, fragmentShowPlan);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    @Override
     public void insertUserDataInFirebase(boolean end) {
         //Metodo implementado pero no se usa
     }
 
 
     @Override
-    public void downloadInfoFirstDeveloper(boolean end) {
+    public void downloadInfotDeveloper(boolean end) {
         //Metodo implementado pero no se usa
     }
 
     @Override
-    public void downloadInfoSecondDeveloper(boolean end) {
-        //Metodo implementado pero no se usa
-    }
+    public void updateData(User user) {
 
+        putInfoUserInHeaderMenu(user);
+
+        checkPhotoUserNull(user);
+
+    }
 }

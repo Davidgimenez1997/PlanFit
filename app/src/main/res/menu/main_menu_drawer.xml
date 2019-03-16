@@ -15,9 +15,5 @@
         <item
                 android:id="@+id/nav_crear_tu_plan"
                 android:title="@string/three_nav_name"/>
-        <item
-                android:id="@+id/nav_comunidad"
-                android:title="@string/four_nav_name"/>
-
     </group>
 </menu>

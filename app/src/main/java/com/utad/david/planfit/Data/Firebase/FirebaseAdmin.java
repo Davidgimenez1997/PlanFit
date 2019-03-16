@@ -1,5 +1,6 @@
 package com.utad.david.planfit.Data.Firebase;
 
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -8,6 +9,9 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.*;
 import com.google.firebase.firestore.*;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Model.Developer;
 import com.utad.david.planfit.Model.Nutrition.NutritionGainVolume;
@@ -23,7 +27,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 
 public class FirebaseAdmin {
 
@@ -31,14 +34,17 @@ public class FirebaseAdmin {
     public FirebaseUser currentUser;
     public FirebaseAuth.AuthStateListener authStateListener;
     public FirebaseFirestore firebaseFirestore;
+    public FirebaseStorage storage;
+    public StorageReference storageReference;
+
     public FirebaseAdmin.FirebaseAdminInsertAndDownloandListener firebaseAdminInsertAndDownloandListener;
     public FirebaseAdmin.FirebaseAdminLoginAndRegisterListener firebaseAdminLoginAndRegisterListener;
     public FirebaseAdmin.FirebaseAdminUpdateAndDeleteUserListener firebaseAdminUpdateAndDeleteUserListener;
     public FirebaseAdmin.FirebaseAdminDownloandFragmentData firebaseAdminDownloandFragmentData;
     public FirebaseAdmin.FirebaseAdminInsertFavoriteSportAndNutrition firebaseAdminInsertFavoriteSportAndNutrition;
+
     public User userDataFirebase;
-    public Developer developerFirst;
-    public Developer developerSecond;
+    public Developer developerInfo;
     private AuthCredential credential;
 
     public List<SportSlimming> sportSlimmingListSport;
@@ -67,9 +73,12 @@ public class FirebaseAdmin {
     private String COLLECTION_FAVORITE_SPORT;
     private String COLLECTION_FAVORITE_NUTRITION;
 
+
     public FirebaseAdmin() {
         mAuth = FirebaseAuth.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
+        storage = FirebaseStorage.getInstance();
+        storageReference = storage.getReference();
     }
 
     /*
@@ -91,15 +100,15 @@ public class FirebaseAdmin {
 
         void downloadUserDataInFirebase(boolean end);
 
-        void downloadInfoFirstDeveloper(boolean end);
-
-        void downloadInfoSecondDeveloper(boolean end);
+        void downloadInfotDeveloper(boolean end);
     }
 
     //Update user info and delete
 
     public interface FirebaseAdminUpdateAndDeleteUserListener {
         void updatePhotoInFirebase(boolean end);
+
+        void deletePhotoInFirebase(boolean end);
 
         void updateEmailInFirebase(boolean end);
 
@@ -201,6 +210,9 @@ public class FirebaseAdmin {
                                 Log.d("FirebaseAdmin", "signInWithEmail:success");
                                 currentUser = mAuth.getCurrentUser();
 
+                                COLLECTION_FAVORITE_SPORT = "users/" + currentUser.getUid() + "/deporteFavorito";
+                                COLLECTION_FAVORITE_NUTRITION = "users/" + currentUser.getUid() + "/nutricionFavorita";
+
                                 firebaseAdminLoginAndRegisterListener.singInWithEmailAndPassword(true);
                             } else {
                                 // If sign in fails, display a message to the user.
@@ -222,13 +234,17 @@ public class FirebaseAdmin {
             user.put("password", SessionUser.getInstance().user.getPassword());
             user.put("fullName", SessionUser.getInstance().user.getFullName());
             user.put("nickName", SessionUser.getInstance().user.getNickName());
+
+            /*
             if (SessionUser.getInstance().user.getImgUser() != null) {
                 user.put("imgUser", SessionUser.getInstance().user.getImgUser());
             } else {
                 user.put("imgUser", "");
             }
+            */
 
             insertDataUserIntoFirebase(user);
+            uploadImage(SessionUser.getInstance().user.getImgUser());
 
         }
     }
@@ -252,12 +268,36 @@ public class FirebaseAdmin {
                 });
     }
 
+    public void uploadImage(String image) {
+
+        Uri uri = Uri.parse(image);
+
+        if(uri != null)
+        {
+            StorageReference ref = storageReference.child("images/"+ currentUser.getUid());
+            ref.putFile(uri)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Log.d("FirebaseAdmin", "Photo update successfully written!");
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w("FirebaseAdmin", "Error writing document", e);
+                        }
+                    });
+        }
+    }
+
     //Download user info
 
     public void dowloandDataUserFirebase() {
         DocumentReference myUserRef = firebaseFirestore.collection(COLLECTION_USER_FIREBASE).document(currentUser.getUid());
         if (firebaseAdminInsertAndDownloandListener != null) {
             myUserRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+
                 @Override
                 public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException e) {
                     if (e != null) {
@@ -269,7 +309,8 @@ public class FirebaseAdmin {
                         Log.d("FirebaseAdmin", "Current data: " + snapshot.getData());
                         User user = snapshot.toObject(User.class);
                         userDataFirebase = user;
-                        firebaseAdminInsertAndDownloandListener.downloadUserDataInFirebase(true);
+                        downloadPhoto();
+                        //firebaseAdminInsertAndDownloandListener.downloadUserDataInFirebase(true);
                     } else {
                         Log.d("FirebaseAdmin", "Current data: null");
                         firebaseAdminInsertAndDownloandListener.downloadUserDataInFirebase(false);
@@ -279,28 +320,87 @@ public class FirebaseAdmin {
         }
     }
 
+    public void downloadPhoto(){
+        storageReference.child("images/"+ currentUser.getUid()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                // Got the download URL for 'users/me/profile.png'
+                Log.d("FirebaseAdmin", "URL PHOTO: " +uri.toString());
+                userDataFirebase.setImgUser(uri.toString());
+                firebaseAdminInsertAndDownloandListener.downloadUserDataInFirebase(true);
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
+                firebaseAdminInsertAndDownloandListener.downloadUserDataInFirebase(false);
+
+            }
+        });
+    }
+
     //Update info user
 
+    public void deletePhoto(){
+        if(firebaseAdminUpdateAndDeleteUserListener!=null){
+            StorageReference desertRef = storageReference.child("images/"+ currentUser.getUid());
+
+            // Delete the file
+            desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    // File deleted successfully
+                    firebaseAdminUpdateAndDeleteUserListener.deletePhotoInFirebase(true);
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    firebaseAdminUpdateAndDeleteUserListener.deletePhotoInFirebase(false);
+                }
+            });
+        }
+    }
+
     public void updatePhotoUserInFirebase() {
-        if (firebaseAdminUpdateAndDeleteUserListener != null) {
-            DocumentReference myUserRef = firebaseFirestore.collection(COLLECTION_USER_FIREBASE).document(currentUser.getUid());
-            Map<String, Object> user = new HashMap<>();
-            user.put("imgUser", userDataFirebase.getImgUser());
-            myUserRef.update(user)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Log.d("FirebaseAdmin", "DocumentSnapshot successfully updated!");
-                            firebaseAdminUpdateAndDeleteUserListener.updatePhotoInFirebase(true);
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.w("FirebaseAdmin", "Error updating document", e);
-                            firebaseAdminUpdateAndDeleteUserListener.updatePhotoInFirebase(false);
-                        }
-                    });
+        if(firebaseAdminUpdateAndDeleteUserListener!=null){
+
+            StorageReference desertRef = storageReference.child("images/"+ currentUser.getUid());
+
+            // Delete the file
+            desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    uploadImage(userDataFirebase.getImgUser());
+                    firebaseAdminUpdateAndDeleteUserListener.updatePhotoInFirebase(true);
+                    // File deleted successfully
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    uploadImage(userDataFirebase.getImgUser());
+                    firebaseAdminUpdateAndDeleteUserListener.updatePhotoInFirebase(false);
+                }
+            });
+            /*
+            StorageReference desertRef = storageReference.child("images/"+ cƒdeurrentUser.getUid());
+
+            // Delete the file
+            desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    // File deleted successfully
+                    uploadImage(userDataFirebase.getImgUser());
+                    firebaseAdminUpdateAndDeleteUserListener.updatePhotoInFirebase(true);
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    firebaseAdminUpdateAndDeleteUserListener.updatePhotoInFirebase(false);
+                }
+            });
+            */
+
         }
     }
 
@@ -431,18 +531,32 @@ public class FirebaseAdmin {
                         @Override
                         public void onSuccess(Void aVoid) {
                             Log.d("FirebaseAdmin", "DocumentSnapshot successfully deleted!");
-                            reauthenticateUserInFirebaseWithEmailAndPassword();
-                            user.delete()
-                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if (task.isSuccessful()) {
-                                                Log.d("FirebaseAdmin", "User account deleted.");
-                                                firebaseAdminUpdateAndDeleteUserListener.deleteUserInFirebase(true);
+                            StorageReference desertRef = storageReference.child("images/"+ currentUser.getUid());
+                            // Delete the file
+                            desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    // File deleted successfully
+                                    reauthenticateUserInFirebaseWithEmailAndPassword();
+                                    user.delete()
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if (task.isSuccessful()) {
+                                                        Log.d("FirebaseAdmin", "User account deleted.");
+                                                        firebaseAdminUpdateAndDeleteUserListener.deleteUserInFirebase(true);
 
-                                            }
-                                        }
-                                    });
+                                                    }
+                                                }
+                                            });
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception exception) {
+                                    firebaseAdminUpdateAndDeleteUserListener.deleteUserInFirebase(true);
+                                }
+                            });
+
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -473,50 +587,25 @@ public class FirebaseAdmin {
 
     //Download developer data
 
-    public void dowloandDataFirstDeveloperFirebase() {
-        DocumentReference myDeveloperRef = firebaseFirestore.collection(COLLECTION_DEVELOPER_INFO_FIREBASE).document("first");
+    public void dowloandDataDeveloperFirebase() {
+        DocumentReference myDeveloperRef = firebaseFirestore.collection(COLLECTION_DEVELOPER_INFO_FIREBASE).document("david");
         if (firebaseAdminInsertAndDownloandListener != null) {
             myDeveloperRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
                 @Override
                 public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException e) {
                     if (e != null) {
                         Log.w("FirebaseAdmin", "Listen failed.", e);
-                        firebaseAdminInsertAndDownloandListener.downloadInfoFirstDeveloper(false);
+                        firebaseAdminInsertAndDownloandListener.downloadInfotDeveloper(false);
                     }
 
                     if (snapshot != null && snapshot.exists()) {
                         Log.d("FirebaseAdmin", "Current data: " + snapshot.getData());
-                        Developer developer = snapshot.toObject(Developer.class);
-                        developerFirst = developer;
-                        firebaseAdminInsertAndDownloandListener.downloadInfoFirstDeveloper(true);
+                        Developer developerData = snapshot.toObject(Developer.class);
+                        developerInfo = developerData;
+                        firebaseAdminInsertAndDownloandListener.downloadInfotDeveloper(true);
                     } else {
                         Log.d("FirebaseAdmin", "Current data: null");
-                        firebaseAdminInsertAndDownloandListener.downloadInfoFirstDeveloper(false);
-                    }
-                }
-            });
-        }
-    }
-
-    public void dowloandDataSecondDeveloperFirebase() {
-        DocumentReference myDeveloperRef = firebaseFirestore.collection(COLLECTION_DEVELOPER_INFO_FIREBASE).document("second");
-        if (firebaseAdminInsertAndDownloandListener != null) {
-            myDeveloperRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                @Override
-                public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException e) {
-                    if (e != null) {
-                        Log.w("FirebaseAdmin", "Listen failed.", e);
-                        firebaseAdminInsertAndDownloandListener.downloadInfoSecondDeveloper(false);
-                    }
-
-                    if (snapshot != null && snapshot.exists()) {
-                        Log.d("FirebaseAdmin", "Current data: " + snapshot.getData());
-                        Developer developer = snapshot.toObject(Developer.class);
-                        developerSecond = developer;
-                        firebaseAdminInsertAndDownloandListener.downloadInfoSecondDeveloper(true);
-                    } else {
-                        Log.d("FirebaseAdmin", "Current data: null");
-                        firebaseAdminInsertAndDownloandListener.downloadInfoSecondDeveloper(false);
+                        firebaseAdminInsertAndDownloandListener.downloadInfotDeveloper(false);
                     }
                 }
             });
@@ -808,7 +897,7 @@ public class FirebaseAdmin {
             Map<String, Object> slimmingMap = new HashMap<>();
             slimmingMap.put("name", nutritionSlimming.getName());
             slimmingMap.put("photo", nutritionSlimming.getPhoto());
-            slimmingMap.put("video", nutritionSlimming.getVideo());
+            slimmingMap.put("url", nutritionSlimming.getUrl());
             slimmingMap.put("description", nutritionSlimming.getDescription());
             slimmingMap.put("type", "adelgazar");
             insertFavoriteNutritionnSlimming(slimmingMap);
@@ -844,7 +933,7 @@ public class FirebaseAdmin {
             Map<String, Object> slimmingMap = new HashMap<>();
             slimmingMap.put("name", nutritionToning.getName());
             slimmingMap.put("photo", nutritionToning.getPhoto());
-            slimmingMap.put("video", nutritionToning.getVideo());
+            slimmingMap.put("url", nutritionToning.getUrl());
             slimmingMap.put("description", nutritionToning.getDescription());
             slimmingMap.put("type", "tonificar");
             insertFavoriteNutritionToning(slimmingMap);
@@ -880,7 +969,7 @@ public class FirebaseAdmin {
             Map<String, Object> slimmingMap = new HashMap<>();
             slimmingMap.put("name", nutritionGainVolume.getName());
             slimmingMap.put("photo", nutritionGainVolume.getPhoto());
-            slimmingMap.put("video", nutritionGainVolume.getVideo());
+            slimmingMap.put("url", nutritionGainVolume.getUrl());
             slimmingMap.put("description", nutritionGainVolume.getDescription());
             slimmingMap.put("type", "ganarVolumen");
             insertFavoriteNutritionGainVolume(slimmingMap);
@@ -891,9 +980,10 @@ public class FirebaseAdmin {
 
     public void downloadSlimmingSportFavorite() {
 
-        COLLECTION_FAVORITE_SPORT = "users/" + currentUser.getUid() + "/deporteFavorito";
-
         if (firebaseAdminInsertFavoriteSportAndNutrition != null) {
+
+            COLLECTION_FAVORITE_SPORT = "users/" + currentUser.getUid() + "/deporteFavorito";
+
             CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_FAVORITE_SPORT);
             collectionReference.whereEqualTo("type", "adelgazar")
                     .addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -922,9 +1012,10 @@ public class FirebaseAdmin {
 
     public void downloadToningSportFavorite() {
 
-        COLLECTION_FAVORITE_SPORT = "users/" + currentUser.getUid() + "/deporteFavorito";
-
         if (firebaseAdminInsertFavoriteSportAndNutrition != null) {
+
+            COLLECTION_FAVORITE_SPORT = "users/" + currentUser.getUid() + "/deporteFavorito";
+
             CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_FAVORITE_SPORT);
             collectionReference.whereEqualTo("type", "tonificar")
                     .addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -953,9 +1044,10 @@ public class FirebaseAdmin {
 
     public void downloadGainVolumeSportFavorite() {
 
-        COLLECTION_FAVORITE_SPORT = "users/" + currentUser.getUid() + "/deporteFavorito";
-
         if (firebaseAdminInsertFavoriteSportAndNutrition != null) {
+
+            COLLECTION_FAVORITE_SPORT = "users/" + currentUser.getUid() + "/deporteFavorito";
+
             CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_FAVORITE_SPORT);
             collectionReference.whereEqualTo("type", "ganarVolumen")
                     .addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -987,10 +1079,12 @@ public class FirebaseAdmin {
 
     public void downloadSlimmingNutritionFavorite() {
 
-        COLLECTION_FAVORITE_NUTRITION = "users/" + currentUser.getUid() + "/nutricionFavorita";
-
         if (firebaseAdminInsertFavoriteSportAndNutrition != null) {
-            CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_FAVORITE_SPORT);
+
+            COLLECTION_FAVORITE_NUTRITION = "users/" + currentUser.getUid() + "/nutricionFavorita";
+
+
+            CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_FAVORITE_NUTRITION);
             collectionReference.whereEqualTo("type", "adelgazar")
                     .addSnapshotListener(new EventListener<QuerySnapshot>() {
                         @Override
@@ -1018,9 +1112,10 @@ public class FirebaseAdmin {
 
     public void downloadToningNutritionFavorite() {
 
-        COLLECTION_FAVORITE_NUTRITION = "users/" + currentUser.getUid() + "/nutricionFavorita";
-
         if (firebaseAdminInsertFavoriteSportAndNutrition != null) {
+
+            COLLECTION_FAVORITE_NUTRITION = "users/" + currentUser.getUid() + "/nutricionFavorita";
+
             CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_FAVORITE_NUTRITION);
             collectionReference.whereEqualTo("type", "tonificar")
                     .addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -1048,10 +1143,11 @@ public class FirebaseAdmin {
     }
 
     public void downloadGainVolumeNutritionFavorite() {
-        
-        COLLECTION_FAVORITE_NUTRITION = "users/" + currentUser.getUid() + "/nutricionFavorita";
 
         if (firebaseAdminInsertFavoriteSportAndNutrition != null) {
+
+            COLLECTION_FAVORITE_NUTRITION = "users/" + currentUser.getUid() + "/nutricionFavorita";
+
             CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_FAVORITE_NUTRITION);
             collectionReference.whereEqualTo("type", "ganarVolumen")
                     .addSnapshotListener(new EventListener<QuerySnapshot>() {

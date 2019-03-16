@@ -13,7 +13,6 @@
     <string name="first_nav_name">Deportes</string>
     <string name="two_nav_name">Nutricion</string>
     <string name="three_nav_name">Crear tu plan</string>
-    <string name="four_nav_name">Comunidad</string>
 
     <string name="err_email">Email invalido</string>
     <string name="err_password">Contraseña con mas de 6 caracteres</string>
@@ -51,7 +50,7 @@
     <string name="action_cancel">Cancelar</string>
     <string name="info_delete_acount_1">¿Deseas borrar a</string>
     <string name="info_delete_acount_2">\?</string>
-    <string name="sobre_nosotros">Sobre Nosotros</string>
+    <string name="sobre_nosotros">Contacto</string>
     <string name="cerrar">Cerrar</string>
     <string name="desarollado_dise_ado">Desarollado/Diseñado</string>
     <string name="message_email_developer">Plan Fit, desarollador :</string>
@@ -71,7 +70,12 @@
     <string name="title_activity_youtube">YoutubeActivity</string>
     <string name="abrir_video">Abrir Video</string>
     <string name="agregar_a_favoritos">Agregar a favoritos</string>
-    <string name="borrar_de_favoritos">Borrar de favoritos</string>
+    <string name="abrir_receta">Abrir receta</string>
+
+    <string-array name="timePlan">
+        <item>Dia</item>
+        <item>Semana</item>
+    </string-array>
 
 
 </resources>
