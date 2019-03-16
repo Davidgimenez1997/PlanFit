@@ -348,12 +348,7 @@ public class MainMenuActivity extends AppCompatActivity
 
 
     @Override
-    public void downloadInfoFirstDeveloper(boolean end) {
-        //Metodo implementado pero no se usa
-    }
-
-    @Override
-    public void downloadInfoSecondDeveloper(boolean end) {
+    public void downloadInfotDeveloper(boolean end) {
         //Metodo implementado pero no se usa
     }
 

@@ -29,7 +29,7 @@
                     android:layout_marginStart="8dp" app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
                     android:layout_marginBottom="32dp" app:layout_constraintBottom_toBottomOf="parent"
-                    android:layout_marginTop="100dp" app:layout_constraintTop_toBottomOf="@+id/name_second_developer"/>
+                    android:layout_marginTop="100dp" app:layout_constraintTop_toBottomOf="@+id/namedeveloper"/>
             <TextView
                     android:text="@string/name_app_display"
                     android:textStyle="italic"
@@ -50,21 +50,10 @@
                     android:textColor="@color/colorAccent"
                     android:textSize="20dp"
                     android:maxLines="2"
-                    android:layout_height="51dp" android:id="@+id/name_first_developer"
+                    android:layout_height="51dp" android:id="@+id/namedeveloper"
                     app:layout_constraintStart_toStartOf="parent"
-                    android:layout_marginStart="24dp" android:layout_marginTop="48dp"
-                    app:layout_constraintTop_toBottomOf="@+id/textView8" android:layout_marginEnd="24dp"
-                    app:layout_constraintEnd_toEndOf="parent" app:layout_constraintHorizontal_bias="0.0"/>
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:textColor="@color/colorAccent"
-                    android:textSize="20dp"
-                    android:maxLines="2"
-                    android:layout_height="51dp" android:id="@+id/name_second_developer"
-                    android:layout_marginTop="96dp"
-                    app:layout_constraintTop_toBottomOf="@+id/name_first_developer" app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginEnd="24dp" app:layout_constraintStart_toStartOf="parent"
-                    android:layout_marginStart="24dp"/>
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="24dp" app:layout_constraintTop_toBottomOf="@+id/textView8"/>
             <TextView
                     android:text="@string/desarollado_dise_ado"
                     android:layout_width="wrap_content"
@@ -78,44 +67,23 @@
             <Button
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:id="@+id/emailFirstDeveloper"
+                    android:id="@+id/emailDeveloper"
                     android:background="@drawable/icon_email"
-                    android:layout_marginTop="24dp"
-                    app:layout_constraintTop_toBottomOf="@+id/name_first_developer" app:layout_constraintStart_toStartOf="parent"
-                    android:layout_marginStart="96dp"
-                    android:layout_marginEnd="24dp" app:layout_constraintEnd_toStartOf="@+id/likedinFirstDeveloper"
-                    android:layout_marginBottom="24dp" app:layout_constraintBottom_toTopOf="@+id/name_second_developer"/>
-            <Button
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:id="@+id/emailSecondDeveloper"
-                    android:background="@drawable/icon_email"
-                    app:layout_constraintEnd_toStartOf="@+id/likedinSecondDeveloper"
+                    app:layout_constraintEnd_toStartOf="@+id/likedindDeveloper"
                     android:layout_marginEnd="24dp" app:layout_constraintStart_toStartOf="parent"
                     android:layout_marginStart="96dp"
                     android:layout_marginTop="24dp"
-                    app:layout_constraintTop_toBottomOf="@+id/name_second_developer"
+                    app:layout_constraintTop_toBottomOf="@+id/namedeveloper"
                     app:layout_constraintHorizontal_chainStyle="spread_inside"/>
             <Button
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:id="@+id/likedinFirstDeveloper"
-                    android:background="@drawable/linkedin"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginEnd="96dp"
-                    android:layout_marginTop="24dp"
-                    app:layout_constraintTop_toBottomOf="@+id/name_first_developer"
-                    app:layout_constraintStart_toEndOf="@+id/emailFirstDeveloper" android:layout_marginStart="24dp"
-                    android:layout_marginBottom="24dp" app:layout_constraintBottom_toTopOf="@+id/name_second_developer"/>
-            <Button
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:id="@+id/likedinSecondDeveloper"
+                    android:id="@+id/likedindDeveloper"
                     android:background="@drawable/linkedin"
                     android:layout_marginStart="24dp"
-                    app:layout_constraintStart_toEndOf="@+id/emailSecondDeveloper" app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/emailDeveloper" app:layout_constraintEnd_toEndOf="parent"
                     android:layout_marginEnd="96dp" android:layout_marginTop="24dp"
-                    app:layout_constraintTop_toBottomOf="@+id/name_second_developer"
+                    app:layout_constraintTop_toBottomOf="@+id/namedeveloper"
             />
 
         </android.support.constraint.ConstraintLayout>

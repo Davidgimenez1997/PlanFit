@@ -28,14 +28,10 @@ public class InfoAboutApp extends DialogFragment implements FirebaseAdmin.Fireba
     }
 
     private Button closeButton;
-    private TextView textViewNameFirst;
-    private Button buttonEmailFirst;
-    private Button buttonLinkedinFirst;
-    private TextView textViewNameSecond;
-    private Button buttonEmailSecond;
-    private Button buttonLinkedinSecond;
-    private Developer firstDeveloper;
-    private Developer secondDeveloper;
+    private TextView textViewName;
+    private Button buttonEmail;
+    private Button buttonLinkedin;
+    private Developer developer;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -46,69 +42,39 @@ public class InfoAboutApp extends DialogFragment implements FirebaseAdmin.Fireba
 
         findById(v);
         closeButton();
-        SessionUser.getInstance().firebaseAdmin.dowloandDataFirstDeveloperFirebase();
-        SessionUser.getInstance().firebaseAdmin.dowloandDataSecondDeveloperFirebase();
+        SessionUser.getInstance().firebaseAdmin.dowloandDataDeveloperFirebase();
 
         return v;
     }
 
     private void findById(View v){
         closeButton = v.findViewById(R.id.close_about);
-        textViewNameFirst = v.findViewById(R.id.name_first_developer);
-        buttonEmailFirst = v.findViewById(R.id.emailFirstDeveloper);
-        buttonLinkedinFirst = v.findViewById(R.id.likedinFirstDeveloper);
-        textViewNameSecond = v.findViewById(R.id.name_second_developer);
-        buttonEmailSecond = v.findViewById(R.id.emailSecondDeveloper);
-        buttonLinkedinSecond = v.findViewById(R.id.likedinSecondDeveloper);
+        textViewName = v.findViewById(R.id.namedeveloper);
+        buttonEmail = v.findViewById(R.id.emailDeveloper);
+        buttonLinkedin = v.findViewById(R.id.likedindDeveloper);
     }
 
-    private void clickEmailFirstDeveloperButton(){
-        buttonEmailFirst.setOnClickListener(new View.OnClickListener() {
+
+    private void clickEmailDeveloperButton(){
+        buttonEmail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_SEND);
                 intent.setType("message/rfc822");
-                String recipientList =firstDeveloper.getEmailDeveloper() ;
+                String recipientList = developer.getEmailDeveloper() ;
                 String[] recipients = recipientList.split(",");
                 intent.putExtra(Intent.EXTRA_EMAIL, recipients);
-                intent.putExtra(Intent.EXTRA_SUBJECT,getString(R.string.message_email_developer)+" "+firstDeveloper.getFullNameDeveloper());
+                intent.putExtra(Intent.EXTRA_SUBJECT,getString(R.string.message_email_developer)+" "+developer.getFullNameDeveloper());
                 startActivity(Intent.createChooser(intent,"Elije un cliente de email"));
             }
         });
     }
 
-    private void clickLinkedinFirstDeveloperButton(){
-        buttonLinkedinFirst.setOnClickListener(new View.OnClickListener() {
+    private void clickLinkedinDeveloperButton(){
+        buttonLinkedin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String url = firstDeveloper.getUrlLinkedinDeveloper();
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(url));
-                startActivity(i);
-            }
-        });
-    }
-
-    private void clickEmailSecondDeveloperButton(){
-        buttonEmailSecond.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_SEND);
-                intent.setType("message/rfc822");
-                String recipientList =secondDeveloper.getEmailDeveloper() ;
-                String[] recipients = recipientList.split(",");
-                intent.putExtra(Intent.EXTRA_EMAIL, recipients);
-                intent.putExtra(Intent.EXTRA_SUBJECT,getString(R.string.message_email_developer)+" "+secondDeveloper.getFullNameDeveloper());
-                startActivity(Intent.createChooser(intent,"Elije un cliente de email"));
-            }
-        });
-    }
-
-    private void clickLinkedinSecondDeveloperButton(){
-        buttonLinkedinSecond.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String url = secondDeveloper.getUrlLinkedinDeveloper();
+                String url = developer.getUrlLinkedinDeveloper();
                 Intent i = new Intent(Intent.ACTION_VIEW);
                 i.setData(Uri.parse(url));
                 startActivity(i);
@@ -128,22 +94,12 @@ public class InfoAboutApp extends DialogFragment implements FirebaseAdmin.Fireba
 
 
     @Override
-    public void downloadInfoFirstDeveloper(boolean end) {
+    public void downloadInfotDeveloper(boolean end) {
         if(end){
-            firstDeveloper = SessionUser.getInstance().firebaseAdmin.developerFirst;
-            textViewNameFirst.setText(firstDeveloper.getFullNameDeveloper());
-            clickEmailFirstDeveloperButton();
-            clickLinkedinFirstDeveloperButton();
-        }
-    }
-
-    @Override
-    public void downloadInfoSecondDeveloper(boolean end) {
-        if(end){
-            secondDeveloper = SessionUser.getInstance().firebaseAdmin.developerSecond;
-            textViewNameSecond.setText(secondDeveloper.getFullNameDeveloper());
-            clickEmailSecondDeveloperButton();
-            clickLinkedinSecondDeveloperButton();
+            developer = SessionUser.getInstance().firebaseAdmin.developerInfo;
+            textViewName.setText(developer.getFullNameDeveloper());
+            clickEmailDeveloperButton();
+            clickLinkedinDeveloperButton();
         }
     }
 

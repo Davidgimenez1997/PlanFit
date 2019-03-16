@@ -44,8 +44,7 @@ public class FirebaseAdmin {
     public FirebaseAdmin.FirebaseAdminInsertFavoriteSportAndNutrition firebaseAdminInsertFavoriteSportAndNutrition;
 
     public User userDataFirebase;
-    public Developer developerFirst;
-    public Developer developerSecond;
+    public Developer developerInfo;
     private AuthCredential credential;
 
     public List<SportSlimming> sportSlimmingListSport;
@@ -101,9 +100,7 @@ public class FirebaseAdmin {
 
         void downloadUserDataInFirebase(boolean end);
 
-        void downloadInfoFirstDeveloper(boolean end);
-
-        void downloadInfoSecondDeveloper(boolean end);
+        void downloadInfotDeveloper(boolean end);
     }
 
     //Update user info and delete
@@ -590,50 +587,25 @@ public class FirebaseAdmin {
 
     //Download developer data
 
-    public void dowloandDataFirstDeveloperFirebase() {
-        DocumentReference myDeveloperRef = firebaseFirestore.collection(COLLECTION_DEVELOPER_INFO_FIREBASE).document("first");
+    public void dowloandDataDeveloperFirebase() {
+        DocumentReference myDeveloperRef = firebaseFirestore.collection(COLLECTION_DEVELOPER_INFO_FIREBASE).document("david");
         if (firebaseAdminInsertAndDownloandListener != null) {
             myDeveloperRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
                 @Override
                 public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException e) {
                     if (e != null) {
                         Log.w("FirebaseAdmin", "Listen failed.", e);
-                        firebaseAdminInsertAndDownloandListener.downloadInfoFirstDeveloper(false);
+                        firebaseAdminInsertAndDownloandListener.downloadInfotDeveloper(false);
                     }
 
                     if (snapshot != null && snapshot.exists()) {
                         Log.d("FirebaseAdmin", "Current data: " + snapshot.getData());
-                        Developer developer = snapshot.toObject(Developer.class);
-                        developerFirst = developer;
-                        firebaseAdminInsertAndDownloandListener.downloadInfoFirstDeveloper(true);
+                        Developer developerData = snapshot.toObject(Developer.class);
+                        developerInfo = developerData;
+                        firebaseAdminInsertAndDownloandListener.downloadInfotDeveloper(true);
                     } else {
                         Log.d("FirebaseAdmin", "Current data: null");
-                        firebaseAdminInsertAndDownloandListener.downloadInfoFirstDeveloper(false);
-                    }
-                }
-            });
-        }
-    }
-
-    public void dowloandDataSecondDeveloperFirebase() {
-        DocumentReference myDeveloperRef = firebaseFirestore.collection(COLLECTION_DEVELOPER_INFO_FIREBASE).document("second");
-        if (firebaseAdminInsertAndDownloandListener != null) {
-            myDeveloperRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                @Override
-                public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException e) {
-                    if (e != null) {
-                        Log.w("FirebaseAdmin", "Listen failed.", e);
-                        firebaseAdminInsertAndDownloandListener.downloadInfoSecondDeveloper(false);
-                    }
-
-                    if (snapshot != null && snapshot.exists()) {
-                        Log.d("FirebaseAdmin", "Current data: " + snapshot.getData());
-                        Developer developer = snapshot.toObject(Developer.class);
-                        developerSecond = developer;
-                        firebaseAdminInsertAndDownloandListener.downloadInfoSecondDeveloper(true);
-                    } else {
-                        Log.d("FirebaseAdmin", "Current data: null");
-                        firebaseAdminInsertAndDownloandListener.downloadInfoSecondDeveloper(false);
+                        firebaseAdminInsertAndDownloandListener.downloadInfotDeveloper(false);
                     }
                 }
             });
