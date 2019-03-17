@@ -101,7 +101,7 @@ public class MainMenuActivity extends AppCompatActivity
             //Si la foto es null cogemos una por defecto
             checkPhotoUserNull(SessionUser.getInstance().firebaseAdmin.userDataFirebase);
         }else{
-            if(SessionUser.getInstance().firebaseAdmin.userDataFirebase.getImgUser()==null){
+            if(SessionUser.getInstance().firebaseAdmin.userDataFirebase.getImgUser()!=null){
                 Log.d("DatosUsuarioFirebase"," "+SessionUser.getInstance().firebaseAdmin.userDataFirebase.toString());
 
                 putInfoUserInHeaderMenu(SessionUser.getInstance().firebaseAdmin.userDataFirebase);
@@ -210,8 +210,6 @@ public class MainMenuActivity extends AppCompatActivity
             }
             InfoAboutApp infoAboutApp = new InfoAboutApp();
             infoAboutApp.show(transaction,"dialog");
-        }else if(id == R.id.nav_favorite){
-            Toast.makeText(this,"favoritos",Toast.LENGTH_LONG).show();
         }
 
         return true;
@@ -258,6 +256,8 @@ public class MainMenuActivity extends AppCompatActivity
                 seleted = 2;
                 fragment = FirstFragment.newInstance(seleted);
                 break;
+            case R.id.nav_favorite:
+                Toast.makeText(this,"favoritos",Toast.LENGTH_LONG).show();
         }
 
         //Remplazamos el fragment

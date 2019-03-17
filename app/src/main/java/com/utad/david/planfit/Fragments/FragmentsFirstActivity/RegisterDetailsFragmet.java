@@ -234,12 +234,16 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
         if(endRegister==true){
             if(end==true){
                 SessionUser.getInstance().firebaseAdmin.addDataUserCouldFirestore();
+                //SessionUser.getInstance().firebaseAdmin.uploadImage(SessionUser.getInstance().user.getImgUser());
+
+                /*
                 mProgress.dismiss();
                 Toast.makeText(getContext(), "Register Completed", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(getContext(), MainMenuActivity.class);
                 startActivity(intent);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 getActivity().finish();
+                */
             }else{
                 mProgress.dismiss();
                 Toast.makeText(getContext(), "Register Fail", Toast.LENGTH_LONG).show();
@@ -276,7 +280,26 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
 
     @Override
     public void downloadUserDataInFirebase(boolean end) {
-        //Metodo implementado pero no se usa
+        if(endRegister==true){
+            if(end==true){
+                //SessionUser.getInstance().firebaseAdmin.addDataUserCouldFirestore();
+                SessionUser.getInstance().firebaseAdmin.downloadPhoto();
+                mProgress.dismiss();
+                Toast.makeText(getContext(), "Register Completed", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(getContext(), MainMenuActivity.class);
+                startActivity(intent);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                getActivity().finish();
+            }else{
+                mProgress.dismiss();
+                Toast.makeText(getContext(), "Register Fail", Toast.LENGTH_LONG).show();
+                errorSingInRegister("Register Fail");
+            }
+        }else{
+            mProgress.dismiss();
+            Toast.makeText(getContext(), "Register Fail", Toast.LENGTH_LONG).show();
+            errorSingInRegister(getString(R.string.err_register_fail));
+        }
     }
 
     @Override

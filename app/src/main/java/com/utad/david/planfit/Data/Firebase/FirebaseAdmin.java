@@ -244,7 +244,7 @@ public class FirebaseAdmin {
             */
 
             insertDataUserIntoFirebase(user);
-            uploadImage(SessionUser.getInstance().user.getImgUser());
+            //uploadImage(SessionUser.getInstance().user.getImgUser());
 
         }
     }
@@ -256,7 +256,8 @@ public class FirebaseAdmin {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Log.d("FirebaseAdmin", "DocumentSnapshot successfully written!");
-                        firebaseAdminInsertAndDownloandListener.insertUserDataInFirebase(true);
+                        //firebaseAdminInsertAndDownloandListener.insertUserDataInFirebase(true);
+                        uploadImage(SessionUser.getInstance().user.getImgUser());
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -280,12 +281,14 @@ public class FirebaseAdmin {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             Log.d("FirebaseAdmin", "Photo update successfully written!");
+                            firebaseAdminInsertAndDownloandListener.downloadUserDataInFirebase(true);
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             Log.w("FirebaseAdmin", "Error writing document", e);
+                            firebaseAdminInsertAndDownloandListener.downloadUserDataInFirebase(false);
                         }
                     });
         }

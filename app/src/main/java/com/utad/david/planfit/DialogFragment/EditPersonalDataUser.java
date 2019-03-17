@@ -1,5 +1,6 @@
 package com.utad.david.planfit.DialogFragment;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -62,6 +63,7 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
     private Button buttonDeleteAccount;
     private User userUpdate;
     private EditPersonalDataUser.OnFragmentInteractionListener mListener;
+    private ProgressDialog mProgress;
 
 
     @Override
@@ -431,6 +433,7 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
     @Override
     public void deleteUserInFirebase(boolean end) {
         if(end==true){
+            mProgress.dismiss();
             navigatedUserLoginRegister();
         }
     }
@@ -492,6 +495,8 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
                 .setPositiveButton(R.string.action_delete, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         SessionUser.getInstance().firebaseAdmin.deleteAccountInFirebase();
+                        showDialog("Borrando cuenta","Eliminando cuenta, por favor espere.");
+                        mProgress.show();
                     }
                 })
                 .setNegativeButton(R.string.action_cancel, new DialogInterface.OnClickListener() {
@@ -502,6 +507,14 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
         });
         builder.create();
         builder.show();
+    }
+
+    private void showDialog(String title, String message){
+        mProgress = new ProgressDialog(getContext());
+        mProgress.setTitle(title);
+        mProgress.setMessage(message);
+        mProgress.setCancelable(false);
+        mProgress.setIndeterminate(true);
     }
 
     private void navigatedUserLoginRegister(){
