@@ -238,13 +238,13 @@ public class FirebaseAdmin {
             user.put("fullName", SessionUser.getInstance().user.getFullName());
             user.put("nickName", SessionUser.getInstance().user.getNickName());
 
-            /*
+
             if (SessionUser.getInstance().user.getImgUser() != null) {
                 user.put("imgUser", SessionUser.getInstance().user.getImgUser());
             } else {
                 user.put("imgUser", "");
             }
-           */
+
 
 
             insertDataUserIntoFirebase(user);
@@ -327,12 +327,12 @@ public class FirebaseAdmin {
         }
     }
 
-    public void downloadPhoto(){
-        storageReference.child("images/"+ currentUser.getUid()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+    public void downloadPhoto() {
+        storageReference.child("images/" + currentUser.getUid()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
                 // Got the download URL for 'users/me/profile.png'
-                Log.d("FirebaseAdmin", "URL PHOTO: " +uri.toString());
+                Log.d("FirebaseAdmin", "URL PHOTO: " + uri.toString());
                 userDataFirebase.setImgUser(uri.toString());
                 firebaseAdminInsertAndDownloandListener.downloadUserDataInFirebase(true);
 
@@ -349,9 +349,9 @@ public class FirebaseAdmin {
 
     //Update info user
 
-    public void deletePhoto(){
-        if(firebaseAdminUpdateAndDeleteUserListener!=null){
-            StorageReference desertRef = storageReference.child("images/"+ currentUser.getUid());
+    public void deletePhoto() {
+        if (firebaseAdminUpdateAndDeleteUserListener != null) {
+            StorageReference desertRef = storageReference.child("images/" + currentUser.getUid());
 
             // Delete the file
             desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -370,9 +370,9 @@ public class FirebaseAdmin {
     }
 
     public void updatePhotoUserInFirebase() {
-        if(firebaseAdminUpdateAndDeleteUserListener!=null){
+        if (firebaseAdminUpdateAndDeleteUserListener != null) {
 
-            StorageReference desertRef = storageReference.child("images/"+ currentUser.getUid());
+            StorageReference desertRef = storageReference.child("images/" + currentUser.getUid());
 
             // Delete the file
             desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -459,8 +459,8 @@ public class FirebaseAdmin {
 
     public void updateEmailUserInFirebase() {
         if (firebaseAdminUpdateAndDeleteUserListener != null) {
-            reauthenticateUserInFirebaseWithEmailAndPassword();
             currentUser = FirebaseAuth.getInstance().getCurrentUser();
+            reauthenticateUserInFirebaseWithEmailAndPassword();
             currentUser.updateEmail(userDataFirebase.getEmail())
                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
@@ -495,6 +495,7 @@ public class FirebaseAdmin {
     public void updatePasswordUserInFirebase() {
         if (firebaseAdminUpdateAndDeleteUserListener != null) {
             currentUser = FirebaseAuth.getInstance().getCurrentUser();
+            reauthenticateUserInFirebaseWithEmailAndPassword();
             String newPassword = userDataFirebase.getPassword();
 
             currentUser.updatePassword(newPassword)
@@ -538,7 +539,7 @@ public class FirebaseAdmin {
                         @Override
                         public void onSuccess(Void aVoid) {
                             Log.d("FirebaseAdmin", "DocumentSnapshot successfully deleted!");
-                            StorageReference desertRef = storageReference.child("images/"+ currentUser.getUid());
+                            StorageReference desertRef = storageReference.child("images/" + currentUser.getUid());
                             // Delete the file
                             desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
@@ -556,11 +557,12 @@ public class FirebaseAdmin {
                                                     }
                                                 }
                                             });
+
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception exception) {
-                                    firebaseAdminUpdateAndDeleteUserListener.deleteUserInFirebase(true);
+                                    firebaseAdminUpdateAndDeleteUserListener.deleteUserInFirebase(false);
                                 }
                             });
 
@@ -570,7 +572,7 @@ public class FirebaseAdmin {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             Log.w("FirebaseAdmin", "Error deleting document", e);
-                            firebaseAdminUpdateAndDeleteUserListener.deleteUserInFirebase(true);
+                            firebaseAdminUpdateAndDeleteUserListener.deleteUserInFirebase(false);
                         }
                     });
 
