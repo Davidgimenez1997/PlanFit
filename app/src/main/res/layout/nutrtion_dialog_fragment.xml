@@ -42,8 +42,22 @@
                     android:layout_marginStart="64dp"
                     app:layout_constraintStart_toStartOf="parent" android:layout_marginEnd="64dp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginTop="24dp" app:layout_constraintTop_toBottomOf="@+id/textviewDescriptionNutrition"
-                    app:layout_constraintBottom_toBottomOf="parent" android:layout_marginBottom="24dp"/>
+                    android:layout_marginTop="24dp"
+                    app:layout_constraintTop_toBottomOf="@+id/textviewDescriptionNutrition"
+            />
+            <Button
+                    android:text="@string/eliminar_de_favoritos"
+                    android:layout_width="180dp"
+                    android:enabled="false"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/button_selector"
+                    android:textColor="@color/colorAccent"
+                    android:id="@+id/delete_favorite_nutrition"
+                    android:layout_marginTop="24dp"
+                    app:layout_constraintTop_toBottomOf="@+id/insert_favoriteNutrition"
+                    app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="64dp"
+                    app:layout_constraintBottom_toBottomOf="parent" android:layout_marginBottom="24dp"
+                    app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="64dp"/>
             <TextView
                     android:textSize="20dp"
                     android:layout_width="wrap_content"

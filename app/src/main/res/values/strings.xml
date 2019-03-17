@@ -72,6 +72,7 @@
     <string name="agregar_a_favoritos">Agregar a favoritos</string>
     <string name="abrir_receta">Abrir receta</string>
     <string name="itemfavoritos">Favoritos</string>
+    <string name="eliminar_de_favoritos">Eliminar de favoritos</string>
 
     <string-array name="timePlan">
         <item>Dia</item>

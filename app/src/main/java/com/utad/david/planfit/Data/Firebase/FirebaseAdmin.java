@@ -3,10 +3,7 @@ package com.utad.david.planfit.Data.Firebase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.*;
 import com.google.firebase.auth.*;
 import com.google.firebase.firestore.*;
 import com.google.firebase.storage.FirebaseStorage;
@@ -145,6 +142,10 @@ public class FirebaseAdmin {
         void downloandCollectionSportFavorite(boolean end);
 
         void inserNutritionFavoriteFirebase(boolean end);
+
+        void deleteFavoriteSport(boolean end);
+
+        void deleteFavoriteNutrition(boolean end);
 
         void downloandCollectionNutritionFavorite(boolean end);
     }
@@ -875,6 +876,126 @@ public class FirebaseAdmin {
         }
     }
 
+    //Delete Favorite Sport
+
+    public void deleteFavoriteSportSlimming(SportSlimming sportSlimming){
+
+        if(firebaseAdminInsertFavoriteSportAndNutrition!=null){
+            COLLECTION_FAVORITE_SPORT = "users/" + currentUser.getUid() + "/deporteFavorito";
+
+            firebaseFirestore.collection(COLLECTION_FAVORITE_SPORT)
+                    .whereEqualTo("name",sportSlimming.getName())
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if(task.isSuccessful()){
+                                for (QueryDocumentSnapshot documentSnapshot : task.getResult()){
+                                    Log.d("BORRARFAVORITO", documentSnapshot.getId() + " - > "+ documentSnapshot.getData());
+                                    String id = documentSnapshot.getId();
+                                    firebaseFirestore.collection(COLLECTION_FAVORITE_SPORT).document(id)
+                                            .delete()
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Log.d("FirebaseAdmin", "Favorito borrado correctamente");
+                                                    firebaseAdminInsertFavoriteSportAndNutrition.deleteFavoriteSport(true);
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.d("FirebaseAdmin", "Error Favorito borrado");
+                                                    firebaseAdminInsertFavoriteSportAndNutrition.deleteFavoriteSport(false);
+
+                                                }
+                                            });
+                                }
+                            }
+                        }
+                    });
+        }
+    }
+
+
+    public void deleteFavoriteSportToning(SportToning sportToning) {
+
+        if (firebaseAdminInsertFavoriteSportAndNutrition != null) {
+            COLLECTION_FAVORITE_SPORT = "users/" + currentUser.getUid() + "/deporteFavorito";
+
+            firebaseFirestore.collection(COLLECTION_FAVORITE_SPORT)
+                    .whereEqualTo("name", sportToning.getName())
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                                    Log.d("BORRARFAVORITO", documentSnapshot.getId() + " - > " + documentSnapshot.getData());
+                                    String id = documentSnapshot.getId();
+                                    firebaseFirestore.collection(COLLECTION_FAVORITE_SPORT).document(id)
+                                            .delete()
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Log.d("FirebaseAdmin", "Favorito borrado correctamente");
+                                                    firebaseAdminInsertFavoriteSportAndNutrition.deleteFavoriteSport(true);
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.d("FirebaseAdmin", "Error Favorito borrado");
+                                                    firebaseAdminInsertFavoriteSportAndNutrition.deleteFavoriteSport(false);
+
+                                                }
+                                            });
+                                }
+                            }
+                        }
+                    });
+        }
+    }
+
+    public void deleteFavoriteSportGainVolume(SportGainVolume sportGainVolume) {
+
+        if (firebaseAdminInsertFavoriteSportAndNutrition != null) {
+            COLLECTION_FAVORITE_SPORT = "users/" + currentUser.getUid() + "/deporteFavorito";
+
+            firebaseFirestore.collection(COLLECTION_FAVORITE_SPORT)
+                    .whereEqualTo("name", sportGainVolume.getName())
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                                    Log.d("BORRARFAVORITO", documentSnapshot.getId() + " - > " + documentSnapshot.getData());
+                                    String id = documentSnapshot.getId();
+                                    firebaseFirestore.collection(COLLECTION_FAVORITE_SPORT).document(id)
+                                            .delete()
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Log.d("FirebaseAdmin", "Favorito borrado correctamente");
+                                                    firebaseAdminInsertFavoriteSportAndNutrition.deleteFavoriteSport(true);
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.d("FirebaseAdmin", "Error Favorito borrado");
+                                                    firebaseAdminInsertFavoriteSportAndNutrition.deleteFavoriteSport(false);
+
+                                                }
+                                            });
+                                }
+                            }
+                        }
+                    });
+        }
+    }
+
     //Insert favorite Nutrition
 
     public void insertFavoriteNutritionnSlimming(Map<String, Object> slimming) {
@@ -982,6 +1103,126 @@ public class FirebaseAdmin {
             slimmingMap.put("description", nutritionGainVolume.getDescription());
             slimmingMap.put("type", "ganarVolumen");
             insertFavoriteNutritionGainVolume(slimmingMap);
+        }
+    }
+
+    //Delete Favorite Nutrition
+
+    public void deleteFavoriteNutritionSlimming(NutritionSlimming nutritionSlimming){
+
+        if(firebaseAdminInsertFavoriteSportAndNutrition!=null){
+            COLLECTION_FAVORITE_NUTRITION = "users/" + currentUser.getUid() + "/nutricionFavorita";
+
+            firebaseFirestore.collection(COLLECTION_FAVORITE_NUTRITION)
+                    .whereEqualTo("name",nutritionSlimming.getName())
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if(task.isSuccessful()){
+                                for (QueryDocumentSnapshot documentSnapshot : task.getResult()){
+                                    Log.d("BORRARFAVORITO", documentSnapshot.getId() + " - > "+ documentSnapshot.getData());
+                                    String id = documentSnapshot.getId();
+                                    firebaseFirestore.collection(COLLECTION_FAVORITE_NUTRITION).document(id)
+                                            .delete()
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Log.d("FirebaseAdmin", "Favorito borrado correctamente");
+                                                    firebaseAdminInsertFavoriteSportAndNutrition.deleteFavoriteNutrition(true);
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.d("FirebaseAdmin", "Error Favorito borrado");
+                                                    firebaseAdminInsertFavoriteSportAndNutrition.deleteFavoriteNutrition(false);
+
+                                                }
+                                            });
+                                }
+                            }
+                        }
+                    });
+        }
+    }
+
+
+    public void deleteFavoriteNutritionToning(NutritionToning nutritionToning) {
+
+        if (firebaseAdminInsertFavoriteSportAndNutrition != null) {
+            COLLECTION_FAVORITE_NUTRITION = "users/" + currentUser.getUid() + "/nutricionFavorita";
+
+            firebaseFirestore.collection(COLLECTION_FAVORITE_NUTRITION)
+                    .whereEqualTo("name", nutritionToning.getName())
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                                    Log.d("BORRARFAVORITO", documentSnapshot.getId() + " - > " + documentSnapshot.getData());
+                                    String id = documentSnapshot.getId();
+                                    firebaseFirestore.collection(COLLECTION_FAVORITE_NUTRITION).document(id)
+                                            .delete()
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Log.d("FirebaseAdmin", "Favorito borrado correctamente");
+                                                    firebaseAdminInsertFavoriteSportAndNutrition.deleteFavoriteNutrition(true);
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.d("FirebaseAdmin", "Error Favorito borrado");
+                                                    firebaseAdminInsertFavoriteSportAndNutrition.deleteFavoriteNutrition(false);
+
+                                                }
+                                            });
+                                }
+                            }
+                        }
+                    });
+        }
+    }
+
+    public void deleteFavoriteNutritionGainVolume(NutritionGainVolume nutritionGainVolume) {
+
+        if (firebaseAdminInsertFavoriteSportAndNutrition != null) {
+            COLLECTION_FAVORITE_NUTRITION = "users/" + currentUser.getUid() + "/nutricionFavorita";
+
+            firebaseFirestore.collection(COLLECTION_FAVORITE_NUTRITION)
+                    .whereEqualTo("name", nutritionGainVolume.getName())
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                                    Log.d("BORRARFAVORITO", documentSnapshot.getId() + " - > " + documentSnapshot.getData());
+                                    String id = documentSnapshot.getId();
+                                    firebaseFirestore.collection(COLLECTION_FAVORITE_NUTRITION).document(id)
+                                            .delete()
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Log.d("FirebaseAdmin", "Favorito borrado correctamente");
+                                                    firebaseAdminInsertFavoriteSportAndNutrition.deleteFavoriteNutrition(true);
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.d("FirebaseAdmin", "Error Favorito borrado");
+                                                    firebaseAdminInsertFavoriteSportAndNutrition.deleteFavoriteNutrition(false);
+
+                                                }
+                                            });
+                                }
+                            }
+                        }
+                    });
         }
     }
 

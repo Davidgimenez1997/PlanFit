@@ -86,6 +86,7 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
     private TextView textViewDescription;
     private ImageView imageViewSport;
     private Button buttonInsert;
+    private Button buttonDelete;
     private List<SportSlimming> sportSlimmingList;
     private List<SportToning> sportToningList;
     private List<SportGainVolume> sportGainVolumeList;
@@ -102,7 +103,7 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
         putData();
         onClickButtonOpenYoutube();
         onClickButtonOpenInsertFavorite();
-
+        onClickButtonOpenDeleteFavorite();
         return view;
 
     }
@@ -113,6 +114,7 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
         textViewDescription = v.findViewById(R.id.textviewDescriptionSport);
         imageViewSport = v.findViewById(R.id.imageViewSport);
         buttonInsert = v.findViewById(R.id.insert_favorite_sport);
+        buttonDelete = v.findViewById(R.id.delete_favorite_sport);
     }
 
     private void putData() {
@@ -176,10 +178,30 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
             });
     }
 
+    private void onClickButtonOpenDeleteFavorite(){
+        buttonDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (option){
+                    case 0:
+                        SessionUser.getInstance().firebaseAdmin.deleteFavoriteSportSlimming(sportSlimming);
+                        break;
+                    case 1:
+                        SessionUser.getInstance().firebaseAdmin.deleteFavoriteSportToning(sportToning);
+                        break;
+                    case 2:
+                        SessionUser.getInstance().firebaseAdmin.deleteFavoriteSportGainVolume(sportGainVolume);
+                        break;
+                }
+            }
+        });
+    }
+
     @Override
     public void inserSportFavoriteFirebase(boolean end) {
         if(end){
             buttonInsert.setEnabled(false);
+            buttonDelete.setEnabled(true);
         }
     }
 
@@ -193,6 +215,7 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
                         for(int i = 0; i< sportSlimmingList.size(); i++){
                             if(sportSlimmingList.get(i).getName().equals(sportSlimming.getName())){
                                 buttonInsert.setEnabled(false);
+                                buttonDelete.setEnabled(true);
                             }
                         }
                     break;
@@ -202,6 +225,7 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
                         for(int i = 0; i< sportToningList.size(); i++){
                             if(sportToningList.get(i).getName().equals(sportToning.getName())){
                                 buttonInsert.setEnabled(false);
+                                buttonDelete.setEnabled(true);
                             }
                         }
                     break;
@@ -211,6 +235,7 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
                         for(int i = 0; i< sportGainVolumeList.size(); i++){
                             if(sportGainVolumeList.get(i).getName().equals(sportGainVolume.getName())){
                                 buttonInsert.setEnabled(false);
+                                buttonDelete.setEnabled(true);
                             }
                         }
                     break;
@@ -221,6 +246,19 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
 
     @Override
     public void inserNutritionFavoriteFirebase(boolean end) {
+
+    }
+
+    @Override
+    public void deleteFavoriteSport(boolean end) {
+        if(end==true){
+            buttonInsert.setEnabled(true);
+            buttonDelete.setEnabled(false);
+        }
+    }
+
+    @Override
+    public void deleteFavoriteNutrition(boolean end) {
 
     }
 

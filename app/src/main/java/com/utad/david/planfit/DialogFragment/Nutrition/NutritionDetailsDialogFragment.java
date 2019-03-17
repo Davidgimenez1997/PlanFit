@@ -84,6 +84,7 @@ public class NutritionDetailsDialogFragment extends DialogFragment implements Fi
     private TextView textViewDescription;
     private ImageView imageViewSport;
     private Button buttonInsert;
+    private Button buttonDelete;
     private List<NutritionSlimming> nutritionSlimmingList;
     private List<NutritionToning> nutritionToningList;
     private List<NutritionGainVolume> nutritionGainVolumeList;
@@ -100,7 +101,7 @@ public class NutritionDetailsDialogFragment extends DialogFragment implements Fi
         putData();
         onClickButtonOpenYoutube();
         onClickButtonOpenInsertFavorite();
-
+        onClickButtonOpenDeleteFavorite();
         return view;
 
     }
@@ -111,6 +112,7 @@ public class NutritionDetailsDialogFragment extends DialogFragment implements Fi
         textViewDescription = v.findViewById(R.id.textviewDescriptionNutrition);
         imageViewSport = v.findViewById(R.id.imageViewNutrition);
         buttonInsert = v.findViewById(R.id.insert_favoriteNutrition);
+        buttonDelete = v.findViewById(R.id.delete_favorite_nutrition);
     }
 
     private void putData() {
@@ -173,10 +175,43 @@ public class NutritionDetailsDialogFragment extends DialogFragment implements Fi
         });
     }
 
+    private void onClickButtonOpenDeleteFavorite(){
+        buttonDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (option){
+                    case 0:
+                        SessionUser.getInstance().firebaseAdmin.deleteFavoriteNutritionSlimming(nutritionSlimming);
+                        break;
+                    case 1:
+                        SessionUser.getInstance().firebaseAdmin.deleteFavoriteNutritionToning(nutritionToning);
+                        break;
+                    case 2:
+                        SessionUser.getInstance().firebaseAdmin.deleteFavoriteNutritionGainVolume(nutritionGainVolume);
+                        break;
+                }
+            }
+        });
+    }
+
     @Override
     public void inserNutritionFavoriteFirebase(boolean end) {
         if(end){
             buttonInsert.setEnabled(false);
+            buttonDelete.setEnabled(true);
+        }
+    }
+
+    @Override
+    public void deleteFavoriteSport(boolean end) {
+
+    }
+
+    @Override
+    public void deleteFavoriteNutrition(boolean end) {
+        if(end==true){
+            buttonInsert.setEnabled(true);
+            buttonDelete.setEnabled(false);
         }
     }
 
@@ -190,6 +225,7 @@ public class NutritionDetailsDialogFragment extends DialogFragment implements Fi
                     for(int i = 0; i< nutritionSlimmingList.size(); i++){
                         if(nutritionSlimmingList.get(i).getName().equals(nutritionSlimming.getName())){
                             buttonInsert.setEnabled(false);
+                            buttonDelete.setEnabled(true);
                         }
                     }
                     break;
@@ -199,6 +235,7 @@ public class NutritionDetailsDialogFragment extends DialogFragment implements Fi
                     for(int i = 0; i< nutritionToningList.size(); i++){
                         if(nutritionToningList.get(i).getName().equals(nutritionToning.getName())){
                             buttonInsert.setEnabled(false);
+                            buttonDelete.setEnabled(true);
                         }
                     }
                     break;
@@ -208,6 +245,7 @@ public class NutritionDetailsDialogFragment extends DialogFragment implements Fi
                     for(int i = 0; i< nutritionGainVolumeList.size(); i++){
                         if(nutritionGainVolumeList.get(i).getName().equals(nutritionGainVolume.getName())){
                             buttonInsert.setEnabled(false);
+                            buttonDelete.setEnabled(true);
                         }
                     }
                     break;
