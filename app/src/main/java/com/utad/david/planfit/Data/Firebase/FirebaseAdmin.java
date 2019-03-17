@@ -230,6 +230,9 @@ public class FirebaseAdmin {
         if (firebaseAdminInsertAndDownloandListener != null) {
             // Create a new user with a first and last name
             Map<String, Object> user = new HashMap<>();
+
+            uploadImage(SessionUser.getInstance().user.getImgUser());
+
             user.put("email", SessionUser.getInstance().user.getEmail());
             user.put("password", SessionUser.getInstance().user.getPassword());
             user.put("fullName", SessionUser.getInstance().user.getFullName());
@@ -241,7 +244,8 @@ public class FirebaseAdmin {
             } else {
                 user.put("imgUser", "");
             }
-            */
+           */
+
 
             insertDataUserIntoFirebase(user);
             //uploadImage(SessionUser.getInstance().user.getImgUser());
@@ -256,8 +260,8 @@ public class FirebaseAdmin {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Log.d("FirebaseAdmin", "DocumentSnapshot successfully written!");
-                        //firebaseAdminInsertAndDownloandListener.insertUserDataInFirebase(true);
-                        uploadImage(SessionUser.getInstance().user.getImgUser());
+                        firebaseAdminInsertAndDownloandListener.insertUserDataInFirebase(true);
+                        //uploadImage(SessionUser.getInstance().user.getImgUser());
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -269,26 +273,26 @@ public class FirebaseAdmin {
                 });
     }
 
-    public void uploadImage(String image) {
+    public void uploadImage(final String image) {
 
         Uri uri = Uri.parse(image);
 
-        if(uri != null)
-        {
-            StorageReference ref = storageReference.child("images/"+ currentUser.getUid());
+        if (uri != null) {
+            StorageReference ref = storageReference.child("images/" + currentUser.getUid());
             ref.putFile(uri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             Log.d("FirebaseAdmin", "Photo update successfully written!");
-                            firebaseAdminInsertAndDownloandListener.downloadUserDataInFirebase(true);
+                            SessionUser.getInstance().user.setImgUser(image);
+                            //firebaseAdminInsertAndDownloandListener.insertUserDataInFirebase(true);
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             Log.w("FirebaseAdmin", "Error writing document", e);
-                            firebaseAdminInsertAndDownloandListener.downloadUserDataInFirebase(false);
+                            //firebaseAdminInsertAndDownloandListener.insertUserDataInFirebase(false);
                         }
                     });
         }

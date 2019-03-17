@@ -433,7 +433,7 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
     @Override
     public void deleteUserInFirebase(boolean end) {
         if(end==true){
-            mProgress.dismiss();
+            //mProgress.dismiss();
             navigatedUserLoginRegister();
         }
     }
@@ -494,9 +494,9 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
         builder.setMessage(message)
                 .setPositiveButton(R.string.action_delete, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        //showDialog("Borrando cuenta","Eliminando cuenta, por favor espere.");
+                        //mProgress.show();
                         SessionUser.getInstance().firebaseAdmin.deleteAccountInFirebase();
-                        showDialog("Borrando cuenta","Eliminando cuenta, por favor espere.");
-                        mProgress.show();
                     }
                 })
                 .setNegativeButton(R.string.action_cancel, new DialogInterface.OnClickListener() {
