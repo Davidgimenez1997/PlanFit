@@ -60,9 +60,18 @@ public class FirstFragment extends Fragment {
             configViewNutrition();
         }else if(selected == 2){
             configViewPlan();
+        }else if(selected == 3){
+            configFavorite();
         }
 
         return view;
+    }
+
+    private void configFavorite() {
+        textViewInfo.setText(R.string.itemfavoritos);
+        first_button.setText(R.string.first_nav_name);
+        second_button.setText(R.string.two_nav_name);
+        three_button.setVisibility(View.INVISIBLE);
     }
 
     private void configViewSport(){

@@ -257,7 +257,10 @@ public class MainMenuActivity extends AppCompatActivity
                 fragment = FirstFragment.newInstance(seleted);
                 break;
             case R.id.nav_favorite:
-                Toast.makeText(this,"favoritos",Toast.LENGTH_LONG).show();
+                setTitle(R.string.itemfavoritos);
+                seleted = 3;
+                fragment = FirstFragment.newInstance(seleted);
+                break;
         }
 
         //Remplazamos el fragment
