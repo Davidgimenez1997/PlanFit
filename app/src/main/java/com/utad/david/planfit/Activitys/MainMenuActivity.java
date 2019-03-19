@@ -1,10 +1,10 @@
 package com.utad.david.planfit.Activitys;
 
 import android.content.Intent;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
@@ -12,6 +12,7 @@ import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.DialogFragment.EditPersonalDataUser;
 import com.utad.david.planfit.DialogFragment.InfoAboutApp;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.CreatePlan.FragmentCreatePlan;
+import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Favorite.NutritionFavorite;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Favorite.SportFavorite;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.FirstFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Nutrition.NutritionGainVolumeFragment;
@@ -21,21 +22,12 @@ import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.ShowPlan.Fragm
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Sport.SportGainVolumeFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Sport.SportSlimmingFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Sport.SportToningFragment;
-import com.utad.david.planfit.Model.Nutrition.NutritionGainVolume;
 import com.utad.david.planfit.Model.Sport.DefaultSport;
-import com.utad.david.planfit.Model.Sport.SportGainVolume;
-import com.utad.david.planfit.Model.Sport.SportSlimming;
-import com.utad.david.planfit.Model.Sport.SportToning;
 import com.utad.david.planfit.Model.User;
 import com.utad.david.planfit.R;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -45,12 +37,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import javax.crypto.Cipher;
-import javax.crypto.spec.SecretKeySpec;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.security.MessageDigest;
 import java.util.List;
 
 
@@ -58,8 +44,7 @@ public class MainMenuActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         FirebaseAdmin.FirebaseAdminInsertAndDownloandListener,
         FirstFragment.OnFragmentInteractionListener,
-        EditPersonalDataUser.OnFragmentInteractionListener,
-        FirebaseAdmin.FirebaseAdminFavoriteSportAndNutrition{
+        EditPersonalDataUser.OnFragmentInteractionListener{
 
     private ImageView imagemenu;
     private TextView nickname;
@@ -69,11 +54,13 @@ public class MainMenuActivity extends AppCompatActivity
     private NavigationView navigationView;
     private ActionBarDrawerToggle toggle;
 
+    private FragmentManager fragmentManager;
+    private FragmentTransaction fragmentTransaction;
+
     @Override
     protected void onStart() {
         super.onStart();
         SessionUser.getInstance().firebaseAdmin.setFirebaseAdminInsertAndDownloandListener(this);
-        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteSportAndNutrition(this);
         SessionUser.getInstance().firebaseAdmin.dowloandDataUserFirebase();
     }
 
@@ -84,6 +71,8 @@ public class MainMenuActivity extends AppCompatActivity
 
         findById();
         setSupportActionBar(toolbar);
+
+        fragmentManager = getSupportFragmentManager();
 
         //Muestra en la pantalla un boton que hace visible que es un menu lateral
         toggle = new ActionBarDrawerToggle(
@@ -97,9 +86,9 @@ public class MainMenuActivity extends AppCompatActivity
 
         findByIdNavigetionView();
 
-        //Nuestro título sera Lessons
         setTitle(R.string.first_nav_name);
-        displaySelectedScreen(R.id.nav_deportes);
+        navigateFragmentSport();
+        //displaySelectedScreen(R.id.nav_deportes);
 
     }
 
@@ -178,6 +167,7 @@ public class MainMenuActivity extends AppCompatActivity
 */
 
     //Cuando le damos hacia atrás con el menu abierto se cierra el menu
+
     @Override
     public void onBackPressed() {
         drawer = findViewById(R.id.drawer_layout);
@@ -188,7 +178,8 @@ public class MainMenuActivity extends AppCompatActivity
         }
     }
 
-    //Inflamos en el menu el layout del main_menu(botón derecha logout)
+    //Inflamos en el menu el layout del main_menu
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
@@ -198,33 +189,47 @@ public class MainMenuActivity extends AppCompatActivity
     //Funcionalidad de Logout
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         int id = item.getItemId();
+
         if (id == R.id.action_logout) {
-            SessionUser.getInstance().firebaseAdmin.mAuth.getInstance().signOut();
-            setEmptyItems();
-            Intent intent =new Intent(MainMenuActivity.this,FirstActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            finish();
+            logout();
         }else if (id == R.id.action_edit_user){
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            Fragment fragment = getSupportFragmentManager().findFragmentByTag("dialog");
-            if (fragment != null) {
-                transaction.remove(fragment);
-            }
-            EditPersonalDataUser editPersonalDataUser = new EditPersonalDataUser();
-            editPersonalDataUser.show(transaction,"dialog");
+            editUser();
         }else if(id == R.id.action_about_app){
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            Fragment fragment = getSupportFragmentManager().findFragmentByTag("dialog");
-            if (fragment != null) {
-                transaction.remove(fragment);
-            }
-            InfoAboutApp infoAboutApp = new InfoAboutApp();
-            infoAboutApp.show(transaction,"dialog");
+            aboutApp();
         }
 
         return true;
+    }
+
+    private void aboutApp() {
+        fragmentTransaction = fragmentManager.beginTransaction();
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag("dialog");
+        if (fragment != null) {
+            fragmentTransaction.remove(fragment);
+        }
+        InfoAboutApp infoAboutApp = new InfoAboutApp();
+        infoAboutApp.show(fragmentTransaction,"dialog");
+    }
+
+    private void editUser() {
+        fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag("dialog");
+        if (fragment != null) {
+            fragmentTransaction.remove(fragment);
+        }
+        EditPersonalDataUser editPersonalDataUser = new EditPersonalDataUser();
+        editPersonalDataUser.show(fragmentTransaction,"dialog");
+    }
+
+    private void logout() {
+        SessionUser.getInstance().firebaseAdmin.mAuth.getInstance().signOut();
+        setEmptyItems();
+        Intent intent =new Intent(MainMenuActivity.this,FirstActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
     }
 
     //Vacía user
@@ -244,7 +249,9 @@ public class MainMenuActivity extends AppCompatActivity
     }
 
     //Este método sirve para cargar los diferentes fragments
+
     private void displaySelectedScreen(int itemId) {
+
         //Creamos el objeto fragment
         Fragment fragment = null;
 
@@ -277,10 +284,10 @@ public class MainMenuActivity extends AppCompatActivity
 
         //Remplazamos el fragment
         if (fragment != null) {
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.content_frame, fragment);
-            ft.addToBackStack(null);
-            ft.commit();
+            fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.content_frame, fragment);
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
         }
 
         //Una vez cambiado el fragment cerramos el menu
@@ -288,76 +295,95 @@ public class MainMenuActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
     }
 
+    public void navigateFragmentSport(){
+        int seleted = 0;
+        Fragment fragment = FirstFragment.newInstance(seleted);
+        fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.content_frame, fragment);
+        //fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
+
+    @Override
+    public void updateData(User user) {
+
+        putInfoUserInHeaderMenu(user);
+
+        checkPhotoUserNull(user);
+
+    }
+
+
     @Override
     public void clickOnAdelgazarSport() {
         SportSlimmingFragment sportSlimmingFragment = new SportSlimmingFragment();
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.content_frame, sportSlimmingFragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
+        fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.content_frame, sportSlimmingFragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 
     @Override
     public void clickOnTonificarSport() {
         SportToningFragment sportToningFragment = new SportToningFragment();
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.content_frame, sportToningFragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
+        fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.content_frame, sportToningFragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 
     @Override
     public void clickOnGanarVolumenSport() {
         SportGainVolumeFragment sportGainVolumeFragment = new SportGainVolumeFragment();
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.content_frame, sportGainVolumeFragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
+        fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.content_frame, sportGainVolumeFragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 
     @Override
     public void clickOnAdelgazarNutrition() {
         NutritionSlimmingFragment nutritionSlimmingFragment = new NutritionSlimmingFragment();
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.content_frame, nutritionSlimmingFragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
+        fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.content_frame, nutritionSlimmingFragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 
     @Override
     public void clickOnTonificarNutrition() {
         NutritionToningFragment nutritionToningFragment = new NutritionToningFragment();
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.content_frame, nutritionToningFragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
+        fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.content_frame, nutritionToningFragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 
     @Override
     public void clickOnGanarVolumenNutrition() {
         NutritionGainVolumeFragment nutritionGainVolumeFragment = new NutritionGainVolumeFragment();
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.content_frame, nutritionGainVolumeFragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
+        fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.content_frame, nutritionGainVolumeFragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 
     @Override
     public void clickOnCreatePlan() {
         FragmentCreatePlan fragmentCreatePlan = new FragmentCreatePlan();
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.content_frame, fragmentCreatePlan);
-        transaction.addToBackStack(null);
-        transaction.commit();
+        fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.content_frame, fragmentCreatePlan);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 
     @Override
     public void clickOnShowPlan() {
         FragmentShowPlan fragmentShowPlan = new FragmentShowPlan();
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.content_frame, fragmentShowPlan);
-        transaction.addToBackStack(null);
-        transaction.commit();
+        fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.content_frame, fragmentShowPlan);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 
     private List<DefaultSport> allSportFavorite;
@@ -365,44 +391,19 @@ public class MainMenuActivity extends AppCompatActivity
     @Override
     public void clickSportFavorite() {
         SportFavorite sportFavorite = new SportFavorite();
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.content_frame, sportFavorite);
-        transaction.addToBackStack(null);
-        transaction.commit();
-        //SessionUser.getInstance().firebaseAdmin.downloadAllSportFavorite();
-
-    }
-
-    @Override
-    public void downloandCollectionSportFavorite(boolean end) {
-        if(end==true){
-            /*
-            allSportFavorite = SessionUser.getInstance().firebaseAdmin.allSportFavorite;
-            Toast.makeText(this,"Tienes favoritos",Toast.LENGTH_LONG).show();
-            SportFavorite sportFavorite = new SportFavorite();
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.content_frame, sportFavorite);
-            transaction.addToBackStack(null);
-            transaction.commit();
-            */
-        }
-    }
-
-    @Override
-    public void emptyCollectionSportFavorite(boolean end) {
-        if(end==true){
-            //Toast.makeText(this,"No tienes favoritos",Toast.LENGTH_LONG).show();
-        }
-    }
-
-    @Override
-    public void downloandCollectionNutritionFavorite(boolean end) {
-
+        fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.content_frame, sportFavorite);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 
     @Override
     public void clickNutritionFavorite() {
-
+        NutritionFavorite nutritionFavorite = new NutritionFavorite();
+        fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.content_frame, nutritionFavorite);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 
 
@@ -415,34 +416,5 @@ public class MainMenuActivity extends AppCompatActivity
     @Override
     public void downloadInfotDeveloper(boolean end) {
         //Metodo implementado pero no se usa
-    }
-
-    @Override
-    public void updateData(User user) {
-
-        putInfoUserInHeaderMenu(user);
-
-        checkPhotoUserNull(user);
-
-    }
-
-    @Override
-    public void inserSportFavoriteFirebase(boolean end) {
-
-    }
-
-    @Override
-    public void inserNutritionFavoriteFirebase(boolean end) {
-
-    }
-
-    @Override
-    public void deleteFavoriteSport(boolean end) {
-
-    }
-
-    @Override
-    public void deleteFavoriteNutrition(boolean end) {
-
     }
 }

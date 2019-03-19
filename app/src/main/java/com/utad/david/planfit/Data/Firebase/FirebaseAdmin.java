@@ -11,6 +11,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Model.Developer;
+import com.utad.david.planfit.Model.Nutrition.DefaultNutrition;
 import com.utad.david.planfit.Model.Nutrition.NutritionGainVolume;
 import com.utad.david.planfit.Model.Nutrition.NutritionSlimming;
 import com.utad.david.planfit.Model.Nutrition.NutritionToning;
@@ -61,7 +62,7 @@ public class FirebaseAdmin {
     public List<NutritionGainVolume> nutritionGainVolumeListNutrition;
     public List<NutritionGainVolume> nutritionGainVolumeListNutritionFavorite;
 
-
+    public List<DefaultNutrition> allNutritionFavorite;
 
     private static String COLLECTION_USER_FIREBASE = "users";
     private static String COLLECTION_DEVELOPER_INFO_FIREBASE = "developer_info";
@@ -151,6 +152,8 @@ public class FirebaseAdmin {
         void emptyCollectionSportFavorite(boolean end);
 
         void downloandCollectionNutritionFavorite(boolean end);
+
+        void emptyCollectionNutritionFavorite(boolean end);
 
         void deleteFavoriteSport(boolean end);
 
@@ -1466,4 +1469,38 @@ public class FirebaseAdmin {
 
     }
 
+    //Donwload all favorite nutrition
+
+    public void downloadAllNutritionFavorite() {
+
+        if (firebaseAdminFavoriteSportAndNutrition != null) {
+
+            COLLECTION_FAVORITE_NUTRITION = "users/" + currentUser.getUid() + "/nutricionFavorita";
+
+            CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_FAVORITE_NUTRITION);
+            collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+                @Override
+                public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                    if (e != null) {
+                        Log.w("FirebaseAdmin", "Listen failed.", e);
+                        firebaseAdminFavoriteSportAndNutrition.downloandCollectionNutritionFavorite(false);
+                    }
+
+                    List<DefaultNutrition> defaultNutritions = new ArrayList<>();
+                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                        defaultNutritions.add(doc.toObject(DefaultNutrition.class));
+                    }
+
+                    allNutritionFavorite = defaultNutritions;
+
+                    if(allNutritionFavorite.size()==0){
+                        firebaseAdminFavoriteSportAndNutrition.emptyCollectionNutritionFavorite(true);
+                    }else if(allNutritionFavorite.size()!=0){
+                        firebaseAdminFavoriteSportAndNutrition.downloandCollectionNutritionFavorite(true);
+                    }
+                }
+            });
+        }
+
+    }
 }

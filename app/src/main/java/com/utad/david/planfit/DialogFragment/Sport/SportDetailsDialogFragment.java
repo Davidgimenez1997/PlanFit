@@ -271,4 +271,9 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
     public void downloandCollectionNutritionFavorite(boolean end) {
 
     }
+
+    @Override
+    public void emptyCollectionNutritionFavorite(boolean end) {
+
+    }
 }

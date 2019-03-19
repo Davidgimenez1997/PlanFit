@@ -255,6 +255,11 @@ public class NutritionDetailsDialogFragment extends DialogFragment implements Fi
     }
 
     @Override
+    public void emptyCollectionNutritionFavorite(boolean end) {
+
+    }
+
+    @Override
     public void inserSportFavoriteFirebase(boolean end) {
 
     }
