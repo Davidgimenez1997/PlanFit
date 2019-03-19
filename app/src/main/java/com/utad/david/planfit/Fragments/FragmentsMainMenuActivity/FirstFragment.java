@@ -54,14 +54,19 @@ public class FirstFragment extends Fragment {
 
         findViewById(view);
 
-        if(selected == 0){
-            configViewSport();
-        }else if(selected == 1){
-            configViewNutrition();
-        }else if(selected == 2){
-            configViewPlan();
-        }else if(selected == 3){
-            configFavorite();
+        switch (selected){
+            case 0:
+                configViewSport();
+                break;
+            case 1:
+                configViewNutrition();
+                break;
+            case 2:
+                configViewPlan();
+                break;
+            case 3:
+                configFavorite();
+                break;
         }
 
         return view;
@@ -72,6 +77,30 @@ public class FirstFragment extends Fragment {
         first_button.setText(R.string.first_nav_name);
         second_button.setText(R.string.two_nav_name);
         three_button.setVisibility(View.INVISIBLE);
+        onClickFavoriteSport();
+        onClickFavoriteNutrition();
+    }
+
+    private void onClickFavoriteNutrition() {
+        second_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mListener!=null){
+                    mListener.clickNutritionFavorite();
+                }
+            }
+        });
+    }
+
+    private void onClickFavoriteSport() {
+        first_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mListener!=null){
+                    mListener.clickSportFavorite();
+                }
+            }
+        });
     }
 
     private void configViewSport(){
@@ -226,6 +255,8 @@ public class FirstFragment extends Fragment {
         void clickOnGanarVolumenNutrition();
         void clickOnCreatePlan();
         void clickOnShowPlan();
+        void clickSportFavorite();
+        void clickNutritionFavorite();
     }
 }
 

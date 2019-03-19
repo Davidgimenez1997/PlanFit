@@ -10,6 +10,7 @@
     <color name="item_checked">#ecf0f1</color>
 
     <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
 
     <color name="backgroud_screen_login">#c7ecee</color>
     <color name="background_button">#3c40c6</color>

@@ -73,6 +73,11 @@
     <string name="abrir_receta">Abrir receta</string>
     <string name="itemfavoritos">Favoritos</string>
     <string name="eliminar_de_favoritos">Eliminar de favoritos</string>
+    <string name="deportefav">Deportes Favoritos</string>
+
+    <string name="favorites_emptyFavorites_text">Sin Favoritos?</string>
+    <string name="favorites_saveFavorites_text">Guarda algun deporte para luego verlo aqui.</string>
+
 
     <string-array name="timePlan">
         <item>Dia</item>

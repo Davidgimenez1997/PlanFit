@@ -12,6 +12,7 @@ import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.DialogFragment.EditPersonalDataUser;
 import com.utad.david.planfit.DialogFragment.InfoAboutApp;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.CreatePlan.FragmentCreatePlan;
+import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Favorite.SportFavorite;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.FirstFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Nutrition.NutritionGainVolumeFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Nutrition.NutritionSlimmingFragment;
@@ -21,6 +22,10 @@ import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Sport.SportGai
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Sport.SportSlimmingFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Sport.SportToningFragment;
 import com.utad.david.planfit.Model.Nutrition.NutritionGainVolume;
+import com.utad.david.planfit.Model.Sport.DefaultSport;
+import com.utad.david.planfit.Model.Sport.SportGainVolume;
+import com.utad.david.planfit.Model.Sport.SportSlimming;
+import com.utad.david.planfit.Model.Sport.SportToning;
 import com.utad.david.planfit.Model.User;
 import com.utad.david.planfit.R;
 import android.graphics.Bitmap;
@@ -46,13 +51,15 @@ import javax.crypto.spec.SecretKeySpec;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.security.MessageDigest;
+import java.util.List;
 
 
 public class MainMenuActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         FirebaseAdmin.FirebaseAdminInsertAndDownloandListener,
         FirstFragment.OnFragmentInteractionListener,
-        EditPersonalDataUser.OnFragmentInteractionListener{
+        EditPersonalDataUser.OnFragmentInteractionListener,
+        FirebaseAdmin.FirebaseAdminFavoriteSportAndNutrition{
 
     private ImageView imagemenu;
     private TextView nickname;
@@ -61,6 +68,14 @@ public class MainMenuActivity extends AppCompatActivity
     private DrawerLayout drawer;
     private NavigationView navigationView;
     private ActionBarDrawerToggle toggle;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminInsertAndDownloandListener(this);
+        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteSportAndNutrition(this);
+        SessionUser.getInstance().firebaseAdmin.dowloandDataUserFirebase();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,9 +100,6 @@ public class MainMenuActivity extends AppCompatActivity
         //Nuestro título sera Lessons
         setTitle(R.string.first_nav_name);
         displaySelectedScreen(R.id.nav_deportes);
-
-        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminInsertAndDownloandListener(this);
-        SessionUser.getInstance().firebaseAdmin.dowloandDataUserFirebase();
 
     }
 
@@ -267,6 +279,7 @@ public class MainMenuActivity extends AppCompatActivity
         if (fragment != null) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.content_frame, fragment);
+            ft.addToBackStack(null);
             ft.commit();
         }
 
@@ -347,6 +360,52 @@ public class MainMenuActivity extends AppCompatActivity
         transaction.commit();
     }
 
+    private List<DefaultSport> allSportFavorite;
+
+    @Override
+    public void clickSportFavorite() {
+        SportFavorite sportFavorite = new SportFavorite();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.content_frame, sportFavorite);
+        transaction.addToBackStack(null);
+        transaction.commit();
+        //SessionUser.getInstance().firebaseAdmin.downloadAllSportFavorite();
+
+    }
+
+    @Override
+    public void downloandCollectionSportFavorite(boolean end) {
+        if(end==true){
+            /*
+            allSportFavorite = SessionUser.getInstance().firebaseAdmin.allSportFavorite;
+            Toast.makeText(this,"Tienes favoritos",Toast.LENGTH_LONG).show();
+            SportFavorite sportFavorite = new SportFavorite();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.content_frame, sportFavorite);
+            transaction.addToBackStack(null);
+            transaction.commit();
+            */
+        }
+    }
+
+    @Override
+    public void emptyCollectionSportFavorite(boolean end) {
+        if(end==true){
+            //Toast.makeText(this,"No tienes favoritos",Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public void downloandCollectionNutritionFavorite(boolean end) {
+
+    }
+
+    @Override
+    public void clickNutritionFavorite() {
+
+    }
+
+
     @Override
     public void insertUserDataInFirebase(boolean end) {
         //Metodo implementado pero no se usa
@@ -364,6 +423,26 @@ public class MainMenuActivity extends AppCompatActivity
         putInfoUserInHeaderMenu(user);
 
         checkPhotoUserNull(user);
+
+    }
+
+    @Override
+    public void inserSportFavoriteFirebase(boolean end) {
+
+    }
+
+    @Override
+    public void inserNutritionFavoriteFirebase(boolean end) {
+
+    }
+
+    @Override
+    public void deleteFavoriteSport(boolean end) {
+
+    }
+
+    @Override
+    public void deleteFavoriteNutrition(boolean end) {
 
     }
 }

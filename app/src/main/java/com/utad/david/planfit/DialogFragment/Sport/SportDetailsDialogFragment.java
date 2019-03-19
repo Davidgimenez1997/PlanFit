@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class SportDetailsDialogFragment extends DialogFragment implements FirebaseAdmin.FirebaseAdminInsertFavoriteSportAndNutrition {
+public class SportDetailsDialogFragment extends DialogFragment implements FirebaseAdmin.FirebaseAdminFavoriteSportAndNutrition {
 
     public SportSlimming sportSlimming;
     public SportGainVolume sportGainVolume;
@@ -43,7 +43,7 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
         args.putParcelable(SLIMMING, sportSlimming);
         args.putInt(OPTION, option);
         fragment.setArguments(args);
-        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminInsertFavoriteSportAndNutrition(fragment);
+        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteSportAndNutrition(fragment);
         SessionUser.getInstance().firebaseAdmin.downloadSlimmingSportFavorite();
         return fragment;
     }
@@ -54,7 +54,7 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
         args.putParcelable(GAINVOLUME, sportGainVolume);
         args.putInt(OPTION, option);
         fragment.setArguments(args);
-        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminInsertFavoriteSportAndNutrition(fragment);
+        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteSportAndNutrition(fragment);
         SessionUser.getInstance().firebaseAdmin.downloadGainVolumeSportFavorite();
         return fragment;
     }
@@ -65,7 +65,7 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
         args.putParcelable(TONING, sportToning);
         args.putInt(OPTION, option);
         fragment.setArguments(args);
-        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminInsertFavoriteSportAndNutrition(fragment);
+        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteSportAndNutrition(fragment);
         SessionUser.getInstance().firebaseAdmin.downloadToningSportFavorite();
         return fragment;
     }
@@ -242,6 +242,11 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
             }
 
         }
+    }
+
+    @Override
+    public void emptyCollectionSportFavorite(boolean end) {
+
     }
 
     @Override
