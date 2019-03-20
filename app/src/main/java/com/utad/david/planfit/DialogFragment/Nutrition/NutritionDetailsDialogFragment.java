@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
@@ -199,12 +200,20 @@ public class NutritionDetailsDialogFragment extends DialogFragment implements Fi
         if(end){
             buttonInsert.setEnabled(false);
             buttonDelete.setEnabled(true);
+
+            switch (option){
+                case 0:
+                    Toast.makeText(getContext(),nutritionSlimming.getName()+" "+getString(R.string.agregarafavoritos),Toast.LENGTH_LONG).show();
+                    break;
+                case 1:
+                    Toast.makeText(getContext(),nutritionToning.getName()+" "+getString(R.string.agregarafavoritos),Toast.LENGTH_LONG).show();
+                    break;
+                case 2:
+                    Toast.makeText(getContext(),nutritionGainVolume.getName()+" "+getString(R.string.agregarafavoritos),Toast.LENGTH_LONG).show();
+                    break;
+            }
+
         }
-    }
-
-    @Override
-    public void deleteFavoriteSport(boolean end) {
-
     }
 
     @Override
@@ -212,6 +221,17 @@ public class NutritionDetailsDialogFragment extends DialogFragment implements Fi
         if(end==true){
             buttonInsert.setEnabled(true);
             buttonDelete.setEnabled(false);
+            switch (option){
+                case 0:
+                    Toast.makeText(getContext(),nutritionSlimming.getName()+" "+getString(R.string.eliminarafavoritos),Toast.LENGTH_LONG).show();
+                    break;
+                case 1:
+                    Toast.makeText(getContext(),nutritionToning.getName()+" "+getString(R.string.eliminarafavoritos),Toast.LENGTH_LONG).show();
+                    break;
+                case 2:
+                    Toast.makeText(getContext(),nutritionGainVolume.getName()+" "+getString(R.string.eliminarafavoritos),Toast.LENGTH_LONG).show();
+                    break;
+            }
         }
     }
 
@@ -261,6 +281,11 @@ public class NutritionDetailsDialogFragment extends DialogFragment implements Fi
 
     @Override
     public void inserSportFavoriteFirebase(boolean end) {
+
+    }
+    
+    @Override
+    public void deleteFavoriteSport(boolean end) {
 
     }
 

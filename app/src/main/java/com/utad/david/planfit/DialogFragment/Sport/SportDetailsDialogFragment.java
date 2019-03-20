@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.utad.david.planfit.Activitys.YoutubeActivity;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
@@ -202,6 +203,36 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
         if(end){
             buttonInsert.setEnabled(false);
             buttonDelete.setEnabled(true);
+            switch (option){
+                case 0:
+                    Toast.makeText(getContext(),sportSlimming.getName()+" "+getString(R.string.agregarafavoritos),Toast.LENGTH_LONG).show();
+                    break;
+                case 1:
+                    Toast.makeText(getContext(),sportToning.getName()+" "+getString(R.string.agregarafavoritos),Toast.LENGTH_LONG).show();
+                    break;
+                case 2:
+                    Toast.makeText(getContext(),sportGainVolume.getName()+" "+getString(R.string.agregarafavoritos),Toast.LENGTH_LONG).show();
+                    break;
+            }
+        }
+    }
+
+    @Override
+    public void deleteFavoriteSport(boolean end) {
+        if(end==true){
+            buttonInsert.setEnabled(true);
+            buttonDelete.setEnabled(false);
+            switch (option){
+                case 0:
+                    Toast.makeText(getContext(),sportSlimming.getName()+" "+getString(R.string.eliminarafavoritos),Toast.LENGTH_LONG).show();
+                    break;
+                case 1:
+                    Toast.makeText(getContext(),sportToning.getName()+" "+getString(R.string.eliminarafavoritos),Toast.LENGTH_LONG).show();
+                    break;
+                case 2:
+                    Toast.makeText(getContext(),sportGainVolume.getName()+" "+getString(R.string.eliminarafavoritos),Toast.LENGTH_LONG).show();
+                    break;
+            }
         }
     }
 
@@ -252,14 +283,6 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
     @Override
     public void inserNutritionFavoriteFirebase(boolean end) {
 
-    }
-
-    @Override
-    public void deleteFavoriteSport(boolean end) {
-        if(end==true){
-            buttonInsert.setEnabled(true);
-            buttonDelete.setEnabled(false);
-        }
     }
 
     @Override

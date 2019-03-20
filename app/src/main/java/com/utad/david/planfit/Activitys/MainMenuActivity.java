@@ -5,6 +5,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
@@ -56,6 +57,7 @@ public class MainMenuActivity extends AppCompatActivity
 
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
+    private View navigationHeaderView;
 
     @Override
     protected void onStart() {
@@ -74,13 +76,8 @@ public class MainMenuActivity extends AppCompatActivity
 
         fragmentManager = getSupportFragmentManager();
 
-        //Muestra en la pantalla un boton que hace visible que es un menu lateral
-        toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
+        setUi();
 
-        //Inflamos el layout del header del menu para poder modificar el contenido del header
         LayoutInflater.from(getBaseContext()).inflate(R.layout.activity_main_menu_navheader, navigationView);
         navigationView.setNavigationItemSelectedListener(this);
 
@@ -88,8 +85,26 @@ public class MainMenuActivity extends AppCompatActivity
 
         setTitle(R.string.first_nav_name);
         navigateFragmentSport();
-        //displaySelectedScreen(R.id.nav_deportes);
+        onClickNavigetionHeaderView();
+    }
 
+    public void setUi(){
+        toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+    }
+
+    public void onClickNavigetionHeaderView(){
+        navigationHeaderView = navigationView.getHeaderView(0);
+        navigationHeaderView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editUser();
+                assert drawer != null;
+                drawer.closeDrawer(GravityCompat.START);
+            }
+        });
     }
 
     @Override
