@@ -1107,14 +1107,14 @@ public class FirebaseAdmin {
                         @Override
                         public void onSuccess(Void aVoid) {
                             Log.d("FirebaseAdmin", "DocumentSnapshot successfully written!");
-                            firebaseAdminFavoriteSportAndNutrition.inserSportFavoriteFirebase(true);
+                            firebaseAdminFavoriteSportAndNutrition.inserNutritionFavoriteFirebase(true);
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             Log.w("FirebaseAdmin", "Error writing document", e);
-                            firebaseAdminFavoriteSportAndNutrition.inserSportFavoriteFirebase(false);
+                            firebaseAdminFavoriteSportAndNutrition.inserNutritionFavoriteFirebase(false);
                         }
                     });
         }

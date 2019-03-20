@@ -283,7 +283,7 @@ public class NutritionDetailsDialogFragment extends DialogFragment implements Fi
     public void inserSportFavoriteFirebase(boolean end) {
 
     }
-    
+
     @Override
     public void deleteFavoriteSport(boolean end) {
 
