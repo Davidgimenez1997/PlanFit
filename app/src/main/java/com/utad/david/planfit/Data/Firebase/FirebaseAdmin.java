@@ -362,13 +362,29 @@ public class FirebaseAdmin {
     public void deletePhoto() {
         if (firebaseAdminUpdateAndDeleteUserListener != null) {
             StorageReference desertRef = storageReference.child("images/" + currentUser.getUid());
-
             // Delete the file
             desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
                     // File deleted successfully
-                    firebaseAdminUpdateAndDeleteUserListener.deletePhotoInFirebase(true);
+                    DocumentReference myUserRef = firebaseFirestore.collection(COLLECTION_USER_FIREBASE).document(currentUser.getUid());
+                    Map<String, Object> user = new HashMap<>();
+                    user.put("imgUser", "");
+                    myUserRef.update(user)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Log.d("FirebaseAdmin", "DocumentSnapshot successfully updated!");
+                                    firebaseAdminUpdateAndDeleteUserListener.deletePhotoInFirebase(true);
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.w("FirebaseAdmin", "Error updating document", e);
+                                    firebaseAdminUpdateAndDeleteUserListener.deletePhotoInFirebase(false);
+                                }
+                            });
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -389,7 +405,24 @@ public class FirebaseAdmin {
                 @Override
                 public void onSuccess(Void aVoid) {
                     uploadImage(userDataFirebase.getImgUser());
-                    firebaseAdminUpdateAndDeleteUserListener.updatePhotoInFirebase(true);
+                    DocumentReference myUserRef = firebaseFirestore.collection(COLLECTION_USER_FIREBASE).document(currentUser.getUid());
+                    Map<String, Object> user = new HashMap<>();
+                    user.put("imgUser", userDataFirebase.getImgUser());
+                    myUserRef.update(user)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Log.d("FirebaseAdmin", "DocumentSnapshot successfully updated!");
+                                    firebaseAdminUpdateAndDeleteUserListener.updatePhotoInFirebase(true);
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.w("FirebaseAdmin", "Error updating document", e);
+                                    firebaseAdminUpdateAndDeleteUserListener.updatePhotoInFirebase(false);
+                                }
+                            });
                     // File deleted successfully
                 }
             }).addOnFailureListener(new OnFailureListener() {
@@ -399,24 +432,6 @@ public class FirebaseAdmin {
                     firebaseAdminUpdateAndDeleteUserListener.updatePhotoInFirebase(false);
                 }
             });
-            /*
-            StorageReference desertRef = storageReference.child("images/"+ cƒdeurrentUser.getUid());
-
-            // Delete the file
-            desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void aVoid) {
-                    // File deleted successfully
-                    uploadImage(userDataFirebase.getImgUser());
-                    firebaseAdminUpdateAndDeleteUserListener.updatePhotoInFirebase(true);
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    firebaseAdminUpdateAndDeleteUserListener.updatePhotoInFirebase(false);
-                }
-            });
-            */
 
         }
     }
@@ -469,35 +484,7 @@ public class FirebaseAdmin {
 
     public void updateEmailUserInFirebase() {
         if (firebaseAdminUpdateAndDeleteUserListener != null) {
-            currentUser = FirebaseAuth.getInstance().getCurrentUser();
-            reauthenticateUserInFirebaseWithEmailAndPassword();
-            currentUser.updateEmail(userDataFirebase.getEmail())
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                Log.d("FirebaseAdmin", "User email address updated.");
-                                DocumentReference myUserRef = firebaseFirestore.collection(COLLECTION_USER_FIREBASE).document(currentUser.getUid());
-                                Map<String, Object> user = new HashMap<>();
-                                user.put("email", userDataFirebase.getEmail());
-                                myUserRef.update(user)
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                Log.d("FirebaseAdmin", "DocumentSnapshot successfully updated!");
-                                                firebaseAdminUpdateAndDeleteUserListener.updateEmailInFirebase(true);
-                                            }
-                                        })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Log.w("FirebaseAdmin", "Error updating document", e);
-                                                firebaseAdminUpdateAndDeleteUserListener.updateEmailInFirebase(false);
-                                            }
-                                        });
-                            }
-                        }
-                    });
+            reauthenticateUserUpdateEmail();
         }
 
     }
@@ -505,44 +492,105 @@ public class FirebaseAdmin {
     public void updatePasswordUserInFirebase() {
         if (firebaseAdminUpdateAndDeleteUserListener != null) {
             currentUser = FirebaseAuth.getInstance().getCurrentUser();
-            reauthenticateUserInFirebaseWithEmailAndPassword();
             String newPassword = userDataFirebase.getPassword();
-
-            currentUser.updatePassword(newPassword)
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                Log.d("FirebaseAdmin", "User password updated.");
-                                DocumentReference myUserRef = firebaseFirestore.collection(COLLECTION_USER_FIREBASE).document(currentUser.getUid());
-                                Map<String, Object> user = new HashMap<>();
-                                user.put("password", userDataFirebase.getPassword());
-                                myUserRef.update(user)
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                Log.d("FirebaseAdmin", "DocumentSnapshot successfully updated!");
-                                                firebaseAdminUpdateAndDeleteUserListener.updatePasswordInFirebase(true);
-                                            }
-                                        })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Log.w("FirebaseAdmin", "Error updating document", e);
-                                                firebaseAdminUpdateAndDeleteUserListener.updatePasswordInFirebase(false);
-                                            }
-                                        });
-                            }
-                        }
-                    });
+            reauthenticateUserUpdatePassword(newPassword);
         }
+    }
+
+    //Reauthenticate User update email
+
+    private void reauthenticateUserUpdateEmail(){
+        Log.d("CREDENCIALESREAUTENTIFICACIONES ",userDataFirebase.getEmail()+" "+userDataFirebase.getPassword());
+
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        credential = EmailAuthProvider
+                .getCredential(currentUser.getEmail(), userDataFirebase.getPassword());
+        currentUser.reauthenticate(credential)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Log.d("FirebaseAdmin", "User re-authenticated.");
+                        currentUser.updateEmail(userDataFirebase.getEmail())
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            Log.d("FirebaseAdmin", "User email address updated.");
+                                            DocumentReference myUserRef = firebaseFirestore.collection(COLLECTION_USER_FIREBASE).document(currentUser.getUid());
+                                            Map<String, Object> user = new HashMap<>();
+                                            user.put("email", userDataFirebase.getEmail());
+                                            myUserRef.update(user)
+                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void aVoid) {
+                                                            Log.d("FirebaseAdmin", "DocumentSnapshot successfully updated!");
+                                                            firebaseAdminUpdateAndDeleteUserListener.updateEmailInFirebase(true);
+                                                        }
+                                                    })
+                                                    .addOnFailureListener(new OnFailureListener() {
+                                                        @Override
+                                                        public void onFailure(@NonNull Exception e) {
+                                                            Log.w("FirebaseAdmin", "Error updating document", e);
+                                                            firebaseAdminUpdateAndDeleteUserListener.updateEmailInFirebase(false);
+                                                        }
+                                                    });
+                                        }
+                                    }
+                                });
+                    }
+                });
+    }
+
+    //Reauthenticate User update password
+
+    private void reauthenticateUserUpdatePassword(final String newPassword){
+
+        Log.d("CREDENCIALESREAUTENTIFICACIONES ",userDataFirebase.getEmail()+" "+userDataFirebase.getPassword());
+
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        credential = EmailAuthProvider
+                .getCredential(userDataFirebase.getEmail(), userDataFirebase.getPassword());
+        currentUser.reauthenticate(credential)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Log.d("FirebaseAdmin", "User re-authenticated.");
+                        currentUser.updatePassword(newPassword)
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            Log.d("FirebaseAdmin", "User password updated.");
+                                            DocumentReference myUserRef = firebaseFirestore.collection(COLLECTION_USER_FIREBASE).document(currentUser.getUid());
+                                            Map<String, Object> user = new HashMap<>();
+                                            user.put("password", userDataFirebase.getPassword());
+                                            myUserRef.update(user)
+                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void aVoid) {
+                                                            Log.d("FirebaseAdmin", "DocumentSnapshot successfully updated!");
+                                                            firebaseAdminUpdateAndDeleteUserListener.updatePasswordInFirebase(true);
+                                                        }
+                                                    })
+                                                    .addOnFailureListener(new OnFailureListener() {
+                                                        @Override
+                                                        public void onFailure(@NonNull Exception e) {
+                                                            Log.w("FirebaseAdmin", "Error updating document", e);
+                                                            firebaseAdminUpdateAndDeleteUserListener.updatePasswordInFirebase(false);
+                                                        }
+                                                    });
+                                        }
+                                    }
+                                });
+                    }
+                });
     }
 
     //Delete user account
 
     public void deleteAccountInFirebase() {
         if (firebaseAdminUpdateAndDeleteUserListener != null) {
-            final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            final FirebaseUser userDelete = FirebaseAuth.getInstance().getCurrentUser();
             firebaseFirestore.collection(COLLECTION_USER_FIREBASE).document(currentUser.getUid())
                     .delete()
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -551,18 +599,8 @@ public class FirebaseAdmin {
                             Log.d("PruebasBorrar",userDataFirebase.toString());
                             Log.d("FirebaseAdmin", "DocumentSnapshot successfully deleted!");
                             if(userDataFirebase.getImgUser().equals("")){
-                                reauthenticateUserInFirebaseWithEmailAndPassword();
-                                user.delete()
-                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                if (task.isSuccessful()) {
-                                                    Log.d("FirebaseAdmin", "User account deleted.");
-                                                    firebaseAdminUpdateAndDeleteUserListener.deleteUserInFirebase(true);
+                                reauthenticateUserDeleteAccount();
 
-                                                }
-                                            }
-                                        });
                             }else{
                                 StorageReference desertRef = storageReference.child("images/" + currentUser.getUid());
                                 // Delete the file
@@ -570,18 +608,7 @@ public class FirebaseAdmin {
                                     @Override
                                     public void onSuccess(Void aVoid) {
                                         // File deleted successfully
-                                        reauthenticateUserInFirebaseWithEmailAndPassword();
-                                        user.delete()
-                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<Void> task) {
-                                                        if (task.isSuccessful()) {
-                                                            Log.d("FirebaseAdmin", "User account deleted.");
-                                                            firebaseAdminUpdateAndDeleteUserListener.deleteUserInFirebase(true);
-
-                                                        }
-                                                    }
-                                                });
+                                        reauthenticateUserDeleteAccount();
 
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
@@ -606,9 +633,12 @@ public class FirebaseAdmin {
         }
     }
 
-    //Reauthenticate User
+    //Reauthenticate User delete account
 
-    private void reauthenticateUserInFirebaseWithEmailAndPassword() {
+    private void reauthenticateUserDeleteAccount(){
+
+        Log.d("CREDENCIALESREAUTENTIFICACIONES ",userDataFirebase.getEmail()+" "+userDataFirebase.getPassword());
+
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         credential = EmailAuthProvider
                 .getCredential(userDataFirebase.getEmail(), userDataFirebase.getPassword());
@@ -617,6 +647,18 @@ public class FirebaseAdmin {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         Log.d("FirebaseAdmin", "User re-authenticated.");
+                        currentUser.delete()
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            Log.d("FirebaseAdmin", "User account deleted.");
+                                            firebaseAdminUpdateAndDeleteUserListener.deleteUserInFirebase(true);
+
+                                        }
+                                    }
+                                });
+
                     }
                 });
     }

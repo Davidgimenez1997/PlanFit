@@ -80,6 +80,12 @@
     <string name="favorites_saveFavorites_nutrition_text">Guarda alguna alimentación para luego verla aqui.</string>
     <string name="agregarafavoritos"> agregado a favoritos</string>
     <string name="eliminarafavoritos"> eliminado de favoritos.</string>
+    <string name="title_delete_boto">Borrando foto</string>
+    <string name="message_delete_photo">Porfavor, espere mientras se borra la foto.</string>
+    <string name="title_update_foto">Actualizando foto</string>
+    <string name="message_update_photo">Porfavor, espere mientras se actualiza la foto</string>
+    <string name="title_update_pass">Actualizando contraseña</string>
+    <string name="message_update_pass">Porfavor, espere mientras se actualiza tu contraseña</string>
 
 
     <string-array name="timePlan">

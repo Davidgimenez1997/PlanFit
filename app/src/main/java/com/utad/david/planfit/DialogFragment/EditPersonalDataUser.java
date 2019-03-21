@@ -91,6 +91,7 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
     }
 
     private void configView(){
+        buttonUpdatePhoto.setEnabled(false);
         editTextEmail.addTextChangedListener(textWatcherEditPesonalDataEmail);
         editTextPassword.addTextChangedListener(textWatcherEditPesonalDataPassword);
         editTextFullName.addTextChangedListener(textWatcherEditPesonalDataFullName);
@@ -296,6 +297,8 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
         buttonDeletePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                showDialog(getString(R.string.title_delete_boto),getString(R.string.message_delete_photo));
+                mProgress.show();
                 SessionUser.getInstance().firebaseAdmin.userDataFirebase = userUpdate;
                 SessionUser.getInstance().firebaseAdmin.deletePhoto();
             }
@@ -306,6 +309,8 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
         buttonUpdatePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                showDialog(getString(R.string.title_update_foto),getString(R.string.message_update_photo));
+                mProgress.show();
                 SessionUser.getInstance().firebaseAdmin.userDataFirebase = userUpdate;
                 SessionUser.getInstance().firebaseAdmin.updatePhotoUserInFirebase();
             }
@@ -316,6 +321,8 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
         buttonUpdatePassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                showDialog(getString(R.string.title_update_pass),getString(R.string.message_update_pass));
+                mProgress.show();
                 SessionUser.getInstance().firebaseAdmin.userDataFirebase = userUpdate;
                 SessionUser.getInstance().firebaseAdmin.updatePasswordUserInFirebase();
             }
@@ -366,27 +373,60 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
     public void updatePhotoInFirebase(boolean end) {
         if(end){
             if(mListener!=null){
+                mProgress.dismiss();
                 buttonUpdatePhoto.setEnabled(false);
                 putPhotoUser(userUpdate.getImgUser());
                 //SessionUser.getInstance().firebaseAdmin.uploadImage(userUpdate.getImgUser());
                 mListener.updateData(userUpdate);
+                Toast.makeText(getContext(),"Foto actualizada correctamente",Toast.LENGTH_LONG).show();
             }
         }
         else{
+            mProgress.dismiss();
+            errorUpdatePhoto("Error al actualizar la foto del perfil, vuelve a intentarlo.");
             mListener.updateData(userUpdate);
         }
+    }
+
+    private void errorUpdatePhoto(String messageError) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
+        builder.setMessage(messageError)
+                .setPositiveButton(R.string.info_dialog_err, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                });
+        builder.create();
+        builder.show();
     }
 
     @Override
     public void deletePhotoInFirebase(boolean end) {
         if(end){
             if(mListener!=null){
+                mProgress.dismiss();
                 imageView.setImageResource(R.drawable.icon_gallery);
                 SessionUser.getInstance().user.setImgUser(null);
                 userUpdate.setImgUser(null);
                 mListener.updateData(userUpdate);
+                Toast.makeText(getContext(),"Foto borrada correctamente",Toast.LENGTH_LONG).show();
             }
+        }else{
+            mProgress.dismiss();
+            errorDeletePhoto("Error al eliminar la foto del perfil, vuelve a intentarlo.");
         }
+    }
+
+    private void errorDeletePhoto(String messageError) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
+        builder.setMessage(messageError)
+                .setPositiveButton(R.string.info_dialog_err, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                });
+        builder.create();
+        builder.show();
     }
 
     @Override
@@ -402,8 +442,25 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
     @Override
     public void updatePasswordInFirebase(boolean end) {
         if(end==true){
-            createAndShowAlertDialogUpdate(getString(R.string.info_update_password));
+            mProgress.dismiss();
+            Toast.makeText(getContext(),getString(R.string.info_update_password),Toast.LENGTH_LONG).show();
+            //createAndShowAlertDialogUpdate(getString());
+        }else{
+            mProgress.dismiss();
+            errorUpdatePassword("Error al actualizar la contraseña, vuelve a intentarlo.");
         }
+    }
+
+    private void errorUpdatePassword(String message) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
+        builder.setMessage(message)
+                .setPositiveButton(R.string.info_dialog_err, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                });
+        builder.create();
+        builder.show();
     }
 
     @Override
@@ -445,16 +502,17 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
         if (resultCode == RESULT_OK) {
             try {
                 imageUri = data.getData();
-                final InputStream imageStream = getActivity().getApplicationContext().getContentResolver().openInputStream(imageUri);
-                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-                imageView.setImageBitmap(selectedImage);
+                putPhotoUser(imageUri.toString());
+                //final InputStream imageStream = getActivity().getApplicationContext().getContentResolver().openInputStream(imageUri);
+                //final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+                //imageView.setImageBitmap(selectedImage);
                 buttonUpdatePhoto.setEnabled(true);
                 if(imageUri!=null){
                    userUpdate.setImgUser(imageUri.toString());
                    onClickButtonUpdatePhoto();
                 }
 
-            } catch (FileNotFoundException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 Toast.makeText(getActivity().getApplicationContext(), "Something went wrong", Toast.LENGTH_LONG).show();
             }
