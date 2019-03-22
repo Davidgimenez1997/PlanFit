@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,16 +16,25 @@ import com.utad.david.planfit.Adapter.Favorite.NutritionFavoriteAdapter;
 import com.utad.david.planfit.Adapter.Favorite.SportFavoriteAdapter;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
+import com.utad.david.planfit.DialogFragment.Favorite.NutritionFavoriteDetailsDialogFragment;
 import com.utad.david.planfit.Model.Nutrition.DefaultNutrition;
 import com.utad.david.planfit.Model.Sport.DefaultSport;
 import com.utad.david.planfit.R;
 
 import java.util.List;
 
-public class NutritionFavorite extends Fragment implements FirebaseAdmin.FirebaseAdminFavoriteSportAndNutrition {
+public class NutritionFavorite extends Fragment implements FirebaseAdmin.FirebaseAdminFavoriteSportAndNutrition,
+        NutritionFavoriteDetailsDialogFragment.CallbackNutritionFavorite {
 
     public NutritionFavorite() {
         // Required empty public constructor
+    }
+
+    private NutritionFavorite fragment;
+
+    public NutritionFavorite newInstanceSlimming() {
+        this.fragment = this;
+        return this.fragment;
     }
 
     @Override
@@ -43,6 +53,7 @@ public class NutritionFavorite extends Fragment implements FirebaseAdmin.Firebas
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private LinearLayout linearLayout;
+    private NutritionFavoriteDetailsDialogFragment newFragment;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -77,7 +88,20 @@ public class NutritionFavorite extends Fragment implements FirebaseAdmin.Firebas
             linearLayout.setVisibility(View.GONE);
             mRecyclerView.setVisibility(View.VISIBLE);
             List<DefaultNutrition> allFavoriteFavorite = SessionUser.getInstance().firebaseAdmin.allNutritionFavorite;
-            mAdapter = new NutritionFavoriteAdapter(allFavoriteFavorite);
+            mAdapter = new NutritionFavoriteAdapter(allFavoriteFavorite, new NutritionFavoriteAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(DefaultNutrition item) {
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                    Fragment prev = getFragmentManager().findFragmentByTag("dialog");
+                    if (prev != null) {
+                        transaction.remove(prev);
+                    }
+                    transaction.addToBackStack(null);
+                    newFragment = NutritionFavoriteDetailsDialogFragment.newInstance(item);
+                    newFragment.setListener(fragment);
+                    newFragment.show(transaction, "dialog");
+                }
+            });
             mRecyclerView.setAdapter(mAdapter);
         }
     }
@@ -88,6 +112,11 @@ public class NutritionFavorite extends Fragment implements FirebaseAdmin.Firebas
             linearLayout.setVisibility(View.VISIBLE);
             mRecyclerView.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void onClickClose() {
+        newFragment.dismiss();
     }
 
     @Override

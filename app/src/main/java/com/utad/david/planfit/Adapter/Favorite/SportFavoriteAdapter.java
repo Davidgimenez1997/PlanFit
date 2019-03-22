@@ -17,9 +17,16 @@ public class SportFavoriteAdapter extends RecyclerView.Adapter<SportFavoriteAdap
 
     private List<DefaultSport> defaultSports;
 
+    private OnItemClickListener listener;
 
-    public SportFavoriteAdapter(List<DefaultSport> defaultSports) {
+    public interface OnItemClickListener {
+        void onItemClick(DefaultSport item);
+    }
+
+
+    public SportFavoriteAdapter(List<DefaultSport> defaultSports,OnItemClickListener listener) {
         this.defaultSports = defaultSports;
+        this.listener = listener;
     }
 
     @Override
@@ -33,6 +40,14 @@ public class SportFavoriteAdapter extends RecyclerView.Adapter<SportFavoriteAdap
     public void onBindViewHolder(SportFavoriteAdapter.SportFavoriteViewHolder holder, int position) {
         final DefaultSport current = defaultSports.get(position);
         holder.setData(current);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(listener!=null){
+                    listener.onItemClick(current);
+                }
+            }
+        });
     }
 
     @Override

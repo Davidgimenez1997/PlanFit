@@ -17,10 +17,15 @@ import java.util.List;
 public class NutritionFavoriteAdapter extends RecyclerView.Adapter<NutritionFavoriteAdapter.NutritionFavoriteViewHolder> {
 
     private List<DefaultNutrition> defaultNutritions;
+    private OnItemClickListener listener;
 
+    public interface OnItemClickListener {
+        void onItemClick(DefaultNutrition item);
+    }
 
-    public NutritionFavoriteAdapter(List<DefaultNutrition> defaultNutritions) {
+    public NutritionFavoriteAdapter(List<DefaultNutrition> defaultNutritions,OnItemClickListener listener) {
         this.defaultNutritions = defaultNutritions;
+        this.listener = listener;
     }
 
     @Override
@@ -34,6 +39,14 @@ public class NutritionFavoriteAdapter extends RecyclerView.Adapter<NutritionFavo
     public void onBindViewHolder(NutritionFavoriteAdapter.NutritionFavoriteViewHolder holder, int position) {
         final DefaultNutrition current = defaultNutritions.get(position);
         holder.setData(current);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(listener!=null){
+                    listener.onItemClick(current);
+                }
+            }
+        });
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Favorite;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,15 +15,24 @@ import android.widget.LinearLayout;
 import com.utad.david.planfit.Adapter.Favorite.SportFavoriteAdapter;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
+import com.utad.david.planfit.DialogFragment.Favorite.NutritionFavoriteDetailsDialogFragment;
+import com.utad.david.planfit.DialogFragment.Favorite.SportFavoriteDetailsDialogFragment;
 import com.utad.david.planfit.Model.Sport.DefaultSport;
 import com.utad.david.planfit.R;
 
 import java.util.List;
 
-public class SportFavorite extends Fragment implements FirebaseAdmin.FirebaseAdminFavoriteSportAndNutrition {
+public class SportFavorite extends Fragment implements FirebaseAdmin.FirebaseAdminFavoriteSportAndNutrition, SportFavoriteDetailsDialogFragment.CallbackFavoriteSport{
 
     public SportFavorite() {
         // Required empty public constructor
+    }
+
+    private SportFavorite fragment;
+
+    public SportFavorite newInstanceSlimming() {
+        this.fragment = this;
+        return this.fragment;
     }
 
     @Override
@@ -41,6 +51,7 @@ public class SportFavorite extends Fragment implements FirebaseAdmin.FirebaseAdm
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private LinearLayout linearLayout;
+    private SportFavoriteDetailsDialogFragment newFragment;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -56,6 +67,43 @@ public class SportFavorite extends Fragment implements FirebaseAdmin.FirebaseAdm
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         return view;
+    }
+
+    @Override
+    public void downloandCollectionSportFavorite(boolean end) {
+        if(end==true){
+            linearLayout.setVisibility(View.GONE);
+            mRecyclerView.setVisibility(View.VISIBLE);
+            List<DefaultSport> allSportFavorite = SessionUser.getInstance().firebaseAdmin.allSportFavorite;
+            mAdapter = new SportFavoriteAdapter(allSportFavorite, new SportFavoriteAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(DefaultSport item) {
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                    Fragment prev = getFragmentManager().findFragmentByTag("dialog");
+                    if (prev != null) {
+                        transaction.remove(prev);
+                    }
+                    transaction.addToBackStack(null);
+                    newFragment = SportFavoriteDetailsDialogFragment.newInstance(item);
+                    newFragment.setListener(fragment);
+                    newFragment.show(transaction, "dialog");
+                }
+            });
+            mRecyclerView.setAdapter(mAdapter);
+        }
+    }
+
+    @Override
+    public void emptyCollectionSportFavorite(boolean end) {
+        if(end==true){
+            linearLayout.setVisibility(View.VISIBLE);
+            mRecyclerView.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onClickClose() {
+
     }
 
     @Override
@@ -76,25 +124,6 @@ public class SportFavorite extends Fragment implements FirebaseAdmin.FirebaseAdm
     @Override
     public void inserNutritionFavoriteFirebase(boolean end) {
 
-    }
-
-    @Override
-    public void downloandCollectionSportFavorite(boolean end) {
-        if(end==true){
-            linearLayout.setVisibility(View.GONE);
-            mRecyclerView.setVisibility(View.VISIBLE);
-            List<DefaultSport> allSportFavorite = SessionUser.getInstance().firebaseAdmin.allSportFavorite;
-            mAdapter = new SportFavoriteAdapter(allSportFavorite);
-            mRecyclerView.setAdapter(mAdapter);
-        }
-    }
-
-    @Override
-    public void emptyCollectionSportFavorite(boolean end) {
-        if(end==true){
-            linearLayout.setVisibility(View.VISIBLE);
-            mRecyclerView.setVisibility(View.GONE);
-        }
     }
 
     @Override

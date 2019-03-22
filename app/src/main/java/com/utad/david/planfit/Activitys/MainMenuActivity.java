@@ -413,6 +413,7 @@ public class MainMenuActivity extends AppCompatActivity
     @Override
     public void clickSportFavorite() {
         SportFavorite sportFavorite = new SportFavorite();
+        sportFavorite.newInstanceSlimming();
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, sportFavorite);
         fragmentTransaction.addToBackStack(null);
@@ -422,6 +423,7 @@ public class MainMenuActivity extends AppCompatActivity
     @Override
     public void clickNutritionFavorite() {
         NutritionFavorite nutritionFavorite = new NutritionFavorite();
+        nutritionFavorite.newInstanceSlimming();
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, nutritionFavorite);
         fragmentTransaction.addToBackStack(null);
