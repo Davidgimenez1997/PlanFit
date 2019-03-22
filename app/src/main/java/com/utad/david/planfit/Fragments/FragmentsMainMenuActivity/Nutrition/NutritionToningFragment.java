@@ -22,10 +22,17 @@ import com.utad.david.planfit.R;
 
 import java.util.List;
 
-public class NutritionToningFragment extends Fragment implements FirebaseAdmin.FirebaseAdminDownloandFragmentData {
+public class NutritionToningFragment extends Fragment implements FirebaseAdmin.FirebaseAdminDownloandFragmentData,NutritionDetailsDialogFragment.CallbackNutrition {
 
     public NutritionToningFragment() {
         // Required empty public constructor
+    }
+
+    private NutritionToningFragment fragment;
+
+    public NutritionToningFragment newInstanceSlimming() {
+        this.fragment = this;
+        return this.fragment;
     }
 
     @Override
@@ -37,6 +44,8 @@ public class NutritionToningFragment extends Fragment implements FirebaseAdmin.F
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+    private NutritionDetailsDialogFragment newFragment;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -74,12 +83,18 @@ public class NutritionToningFragment extends Fragment implements FirebaseAdmin.F
                         transaction.remove(prev);
                     }
                     transaction.addToBackStack(null);
-                    NutritionDetailsDialogFragment newFragment = NutritionDetailsDialogFragment.newInstanceToning(item,1);
+                    newFragment = NutritionDetailsDialogFragment.newInstanceToning(item,1);
+                    newFragment.setCallbackNutrition(fragment);
                     newFragment.show(transaction, "dialog");
                 }
             });
             mRecyclerView.setAdapter(mAdapter);
         }
+    }
+
+    @Override
+    public void onClickClose() {
+        newFragment.dismiss();
     }
 
     @Override

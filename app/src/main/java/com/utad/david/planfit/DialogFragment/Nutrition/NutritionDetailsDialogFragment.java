@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Model.Nutrition.NutritionGainVolume;
@@ -30,10 +31,15 @@ public class NutritionDetailsDialogFragment extends DialogFragment implements Fi
     public NutritionGainVolume nutritionGainVolume;
     public NutritionToning nutritionToning;
     public int option;
+    private CallbackNutrition listener;
     private static String SLIMMING = "SLIMMING";
     private static String GAINVOLUME = "GAINVOLUME";
     private static String TONING = "TONING";
     private static String OPTION = "OPTION";
+
+    public interface CallbackNutrition{
+        void onClickClose();
+    }
 
 
     public static NutritionDetailsDialogFragment newInstanceSlimming(NutritionSlimming nutritionSlimming, int option) {
@@ -69,6 +75,10 @@ public class NutritionDetailsDialogFragment extends DialogFragment implements Fi
         return fragment;
     }
 
+    public void setCallbackNutrition(CallbackNutrition listener) {
+        this.listener = listener;
+    }
+
     //Nuestra variable communities coge el valor que se le está pasando
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -86,6 +96,7 @@ public class NutritionDetailsDialogFragment extends DialogFragment implements Fi
     private ImageView imageViewSport;
     private Button buttonInsert;
     private Button buttonDelete;
+    private Button buttonClose;
     private List<NutritionSlimming> nutritionSlimmingList;
     private List<NutritionToning> nutritionToningList;
     private List<NutritionGainVolume> nutritionGainVolumeList;
@@ -103,8 +114,20 @@ public class NutritionDetailsDialogFragment extends DialogFragment implements Fi
         onClickButtonOpenYoutube();
         onClickButtonOpenInsertFavorite();
         onClickButtonOpenDeleteFavorite();
+        onClickCloseButton();
         return view;
 
+    }
+
+    private void onClickCloseButton(){
+        buttonClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(listener!=null){
+                    listener.onClickClose();
+                }
+            }
+        });
     }
 
     public void findById(View v) {
@@ -114,23 +137,29 @@ public class NutritionDetailsDialogFragment extends DialogFragment implements Fi
         imageViewSport = v.findViewById(R.id.imageViewNutrition);
         buttonInsert = v.findViewById(R.id.insert_favoriteNutrition);
         buttonDelete = v.findViewById(R.id.delete_favorite_nutrition);
+        buttonClose = v.findViewById(R.id.close_nutrition);
     }
 
     private void putData() {
+        RequestOptions requestOptions = new RequestOptions();
+
         switch (option){
             case 0:
                 textViewTitle.setText(nutritionSlimming.getName());
                 textViewDescription.setText(nutritionSlimming.getDescription());
+                requestOptions.placeholder(R.drawable.icon_gallery);
                 Glide.with(this).load(nutritionSlimming.getPhoto()).into(imageViewSport);
                 break;
             case 1:
                 textViewTitle.setText(nutritionToning.getName());
                 textViewDescription.setText(nutritionToning.getDescription());
+                requestOptions.placeholder(R.drawable.icon_gallery);
                 Glide.with(this).load(nutritionToning.getPhoto()).into(imageViewSport);
                 break;
             case 2:
                 textViewTitle.setText(nutritionGainVolume.getName());
                 textViewDescription.setText(nutritionGainVolume.getDescription());
+                requestOptions.placeholder(R.drawable.icon_gallery);
                 Glide.with(this).load(nutritionGainVolume.getPhoto()).into(imageViewSport);
                 break;
         }

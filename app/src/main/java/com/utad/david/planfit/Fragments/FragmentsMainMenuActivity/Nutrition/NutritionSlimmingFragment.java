@@ -21,10 +21,17 @@ import com.utad.david.planfit.R;
 
 import java.util.List;
 
-public class NutritionSlimmingFragment extends Fragment implements FirebaseAdmin.FirebaseAdminDownloandFragmentData {
+public class NutritionSlimmingFragment extends Fragment implements FirebaseAdmin.FirebaseAdminDownloandFragmentData ,NutritionDetailsDialogFragment.CallbackNutrition{
 
     public NutritionSlimmingFragment() {
         // Required empty public constructor
+    }
+
+    private NutritionSlimmingFragment fragment;
+
+    public NutritionSlimmingFragment newInstanceSlimming() {
+        this.fragment = this;
+        return this.fragment;
     }
 
     @Override
@@ -36,6 +43,8 @@ public class NutritionSlimmingFragment extends Fragment implements FirebaseAdmin
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+    private NutritionDetailsDialogFragment newFragment;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -74,12 +83,18 @@ public class NutritionSlimmingFragment extends Fragment implements FirebaseAdmin
                         transaction.remove(prev);
                     }
                     transaction.addToBackStack(null);
-                    NutritionDetailsDialogFragment newFragment = NutritionDetailsDialogFragment.newInstanceSlimming(item,0);
+                    newFragment = NutritionDetailsDialogFragment.newInstanceSlimming(item,0);
+                    newFragment.setCallbackNutrition(fragment);
                     newFragment.show(transaction, "dialog");
                 }
             });
             mRecyclerView.setAdapter(mAdapter);
         }
+    }
+
+    @Override
+    public void onClickClose() {
+        newFragment.dismiss();
     }
 
     @Override

@@ -363,6 +363,7 @@ public class MainMenuActivity extends AppCompatActivity
     @Override
     public void clickOnAdelgazarNutrition() {
         NutritionSlimmingFragment nutritionSlimmingFragment = new NutritionSlimmingFragment();
+        nutritionSlimmingFragment.newInstanceSlimming();
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, nutritionSlimmingFragment);
         fragmentTransaction.addToBackStack(null);
@@ -372,6 +373,7 @@ public class MainMenuActivity extends AppCompatActivity
     @Override
     public void clickOnTonificarNutrition() {
         NutritionToningFragment nutritionToningFragment = new NutritionToningFragment();
+        nutritionToningFragment.newInstanceSlimming();
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, nutritionToningFragment);
         fragmentTransaction.addToBackStack(null);
@@ -381,6 +383,7 @@ public class MainMenuActivity extends AppCompatActivity
     @Override
     public void clickOnGanarVolumenNutrition() {
         NutritionGainVolumeFragment nutritionGainVolumeFragment = new NutritionGainVolumeFragment();
+        nutritionGainVolumeFragment.newInstanceSlimming();
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, nutritionGainVolumeFragment);
         fragmentTransaction.addToBackStack(null);
