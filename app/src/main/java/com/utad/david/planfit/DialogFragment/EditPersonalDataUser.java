@@ -17,6 +17,7 @@ import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,7 +62,9 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
     private Button buttonDeletePhoto;
     private Button buttonUpdatePhoto;
     private Button buttonDeleteAccount;
+    private Button buttonClose;
     private User userUpdate;
+    private String oldPassword;
     private EditPersonalDataUser.OnFragmentInteractionListener mListener;
     private ProgressDialog mProgress;
 
@@ -75,19 +78,32 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
 
         userUpdate = SessionUser.getInstance().firebaseAdmin.userDataFirebase;
 
-        findById(v);
-        putData();
-        checkImageUser();
-        openGallery();
-        onClickButtonDeletePhoto();
-        onClickButtonUpdateEmail();
-        onClickButtonUpdatePassword();
-        onClickButtonUpdateNickName();
-        onClickButtonUpdateFullName();
-        onClickButtonDeleteAccount();
-        configView();
+        if(userUpdate!=null){
+            oldPassword = userUpdate.getPassword();
+            findById(v);
+            putData();
+            checkImageUser();
+            openGallery();
+            onClickButtonDeletePhoto();
+            onClickButtonUpdateEmail();
+            onClickButtonUpdatePassword();
+            onClickButtonUpdateNickName();
+            onClickButtonUpdateFullName();
+            onClickButtonDeleteAccount();
+            onClickClose();
+            configView();
+        }
 
         return v;
+    }
+
+    private void onClickClose() {
+        buttonClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
     }
 
     private void configView(){
@@ -119,7 +135,7 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
                     intent.addCategory(Intent.CATEGORY_OPENABLE);
                 }
                 intent.setType("image/*");
-                startActivityForResult(Intent.createChooser(intent, "Selecciona imagen..."),1);
+                startActivityForResult(Intent.createChooser(intent, getString(R.string.menuopengalery)),1);
             }
         });
     }
@@ -263,6 +279,7 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
         buttonUpdatePassword = v.findViewById(R.id.button_password_update);
         buttonUpdatePhoto = v.findViewById(R.id.button_update_photo);
         buttonDeleteAccount = v.findViewById(R.id.button_delete_account);
+        buttonClose = v.findViewById(R.id.button_close_info);
     }
 
     private void putData(){
@@ -324,7 +341,7 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
                 showDialog(getString(R.string.title_update_pass),getString(R.string.message_update_pass));
                 mProgress.show();
                 SessionUser.getInstance().firebaseAdmin.userDataFirebase = userUpdate;
-                SessionUser.getInstance().firebaseAdmin.updatePasswordUserInFirebase();
+                SessionUser.getInstance().firebaseAdmin.updatePasswordUserInFirebase(oldPassword);
             }
         });
     }
@@ -333,6 +350,8 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
         buttonUpdateEmail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                showDialog(getString(R.string.title_update_email),getString(R.string.message_update_email));
+                mProgress.show();
                 SessionUser.getInstance().firebaseAdmin.userDataFirebase = userUpdate;
                 SessionUser.getInstance().firebaseAdmin.updateEmailUserInFirebase();
             }
@@ -343,6 +362,8 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
         buttonUpdateFullName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                showDialog(getString(R.string.title_update_name),getString(R.string.message_update_name));
+                mProgress.show();
                 SessionUser.getInstance().firebaseAdmin.userDataFirebase = userUpdate;
                 SessionUser.getInstance().firebaseAdmin.updateFullNameUserInFirebase();
             }
@@ -353,6 +374,8 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
         buttonUpdateNickName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                showDialog(getString(R.string.title_update_nick),getString(R.string.message_update_nick));
+                mProgress.show();
                 SessionUser.getInstance().firebaseAdmin.userDataFirebase = userUpdate;
                 SessionUser.getInstance().firebaseAdmin.updateNickNameUserInFirebase();
             }
@@ -363,10 +386,31 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
         buttonDeleteAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                createAndShowAlertDialogUpdateDeleteUser(getString(R.string.info_delete_acount_1)+" "+userUpdate.getNickName()+
+                createAndShowAlertDialogDeleteUser(getString(R.string.info_delete_acount_1)+" "+userUpdate.getNickName()+
                         getString(R.string.info_delete_acount_2));
             }
         });
+    }
+
+    private void createAndShowAlertDialogDeleteUser(String message){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
+        builder.setMessage(message)
+                .setPositiveButton(R.string.action_delete, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        showDialog(getString(R.string.title_delete_user),getString(R.string.message_delete_user));
+                        mProgress.show();
+                        SessionUser.getInstance().firebaseAdmin.deleteAccountInFirebase();
+                    }
+                })
+                .setNegativeButton(R.string.action_cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        mProgress.dismiss();
+                    }
+                });
+        builder.create();
+        builder.show();
     }
 
     @Override
@@ -376,14 +420,13 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
                 mProgress.dismiss();
                 buttonUpdatePhoto.setEnabled(false);
                 putPhotoUser(userUpdate.getImgUser());
-                //SessionUser.getInstance().firebaseAdmin.uploadImage(userUpdate.getImgUser());
                 mListener.updateData(userUpdate);
-                Toast.makeText(getContext(),"Foto actualizada correctamente",Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(),getString(R.string.info_update_photo),Toast.LENGTH_LONG).show();
             }
         }
         else{
             mProgress.dismiss();
-            errorUpdatePhoto("Error al actualizar la foto del perfil, vuelve a intentarlo.");
+            errorUpdatePhoto(getString(R.string.error_update_photo));
             mListener.updateData(userUpdate);
         }
     }
@@ -409,11 +452,11 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
                 SessionUser.getInstance().user.setImgUser(null);
                 userUpdate.setImgUser(null);
                 mListener.updateData(userUpdate);
-                Toast.makeText(getContext(),"Foto borrada correctamente",Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(),getString(R.string.delete_photo_info),Toast.LENGTH_LONG).show();
             }
         }else{
             mProgress.dismiss();
-            errorDeletePhoto("Error al eliminar la foto del perfil, vuelve a intentarlo.");
+            errorDeletePhoto(getString(R.string.error_delete_photo));
         }
     }
 
@@ -433,21 +476,39 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
     public void updateEmailInFirebase(boolean end) {
         if(end==true){
             if(mListener!=null){
-                createAndShowAlertDialogUpdate(getString(R.string.info_update_email));
+                buttonUpdateEmail.setEnabled(false);
+                mProgress.dismiss();
                 mListener.updateData(userUpdate);
+                Toast.makeText(getContext(),getString(R.string.info_update_email),Toast.LENGTH_LONG).show();
             }
+        }else{
+            mProgress.dismiss();
+            errorUpdateEmail(getString(R.string.error_email));
+
         }
+    }
+
+    private void errorUpdateEmail(String message) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
+        builder.setMessage(message)
+                .setPositiveButton(R.string.info_dialog_err, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                });
+        builder.create();
+        builder.show();
     }
 
     @Override
     public void updatePasswordInFirebase(boolean end) {
         if(end==true){
+            buttonUpdatePassword.setEnabled(false);
             mProgress.dismiss();
             Toast.makeText(getContext(),getString(R.string.info_update_password),Toast.LENGTH_LONG).show();
-            //createAndShowAlertDialogUpdate(getString());
         }else{
             mProgress.dismiss();
-            errorUpdatePassword("Error al actualizar la contraseña, vuelve a intentarlo.");
+            errorUpdatePassword(getString(R.string.error_password));
         }
     }
 
@@ -467,32 +528,80 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
     public void updateNickNameInFirebase(boolean end) {
         if(end){
             if(mListener!=null){
+                mProgress.dismiss();
                 buttonUpdateNickName.setEnabled(false);
-                createAndShowAlertDialogUpdateFullNameOrNickName(getString(R.string.info_update_nickname));
                 editTextNickName.setText(userUpdate.getNickName());
                 mListener.updateData(userUpdate);
+                Toast.makeText(getContext(),getString(R.string.info_update_nickname),Toast.LENGTH_LONG).show();
             }
+        }else{
+            mProgress.dismiss();
+            errorUpdateNickName(getString(R.string.error_nick));
         }
+    }
+
+    private void errorUpdateNickName(String message) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
+        builder.setMessage(message)
+                .setPositiveButton(R.string.info_dialog_err, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                });
+        builder.create();
+        builder.show();
     }
 
     @Override
     public void updateFullNameInFirebase(boolean end) {
         if(end){
             if(mListener!=null){
+                mProgress.dismiss();
                 buttonUpdateFullName.setEnabled(false);
-                createAndShowAlertDialogUpdateFullNameOrNickName(getString(R.string.info_update_fullname));
                 editTextFullName.setText(userUpdate.getFullName());
                 mListener.updateData(userUpdate);
+                Toast.makeText(getContext(),getString(R.string.info_update_name),Toast.LENGTH_LONG).show();
             }
+        }else{
+            mProgress.dismiss();
+            errorUpdateName(getString(R.string.error_name));
         }
+    }
+
+    private void errorUpdateName(String message) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
+        builder.setMessage(message)
+                .setPositiveButton(R.string.info_dialog_err, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                });
+        builder.create();
+        builder.show();
     }
 
     @Override
     public void deleteUserInFirebase(boolean end) {
         if(end==true){
-            //mProgress.dismiss();
+            mProgress.dismiss();
+            Toast.makeText(getContext(),getString(R.string.info_delete_user),Toast.LENGTH_LONG).show();
             navigatedUserLoginRegister();
+        }else{
+            mProgress.dismiss();
+            errorDeleteAccunt(getString(R.string.error_delete_user));
         }
+    }
+
+    private void errorDeleteAccunt(String message) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
+        builder.setMessage(message)
+                .setPositiveButton(R.string.info_dialog_err, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                });
+        builder.create();
+        builder.show();
     }
 
     @Override
@@ -503,9 +612,6 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
             try {
                 imageUri = data.getData();
                 putPhotoUser(imageUri.toString());
-                //final InputStream imageStream = getActivity().getApplicationContext().getContentResolver().openInputStream(imageUri);
-                //final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-                //imageView.setImageBitmap(selectedImage);
                 buttonUpdatePhoto.setEnabled(true);
                 if(imageUri!=null){
                    userUpdate.setImgUser(imageUri.toString());
@@ -514,57 +620,11 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
 
             } catch (Exception e) {
                 e.printStackTrace();
-                Toast.makeText(getActivity().getApplicationContext(), "Something went wrong", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity().getApplicationContext(), getString(R.string.error_gallery_1), Toast.LENGTH_LONG).show();
             }
         }else {
-            Toast.makeText(getActivity().getApplicationContext(), "You haven't picked Image",Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity().getApplicationContext(), getString(R.string.error_gallery_2),Toast.LENGTH_LONG).show();
         }
-    }
-
-    private void createAndShowAlertDialogUpdate(String message){
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
-        builder.setMessage(message)
-                .setPositiveButton(R.string.info_dialog_err, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.dismiss();
-                        navigatedUserLoginRegister();
-                    }
-                });
-        builder.create();
-        builder.show();
-    }
-
-    private void createAndShowAlertDialogUpdateFullNameOrNickName(String message){
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
-        builder.setMessage(message)
-                .setPositiveButton(R.string.info_dialog_err, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.dismiss();
-                        navigatedUserLoginRegister();
-                    }
-                });
-        builder.create();
-        builder.show();
-    }
-
-    private void createAndShowAlertDialogUpdateDeleteUser(String message){
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
-        builder.setMessage(message)
-                .setPositiveButton(R.string.action_delete, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        //showDialog("Borrando cuenta","Eliminando cuenta, por favor espere.");
-                        //mProgress.show();
-                        SessionUser.getInstance().firebaseAdmin.deleteAccountInFirebase();
-                    }
-                })
-                .setNegativeButton(R.string.action_cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-        });
-        builder.create();
-        builder.show();
     }
 
     private void showDialog(String title, String message){

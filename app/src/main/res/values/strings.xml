@@ -46,6 +46,7 @@
     <string name="info_update_password">Contraseña actualizada correctamente</string>
     <string name="info_update_fullname">Nombre actualizado correctamente</string>
     <string name="info_update_nickname">Nick actualizado correctamente</string>
+    <string name="info_update_name">Nombre actualizado correctamente</string>
     <string name="action_delete">Borrar</string>
     <string name="action_cancel">Cancelar</string>
     <string name="info_delete_acount_1">¿Deseas borrar a</string>
@@ -86,6 +87,29 @@
     <string name="message_update_photo">Porfavor, espere mientras se actualiza la foto</string>
     <string name="title_update_pass">Actualizando contraseña</string>
     <string name="message_update_pass">Porfavor, espere mientras se actualiza tu contraseña</string>
+    <string name="info_login_ok">Sesion iniciada con exito</string>
+    <string name="title_update_email">Actualizando email</string>
+    <string name="message_update_email">Porfavor, espere mientras se actualiza tu email.</string>
+    <string name="title_update_name">Actulizando nombre</string>
+    <string name="message_update_name">Porfavor, espere mientras se actualiza tu nombre.</string>
+    <string name="title_update_nick">Actualizando nick</string>
+    <string name="message_update_nick">Porfavor, espere mientras se actualiza tu nick.</string>
+    <string name="menuopengalery">Selecciona imagen...</string>
+    <string name="info_update_photo">Foto actualizada correctamente</string>
+    <string name="error_update_photo">Error al actualizar la foto del perfil, vuelve a intentarlo.</string>
+    <string name="delete_photo_info">Foto borrada correctamente</string>
+    <string name="error_delete_photo">Error al eliminar la foto del perfil, vuelve a intentarlo.</string>
+    <string name="error_email">Error al actualizar el email del perfil, vuelve a intentarlo.</string>
+    <string name="error_password">Error al actualizar la contraseña, vuelve a intentarlo.</string>
+    <string name="error_nick">Error al actualizar el nick, vuelve a intentarlo.</string>
+    <string name="error_name">Error al actualizar el nombfe, vuelve a intentarlo.</string>
+    <string name="error_gallery_1">Something went wrong</string>
+    <string name="error_gallery_2">You haven\'t picked Image</string>
+    <string name="error_delete_user">Error al borrar la cuenta, intentelo de nuevo.</string>
+    <string name="title_delete_user">Borrando cuenta</string>
+    <string name="message_delete_user">Eliminando cuenta, por favor espere.</string>
+    <string name="info_delete_user">Gracias por usar PlanFit.</string>
+    <string name="close_info">Cerrar</string>
 
 
     <string-array name="timePlan">

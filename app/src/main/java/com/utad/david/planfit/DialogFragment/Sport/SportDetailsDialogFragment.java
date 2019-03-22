@@ -13,7 +13,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.utad.david.planfit.Activitys.YoutubeActivity;
+import com.utad.david.planfit.Adapter.Sport.SportToningAdapter;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Model.Sport.SportGainVolume;
@@ -31,11 +33,16 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
     public SportSlimming sportSlimming;
     public SportGainVolume sportGainVolume;
     public SportToning sportToning;
+    public CallbackSport listener;
     public int option;
     private static String SLIMMING = "SLIMMING";
     private static String GAINVOLUME = "GAINVOLUME";
     private static String TONING = "TONING";
     private static String OPTION = "OPTION";
+
+    public interface CallbackSport{
+        void onClickClose();
+    }
 
 
     public static SportDetailsDialogFragment newInstanceSlimming(SportSlimming sportSlimming, int option) {
@@ -71,6 +78,10 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
         return fragment;
     }
 
+    public void setListener(SportDetailsDialogFragment.CallbackSport listener) {
+        this.listener = listener;
+    }
+
     //Nuestra variable communities coge el valor que se le está pasando
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -88,6 +99,7 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
     private ImageView imageViewSport;
     private Button buttonInsert;
     private Button buttonDelete;
+    private Button buttonClose;
     private List<SportSlimming> sportSlimmingList;
     private List<SportToning> sportToningList;
     private List<SportGainVolume> sportGainVolumeList;
@@ -105,6 +117,7 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
         onClickButtonOpenYoutube();
         onClickButtonOpenInsertFavorite();
         onClickButtonOpenDeleteFavorite();
+        onClickCloseButton();
         return view;
 
     }
@@ -116,23 +129,40 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
         imageViewSport = v.findViewById(R.id.imageViewSport);
         buttonInsert = v.findViewById(R.id.insert_favorite_sport);
         buttonDelete = v.findViewById(R.id.delete_favorite_sport);
+        buttonClose = v.findViewById(R.id.close_info_sport);
+    }
+
+    private void onClickCloseButton(){
+        buttonClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(listener!=null){
+                    listener.onClickClose();
+                }
+            }
+        });
     }
 
     private void putData() {
+        RequestOptions requestOptions = new RequestOptions();
+
         switch (option){
             case 0:
                 textViewTitle.setText(sportSlimming.getName());
                 textViewDescription.setText(sportSlimming.getDescription());
+                requestOptions.placeholder(R.drawable.icon_gallery);
                 Glide.with(this).load(sportSlimming.getPhoto()).into(imageViewSport);
                 break;
             case 1:
                 textViewTitle.setText(sportToning.getName());
                 textViewDescription.setText(sportToning.getDescription());
+                requestOptions.placeholder(R.drawable.icon_gallery);
                 Glide.with(this).load(sportToning.getPhoto()).into(imageViewSport);
                 break;
             case 2:
                 textViewTitle.setText(sportGainVolume.getName());
                 textViewDescription.setText(sportGainVolume.getDescription());
+                requestOptions.placeholder(R.drawable.icon_gallery);
                 Glide.with(this).load(sportGainVolume.getPhoto()).into(imageViewSport);
             break;
         }

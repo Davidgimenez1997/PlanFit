@@ -38,8 +38,7 @@ public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminLoginAndRegisterListener(this);
-        SessionUser.getInstance().firebaseAdmin.mAuth = FirebaseAuth.getInstance();
+
     }
 
     private EditText emailLogin;
@@ -96,6 +95,8 @@ public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
     public void onStart() {
         super.onStart();
         SessionUser.getInstance().firebaseAdmin.mAuth.addAuthStateListener(SessionUser.getInstance().firebaseAdmin.authStateListener);
+        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminLoginAndRegisterListener(this);
+        SessionUser.getInstance().firebaseAdmin.mAuth = FirebaseAuth.getInstance();
     }
 
     private void configView(){
@@ -212,7 +213,7 @@ public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
     @Override
     public void singInWithEmailAndPassword(boolean end) {
         if (end == true) {
-            Toast.makeText(getContext(), "Login Completed", Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), getString(R.string.info_login_ok), Toast.LENGTH_LONG).show();
             mProgress.dismiss();
             Intent intent = new Intent(getContext(),MainMenuActivity.class);
             startActivity(intent);

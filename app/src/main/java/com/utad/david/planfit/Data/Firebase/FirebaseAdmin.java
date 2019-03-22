@@ -489,11 +489,12 @@ public class FirebaseAdmin {
 
     }
 
-    public void updatePasswordUserInFirebase() {
+
+    public void updatePasswordUserInFirebase(String oldPassword) {
         if (firebaseAdminUpdateAndDeleteUserListener != null) {
             currentUser = FirebaseAuth.getInstance().getCurrentUser();
             String newPassword = userDataFirebase.getPassword();
-            reauthenticateUserUpdatePassword(newPassword);
+            reauthenticateUserUpdatePassword(oldPassword,newPassword);
         }
     }
 
@@ -543,13 +544,10 @@ public class FirebaseAdmin {
 
     //Reauthenticate User update password
 
-    private void reauthenticateUserUpdatePassword(final String newPassword){
-
-        Log.d("CREDENCIALESREAUTENTIFICACIONES ",userDataFirebase.getEmail()+" "+userDataFirebase.getPassword());
-
+    private void reauthenticateUserUpdatePassword(String oldPassword, final String newPassword){
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         credential = EmailAuthProvider
-                .getCredential(userDataFirebase.getEmail(), userDataFirebase.getPassword());
+                .getCredential(userDataFirebase.getEmail(), oldPassword);
         currentUser.reauthenticate(credential)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
@@ -560,6 +558,7 @@ public class FirebaseAdmin {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()) {
+
                                             Log.d("FirebaseAdmin", "User password updated.");
                                             DocumentReference myUserRef = firebaseFirestore.collection(COLLECTION_USER_FIREBASE).document(currentUser.getUid());
                                             Map<String, Object> user = new HashMap<>();

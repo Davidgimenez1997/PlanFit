@@ -19,10 +19,17 @@ import com.utad.david.planfit.R;
 
 import java.util.List;
 
-public class SportGainVolumeFragment extends Fragment implements FirebaseAdmin.FirebaseAdminDownloandFragmentData {
+public class SportGainVolumeFragment extends Fragment implements FirebaseAdmin.FirebaseAdminDownloandFragmentData , SportDetailsDialogFragment.CallbackSport{
 
     public SportGainVolumeFragment() {
         // Required empty public constructor
+    }
+
+    private SportGainVolumeFragment fragment;
+
+    public SportGainVolumeFragment newInstanceSlimming() {
+        this.fragment = this;
+        return this.fragment;
     }
 
     @Override
@@ -34,6 +41,8 @@ public class SportGainVolumeFragment extends Fragment implements FirebaseAdmin.F
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+    private SportDetailsDialogFragment newFragment;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -72,12 +81,18 @@ public class SportGainVolumeFragment extends Fragment implements FirebaseAdmin.F
                         transaction.remove(prev);
                     }
                     transaction.addToBackStack(null);
-                    SportDetailsDialogFragment newFragment = SportDetailsDialogFragment.newInstanceGainVolume(item,2);
+                    newFragment = SportDetailsDialogFragment.newInstanceGainVolume(item,2);
+                    newFragment.setListener(fragment);
                     newFragment.show(transaction, "dialog");
                 }
             });
             mRecyclerView.setAdapter(mAdapter);
         }
+    }
+
+    @Override
+    public void onClickClose() {
+        newFragment.dismiss();
     }
 
     @Override

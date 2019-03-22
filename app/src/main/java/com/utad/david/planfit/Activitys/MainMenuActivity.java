@@ -12,6 +12,7 @@ import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.DialogFragment.EditPersonalDataUser;
 import com.utad.david.planfit.DialogFragment.InfoAboutApp;
+import com.utad.david.planfit.DialogFragment.Sport.SportDetailsDialogFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.CreatePlan.FragmentCreatePlan;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Favorite.NutritionFavorite;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Favorite.SportFavorite;
@@ -332,6 +333,7 @@ public class MainMenuActivity extends AppCompatActivity
     @Override
     public void clickOnAdelgazarSport() {
         SportSlimmingFragment sportSlimmingFragment = new SportSlimmingFragment();
+        sportSlimmingFragment.newInstanceSlimming();
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, sportSlimmingFragment);
         fragmentTransaction.addToBackStack(null);
@@ -341,6 +343,7 @@ public class MainMenuActivity extends AppCompatActivity
     @Override
     public void clickOnTonificarSport() {
         SportToningFragment sportToningFragment = new SportToningFragment();
+        sportToningFragment.newInstanceSlimming();
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, sportToningFragment);
         fragmentTransaction.addToBackStack(null);
@@ -350,6 +353,7 @@ public class MainMenuActivity extends AppCompatActivity
     @Override
     public void clickOnGanarVolumenSport() {
         SportGainVolumeFragment sportGainVolumeFragment = new SportGainVolumeFragment();
+        sportGainVolumeFragment.newInstanceSlimming();
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, sportGainVolumeFragment);
         fragmentTransaction.addToBackStack(null);
