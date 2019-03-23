@@ -306,6 +306,7 @@ public class FirstFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
     public void emptySportPlanFirebase(boolean end) {
         if(end==true){
             three_button.setEnabled(false);
+            second_button.setEnabled(false);
             hideLoading();
         }
     }
