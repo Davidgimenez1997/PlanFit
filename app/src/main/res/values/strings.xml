@@ -77,10 +77,15 @@
     <string name="deportefav">Deportes Favoritos</string>
 
     <string name="favorites_emptyFavorites_text">Sin Favoritos?</string>
+
+
     <string name="favorites_saveFavorites_sport_text">Guarda algun deporte para luego verlo aqui.</string>
     <string name="favorites_saveFavorites_nutrition_text">Guarda alguna alimentación para luego verla aqui.</string>
-    <string name="agregarafavoritos"> agregado a favoritos</string>
-    <string name="eliminarafavoritos"> eliminado de favoritos.</string>
+    <string name="create_plan_sport_text">Para crear un plan debes agregar algun deporte.</string>
+    <string name="create_plan_nutrition_text">Para crear un plan debes agregar alguna alimentación.</string>
+
+    <string name="agregarafavoritos">agregado a favoritos</string>
+    <string name="eliminarafavoritos">eliminado de favoritos.</string>
     <string name="title_delete_boto">Borrando foto</string>
     <string name="message_delete_photo">Porfavor, espere mientras se borra la foto.</string>
     <string name="title_update_foto">Actualizando foto</string>
@@ -111,11 +116,13 @@
     <string name="info_delete_user">Gracias por usar PlanFit.</string>
     <string name="close_info">Cerrar</string>
     <string name="err_register">Error al registrarse.</string>
+    <string name="duraci_n_del_plan">Duración del plan</string>
+    <string name="close_create">Guardar y salir</string>
 
 
     <string-array name="timePlan">
-        <item>Dia</item>
-        <item>Semana</item>
+        <item>1 Dia</item>
+        <item>1 Semana</item>
     </string-array>
 
 
