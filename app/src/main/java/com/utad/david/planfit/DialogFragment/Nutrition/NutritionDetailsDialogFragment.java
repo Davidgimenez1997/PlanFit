@@ -1,5 +1,6 @@
 package com.utad.david.planfit.DialogFragment.Nutrition;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -9,10 +10,14 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import butterknife.ButterKnife;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
@@ -109,6 +114,7 @@ public class NutritionDetailsDialogFragment extends DialogFragment implements Fi
         view.setBackgroundResource(R.drawable.corner_dialog_fragment);
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
+        showLoading();
         findById(view);
         putData();
         onClickButtonOpenYoutube();
@@ -190,6 +196,7 @@ public class NutritionDetailsDialogFragment extends DialogFragment implements Fi
         buttonInsert.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                showLoading();
                 switch (option){
                     case 0:
                         SessionUser.getInstance().firebaseAdmin.addFavoriteNutritionCouldFirestore(nutritionSlimming);
@@ -209,6 +216,7 @@ public class NutritionDetailsDialogFragment extends DialogFragment implements Fi
         buttonDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                showLoading();
                 switch (option){
                     case 0:
                         SessionUser.getInstance().firebaseAdmin.deleteFavoriteNutritionSlimming(nutritionSlimming);
@@ -229,7 +237,7 @@ public class NutritionDetailsDialogFragment extends DialogFragment implements Fi
         if(end){
             buttonInsert.setEnabled(false);
             buttonDelete.setEnabled(true);
-
+            hideLoading();
             switch (option){
                 case 0:
                     Toast.makeText(getContext(),nutritionSlimming.getName()+" "+getString(R.string.agregarafavoritos),Toast.LENGTH_LONG).show();
@@ -250,6 +258,7 @@ public class NutritionDetailsDialogFragment extends DialogFragment implements Fi
         if(end==true){
             buttonInsert.setEnabled(true);
             buttonDelete.setEnabled(false);
+            hideLoading();
             switch (option){
                 case 0:
                     Toast.makeText(getContext(),nutritionSlimming.getName()+" "+getString(R.string.eliminarafavoritos),Toast.LENGTH_LONG).show();
@@ -267,6 +276,7 @@ public class NutritionDetailsDialogFragment extends DialogFragment implements Fi
     @Override
     public void downloandCollectionNutritionFavorite(boolean end) {
         if(end){
+            hideLoading();
             switch (option){
                 case 0:
                     nutritionSlimmingList = new ArrayList<>();
@@ -301,6 +311,43 @@ public class NutritionDetailsDialogFragment extends DialogFragment implements Fi
             }
 
         }
+    }
+
+    private ProgressDialog progressDialog;
+
+    public void showLoading() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            return;
+        }
+        progressDialog = new ProgressDialog(getContext(), R.style.TransparentProgressDialog);
+        progressDialog.show();
+        progressDialog.setContentView(R.layout.progress_dialog);
+        progressDialog.setCancelable(false);
+        RotateAnimation rotate = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        rotate.setInterpolator(new LinearInterpolator());
+        rotate.setDuration(1000);
+        rotate.setRepeatCount(Animation.INFINITE);
+        ImageView ivLoading = ButterKnife.findById(progressDialog, R.id.image_cards_animation);
+        ivLoading.startAnimation(rotate);
+        progressDialog.show();
+    }
+
+    public void hideLoading() {
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        hideLoading();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        hideLoading();
     }
 
     @Override
