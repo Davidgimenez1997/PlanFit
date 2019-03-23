@@ -9,13 +9,26 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import com.utad.david.planfit.Model.Nutrition.DefaultNutrition;
 import com.utad.david.planfit.R;
 
 public class CreateNutritionPlanDetailsDialogFragment extends DialogFragment {
 
+    private static String NUTRITION = "NUTRITION";
+    private DefaultNutrition defaultNutrition;
+
+    public static CreateNutritionPlanDetailsDialogFragment newInstance(DefaultNutrition defaultNutrition) {
+        CreateNutritionPlanDetailsDialogFragment fragment = new CreateNutritionPlanDetailsDialogFragment();
+        Bundle args = new Bundle();
+        args.putParcelable(NUTRITION, defaultNutrition);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        defaultNutrition = getArguments().getParcelable(NUTRITION);
     }
 
     @Override

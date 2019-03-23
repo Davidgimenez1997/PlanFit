@@ -9,11 +9,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
+import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.CreatePlan.FragmentCreatePlan;
 import com.utad.david.planfit.R;
 
 
-public class FirstFragment extends Fragment {
+public class FirstFragment extends Fragment implements FirebaseAdmin.FirebaseAdminCreateAndShowPlan {
 
     private static String SELECTED = "SELECTED";
     private int selected;
@@ -39,10 +41,6 @@ public class FirstFragment extends Fragment {
 
     }
 
-    public void setmListener(OnFragmentInteractionListener mListener) {
-        this.mListener = mListener;
-    }
-
     private TextView textViewInfo;
     private Button first_button;
     private Button second_button;
@@ -63,6 +61,8 @@ public class FirstFragment extends Fragment {
                 configViewNutrition();
                 break;
             case 2:
+                SessionUser.getInstance().firebaseAdmin.setFirebaseAdminCreateAndShowPlan(this);
+                SessionUser.getInstance().firebaseAdmin.downloadAllSportPlanFavorite();
                 configViewPlan();
                 break;
             case 3:
@@ -195,10 +195,12 @@ public class FirstFragment extends Fragment {
         textViewInfo.setText(getString(R.string.estas_preparado));
         textViewInfo.setTextSize(35);
         first_button.setText(getString(R.string.crear_plan));
+        three_button.setText("Borrar tu Plan");
         second_button.setText(getString(R.string.ver_tu_plan));
-        three_button.setVisibility(View.INVISIBLE);
+        //three_button.setVisibility(View.INVISIBLE);
         onClickCreatePlan();
         onClickShowPlan();
+        onClickDeletePlan();
     }
 
     private void onClickCreatePlan() {
@@ -219,6 +221,15 @@ public class FirstFragment extends Fragment {
                 if(mListener!=null){
                     mListener.clickOnShowPlan();
                 }
+            }
+        });
+    }
+
+    private void onClickDeletePlan(){
+        three_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
         });
     }
@@ -245,6 +256,52 @@ public class FirstFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void emptySportPlanFirebase(boolean end) {
+        if(end==true){
+            three_button.setEnabled(false);
+        }
+    }
+
+    @Override
+    public void downloadSportPlanFirebase(boolean end) {
+
+    }
+
+    @Override
+    public void insertSportPlanFirebase(boolean end) {
+        if(end==true){
+            first_button.setEnabled(false);
+            three_button.setEnabled(true);
+        }
+    }
+
+
+    @Override
+    public void deleteSportPlanFirebase(boolean end) {
+
+    }
+
+    @Override
+    public void insertNutritionPlanFirebase(boolean end) {
+
+    }
+
+    @Override
+    public void downloadNutritionPlanFirebase(boolean end) {
+
+    }
+
+    @Override
+    public void emptyNutritionPlanFirebase(boolean end) {
+
+    }
+
+    @Override
+    public void deleteNutritionPlanFirebase(boolean end) {
+
     }
 
     public interface OnFragmentInteractionListener {

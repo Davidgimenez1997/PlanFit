@@ -118,11 +118,42 @@
     <string name="err_register">Error al registrarse.</string>
     <string name="duraci_n_del_plan">Duración del plan</string>
     <string name="close_create">Guardar y salir</string>
+    <string name="cuando_deseas_hacerlo">¿Cuando deseas hacerlo?</string>
+    <string name="info_guardar">Guardar</string>
+    <string name="comienzo">Comienzo:</string>
+    <string name="fin">Fin:</string>
 
 
-    <string-array name="timePlan">
+    <string-array name="durationPlan">
         <item>1 Dia</item>
         <item>1 Semana</item>
+    </string-array>
+
+    <string-array name="timePlan">
+        <item>01:00</item>
+        <item>02:00</item>
+        <item>03:00</item>
+        <item>04:00</item>
+        <item>05:00</item>
+        <item>06:00</item>
+        <item>07:00</item>
+        <item>08:00</item>
+        <item>09:00</item>
+        <item>10:00</item>
+        <item>11:00</item>
+        <item>12:00</item>
+        <item>13:00</item>
+        <item>14:00</item>
+        <item>15:00</item>
+        <item>16:00</item>
+        <item>17:00</item>
+        <item>18:00</item>
+        <item>19:00</item>
+        <item>20:00</item>
+        <item>21:00</item>
+        <item>22:00</item>
+        <item>23:00</item>
+        <item>00:00</item>
     </string-array>
 
 

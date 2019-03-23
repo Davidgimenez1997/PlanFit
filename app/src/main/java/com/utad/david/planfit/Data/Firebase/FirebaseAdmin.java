@@ -15,6 +15,7 @@ import com.utad.david.planfit.Model.Nutrition.DefaultNutrition;
 import com.utad.david.planfit.Model.Nutrition.NutritionGainVolume;
 import com.utad.david.planfit.Model.Nutrition.NutritionSlimming;
 import com.utad.david.planfit.Model.Nutrition.NutritionToning;
+import com.utad.david.planfit.Model.Plan.PlanSport;
 import com.utad.david.planfit.Model.Sport.DefaultSport;
 import com.utad.david.planfit.Model.Sport.SportGainVolume;
 import com.utad.david.planfit.Model.Sport.SportSlimming;
@@ -41,6 +42,7 @@ public class FirebaseAdmin {
     public FirebaseAdmin.FirebaseAdminUpdateAndDeleteUserListener firebaseAdminUpdateAndDeleteUserListener;
     public FirebaseAdmin.FirebaseAdminDownloandFragmentData firebaseAdminDownloandFragmentData;
     public FirebaseAdminFavoriteSportAndNutrition firebaseAdminFavoriteSportAndNutrition;
+    public FirebaseAdmin.FirebaseAdminCreateAndShowPlan firebaseAdminCreateAndShowPlan;
 
     public User userDataFirebase;
     public Developer developerInfo;
@@ -64,6 +66,8 @@ public class FirebaseAdmin {
 
     public List<DefaultNutrition> allNutritionFavorite;
 
+    public List<PlanSport> allPlanSport;
+
     private static String COLLECTION_USER_FIREBASE = "users";
     private static String COLLECTION_DEVELOPER_INFO_FIREBASE = "developer_info";
     private static String COLLECTION_SPORT_SLIMMING = "deportes/adelgazar/detalles";
@@ -75,6 +79,7 @@ public class FirebaseAdmin {
 
     private String COLLECTION_FAVORITE_SPORT;
     private String COLLECTION_FAVORITE_NUTRITION;
+    private String COLLECTION_PLAN_SPORT_USER;
 
 
     public FirebaseAdmin() {
@@ -160,6 +165,26 @@ public class FirebaseAdmin {
         void deleteFavoriteNutrition(boolean end);
     }
 
+    public interface FirebaseAdminCreateAndShowPlan{
+
+        void insertSportPlanFirebase(boolean end);
+
+        void downloadSportPlanFirebase(boolean end);
+
+        void emptySportPlanFirebase(boolean end);
+
+        void deleteSportPlanFirebase(boolean end);
+
+        void insertNutritionPlanFirebase(boolean end);
+
+        void downloadNutritionPlanFirebase(boolean end);
+
+        void emptyNutritionPlanFirebase(boolean end);
+
+        void deleteNutritionPlanFirebase(boolean end);
+
+    }
+
     //Setters
 
     public void setFirebaseAdminInsertAndDownloandListener(FirebaseAdminInsertAndDownloandListener firebaseAdminInsertAndDownloandListener) {
@@ -180,6 +205,10 @@ public class FirebaseAdmin {
 
     public void setFirebaseAdminFavoriteSportAndNutrition(FirebaseAdminFavoriteSportAndNutrition firebaseAdminFavoriteSportAndNutrition) {
         this.firebaseAdminFavoriteSportAndNutrition = firebaseAdminFavoriteSportAndNutrition;
+    }
+
+    public void setFirebaseAdminCreateAndShowPlan(FirebaseAdminCreateAndShowPlan firebaseAdminCreateAndShowPlan) {
+        this.firebaseAdminCreateAndShowPlan = firebaseAdminCreateAndShowPlan;
     }
 
     //Login y registro
@@ -1560,4 +1589,82 @@ public class FirebaseAdmin {
         }
 
     }
+
+    //Create sport plan
+
+    public void dataCreateSportPlan(){
+        Map<String, Object> planSport = new HashMap<>();
+
+        planSport.put("name", SessionUser.getInstance().planSport.getName());
+        planSport.put("photo", SessionUser.getInstance().planSport.getPhoto());
+        planSport.put("timeStart", SessionUser.getInstance().planSport.getTimeStart());
+        planSport.put("timeEnd", SessionUser.getInstance().planSport.getTimeEnd());
+
+        insertSportPlan(planSport);
+
+    }
+
+    private void insertSportPlan(final Map<String, Object> planSport) {
+
+        if(firebaseAdminCreateAndShowPlan!=null){
+
+            COLLECTION_PLAN_SPORT_USER = "users/" + currentUser.getUid() + "/planesDeporte";
+
+
+            firebaseFirestore.collection(COLLECTION_PLAN_SPORT_USER).document()
+                    .set(planSport)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d("FirebaseAdmin", "DocumentSnapshot successfully written!");
+                            firebaseAdminCreateAndShowPlan.insertSportPlanFirebase(true);
+
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w("FirebaseAdmin", "Error writing document", e);
+                            firebaseAdminCreateAndShowPlan.insertSportPlanFirebase(false);
+                        }
+                    });
+        }
+    }
+
+    //Download sport plan
+
+    public void downloadAllSportPlanFavorite() {
+
+        if (firebaseAdminCreateAndShowPlan != null) {
+
+            COLLECTION_PLAN_SPORT_USER = "users/" + currentUser.getUid() + "/planesDeporte";
+
+            CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_PLAN_SPORT_USER);
+            collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+                @Override
+                public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                    if (e != null) {
+                        Log.w("FirebaseAdmin", "Listen failed.", e);
+                        firebaseAdminCreateAndShowPlan.downloadSportPlanFirebase(false);
+                    }
+
+                    List<PlanSport> planSports = new ArrayList<>();
+                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                        planSports.add(doc.toObject(PlanSport.class));
+                    }
+
+                    allPlanSport = planSports;
+
+                    if(allPlanSport.size()==0){
+                        firebaseAdminCreateAndShowPlan.emptySportPlanFirebase(true);
+                    }else if(allPlanSport.size()!=0){
+                        firebaseAdminCreateAndShowPlan.downloadSportPlanFirebase(true);
+                    }
+                }
+            });
+        }
+
+    }
+
+
 }

@@ -130,7 +130,7 @@ public class NutritionCreatePlanFragment extends Fragment implements FirebaseAdm
                         transaction.remove(prev);
                     }
                     transaction.addToBackStack(null);
-                    newFragment = new CreateNutritionPlanDetailsDialogFragment();
+                    newFragment = CreateNutritionPlanDetailsDialogFragment.newInstance(item);
                     //newFragment.setListener(fragment);
                     newFragment.show(transaction, "dialog");
                 }

@@ -25,22 +25,33 @@ import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.DialogFragment.Favorite.SportFavoriteDetailsDialogFragment;
 import com.utad.david.planfit.DialogFragment.Plan.CreateSportPlanDetailsDialogFragment;
+import com.utad.david.planfit.Model.Plan.PlanSport;
 import com.utad.david.planfit.Model.Sport.DefaultSport;
 import com.utad.david.planfit.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class SportCreatePlanFragment extends Fragment implements FirebaseAdmin.FirebaseAdminFavoriteSportAndNutrition {
+public class SportCreatePlanFragment extends Fragment implements FirebaseAdmin.FirebaseAdminFavoriteSportAndNutrition,CreateSportPlanDetailsDialogFragment.CallbackCreateSport {
 
     public SportCreatePlanFragment() {
         // Required empty public constructor
     }
 
     private SportCreatePlanFragment fragment;
+    private Callback listener;
 
     public SportCreatePlanFragment newInstanceSlimming() {
         this.fragment = this;
         return this.fragment;
+    }
+
+    public void setListener(Callback listener) {
+        this.listener = listener;
+    }
+
+    public interface Callback{
+        void onClickSavePlanSport();
     }
 
     @Override
@@ -93,8 +104,8 @@ public class SportCreatePlanFragment extends Fragment implements FirebaseAdmin.F
                         transaction.remove(prev);
                     }
                     transaction.addToBackStack(null);
-                    newFragment = new CreateSportPlanDetailsDialogFragment();
-                    //newFragment.setListener(fragment);
+                    newFragment = CreateSportPlanDetailsDialogFragment.newInstance(item);
+                    newFragment.setListener(fragment);
                     newFragment.show(transaction, "dialog");
 
                 }
@@ -110,6 +121,20 @@ public class SportCreatePlanFragment extends Fragment implements FirebaseAdmin.F
             linearLayout.setVisibility(View.VISIBLE);
             mRecyclerView.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void onClickClose() {
+        newFragment.dismiss();
+    }
+
+    private List<PlanSport> planSportsSave = new ArrayList<>();
+
+    @Override
+    public void onClickSave(DefaultSport defaultSport,String timeStart,String timeEnd) {
+        PlanSport planSport = new PlanSport(defaultSport,timeStart,timeEnd);
+        planSportsSave.add(planSport);
+        SessionUser.getInstance().firebaseAdmin.dataCreateSportPlan();
     }
 
     @Override

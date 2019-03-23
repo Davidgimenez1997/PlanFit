@@ -9,12 +9,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Spinner;
+import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.CreatePlan.Sport.SportCreatePlanFragment;
+import com.utad.david.planfit.Model.Plan.PlanSport;
 import com.utad.david.planfit.R;
 
-public class FragmentCreatePlan extends Fragment {
+import java.util.List;
+
+public class FragmentCreatePlan extends Fragment implements SportCreatePlanFragment.Callback {
 
     public FragmentCreatePlan() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onClickSavePlanSport() {
+
     }
 
     public interface Callback {

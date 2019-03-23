@@ -3,6 +3,7 @@ package com.utad.david.planfit.Data;
 import android.content.Context;
 import android.content.SharedPreferences;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
+import com.utad.david.planfit.Model.Plan.PlanSport;
 import com.utad.david.planfit.Model.User;
 
 public class SessionUser {
@@ -11,10 +12,12 @@ public class SessionUser {
 
     public FirebaseAdmin firebaseAdmin;
     public User user;
+    public PlanSport planSport;
 
     private SessionUser() {
         firebaseAdmin = new FirebaseAdmin();
         user = new User();
+        planSport = new PlanSport();
     }
 
     public static SessionUser getInstance() {

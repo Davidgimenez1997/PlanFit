@@ -460,6 +460,7 @@ public class MainMenuActivity extends AppCompatActivity
     @Override
     public void onClickSportPlan() {
         SportCreatePlanFragment sportCreatePlanFragment = new SportCreatePlanFragment();
+        sportCreatePlanFragment.newInstanceSlimming();
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, sportCreatePlanFragment);
         fragmentTransaction.addToBackStack(null);
