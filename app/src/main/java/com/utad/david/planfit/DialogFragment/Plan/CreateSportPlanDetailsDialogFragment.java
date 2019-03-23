@@ -79,6 +79,7 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment impleme
         putData();
         onClickButtonClose();
         onClickButtonSave();
+        onClickButtonDelete();
 
         configureSpinnerStart();
         configureSpinnerEnd();
@@ -145,6 +146,17 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment impleme
                         SessionUser.getInstance().firebaseAdmin.dataCreateSportPlan();
                     }
                 }
+            }
+        });
+    }
+
+    private void onClickButtonDelete(){
+        buttonDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showLoading();
+                PlanSport planSport = new PlanSport(defaultSport,timeStart,timeEnd);
+                SessionUser.getInstance().firebaseAdmin.deleteSportPlan(planSport);
             }
         });
     }
@@ -226,7 +238,7 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment impleme
             buttonSave.setEnabled(false);
             buttonDelete.setEnabled(true);
             hideLoading();
-            Toast.makeText(getContext(),defaultSport.getName()+" "+"Agregado al plan de deporte correctamente",Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(),defaultSport.getName()+" "+"agregado al plan de deporte correctamente",Toast.LENGTH_LONG).show();
         }
     }
 
@@ -237,7 +249,12 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment impleme
 
     @Override
     public void deleteSportPlanFirebase(boolean end) {
-
+        if(end==true){
+            buttonSave.setEnabled(true);
+            buttonDelete.setEnabled(false);
+            hideLoading();
+            Toast.makeText(getContext(),defaultSport.getName()+" "+"Wliminado del plan de deportes correctamente",Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override

@@ -1,14 +1,20 @@
 package com.utad.david.planfit.Fragments.FragmentsMainMenuActivity;
 
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
+import butterknife.ButterKnife;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.CreatePlan.FragmentCreatePlan;
@@ -198,6 +204,7 @@ public class FirstFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
         three_button.setText("Borrar tu Plan");
         second_button.setText(getString(R.string.ver_tu_plan));
         //three_button.setVisibility(View.INVISIBLE);
+        showLoading();
         onClickCreatePlan();
         onClickShowPlan();
         onClickDeletePlan();
@@ -258,16 +265,56 @@ public class FirstFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
         mListener = null;
     }
 
+    private ProgressDialog progressDialog;
+
+    public void showLoading() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            return;
+        }
+        progressDialog = new ProgressDialog(getContext(), R.style.TransparentProgressDialog);
+        progressDialog.show();
+        progressDialog.setContentView(R.layout.progress_dialog);
+        progressDialog.setCancelable(false);
+        RotateAnimation rotate = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        rotate.setInterpolator(new LinearInterpolator());
+        rotate.setDuration(1000);
+        rotate.setRepeatCount(Animation.INFINITE);
+        ImageView ivLoading = ButterKnife.findById(progressDialog, R.id.image_cards_animation);
+        ivLoading.startAnimation(rotate);
+        progressDialog.show();
+    }
+
+    public void hideLoading() {
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        hideLoading();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        hideLoading();
+    }
+
     @Override
     public void emptySportPlanFirebase(boolean end) {
         if(end==true){
             three_button.setEnabled(false);
+            hideLoading();
         }
     }
 
     @Override
     public void downloadSportPlanFirebase(boolean end) {
-
+        if(end==true){
+            hideLoading();
+        }
     }
 
     @Override
@@ -275,6 +322,7 @@ public class FirstFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
         if(end==true){
             first_button.setEnabled(false);
             three_button.setEnabled(true);
+            hideLoading();
         }
     }
 

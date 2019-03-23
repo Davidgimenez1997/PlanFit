@@ -1666,5 +1666,46 @@ public class FirebaseAdmin {
 
     }
 
+    //Delete sport Plan
+
+    public void deleteSportPlan(PlanSport planSport){
+
+        if(firebaseAdminCreateAndShowPlan!=null){
+            COLLECTION_PLAN_SPORT_USER = "users/" + currentUser.getUid() + "/planesDeporte";
+
+                firebaseFirestore.collection(COLLECTION_PLAN_SPORT_USER)
+                        .whereEqualTo("name", planSport.getName())
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                                        Log.d("BORRARFAVORITO", documentSnapshot.getId() + " - > " + documentSnapshot.getData());
+                                        String id = documentSnapshot.getId();
+                                        firebaseFirestore.collection(COLLECTION_PLAN_SPORT_USER).document(id)
+                                                .delete()
+                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void aVoid) {
+                                                        Log.d("FirebaseAdmin", "Favorito borrado correctamente");
+                                                        firebaseAdminCreateAndShowPlan.deleteSportPlanFirebase(true);
+                                                    }
+                                                })
+                                                .addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        Log.d("FirebaseAdmin", "Error Favorito borrado");
+                                                        firebaseAdminCreateAndShowPlan.deleteSportPlanFirebase(false);
+
+                                                    }
+                                                });
+                                    }
+                                }
+                            }
+                        });
+        }
+    }
+
 
 }
