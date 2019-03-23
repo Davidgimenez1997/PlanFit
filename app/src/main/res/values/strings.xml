@@ -12,7 +12,7 @@
 
     <string name="first_nav_name">Deportes</string>
     <string name="two_nav_name">Nutricion</string>
-    <string name="three_nav_name">Crear tu plan</string>
+    <string name="three_nav_name">Plan</string>
 
     <string name="err_email">Email invalido</string>
     <string name="err_password">Contraseña con mas de 6 caracteres</string>
@@ -110,6 +110,7 @@
     <string name="message_delete_user">Eliminando cuenta, por favor espere.</string>
     <string name="info_delete_user">Gracias por usar PlanFit.</string>
     <string name="close_info">Cerrar</string>
+    <string name="err_register">Error al registrarse.</string>
 
 
     <string-array name="timePlan">

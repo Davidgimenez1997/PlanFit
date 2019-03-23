@@ -165,7 +165,7 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
                     intent.addCategory(Intent.CATEGORY_OPENABLE);
                 }
                 intent.setType("image/*");
-                startActivityForResult(Intent.createChooser(intent, "Selecciona imagen..."),1);
+                startActivityForResult(Intent.createChooser(intent, getString(R.string.menuopengalery)),1);
             }
         });
     }
@@ -187,10 +187,10 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
 
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
-                Toast.makeText(getActivity().getApplicationContext(), "Something went wrong", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity().getApplicationContext(), getString(R.string.error_gallery_1), Toast.LENGTH_LONG).show();
             }
         }else {
-            Toast.makeText(getActivity().getApplicationContext(), "You haven't picked Image",Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity().getApplicationContext(), getString(R.string.error_gallery_2),Toast.LENGTH_LONG).show();
         }
     }
 
@@ -221,12 +221,15 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
     public void registerWithEmailAndPassword(boolean end) {
         if (end == true) {
             endRegister=true;
+            Toast.makeText(getContext(), "Bienvenido "+SessionUser.getInstance().user.getFullName().trim(), Toast.LENGTH_LONG).show();
             SessionUser.getInstance().firebaseAdmin.addDataUserCouldFirestore();
 
             //insertUserDataInFirebase(end);
         } else {
             mProgress.dismiss();
             //insertUserDataInFirebase(end);
+            Toast.makeText(getContext(), getString(R.string.err_register), Toast.LENGTH_LONG).show();
+            errorSingInRegister(getString(R.string.err_register_fail));
             endRegister=false;
         }
     }
@@ -239,7 +242,6 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
 
 
                 mProgress.dismiss();
-                Toast.makeText(getContext(), "Register Completed", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(getContext(), MainMenuActivity.class);
                 startActivity(intent);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -247,13 +249,11 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
 
             }else{
                 mProgress.dismiss();
-                Toast.makeText(getContext(), "Register Fail", Toast.LENGTH_LONG).show();
-                errorSingInRegister("Register Fail");
+                Toast.makeText(getContext(), getString(R.string.err_register), Toast.LENGTH_LONG).show();
+                errorSingInRegister(getString(R.string.err_register_fail));
             }
         }else{
             mProgress.dismiss();
-            Toast.makeText(getContext(), "Register Fail", Toast.LENGTH_LONG).show();
-            errorSingInRegister(getString(R.string.err_register_fail));
         }
     }
 

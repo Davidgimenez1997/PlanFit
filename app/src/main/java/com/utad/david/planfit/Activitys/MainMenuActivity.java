@@ -161,27 +161,6 @@ public class MainMenuActivity extends AppCompatActivity
         Glide.with(this).setDefaultRequestOptions(requestOptions).load(imgUser).into(imagemenu);
     }
 
-    /*
-    //Sirve para poner la foto que hemos recogido en el PersonalData en la cabecera del menu
-    public void putPhotoUser(String stringUri) {
-        Uri uri = Uri.parse(stringUri);
-            final InputStream imageStream;
-            try {
-                imageStream = getContentResolver().openInputStream(uri);
-                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-                RoundedBitmapDrawable roundedDrawable1 =
-                        RoundedBitmapDrawableFactory.create(getResources(), selectedImage);
-
-                //asignamos el CornerRadius
-                roundedDrawable1.setCornerRadius(selectedImage.getHeight());
-                imagemenu.setImageDrawable(roundedDrawable1);
-
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-    }
-*/
-
     //Cuando le damos hacia atrás con el menu abierto se cierra el menu
 
     @Override
@@ -206,14 +185,16 @@ public class MainMenuActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        int id = item.getItemId();
-
-        if (id == R.id.action_logout) {
-            logout();
-        }else if (id == R.id.action_edit_user){
-            editUser();
-        }else if(id == R.id.action_about_app){
-            aboutApp();
+        switch (item.getItemId()){
+            case R.id.action_logout:
+                logout();
+                break;
+            case R.id.action_edit_user:
+                editUser();
+                break;
+            case R.id.action_about_app:
+                aboutApp();
+                break;
         }
 
         return true;
@@ -407,8 +388,6 @@ public class MainMenuActivity extends AppCompatActivity
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
-
-    private List<DefaultSport> allSportFavorite;
 
     @Override
     public void clickSportFavorite() {
