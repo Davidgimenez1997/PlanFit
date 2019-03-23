@@ -128,14 +128,6 @@ public class SportCreatePlanFragment extends Fragment implements FirebaseAdmin.F
         newFragment.dismiss();
     }
 
-    private List<PlanSport> planSportsSave = new ArrayList<>();
-
-    @Override
-    public void onClickSave(DefaultSport defaultSport,String timeStart,String timeEnd) {
-        PlanSport planSport = new PlanSport(defaultSport,timeStart,timeEnd);
-        planSportsSave.add(planSport);
-        SessionUser.getInstance().firebaseAdmin.dataCreateSportPlan();
-    }
 
     @Override
     public void onDetach() {

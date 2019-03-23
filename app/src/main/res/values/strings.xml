@@ -122,6 +122,7 @@
     <string name="info_guardar">Guardar</string>
     <string name="comienzo">Comienzo:</string>
     <string name="fin">Fin:</string>
+    <string name="eliminar">Eliminar</string>
 
 
     <string-array name="durationPlan">

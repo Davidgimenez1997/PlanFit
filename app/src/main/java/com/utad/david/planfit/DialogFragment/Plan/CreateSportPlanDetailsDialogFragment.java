@@ -1,5 +1,6 @@
 package com.utad.david.planfit.DialogFragment.Plan;
 
+import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -9,15 +10,24 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.widget.*;
+import butterknife.ButterKnife;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
+import com.utad.david.planfit.Model.Plan.PlanSport;
 import com.utad.david.planfit.Model.Sport.DefaultSport;
 import com.utad.david.planfit.R;
 
-public class CreateSportPlanDetailsDialogFragment extends DialogFragment{
+import javax.xml.parsers.SAXParser;
+import java.util.ArrayList;
+import java.util.List;
+
+public class CreateSportPlanDetailsDialogFragment extends DialogFragment implements FirebaseAdmin.FirebaseAdminCreateAndShowPlan{
 
 
     private static String SPORT = "SPORT";
@@ -33,7 +43,6 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment{
 
     public interface CallbackCreateSport{
         void onClickClose();
-        void onClickSave(DefaultSport defaultSport,String timeStart,String timeEnd);
     }
 
     private TextView textViewTitle;
@@ -42,6 +51,7 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment{
     private Spinner spinnerEnd;
     private Button buttonSave;
     private Button buttonClose;
+    private Button buttonDelete;
     private CallbackCreateSport listener;
     private String timeStart;
     private String timeEnd;
@@ -54,6 +64,8 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment{
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         defaultSport = getArguments().getParcelable(SPORT);
+        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminCreateAndShowPlan(this);
+        SessionUser.getInstance().firebaseAdmin.downloadAllSportPlanFavorite();
     }
 
     @Override
@@ -62,6 +74,7 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment{
         view.setBackgroundResource(R.drawable.corner_dialog_fragment);
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
+        showLoading();
         findById(view);
         putData();
         onClickButtonClose();
@@ -124,7 +137,12 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment{
                     Toast.makeText(getContext(),"No puedes elegir la misma hora de comienzo y de fin.",Toast.LENGTH_LONG).show();
                 }else{
                     if(listener!=null){
-                        listener.onClickSave(defaultSport,timeStart,timeEnd);
+                        showLoading();
+                        SessionUser.getInstance().planSport.setName(defaultSport.getName());
+                        SessionUser.getInstance().planSport.setPhoto(defaultSport.getPhoto());
+                        SessionUser.getInstance().planSport.setTimeStart(timeStart);
+                        SessionUser.getInstance().planSport.setTimeEnd(timeEnd);
+                        SessionUser.getInstance().firebaseAdmin.dataCreateSportPlan();
                     }
                 }
             }
@@ -137,7 +155,8 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment{
         spinnerStart = view.findViewById(R.id.spinner_comienzo);
         spinnerEnd = view.findViewById(R.id.spinner_fin);
         buttonSave = view.findViewById(R.id.save_create_sport);
-        buttonClose = view.findViewById(R.id.close_create_sport);
+        buttonDelete = view.findViewById(R.id.close_create_sport);
+        buttonClose = view.findViewById(R.id.close_create_sport2);
     }
 
     private void putData() {
@@ -145,6 +164,100 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment{
         textViewTitle.setText(defaultSport.getName());
         requestOptions.placeholder(R.drawable.icon_gallery);
         Glide.with(this).load(defaultSport.getPhoto()).into(imageViewSport);
+    }
+
+    private ProgressDialog progressDialog;
+
+    public void showLoading() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            return;
+        }
+        progressDialog = new ProgressDialog(getContext(), R.style.TransparentProgressDialog);
+        progressDialog.show();
+        progressDialog.setContentView(R.layout.progress_dialog);
+        progressDialog.setCancelable(false);
+        RotateAnimation rotate = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        rotate.setInterpolator(new LinearInterpolator());
+        rotate.setDuration(1000);
+        rotate.setRepeatCount(Animation.INFINITE);
+        ImageView ivLoading = ButterKnife.findById(progressDialog, R.id.image_cards_animation);
+        ivLoading.startAnimation(rotate);
+        progressDialog.show();
+    }
+
+    public void hideLoading() {
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        hideLoading();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        hideLoading();
+    }
+
+    private List<PlanSport> planSports;
+
+    @Override
+    public void downloadSportPlanFirebase(boolean end) {
+        if(end==true){
+            hideLoading();
+            planSports = new ArrayList<>();
+            planSports = SessionUser.getInstance().firebaseAdmin.allPlanSport;
+            for(PlanSport item : planSports){
+                if(item.getName().equals(defaultSport.getName())){
+                    buttonSave.setEnabled(false);
+                    buttonDelete.setEnabled(true);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void insertSportPlanFirebase(boolean end) {
+        if(end){
+            buttonSave.setEnabled(false);
+            buttonDelete.setEnabled(true);
+            hideLoading();
+            Toast.makeText(getContext(),defaultSport.getName()+" "+"Agregado al plan de deporte correctamente",Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public void emptySportPlanFirebase(boolean end) {
+
+    }
+
+    @Override
+    public void deleteSportPlanFirebase(boolean end) {
+
+    }
+
+    @Override
+    public void insertNutritionPlanFirebase(boolean end) {
+
+    }
+
+    @Override
+    public void downloadNutritionPlanFirebase(boolean end) {
+
+    }
+
+    @Override
+    public void emptyNutritionPlanFirebase(boolean end) {
+
+    }
+
+    @Override
+    public void deleteNutritionPlanFirebase(boolean end) {
+
     }
 
 }
