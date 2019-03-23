@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.TextView;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.CreatePlan.Sport.SportCreatePlanFragment;
 import com.utad.david.planfit.Model.Plan.PlanSport;
 import com.utad.david.planfit.R;
@@ -37,7 +38,7 @@ public class FragmentCreatePlan extends Fragment implements SportCreatePlanFragm
         super.onCreate(savedInstanceState);
     }
 
-    private Spinner spinnerTimeDuration;
+    private TextView timeDuration;
     private Button buttonSelectSport;
     private Button buttonSelectNutrition;
     private Button buttonSaveAndExit;
@@ -58,7 +59,7 @@ public class FragmentCreatePlan extends Fragment implements SportCreatePlanFragm
     }
 
     private void findById(View view){
-        spinnerTimeDuration = view.findViewById(R.id.spinner_time_plan);
+        timeDuration = view.findViewById(R.id.time_plan);
         buttonSelectSport = view.findViewById(R.id.button_select_sport);
         buttonSelectNutrition = view.findViewById(R.id.button_Select_nutrition);
         buttonSaveAndExit = view.findViewById(R.id.button_exit_save);

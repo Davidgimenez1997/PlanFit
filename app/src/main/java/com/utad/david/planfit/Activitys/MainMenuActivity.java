@@ -1,6 +1,8 @@
 package com.utad.david.planfit.Activitys;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -28,6 +30,7 @@ import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Nutrition.Nutr
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Nutrition.NutritionSlimmingFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Nutrition.NutritionToningFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.ShowPlan.FragmentShowPlan;
+import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.ShowPlan.Sport.ShowSportPlanFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Sport.SportGainVolumeFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Sport.SportSlimmingFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Sport.SportToningFragment;
@@ -53,7 +56,8 @@ public class MainMenuActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         FirebaseAdmin.FirebaseAdminInsertAndDownloandListener,
         FirstFragment.OnFragmentInteractionListener,
-        EditPersonalDataUser.OnFragmentInteractionListener, FragmentCreatePlan.Callback{
+        EditPersonalDataUser.OnFragmentInteractionListener,
+        FragmentCreatePlan.Callback,FragmentShowPlan.Callback{
 
     private ImageView imagemenu;
     private TextView nickname;
@@ -428,9 +432,11 @@ public class MainMenuActivity extends AppCompatActivity
         fragmentTransaction.commit();
     }
 
+    private FragmentShowPlan fragmentShowPlan;
+
     @Override
     public void clickOnShowPlan() {
-        FragmentShowPlan fragmentShowPlan = new FragmentShowPlan();
+        fragmentShowPlan = new FragmentShowPlan();
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, fragmentShowPlan);
         fragmentTransaction.addToBackStack(null);
@@ -495,4 +501,26 @@ public class MainMenuActivity extends AppCompatActivity
         //Metodo implementado pero no se usa
     }
 
+    @Override
+    public void onClickButtonShowPlanSport() {
+        ShowSportPlanFragment showSportPlanFragment = new ShowSportPlanFragment();
+        fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.content_frame, showSportPlanFragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
+
+    @Override
+    public void onClickButtonShowPlanNutrition() {
+
+    }
+
+    @Override
+    public void onClickButtonShowPlanClose() {
+        int seleted = 2;
+        Fragment fragment = FirstFragment.newInstance(seleted);
+        fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.content_frame, fragment);
+        fragmentTransaction.commit();
+    }
 }

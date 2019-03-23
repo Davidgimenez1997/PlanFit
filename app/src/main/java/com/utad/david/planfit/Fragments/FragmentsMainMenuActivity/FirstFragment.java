@@ -1,8 +1,10 @@
 package com.utad.david.planfit.Fragments.FragmentsMainMenuActivity;
 
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -14,6 +16,7 @@ import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import butterknife.ButterKnife;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
@@ -236,9 +239,32 @@ public class FirstFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
         three_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                showDeletePlanDialog();
             }
         });
+    }
+
+    private void showDeletePlanDialog() {
+        final CharSequence[] items = {"Plan de deporte", "Plan de nutricion","Cancelar"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("¿Cual deseas borrar?");
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                switch (item) {
+                    case 0:
+                        showLoading();
+                        SessionUser.getInstance().firebaseAdmin.deleteAllSportPlan();
+                        break;
+                    case 1:
+                        break;
+                    case 2:
+                        dialog.dismiss();
+                        break;
+                }
+            }
+        });
+        builder.show();
     }
 
     private void findViewById(View view){
@@ -330,7 +356,10 @@ public class FirstFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
 
     @Override
     public void deleteSportPlanFirebase(boolean end) {
-
+        if(end==true){
+            hideLoading();
+            Toast.makeText(getContext(),"Plan de deportes borrado",Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override

@@ -24,13 +24,15 @@
                 android:layout_marginStart="32dp" app:layout_constraintTop_toTopOf="parent"
                 android:layout_marginTop="68dp" app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginEnd="32dp" android:layout_marginBottom="24dp"
-                app:layout_constraintBottom_toTopOf="@+id/spinner_time_plan"/>
-        <Spinner
-                android:entries="@array/durationPlan"
+                app:layout_constraintBottom_toTopOf="@+id/time_plan"/>
+        <TextView
+                android:textSize="20dp"
+                android:textColor="@color/colorAccent"
+                android:textAlignment="center"
+                android:text="@string/_1_d_a"
                 android:layout_width="154dp"
-                android:layout_height="23dp"
-                android:id="@+id/spinner_time_plan"
-                style="@style/MySpinnerLook"
+                android:layout_height="34dp"
+                android:id="@+id/time_plan"
                 android:spinnerMode="dropdown"
                 android:layout_marginTop="44dp"
                 app:layout_constraintTop_toBottomOf="@+id/duration_plan" app:layout_constraintEnd_toEndOf="parent"
@@ -45,7 +47,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/button_select_sport"
                 android:layout_marginTop="32dp"
-                app:layout_constraintTop_toBottomOf="@+id/spinner_time_plan" app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/time_plan" app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginStart="64dp" app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginEnd="64dp" app:layout_constraintHorizontal_bias="0.498"/>
         <Button

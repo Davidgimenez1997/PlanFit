@@ -123,6 +123,8 @@
     <string name="comienzo">Comienzo:</string>
     <string name="fin">Fin:</string>
     <string name="eliminar">Eliminar</string>
+    <string name="info_show_plan">Tus Planes</string>
+    <string name="_1_d_a">1 Día</string>
 
 
     <string-array name="durationPlan">

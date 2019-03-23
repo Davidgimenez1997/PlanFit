@@ -4,28 +4,39 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import com.utad.david.planfit.Model.Sport.DefaultSport;
 
-public class PlanSport implements Parcelable {
+public class PlanSport implements Parcelable,Comparable<PlanSport> {
 
     private String name;
     private String photo;
-    private String timeStart;
-    private String timeEnd;
+    private int timeStart;
+    private int timeEnd;
 
     public PlanSport() {
     }
 
-    public PlanSport(DefaultSport defaultSport,String timeStart,String timeEnd){
+    public PlanSport(DefaultSport defaultSport,int timeStart,int timeEnd){
         this.name = defaultSport.getName();
         this.photo = defaultSport.getPhoto();
         this.timeEnd = timeEnd;
         this.timeStart = timeStart;
     }
 
+    @Override
+    public int compareTo(PlanSport o) {
+        if(timeStart < o.timeStart){
+            return -1;
+        }
+        if(timeStart > o.timeStart){
+            return 1;
+        }
+        return 0;
+    }
+
     protected PlanSport(Parcel in) {
         name = in.readString();
         photo = in.readString();
-        timeStart = in.readString();
-        timeEnd = in.readString();
+        timeStart = in.readInt();
+        timeEnd = in.readInt();
     }
 
     public static final Creator<PlanSport> CREATOR = new Creator<PlanSport>() {
@@ -56,19 +67,19 @@ public class PlanSport implements Parcelable {
         this.photo = photo;
     }
 
-    public String getTimeStart() {
+    public int getTimeStart() {
         return timeStart;
     }
 
-    public void setTimeStart(String timeStart) {
+    public void setTimeStart(int timeStart) {
         this.timeStart = timeStart;
     }
 
-    public String getTimeEnd() {
+    public int getTimeEnd() {
         return timeEnd;
     }
 
-    public void setTimeEnd(String timeEnd) {
+    public void setTimeEnd(int timeEnd) {
         this.timeEnd = timeEnd;
     }
 
@@ -81,7 +92,7 @@ public class PlanSport implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
         dest.writeString(photo);
-        dest.writeString(timeStart);
-        dest.writeString(timeEnd);
+        dest.writeInt(timeStart);
+        dest.writeInt(timeEnd);
     }
 }

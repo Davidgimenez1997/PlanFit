@@ -1,8 +1,6 @@
 package com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.CreatePlan.Sport;
 
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -18,18 +16,13 @@ import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import butterknife.ButterKnife;
-import com.google.firebase.auth.FirebaseAuth;
-import com.utad.david.planfit.Adapter.Favorite.SportFavoriteAdapter;
-import com.utad.david.planfit.Adapter.Plan.CreateSportPlanAdapter;
+import com.utad.david.planfit.Adapter.Plan.create.CreateSportPlanAdapter;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
-import com.utad.david.planfit.DialogFragment.Favorite.SportFavoriteDetailsDialogFragment;
 import com.utad.david.planfit.DialogFragment.Plan.CreateSportPlanDetailsDialogFragment;
-import com.utad.david.planfit.Model.Plan.PlanSport;
 import com.utad.david.planfit.Model.Sport.DefaultSport;
 import com.utad.david.planfit.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class SportCreatePlanFragment extends Fragment implements FirebaseAdmin.FirebaseAdminFavoriteSportAndNutrition,CreateSportPlanDetailsDialogFragment.CallbackCreateSport {

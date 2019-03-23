@@ -141,8 +141,10 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment impleme
                         showLoading();
                         SessionUser.getInstance().planSport.setName(defaultSport.getName());
                         SessionUser.getInstance().planSport.setPhoto(defaultSport.getPhoto());
-                        SessionUser.getInstance().planSport.setTimeStart(timeStart);
-                        SessionUser.getInstance().planSport.setTimeEnd(timeEnd);
+                        int intStart = convertStringToInt(timeStart);
+                        int intEnd = convertStringToInt(timeEnd);
+                        SessionUser.getInstance().planSport.setTimeStart(intStart);
+                        SessionUser.getInstance().planSport.setTimeEnd(intEnd);
                         SessionUser.getInstance().firebaseAdmin.dataCreateSportPlan();
                     }
                 }
@@ -150,12 +152,20 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment impleme
         });
     }
 
+    private int convertStringToInt(String timeStart){
+        String [] parts = timeStart.split(":");
+        String value = parts[0];
+        return Integer.parseInt(value);
+    }
+
     private void onClickButtonDelete(){
         buttonDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showLoading();
-                PlanSport planSport = new PlanSport(defaultSport,timeStart,timeEnd);
+                int intStart = convertStringToInt(timeStart);
+                int intEnd = convertStringToInt(timeEnd);
+                PlanSport planSport = new PlanSport(defaultSport,intStart,intEnd);
                 SessionUser.getInstance().firebaseAdmin.deleteSportPlan(planSport);
             }
         });
