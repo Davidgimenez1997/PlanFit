@@ -46,7 +46,6 @@ public class NutritionDetailsDialogFragment extends DialogFragment implements Fi
         void onClickClose();
     }
 
-
     public static NutritionDetailsDialogFragment newInstanceSlimming(NutritionSlimming nutritionSlimming, int option) {
         NutritionDetailsDialogFragment fragment = new NutritionDetailsDialogFragment();
         Bundle args = new Bundle();
@@ -84,7 +83,6 @@ public class NutritionDetailsDialogFragment extends DialogFragment implements Fi
         this.listener = listener;
     }
 
-    //Nuestra variable communities coge el valor que se le está pasando
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,7 +90,6 @@ public class NutritionDetailsDialogFragment extends DialogFragment implements Fi
         nutritionToning = getArguments().getParcelable(TONING);
         nutritionGainVolume = getArguments().getParcelable(GAINVOLUME);
         option = getArguments().getInt(OPTION);
-
     }
 
     private TextView textViewTitle;
@@ -106,23 +103,19 @@ public class NutritionDetailsDialogFragment extends DialogFragment implements Fi
     private List<NutritionToning> nutritionToningList;
     private List<NutritionGainVolume> nutritionGainVolumeList;
 
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.nutrtion_dialog_fragment, container, false);
         view.setBackgroundResource(R.drawable.corner_dialog_fragment);
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
         showLoading();
         findById(view);
         putData();
-        onClickButtonOpenYoutube();
+        onClickButtonOpenRecipe();
         onClickButtonOpenInsertFavorite();
         onClickButtonOpenDeleteFavorite();
         onClickCloseButton();
         return view;
-
     }
 
     private void onClickCloseButton(){
@@ -148,7 +141,6 @@ public class NutritionDetailsDialogFragment extends DialogFragment implements Fi
 
     private void putData() {
         RequestOptions requestOptions = new RequestOptions();
-
         switch (option){
             case 0:
                 textViewTitle.setText(nutritionSlimming.getName());
@@ -171,7 +163,7 @@ public class NutritionDetailsDialogFragment extends DialogFragment implements Fi
         }
     }
 
-    private void onClickButtonOpenYoutube() {
+    private void onClickButtonOpenRecipe() {
         buttonOpenRecipe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -16,13 +16,11 @@ import java.util.List;
 public class SportFavoriteAdapter extends RecyclerView.Adapter<SportFavoriteAdapter.SportFavoriteViewHolder> {
 
     private List<DefaultSport> defaultSports;
-
     private OnItemClickListener listener;
 
     public interface OnItemClickListener {
         void onItemClick(DefaultSport item);
     }
-
 
     public SportFavoriteAdapter(List<DefaultSport> defaultSports,OnItemClickListener listener) {
         this.defaultSports = defaultSports;
@@ -30,8 +28,7 @@ public class SportFavoriteAdapter extends RecyclerView.Adapter<SportFavoriteAdap
     }
 
     @Override
-    public SportFavoriteAdapter.SportFavoriteViewHolder onCreateViewHolder(ViewGroup parent,
-                                                                           int viewType) {
+    public SportFavoriteAdapter.SportFavoriteViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View rootView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recycleview, parent, false);
         return new SportFavoriteAdapter.SportFavoriteViewHolder(rootView);
     }

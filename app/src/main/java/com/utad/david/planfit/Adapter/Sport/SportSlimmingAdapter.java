@@ -18,7 +18,6 @@ public class SportSlimmingAdapter extends RecyclerView.Adapter<SportSlimmingAdap
     private List<SportSlimming> sportSlimmingListm;
     private SportSlimmingAdapter.OnItemClickListener listener;
 
-    //Obtenemos información del item
     public interface OnItemClickListener {
         void onItemClick(SportSlimming item);
     }
@@ -29,8 +28,7 @@ public class SportSlimmingAdapter extends RecyclerView.Adapter<SportSlimmingAdap
     }
 
     @Override
-    public SportSlimmingAdapter.SlimmingViewHolder onCreateViewHolder(ViewGroup parent,
-                                                                      int viewType) {
+    public SportSlimmingAdapter.SlimmingViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View rootView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recycleview, parent, false);
         return new SlimmingViewHolder(rootView);
     }

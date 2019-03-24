@@ -125,6 +125,10 @@
     <string name="eliminar">Eliminar</string>
     <string name="info_show_plan">Tus Planes</string>
     <string name="_1_d_a">1 Día</string>
+    <string name="info_create_plan">No puedes elegir la misma hora de comienzo y de fin.</string>
+    <string name="add_create_sport">agregado al plan de deporte correctamente</string>
+    <string name="delete_create_sport">eliminado del plan de deportes correctamente</string>
+    <string name="info_register">Bienvenido</string>
 
 
     <string-array name="durationPlan">

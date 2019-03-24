@@ -16,7 +16,7 @@ import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import butterknife.ButterKnife;
-import com.utad.david.planfit.Adapter.Plan.create.CreateSportPlanAdapter;
+import com.utad.david.planfit.Adapter.Plan.Create.CreateSportPlanAdapter;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.DialogFragment.Plan.CreateSportPlanDetailsDialogFragment;
@@ -27,24 +27,13 @@ import java.util.List;
 
 public class SportCreatePlanFragment extends Fragment implements FirebaseAdmin.FirebaseAdminFavoriteSportAndNutrition,CreateSportPlanDetailsDialogFragment.CallbackCreateSport {
 
-    public SportCreatePlanFragment() {
-        // Required empty public constructor
-    }
+    public SportCreatePlanFragment() {}
 
     private SportCreatePlanFragment fragment;
-    private Callback listener;
 
     public SportCreatePlanFragment newInstanceSlimming() {
         this.fragment = this;
         return this.fragment;
-    }
-
-    public void setListener(Callback listener) {
-        this.listener = listener;
-    }
-
-    public interface Callback{
-        void onClickSavePlanSport();
     }
 
     @Override

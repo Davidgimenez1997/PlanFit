@@ -4,20 +4,15 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,19 +26,14 @@ import com.bumptech.glide.request.RequestOptions;
 import com.utad.david.planfit.Activitys.FirstActivity;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
-import com.utad.david.planfit.Fragments.FragmentsFirstActivity.RegisterDetailsFragmet;
 import com.utad.david.planfit.Model.User;
 import com.utad.david.planfit.R;
-
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.util.regex.Pattern;
 
 import static android.app.Activity.RESULT_OK;
 
 public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmin.FirebaseAdminUpdateAndDeleteUserListener {
 
-    //Nuestra variable communities coge el valor que se le está pasando
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,16 +58,12 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
     private EditPersonalDataUser.OnFragmentInteractionListener mListener;
     private ProgressDialog mProgress;
 
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.dialog_edit_user_data, container, false);
         v.setBackgroundResource(R.drawable.corner_dialog_fragment);
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
         userUpdate = SessionUser.getInstance().firebaseAdmin.userDataFirebase;
-
         if(userUpdate!=null){
             oldPassword = userUpdate.getPassword();
             findById(v);
@@ -93,7 +79,6 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
             onClickClose();
             configView();
         }
-
         return v;
     }
 
@@ -142,44 +127,33 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
 
     private TextWatcher textWatcherEditPesonalDataEmail = new TextWatcher() {
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
         @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-        }
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
         @Override
         public void afterTextChanged(Editable s) {
             String email = editTextEmail.getText().toString().trim();
-
             if (emailValidate(email)) {
                 buttonUpdateEmail.setEnabled(true);
                 userUpdate.setEmail(email);
             }else{
                 editTextEmail.setError(getString(R.string.err_email));
             }
-
         }
     };
 
     private TextWatcher textWatcherEditPesonalDataPassword = new TextWatcher() {
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
         @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-        }
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
         @Override
         public void afterTextChanged(Editable s) {
             String password = editTextPassword.getText().toString().trim();
-
             if (passwordValidate(password)) {
                 buttonUpdatePassword.setEnabled(true);
                 userUpdate.setPassword(password);
@@ -191,19 +165,14 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
 
     private TextWatcher textWatcherEditPesonalDataFullName = new TextWatcher() {
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
         @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-        }
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
         @Override
         public void afterTextChanged(Editable s) {
             String fullName = editTextFullName.getText().toString().trim();
-
             if(fullNameValidate(fullName)){
                 buttonUpdateFullName.setEnabled(true);
                 userUpdate.setFullName(fullName);
@@ -213,14 +182,10 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
 
     private TextWatcher textWatcherEditPesonalDataNickName = new TextWatcher() {
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
         @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-        }
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
         @Override
         public void afterTextChanged(Editable s) {
@@ -238,7 +203,6 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
             return true;
         } else {
             return false;
-
         }
     }
 
@@ -302,15 +266,12 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
     }
 
     public void putPhotoUser(String stringUri) {
-
         RequestOptions requestOptions = new RequestOptions();
         requestOptions.placeholder(R.drawable.icon_user);
         Glide.with(this).setDefaultRequestOptions(requestOptions).load(stringUri).into(imageView);
-
     }
 
     private void onClickButtonDeletePhoto(){
-
         buttonDeletePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -617,7 +578,6 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
                    userUpdate.setImgUser(imageUri.toString());
                    onClickButtonUpdatePhoto();
                 }
-
             } catch (Exception e) {
                 e.printStackTrace();
                 Toast.makeText(getActivity().getApplicationContext(), getString(R.string.error_gallery_1), Toast.LENGTH_LONG).show();

@@ -1,4 +1,4 @@
-package com.utad.david.planfit.Adapter.Plan.create;
+package com.utad.david.planfit.Adapter.Plan.Create;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.utad.david.planfit.Model.Sport.DefaultSport;
@@ -17,13 +16,11 @@ import java.util.List;
 public class CreateSportPlanAdapter extends RecyclerView.Adapter<CreateSportPlanAdapter.CreatePlanSportViewHolder> {
 
     private List<DefaultSport> defaultSports;
-
     private OnItemClickListener listener;
 
     public interface OnItemClickListener {
         void onItemClick(DefaultSport item);
     }
-
 
     public CreateSportPlanAdapter(List<DefaultSport> defaultSports, OnItemClickListener listener) {
         this.defaultSports = defaultSports;
@@ -31,8 +28,7 @@ public class CreateSportPlanAdapter extends RecyclerView.Adapter<CreateSportPlan
     }
 
     @Override
-    public CreateSportPlanAdapter.CreatePlanSportViewHolder onCreateViewHolder(ViewGroup parent,
-                                                                               int viewType) {
+    public CreateSportPlanAdapter.CreatePlanSportViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View rootView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recycleview, parent, false);
         return new CreateSportPlanAdapter.CreatePlanSportViewHolder(rootView);
     }

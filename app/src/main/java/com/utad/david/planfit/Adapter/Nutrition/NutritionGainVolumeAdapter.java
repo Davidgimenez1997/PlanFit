@@ -18,7 +18,6 @@ public class NutritionGainVolumeAdapter extends RecyclerView.Adapter<NutritionGa
     private List<NutritionGainVolume> nutritionGainVolumeList;
     private NutritionGainVolumeAdapter.OnItemClickListener listener;
 
-    //Obtenemos información del item
     public interface OnItemClickListener {
         void onItemClick(NutritionGainVolume item);
     }
@@ -29,8 +28,7 @@ public class NutritionGainVolumeAdapter extends RecyclerView.Adapter<NutritionGa
     }
 
     @Override
-    public NutritionGainVolumeAdapter.GainVolumeViewHolder onCreateViewHolder(ViewGroup parent,
-                                                                          int viewType) {
+    public NutritionGainVolumeAdapter.GainVolumeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View rootView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recycleview, parent, false);
         return new NutritionGainVolumeAdapter.GainVolumeViewHolder(rootView);
     }

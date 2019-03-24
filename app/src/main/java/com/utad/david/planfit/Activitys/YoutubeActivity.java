@@ -13,14 +13,15 @@ public class YoutubeActivity extends YouTubeBaseActivity {
 
     private YouTubePlayerView youTubePlayerView;
     private YouTubePlayer.OnInitializedListener onInitializedListener;
-    private String url;
+    private String urlData;
+    private String URL = "URL";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_youtube);
         youTubePlayerView = findViewById(R.id.youtube_player);
-        url = getIntent().getStringExtra("url");
+        urlData = getIntent().getStringExtra(URL);
         onInitializedListener();
     }
 
@@ -29,7 +30,7 @@ public class YoutubeActivity extends YouTubeBaseActivity {
             @Override
             public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
                 youTubePlayer.setFullscreen(true);
-                youTubePlayer.loadVideo(url);
+                youTubePlayer.loadVideo(urlData);
                 youTubePlayer.play();
             }
             @Override

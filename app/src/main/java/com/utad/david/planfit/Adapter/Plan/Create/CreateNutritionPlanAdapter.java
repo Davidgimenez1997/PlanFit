@@ -1,4 +1,4 @@
-package com.utad.david.planfit.Adapter.Plan.create;
+package com.utad.david.planfit.Adapter.Plan.Create;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,13 +16,11 @@ import java.util.List;
 public class CreateNutritionPlanAdapter extends RecyclerView.Adapter<CreateNutritionPlanAdapter.CreatePlanNutritionViewHolder> {
 
     private List<DefaultNutrition> defaultNutritions;
-
     private CreateNutritionPlanAdapter.OnItemClickListener listener;
 
     public interface OnItemClickListener {
         void onItemClick(DefaultNutrition item);
     }
-
 
     public CreateNutritionPlanAdapter(List<DefaultNutrition> defaultNutritions, CreateNutritionPlanAdapter.OnItemClickListener listener) {
         this.defaultNutritions = defaultNutritions;
@@ -30,8 +28,7 @@ public class CreateNutritionPlanAdapter extends RecyclerView.Adapter<CreateNutri
     }
 
     @Override
-    public CreateNutritionPlanAdapter.CreatePlanNutritionViewHolder onCreateViewHolder(ViewGroup parent,
-                                                                               int viewType) {
+    public CreateNutritionPlanAdapter.CreatePlanNutritionViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View rootView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recycleview, parent, false);
         return new CreateNutritionPlanAdapter.CreatePlanNutritionViewHolder(rootView);
     }

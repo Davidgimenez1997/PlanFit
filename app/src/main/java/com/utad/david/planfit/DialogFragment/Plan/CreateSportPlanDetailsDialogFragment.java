@@ -23,12 +23,10 @@ import com.utad.david.planfit.Model.Plan.PlanSport;
 import com.utad.david.planfit.Model.Sport.DefaultSport;
 import com.utad.david.planfit.R;
 
-import javax.xml.parsers.SAXParser;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CreateSportPlanDetailsDialogFragment extends DialogFragment implements FirebaseAdmin.FirebaseAdminCreateAndShowPlan{
-
 
     private static String SPORT = "SPORT";
     private DefaultSport defaultSport;
@@ -73,17 +71,14 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment impleme
         View view = inflater.inflate(R.layout.create_sport_plan_details_dialog_fragment, container, false);
         view.setBackgroundResource(R.drawable.corner_dialog_fragment);
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
         showLoading();
         findById(view);
         putData();
         onClickButtonClose();
         onClickButtonSave();
         onClickButtonDelete();
-
         configureSpinnerStart();
         configureSpinnerEnd();
-
         return view;
     }
 
@@ -91,15 +86,10 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment impleme
         spinnerStart.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                // your code here
                 timeStart=spinnerStart.getSelectedItem().toString();
             }
-
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-
+            public void onNothingSelected(AdapterView<?> parent) { }
         });
     }
 
@@ -107,15 +97,10 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment impleme
         spinnerEnd.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                // your code here
                 timeEnd=spinnerEnd.getSelectedItem().toString();
             }
-
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-
+            public void onNothingSelected(AdapterView<?> parent) {}
         });
     }
 
@@ -135,7 +120,7 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment impleme
             @Override
             public void onClick(View v) {
                 if(timeStart.equals(timeEnd)){
-                    Toast.makeText(getContext(),"No puedes elegir la misma hora de comienzo y de fin.",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(),getString(R.string.info_create_plan),Toast.LENGTH_LONG).show();
                 }else{
                     if(listener!=null){
                         showLoading();
@@ -188,6 +173,43 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment impleme
         Glide.with(this).load(defaultSport.getPhoto()).into(imageViewSport);
     }
 
+    private List<PlanSport> planSports;
+
+    @Override
+    public void downloadSportPlanFirebase(boolean end) {
+        if(end==true){
+            hideLoading();
+            planSports = new ArrayList<>();
+            planSports = SessionUser.getInstance().firebaseAdmin.allPlanSport;
+            for(PlanSport item : planSports){
+                if(item.getName().equals(defaultSport.getName())){
+                    buttonSave.setEnabled(false);
+                    buttonDelete.setEnabled(true);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void insertSportPlanFirebase(boolean end) {
+        if(end){
+            buttonSave.setEnabled(false);
+            buttonDelete.setEnabled(true);
+            hideLoading();
+            Toast.makeText(getContext(),defaultSport.getName()+" "+getString(R.string.add_create_sport),Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public void deleteSportPlanFirebase(boolean end) {
+        if(end==true){
+            buttonSave.setEnabled(true);
+            buttonDelete.setEnabled(false);
+            hideLoading();
+            Toast.makeText(getContext(),defaultSport.getName()+" "+getString(R.string.delete_create_sport),Toast.LENGTH_LONG).show();
+        }
+    }
+
     private ProgressDialog progressDialog;
 
     public void showLoading() {
@@ -225,46 +247,9 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment impleme
         hideLoading();
     }
 
-    private List<PlanSport> planSports;
-
-    @Override
-    public void downloadSportPlanFirebase(boolean end) {
-        if(end==true){
-            hideLoading();
-            planSports = new ArrayList<>();
-            planSports = SessionUser.getInstance().firebaseAdmin.allPlanSport;
-            for(PlanSport item : planSports){
-                if(item.getName().equals(defaultSport.getName())){
-                    buttonSave.setEnabled(false);
-                    buttonDelete.setEnabled(true);
-                }
-            }
-        }
-    }
-
-    @Override
-    public void insertSportPlanFirebase(boolean end) {
-        if(end){
-            buttonSave.setEnabled(false);
-            buttonDelete.setEnabled(true);
-            hideLoading();
-            Toast.makeText(getContext(),defaultSport.getName()+" "+"agregado al plan de deporte correctamente",Toast.LENGTH_LONG).show();
-        }
-    }
-
     @Override
     public void emptySportPlanFirebase(boolean end) {
 
-    }
-
-    @Override
-    public void deleteSportPlanFirebase(boolean end) {
-        if(end==true){
-            buttonSave.setEnabled(true);
-            buttonDelete.setEnabled(false);
-            hideLoading();
-            Toast.makeText(getContext(),defaultSport.getName()+" "+"Wliminado del plan de deportes correctamente",Toast.LENGTH_LONG).show();
-        }
     }
 
     @Override

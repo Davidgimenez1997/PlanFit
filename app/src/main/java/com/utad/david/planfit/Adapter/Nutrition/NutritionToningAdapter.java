@@ -18,7 +18,6 @@ public class NutritionToningAdapter extends RecyclerView.Adapter<NutritionToning
     private List<NutritionToning> nutritionTonings;
     private NutritionToningAdapter.OnItemClickListener listener;
 
-    //Obtenemos información del item
     public interface OnItemClickListener {
         void onItemClick(NutritionToning item);
     }
@@ -29,8 +28,7 @@ public class NutritionToningAdapter extends RecyclerView.Adapter<NutritionToning
     }
 
     @Override
-    public NutritionToningAdapter.ToningViewHolder onCreateViewHolder(ViewGroup parent,
-                                                                  int viewType) {
+    public NutritionToningAdapter.ToningViewHolder onCreateViewHolder(ViewGroup parent,int viewType) {
         View rootView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recycleview, parent, false);
         return new NutritionToningAdapter.ToningViewHolder(rootView);
     }

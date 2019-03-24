@@ -31,9 +31,7 @@ public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
 
     private OnFragmentInteractionListener mListener;
 
-    public LoginFragment() {
-        // Required empty public constructor
-    }
+    public LoginFragment() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,17 +49,14 @@ public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
     public Context context;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
        View view = inflater.inflate(R.layout.fragment_login, container, false);
-
        findViewById(view);
        onClickButtonLogin();
        onClickButtonRegister();
        configView();
        checkStatusUserFirebase();
        showDialog();
-
        return view;
     }
 
@@ -142,13 +137,10 @@ public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
 
     private TextWatcher textWatcherLoginFragment = new TextWatcher() {
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        }
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
         @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-        }
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
         @Override
         public void afterTextChanged(Editable s) {
@@ -180,7 +172,6 @@ public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
             return true;
         } else {
             return false;
-
         }
     }
 
@@ -225,7 +216,6 @@ public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
         }
     }
 
-    //Metodo que crea un dialogo de alerta cuando falla el inicio de Sesion con Firebase
     private void errorSingInRegister(String title){
         if(mListener!=null){
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
@@ -245,9 +235,7 @@ public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
     }
 
     @Override
-    public void registerWithEmailAndPassword(boolean end) {
-        //Metodo implementado pero no se usa
-    }
+    public void registerWithEmailAndPassword(boolean end) {}
 
     public interface OnFragmentInteractionListener {
         void clickButtonLogin();

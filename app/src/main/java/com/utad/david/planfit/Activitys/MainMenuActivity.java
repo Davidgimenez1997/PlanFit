@@ -1,8 +1,6 @@
 package com.utad.david.planfit.Activitys;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -19,7 +17,6 @@ import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.DialogFragment.EditPersonalDataUser;
 import com.utad.david.planfit.DialogFragment.InfoAboutApp;
-import com.utad.david.planfit.DialogFragment.Sport.SportDetailsDialogFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.CreatePlan.FragmentCreatePlan;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.CreatePlan.Nutrition.NutritionCreatePlanFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.CreatePlan.Sport.SportCreatePlanFragment;
@@ -34,7 +31,6 @@ import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.ShowPlan.Sport
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Sport.SportGainVolumeFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Sport.SportSlimmingFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Sport.SportToningFragment;
-import com.utad.david.planfit.Model.Sport.DefaultSport;
 import com.utad.david.planfit.Model.User;
 import com.utad.david.planfit.R;
 import android.support.design.widget.NavigationView;
@@ -49,7 +45,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
-import java.util.List;
 
 
 public class MainMenuActivity extends AppCompatActivity
@@ -162,19 +157,13 @@ public class MainMenuActivity extends AppCompatActivity
         if(end==true){
             hideLoading();
             Log.d("DatosUsuarioFirebase"," "+SessionUser.getInstance().firebaseAdmin.userDataFirebase.toString());
-
             putInfoUserInHeaderMenu(SessionUser.getInstance().firebaseAdmin.userDataFirebase);
-
-            //Si la foto es null cogemos una por defecto
             checkPhotoUserNull(SessionUser.getInstance().firebaseAdmin.userDataFirebase);
         }else{
             if(SessionUser.getInstance().firebaseAdmin.userDataFirebase.getImgUser()!=null){
                 hideLoading();
                 Log.d("DatosUsuarioFirebase"," "+SessionUser.getInstance().firebaseAdmin.userDataFirebase.toString());
-
                 putInfoUserInHeaderMenu(SessionUser.getInstance().firebaseAdmin.userDataFirebase);
-
-                //Si la foto es null cogemos una por defecto
                 checkPhotoUserNull(SessionUser.getInstance().firebaseAdmin.userDataFirebase);
             }
         }
@@ -186,7 +175,6 @@ public class MainMenuActivity extends AppCompatActivity
         navigationView = findViewById(R.id.nav_view);
     }
 
-    //Se tiene que buscar el id con el navigetionView delante ya que en este elemento se incluye el header del menu
     public void findByIdNavigetionView() {
         imagemenu = navigationView.findViewById(R.id.imagemenuUser);
         nickname = navigationView.findViewById(R.id.nickNameMenuUser);
@@ -212,8 +200,6 @@ public class MainMenuActivity extends AppCompatActivity
         Glide.with(this).setDefaultRequestOptions(requestOptions).load(imgUser).into(imagemenu);
     }
 
-    //Cuando le damos hacia atrás con el menu abierto se cierra el menu
-
     @Override
     public void onBackPressed() {
         drawer = findViewById(R.id.drawer_layout);
@@ -224,7 +210,6 @@ public class MainMenuActivity extends AppCompatActivity
         }
     }
 
-    //Inflamos en el menu el layout del main_menu
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -232,7 +217,6 @@ public class MainMenuActivity extends AppCompatActivity
         return true;
     }
 
-    //Funcionalidad de Logout
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -280,7 +264,6 @@ public class MainMenuActivity extends AppCompatActivity
         finish();
     }
 
-    //Vacía user
     public void setEmptyItems() {
         SessionUser.getInstance().user.setEmail(null);
         SessionUser.getInstance().user.setPassword(null);
@@ -289,21 +272,16 @@ public class MainMenuActivity extends AppCompatActivity
         SessionUser.getInstance().user.setFullName(null);
     }
 
-    //Llamamos a un método propio y le pasamos el id del item pinchado
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         displaySelectedScreen(item.getItemId());
         return true;
     }
 
-    //Este método sirve para cargar los diferentes fragments
 
     private void displaySelectedScreen(int itemId) {
 
-        //Creamos el objeto fragment
         Fragment fragment = null;
-
-        //iniciamos los fragments dependiendo del item selecionado
 
         int seleted;
 
@@ -330,7 +308,6 @@ public class MainMenuActivity extends AppCompatActivity
                 break;
         }
 
-        //Remplazamos el fragment
         if (fragment != null) {
             fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.content_frame, fragment);
@@ -338,7 +315,6 @@ public class MainMenuActivity extends AppCompatActivity
             fragmentTransaction.commit();
         }
 
-        //Una vez cambiado el fragment cerramos el menu
         drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
     }
@@ -348,19 +324,14 @@ public class MainMenuActivity extends AppCompatActivity
         Fragment fragment = FirstFragment.newInstance(seleted);
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, fragment);
-        //fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
 
     @Override
     public void updateData(User user) {
-
         putInfoUserInHeaderMenu(user);
-
         checkPhotoUserNull(user);
-
     }
-
 
     @Override
     public void clickOnAdelgazarSport() {
@@ -432,11 +403,10 @@ public class MainMenuActivity extends AppCompatActivity
         fragmentTransaction.commit();
     }
 
-    private FragmentShowPlan fragmentShowPlan;
 
     @Override
     public void clickOnShowPlan() {
-        fragmentShowPlan = new FragmentShowPlan();
+        FragmentShowPlan fragmentShowPlan = new FragmentShowPlan();
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, fragmentShowPlan);
         fragmentTransaction.addToBackStack(null);
@@ -492,16 +462,6 @@ public class MainMenuActivity extends AppCompatActivity
     }
 
     @Override
-    public void insertUserDataInFirebase(boolean end) {
-        //Metodo implementado pero no se usa
-    }
-
-    @Override
-    public void downloadInfotDeveloper(boolean end) {
-        //Metodo implementado pero no se usa
-    }
-
-    @Override
     public void onClickButtonShowPlanSport() {
         ShowSportPlanFragment showSportPlanFragment = new ShowSportPlanFragment();
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
@@ -523,4 +483,10 @@ public class MainMenuActivity extends AppCompatActivity
         fragmentTransaction.replace(R.id.content_frame, fragment);
         fragmentTransaction.commit();
     }
+
+    @Override
+    public void insertUserDataInFirebase(boolean end) {}
+
+    @Override
+    public void downloadInfotDeveloper(boolean end) {}
 }

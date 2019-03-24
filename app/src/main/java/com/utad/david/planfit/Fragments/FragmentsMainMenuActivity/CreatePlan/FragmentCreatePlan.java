@@ -16,15 +16,10 @@ import com.utad.david.planfit.R;
 
 import java.util.List;
 
-public class FragmentCreatePlan extends Fragment implements SportCreatePlanFragment.Callback {
+public class FragmentCreatePlan extends Fragment {
 
     public FragmentCreatePlan() {
         // Required empty public constructor
-    }
-
-    @Override
-    public void onClickSavePlanSport() {
-
     }
 
     public interface Callback {

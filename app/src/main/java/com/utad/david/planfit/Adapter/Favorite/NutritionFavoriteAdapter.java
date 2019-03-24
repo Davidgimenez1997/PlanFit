@@ -9,7 +9,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.utad.david.planfit.Model.Nutrition.DefaultNutrition;
-import com.utad.david.planfit.Model.Sport.DefaultSport;
 import com.utad.david.planfit.R;
 
 import java.util.List;
@@ -29,8 +28,7 @@ public class NutritionFavoriteAdapter extends RecyclerView.Adapter<NutritionFavo
     }
 
     @Override
-    public NutritionFavoriteAdapter.NutritionFavoriteViewHolder onCreateViewHolder(ViewGroup parent,
-                                                                           int viewType) {
+    public NutritionFavoriteAdapter.NutritionFavoriteViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View rootView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recycleview, parent, false);
         return new NutritionFavoriteAdapter.NutritionFavoriteViewHolder(rootView);
     }

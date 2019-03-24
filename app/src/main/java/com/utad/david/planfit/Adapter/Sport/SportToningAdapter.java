@@ -18,7 +18,6 @@ public class SportToningAdapter extends RecyclerView.Adapter<SportToningAdapter.
     private List<SportToning> sportToningList;
     private SportToningAdapter.OnItemClickListener listener;
 
-    //Obtenemos información del item
     public interface OnItemClickListener {
         void onItemClick(SportToning item);
     }
@@ -29,8 +28,7 @@ public class SportToningAdapter extends RecyclerView.Adapter<SportToningAdapter.
     }
 
     @Override
-    public SportToningAdapter.ToningViewHolder onCreateViewHolder(ViewGroup parent,
-                                                                  int viewType) {
+    public SportToningAdapter.ToningViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View rootView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recycleview, parent, false);
         return new ToningViewHolder(rootView);
     }

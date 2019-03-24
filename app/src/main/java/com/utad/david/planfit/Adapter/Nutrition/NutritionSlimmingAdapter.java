@@ -18,7 +18,6 @@ public class NutritionSlimmingAdapter extends RecyclerView.Adapter<NutritionSlim
     private List<NutritionSlimming> nutritionSlimmingList;
     private NutritionSlimmingAdapter.OnItemClickListener listener;
 
-    //Obtenemos información del item
     public interface OnItemClickListener {
         void onItemClick(NutritionSlimming item);
     }
@@ -29,8 +28,7 @@ public class NutritionSlimmingAdapter extends RecyclerView.Adapter<NutritionSlim
     }
 
     @Override
-    public NutritionSlimmingAdapter.SlimmingViewHolder onCreateViewHolder(ViewGroup parent,
-                                                                      int viewType) {
+    public NutritionSlimmingAdapter.SlimmingViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View rootView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recycleview, parent, false);
         return new NutritionSlimmingAdapter.SlimmingViewHolder(rootView);
     }

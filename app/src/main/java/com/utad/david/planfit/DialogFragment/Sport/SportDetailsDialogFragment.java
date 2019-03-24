@@ -20,18 +20,14 @@ import butterknife.ButterKnife;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.utad.david.planfit.Activitys.YoutubeActivity;
-import com.utad.david.planfit.Adapter.Sport.SportToningAdapter;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Model.Sport.SportGainVolume;
 import com.utad.david.planfit.Model.Sport.SportSlimming;
-
 import com.utad.david.planfit.Model.Sport.SportToning;
 import com.utad.david.planfit.R;
-
 import java.util.ArrayList;
 import java.util.List;
-
 
 public class SportDetailsDialogFragment extends DialogFragment implements FirebaseAdmin.FirebaseAdminFavoriteSportAndNutrition {
 
@@ -44,11 +40,11 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
     private static String GAINVOLUME = "GAINVOLUME";
     private static String TONING = "TONING";
     private static String OPTION = "OPTION";
+    private String URL = "URL";
 
     public interface CallbackSport{
         void onClickClose();
     }
-
 
     public static SportDetailsDialogFragment newInstanceSlimming(SportSlimming sportSlimming, int option) {
         SportDetailsDialogFragment fragment = new SportDetailsDialogFragment();
@@ -87,7 +83,6 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
         this.listener = listener;
     }
 
-    //Nuestra variable communities coge el valor que se le está pasando
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,7 +90,6 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
         sportToning = getArguments().getParcelable(TONING);
         sportGainVolume = getArguments().getParcelable(GAINVOLUME);
         option = getArguments().getInt(OPTION);
-
     }
 
     private TextView textViewTitle;
@@ -109,14 +103,11 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
     private List<SportToning> sportToningList;
     private List<SportGainVolume> sportGainVolumeList;
 
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.sport_dialog_fragment, container, false);
         view.setBackgroundResource(R.drawable.corner_dialog_fragment);
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
         showLoading();
         findById(view);
         putData();
@@ -125,7 +116,6 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
         onClickButtonOpenDeleteFavorite();
         onClickCloseButton();
         return view;
-
     }
 
     public void findById(View v) {
@@ -151,7 +141,6 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
 
     private void putData() {
         RequestOptions requestOptions = new RequestOptions();
-
         switch (option){
             case 0:
                 textViewTitle.setText(sportSlimming.getName());
@@ -181,13 +170,13 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
                 Intent intent = new Intent(getContext(), YoutubeActivity.class);
                 switch (option){
                     case 0:
-                        intent.putExtra("url", sportSlimming.getVideo());
+                        intent.putExtra(URL, sportSlimming.getVideo());
                         break;
                     case 1:
-                        intent.putExtra("url", sportToning.getVideo());
+                        intent.putExtra(URL, sportToning.getVideo());
                         break;
                     case 2:
-                        intent.putExtra("url", sportGainVolume.getVideo());
+                        intent.putExtra(URL, sportGainVolume.getVideo());
                         break;
                 }
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

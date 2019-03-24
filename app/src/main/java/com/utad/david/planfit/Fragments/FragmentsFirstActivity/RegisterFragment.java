@@ -17,19 +17,15 @@ import com.utad.david.planfit.R;
 
 import java.util.regex.Pattern;
 
-
 public class RegisterFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public RegisterFragment() {
-        // Required empty public constructor
-    }
+    public RegisterFragment() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     private EditText emailRegister;
@@ -40,19 +36,14 @@ public class RegisterFragment extends Fragment {
     private String passwordUser;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_register, container, false);
-
         findViewById(view);
         onClickButtonBack();
         onClickButtonContinue();
         configView();
-
         return view;
     }
-
 
     private void configView(){
         emailRegister.setText("");
@@ -94,13 +85,10 @@ public class RegisterFragment extends Fragment {
 
     private TextWatcher textWatcherRegisterFragment = new TextWatcher() {
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        }
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
         @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-        }
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
         @Override
         public void afterTextChanged(Editable s) {

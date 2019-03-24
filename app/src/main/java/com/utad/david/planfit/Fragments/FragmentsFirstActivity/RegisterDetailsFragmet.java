@@ -35,9 +35,7 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
 
     private OnFragmentInteractionListener mListener;
 
-    public RegisterDetailsFragmet() {
-        // Required empty public constructor
-    }
+    public RegisterDetailsFragmet() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,17 +54,14 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
     private ProgressDialog mProgress;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_register_details, container, false);
-
         findViewById(view);
         onClickButtonOk();
         onClickButtonBackDetails();
         openGallery();
         configView();
         showDialog();
-
         return view;
     }
 
@@ -88,14 +83,10 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
 
     private TextWatcher textWatcherRegistreDetailsFragment = new TextWatcher() {
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
         @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-        }
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
         @Override
         public void afterTextChanged(Editable s) {
@@ -221,13 +212,10 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
     public void registerWithEmailAndPassword(boolean end) {
         if (end == true) {
             endRegister=true;
-            Toast.makeText(getContext(), "Bienvenido "+SessionUser.getInstance().user.getFullName().trim(), Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), getString(R.string.info_register)+""+SessionUser.getInstance().user.getFullName().trim(), Toast.LENGTH_LONG).show();
             SessionUser.getInstance().firebaseAdmin.addDataUserCouldFirestore();
-
-            //insertUserDataInFirebase(end);
         } else {
             mProgress.dismiss();
-            //insertUserDataInFirebase(end);
             Toast.makeText(getContext(), getString(R.string.err_register), Toast.LENGTH_LONG).show();
             errorSingInRegister(getString(R.string.err_register_fail));
             endRegister=false;
@@ -238,15 +226,11 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
     public void insertUserDataInFirebase(boolean end) {
         if(endRegister==true){
             if(end==true){
-                //SessionUser.getInstance().firebaseAdmin.uploadImage(SessionUser.getInstance().user.getImgUser());
-
-
                 mProgress.dismiss();
                 Intent intent = new Intent(getContext(), MainMenuActivity.class);
                 startActivity(intent);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 getActivity().finish();
-
             }else{
                 mProgress.dismiss();
                 Toast.makeText(getContext(), getString(R.string.err_register), Toast.LENGTH_LONG).show();
@@ -269,24 +253,19 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
                         transaction.commit();
                     }
                 });
-        // Create the AlertDialog object and return it
         builder.create();
         builder.show();
     }
 
     @Override
-    public void singInWithEmailAndPassword(boolean end) {
-        //Metodo implementado pero no se usa
-    }
+    public void singInWithEmailAndPassword(boolean end) {}
 
     @Override
     public void downloadUserDataInFirebase(boolean end) {
     }
 
     @Override
-    public void downloadInfotDeveloper(boolean end) {
-        //Metodo implementado pero no se usa
-    }
+    public void downloadInfotDeveloper(boolean end) {}
 
     @Override
     public void onDetach() {

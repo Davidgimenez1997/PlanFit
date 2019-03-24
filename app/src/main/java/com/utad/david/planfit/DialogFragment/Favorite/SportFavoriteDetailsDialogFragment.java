@@ -1,6 +1,5 @@
 package com.utad.david.planfit.DialogFragment.Favorite;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -11,13 +10,9 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.LinearInterpolator;
-import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import butterknife.ButterKnife;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.utad.david.planfit.Activitys.YoutubeActivity;
@@ -27,6 +22,7 @@ import com.utad.david.planfit.R;
 public class SportFavoriteDetailsDialogFragment extends DialogFragment {
 
     private static String SPORT = "SPORT";
+    private static String URL = "URL";
     private DefaultSport defaultSport;
 
     public static SportFavoriteDetailsDialogFragment newInstance(DefaultSport defaultSport) {
@@ -40,7 +36,6 @@ public class SportFavoriteDetailsDialogFragment extends DialogFragment {
     public interface CallbackFavoriteSport{
         void onClickClose();
     }
-
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -61,18 +56,14 @@ public class SportFavoriteDetailsDialogFragment extends DialogFragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.sport_favorite_dialog_fragment, container, false);
         view.setBackgroundResource(R.drawable.corner_dialog_fragment);
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
         findById(view);
         putData();
         onClickButtonOpenYoutube();
         onClickCloseButton();
-
         return view;
-
     }
 
     public void findById(View v) {
@@ -96,7 +87,7 @@ public class SportFavoriteDetailsDialogFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), YoutubeActivity.class);
-                intent.putExtra("url", defaultSport.getVideo());
+                intent.putExtra(URL, defaultSport.getVideo());
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
             }

@@ -16,7 +16,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.utad.david.planfit.DialogFragment.Nutrition.NutritionDetailsDialogFragment;
 import com.utad.david.planfit.Model.Nutrition.DefaultNutrition;
 import com.utad.david.planfit.R;
 
@@ -37,7 +36,6 @@ public class NutritionFavoriteDetailsDialogFragment extends DialogFragment {
         void onClickClose();
     }
 
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,18 +55,14 @@ public class NutritionFavoriteDetailsDialogFragment extends DialogFragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.nutrition_favorite_dialog_fragment, container, false);
         view.setBackgroundResource(R.drawable.corner_dialog_fragment);
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
         findById(view);
         putData();
-        onClickButtonOpenYoutube();
+        onClickButtonOpenRecipe();
         onClickCloseButton();
-
         return view;
-
     }
 
     public void findById(View v) {
@@ -87,7 +81,7 @@ public class NutritionFavoriteDetailsDialogFragment extends DialogFragment {
         Glide.with(this).load(defaultNutrition.getPhoto()).into(imageViewSport);
     }
 
-    private void onClickButtonOpenYoutube() {
+    private void onClickButtonOpenRecipe() {
         buttonOpenRecipe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -108,5 +102,4 @@ public class NutritionFavoriteDetailsDialogFragment extends DialogFragment {
             }
         });
     }
-
 }

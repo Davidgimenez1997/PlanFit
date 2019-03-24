@@ -1,6 +1,5 @@
 package com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.CreatePlan.Nutrition;
 
-
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -17,7 +16,7 @@ import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import butterknife.ButterKnife;
-import com.utad.david.planfit.Adapter.Plan.create.CreateNutritionPlanAdapter;
+import com.utad.david.planfit.Adapter.Plan.Create.CreateNutritionPlanAdapter;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.DialogFragment.Plan.CreateNutritionPlanDetailsDialogFragment;
@@ -28,9 +27,7 @@ import java.util.List;
 
 public class NutritionCreatePlanFragment extends Fragment implements FirebaseAdmin.FirebaseAdminFavoriteSportAndNutrition {
 
-
     public NutritionCreatePlanFragment() {
-        // Required empty public constructor
     }
 
     private NutritionCreatePlanFragment fragment;
@@ -59,19 +56,49 @@ public class NutritionCreatePlanFragment extends Fragment implements FirebaseAdm
     private CreateNutritionPlanDetailsDialogFragment newFragment;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View  view =  inflater.inflate(R.layout.fragment_nutrition_create_plan, container, false);
-
         showLoading();
         mRecyclerView = view.findViewById(R.id.recycler_view_nutrition);
         linearLayout = view.findViewById(R.id.linear_empty_favorites);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new GridLayoutManager(getContext(), 2);
         mRecyclerView.setLayoutManager(mLayoutManager);
-
         return view;
+    }
+
+    @Override
+    public void downloandCollectionNutritionFavorite(boolean end) {
+        if(end==true){
+            hideLoading();
+            linearLayout.setVisibility(View.GONE);
+            mRecyclerView.setVisibility(View.VISIBLE);
+            List<DefaultNutrition> allFavoriteFavorite = SessionUser.getInstance().firebaseAdmin.allNutritionFavorite;
+            mAdapter = new CreateNutritionPlanAdapter(allFavoriteFavorite, new CreateNutritionPlanAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(DefaultNutrition item) {
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                    Fragment prev = getFragmentManager().findFragmentByTag("dialog");
+                    if (prev != null) {
+                        transaction.remove(prev);
+                    }
+                    transaction.addToBackStack(null);
+                    newFragment = CreateNutritionPlanDetailsDialogFragment.newInstance(item);
+                    //newFragment.setListener(fragment);
+                    newFragment.show(transaction, "dialog");
+                }
+            });
+            mRecyclerView.setAdapter(mAdapter);
+        }
+    }
+
+    @Override
+    public void emptyCollectionNutritionFavorite(boolean end) {
+        if(end==true){
+            hideLoading();
+            linearLayout.setVisibility(View.VISIBLE);
+            mRecyclerView.setVisibility(View.GONE);
+        }
     }
 
     private ProgressDialog progressDialog;
@@ -109,40 +136,6 @@ public class NutritionCreatePlanFragment extends Fragment implements FirebaseAdm
     public void onPause() {
         super.onPause();
         hideLoading();
-    }
-
-    @Override
-    public void downloandCollectionNutritionFavorite(boolean end) {
-        if(end==true){
-            hideLoading();
-            linearLayout.setVisibility(View.GONE);
-            mRecyclerView.setVisibility(View.VISIBLE);
-            List<DefaultNutrition> allFavoriteFavorite = SessionUser.getInstance().firebaseAdmin.allNutritionFavorite;
-            mAdapter = new CreateNutritionPlanAdapter(allFavoriteFavorite, new CreateNutritionPlanAdapter.OnItemClickListener() {
-                @Override
-                public void onItemClick(DefaultNutrition item) {
-                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                    Fragment prev = getFragmentManager().findFragmentByTag("dialog");
-                    if (prev != null) {
-                        transaction.remove(prev);
-                    }
-                    transaction.addToBackStack(null);
-                    newFragment = CreateNutritionPlanDetailsDialogFragment.newInstance(item);
-                    //newFragment.setListener(fragment);
-                    newFragment.show(transaction, "dialog");
-                }
-            });
-            mRecyclerView.setAdapter(mAdapter);
-        }
-    }
-
-    @Override
-    public void emptyCollectionNutritionFavorite(boolean end) {
-        if(end==true){
-            hideLoading();
-            linearLayout.setVisibility(View.VISIBLE);
-            mRecyclerView.setVisibility(View.GONE);
-        }
     }
 
     @Override
