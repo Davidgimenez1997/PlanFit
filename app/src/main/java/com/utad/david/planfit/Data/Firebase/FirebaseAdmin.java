@@ -175,6 +175,8 @@ public class FirebaseAdmin {
 
         void deleteSportPlanFirebase(boolean end);
 
+        void updateSportPlanFirebase(boolean end);
+
         void insertNutritionPlanFirebase(boolean end);
 
         void downloadNutritionPlanFirebase(boolean end);
@@ -182,6 +184,8 @@ public class FirebaseAdmin {
         void emptyNutritionPlanFirebase(boolean end);
 
         void deleteNutritionPlanFirebase(boolean end);
+
+        void updateNutritionPlanFirebase(boolean end);
 
     }
 
@@ -1371,13 +1375,15 @@ public class FirebaseAdmin {
         planSport.put("photo", SessionUser.getInstance().planSport.getPhoto());
         planSport.put("timeStart", SessionUser.getInstance().planSport.getTimeStart());
         planSport.put("timeEnd", SessionUser.getInstance().planSport.getTimeEnd());
-        insertSportPlan(planSport);
+        planSport.put("isOk", SessionUser.getInstance().planSport.getIsOk());
+        planSport.put("id",SessionUser.getInstance().planSport.getId());
+        insertSportPlan(planSport,SessionUser.getInstance().planSport.getId());
     }
 
-    private void insertSportPlan(final Map<String, Object> planSport) {
+    private void insertSportPlan(final Map<String, Object> planSport,String id) {
         if(firebaseAdminCreateAndShowPlan!=null){
             COLLECTION_PLAN_SPORT_USER = "users/" + currentUser.getUid() + "/planesDeporte";
-            firebaseFirestore.collection(COLLECTION_PLAN_SPORT_USER).document()
+            firebaseFirestore.collection(COLLECTION_PLAN_SPORT_USER).document(id)
                     .set(planSport)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
@@ -1423,11 +1429,11 @@ public class FirebaseAdmin {
 
     //Delete One sport Plan
 
-    public void deleteSportPlan(PlanSport planSport){
+    public void deleteSportPlan(String namePlanSport){
         if(firebaseAdminCreateAndShowPlan!=null){
             COLLECTION_PLAN_SPORT_USER = "users/" + currentUser.getUid() + "/planesDeporte";
                 firebaseFirestore.collection(COLLECTION_PLAN_SPORT_USER)
-                        .whereEqualTo("name", planSport.getName())
+                        .whereEqualTo("name", namePlanSport)
                         .get()
                         .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                             @Override
@@ -1509,6 +1515,31 @@ public class FirebaseAdmin {
             });
         }
     }
+
+    //Update plan sport
+
+    public void updatePlanSportFirebase(PlanSport planSport) {
+        if (firebaseAdminCreateAndShowPlan != null) {
+            COLLECTION_PLAN_SPORT_USER = "users/" + currentUser.getUid() + "/planesDeporte";
+            DocumentReference myUserRef = firebaseFirestore.collection(COLLECTION_PLAN_SPORT_USER).document(planSport.getId());
+            Map<String, Object> plan = new HashMap<>();
+            plan.put("isOk", planSport.getIsOk());
+            myUserRef.update(plan)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            firebaseAdminCreateAndShowPlan.updateSportPlanFirebase(true);
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            firebaseAdminCreateAndShowPlan.updateSportPlanFirebase(false);
+                        }
+                    });
+        }
+    }
+
 
 
 }

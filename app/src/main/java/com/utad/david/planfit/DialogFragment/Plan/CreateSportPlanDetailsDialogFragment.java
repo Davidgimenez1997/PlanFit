@@ -25,6 +25,7 @@ import com.utad.david.planfit.R;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class CreateSportPlanDetailsDialogFragment extends DialogFragment implements FirebaseAdmin.FirebaseAdminCreateAndShowPlan{
 
@@ -130,6 +131,9 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment impleme
                         int intEnd = convertStringToInt(timeEnd);
                         SessionUser.getInstance().planSport.setTimeStart(intStart);
                         SessionUser.getInstance().planSport.setTimeEnd(intEnd);
+                        SessionUser.getInstance().planSport.setIsOk("no");
+                        UUID uuid = UUID.randomUUID();
+                        SessionUser.getInstance().planSport.setId(uuid.toString());
                         SessionUser.getInstance().firebaseAdmin.dataCreateSportPlan();
                     }
                 }
@@ -148,10 +152,7 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment impleme
             @Override
             public void onClick(View v) {
                 showLoading();
-                int intStart = convertStringToInt(timeStart);
-                int intEnd = convertStringToInt(timeEnd);
-                PlanSport planSport = new PlanSport(defaultSport,intStart,intEnd);
-                SessionUser.getInstance().firebaseAdmin.deleteSportPlan(planSport);
+                SessionUser.getInstance().firebaseAdmin.deleteSportPlan(defaultSport.getName());
             }
         });
     }
@@ -208,6 +209,11 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment impleme
             hideLoading();
             Toast.makeText(getContext(),defaultSport.getName()+" "+getString(R.string.delete_create_sport),Toast.LENGTH_LONG).show();
         }
+    }
+
+    @Override
+    public void updateSportPlanFirebase(boolean end) {
+
     }
 
     private ProgressDialog progressDialog;
@@ -269,6 +275,11 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment impleme
 
     @Override
     public void deleteNutritionPlanFirebase(boolean end) {
+
+    }
+
+    @Override
+    public void updateNutritionPlanFirebase(boolean end) {
 
     }
 

@@ -34,7 +34,7 @@ public class ShowSportPlanAdapter extends RecyclerView.Adapter<ShowSportPlanAdap
     }
 
     @Override
-    public void onBindViewHolder(ShowSportPlanAdapter.ShowPlanSportViewHolder holder, int position) {
+    public void onBindViewHolder(ShowSportPlanAdapter.ShowPlanSportViewHolder holder, final int position) {
         final PlanSport current = planSports.get(position);
         holder.setData(current);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -58,6 +58,7 @@ public class ShowSportPlanAdapter extends RecyclerView.Adapter<ShowSportPlanAdap
         private TextView timeStart;
         private TextView timeEnd;
         private ImageView photoSport;
+        private ImageView imageViewCheck;
 
         public ShowPlanSportViewHolder(View v) {
             super(v);
@@ -65,6 +66,7 @@ public class ShowSportPlanAdapter extends RecyclerView.Adapter<ShowSportPlanAdap
             photoSport = v.findViewById(R.id.imageViewShowSport);
             timeEnd = v.findViewById(R.id.timeEnd);
             timeStart = v.findViewById(R.id.timeStart);
+            imageViewCheck = v.findViewById(R.id.imageViewCheck);
         }
 
         public void setData(PlanSport planSport){
@@ -76,6 +78,12 @@ public class ShowSportPlanAdapter extends RecyclerView.Adapter<ShowSportPlanAdap
             String str_timeEnd = String.valueOf(planSport.getTimeEnd());
             timeStart.setText(str_timeStart+":00");
             timeEnd.setText(str_timeEnd+":00");
+
+            if(planSport.getIsOk().equals("yes")){
+                imageViewCheck.setVisibility(View.VISIBLE);
+            }else if(planSport.getIsOk().equals("no")){
+                imageViewCheck.setVisibility(View.INVISIBLE);
+            }
         }
     }
 }

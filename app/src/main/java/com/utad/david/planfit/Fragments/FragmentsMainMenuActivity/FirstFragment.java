@@ -363,6 +363,11 @@ public class FirstFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
     }
 
     @Override
+    public void updateSportPlanFirebase(boolean end) {
+
+    }
+
+    @Override
     public void insertNutritionPlanFirebase(boolean end) {
 
     }
@@ -379,6 +384,11 @@ public class FirstFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
 
     @Override
     public void deleteNutritionPlanFirebase(boolean end) {
+
+    }
+
+    @Override
+    public void updateNutritionPlanFirebase(boolean end) {
 
     }
 
