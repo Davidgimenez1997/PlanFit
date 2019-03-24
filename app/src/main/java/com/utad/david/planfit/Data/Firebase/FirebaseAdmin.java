@@ -2,6 +2,7 @@ package com.utad.david.planfit.Data.Firebase;
 
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import com.google.android.gms.tasks.*;
 import com.google.firebase.auth.*;
 import com.google.firebase.firestore.*;
@@ -14,6 +15,7 @@ import com.utad.david.planfit.Model.Nutrition.DefaultNutrition;
 import com.utad.david.planfit.Model.Nutrition.NutritionGainVolume;
 import com.utad.david.planfit.Model.Nutrition.NutritionSlimming;
 import com.utad.david.planfit.Model.Nutrition.NutritionToning;
+import com.utad.david.planfit.Model.Plan.PlanNutrition;
 import com.utad.david.planfit.Model.Plan.PlanSport;
 import com.utad.david.planfit.Model.Sport.DefaultSport;
 import com.utad.david.planfit.Model.Sport.SportGainVolume;
@@ -66,6 +68,7 @@ public class FirebaseAdmin {
     public List<DefaultNutrition> allNutritionFavorite;
 
     public List<PlanSport> allPlanSport;
+    public List<PlanNutrition> allPlanNutrition;
 
     private static String COLLECTION_USER_FIREBASE = "users";
     private static String DOCUMENT_DEVELOPER_INFO_FIREBASE = "david";
@@ -80,6 +83,7 @@ public class FirebaseAdmin {
     private String COLLECTION_FAVORITE_SPORT;
     private String COLLECTION_FAVORITE_NUTRITION;
     private String COLLECTION_PLAN_SPORT_USER;
+    private String COLLECTION_PLAN_NUTRITION_USER;
 
 
     public FirebaseAdmin() {
@@ -175,6 +179,8 @@ public class FirebaseAdmin {
 
         void deleteSportPlanFirebase(boolean end);
 
+        void deleteAllSportPlanFirebase(boolean end);
+
         void updateSportPlanFirebase(boolean end);
 
         void insertNutritionPlanFirebase(boolean end);
@@ -184,6 +190,8 @@ public class FirebaseAdmin {
         void emptyNutritionPlanFirebase(boolean end);
 
         void deleteNutritionPlanFirebase(boolean end);
+
+        void deleteAllNutritionPlanFirebase(boolean end);
 
         void updateNutritionPlanFirebase(boolean end);
 
@@ -1367,7 +1375,7 @@ public class FirebaseAdmin {
 
     }
 
-    //Create sport plan
+    //Create sport and nutrtion plan
 
     public void dataCreateSportPlan(){
         Map<String, Object> planSport = new HashMap<>();
@@ -1400,7 +1408,37 @@ public class FirebaseAdmin {
         }
     }
 
-    //Download sport plan
+    public void dataCreateNutrtionPlan(){
+        Map<String, Object> planNutrition = new HashMap<>();
+        planNutrition.put("name", SessionUser.getInstance().planNutrition.getName());
+        planNutrition.put("photo", SessionUser.getInstance().planNutrition.getPhoto());
+        planNutrition.put("type", SessionUser.getInstance().planNutrition.getType());
+        planNutrition.put("isOk", SessionUser.getInstance().planNutrition.getIsOk());
+        planNutrition.put("id",SessionUser.getInstance().planNutrition.getId());
+        insertNutrtionPlan(planNutrition,SessionUser.getInstance().planNutrition.getId());
+    }
+
+    private void insertNutrtionPlan(final Map<String, Object> planNutrition,String id) {
+        if(firebaseAdminCreateAndShowPlan!=null){
+            COLLECTION_PLAN_NUTRITION_USER = "users/" + currentUser.getUid() + "/planesNutricion";
+            firebaseFirestore.collection(COLLECTION_PLAN_NUTRITION_USER).document(id)
+                    .set(planNutrition)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            firebaseAdminCreateAndShowPlan.insertNutritionPlanFirebase(true);
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            firebaseAdminCreateAndShowPlan.insertNutritionPlanFirebase(false);
+                        }
+                    });
+        }
+    }
+
+    //Download sport and nutrtion plan
 
     public void downloadAllSportPlanFavorite() {
         if (firebaseAdminCreateAndShowPlan != null) {
@@ -1427,7 +1465,32 @@ public class FirebaseAdmin {
         }
     }
 
-    //Delete One sport Plan
+    public void downloadAllNutrtionPlanFavorite() {
+        if (firebaseAdminCreateAndShowPlan != null) {
+            COLLECTION_PLAN_NUTRITION_USER = "users/" + currentUser.getUid() + "/planesNutricion";
+            CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_PLAN_NUTRITION_USER);
+            collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+                @Override
+                public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                    if (e != null) {
+                        firebaseAdminCreateAndShowPlan.downloadNutritionPlanFirebase(false);
+                    }
+                    List<PlanNutrition> planNutritions = new ArrayList<>();
+                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                        planNutritions.add(doc.toObject(PlanNutrition.class));
+                    }
+                    allPlanNutrition = planNutritions;
+                    if(allPlanNutrition.size()==0){
+                        firebaseAdminCreateAndShowPlan.emptyNutritionPlanFirebase(true);
+                    }else if(allPlanNutrition.size()!=0){
+                        firebaseAdminCreateAndShowPlan.downloadNutritionPlanFirebase(true);
+                    }
+                }
+            });
+        }
+    }
+
+    //Delete One sport and nutrtion Plan
 
     public void deleteSportPlan(String namePlanSport){
         if(firebaseAdminCreateAndShowPlan!=null){
@@ -1463,60 +1526,90 @@ public class FirebaseAdmin {
         }
     }
 
-    //DeleteAll sportPlan
-
-    public void deleteAllSportPlan(){
+    public void deleteNutritionPlan(String namePlanSport){
         if(firebaseAdminCreateAndShowPlan!=null){
-            COLLECTION_PLAN_SPORT_USER = "users/" + currentUser.getUid() + "/planesDeporte";
-            CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_PLAN_SPORT_USER);
-            collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
-                @Override
-                public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                    if (e != null) {
-                        firebaseAdminCreateAndShowPlan.downloadSportPlanFirebase(false);
-                    }
-                    List<PlanSport> planSports = new ArrayList<>();
-                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                        planSports.add(doc.toObject(PlanSport.class));
-                    }
-                    allPlanSport = planSports;
-                    if(allPlanSport.size()!=0){
-                        for(PlanSport planSport: allPlanSport){
-                            firebaseFirestore.collection(COLLECTION_PLAN_SPORT_USER)
-                                    .whereEqualTo("name", planSport.getName())
-                                    .get()
-                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                            if (task.isSuccessful()) {
-                                                for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
-                                                    String id = documentSnapshot.getId();
-                                                    firebaseFirestore.collection(COLLECTION_PLAN_SPORT_USER).document(id)
-                                                            .delete()
-                                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                @Override
-                                                                public void onSuccess(Void aVoid) {
-                                                                    firebaseAdminCreateAndShowPlan.deleteSportPlanFirebase(true);
-                                                                }
-                                                            })
-                                                            .addOnFailureListener(new OnFailureListener() {
-                                                                @Override
-                                                                public void onFailure(@NonNull Exception e) {
-                                                                    firebaseAdminCreateAndShowPlan.deleteSportPlanFirebase(false);
-                                                                }
-                                                            });
+            COLLECTION_PLAN_NUTRITION_USER = "users/" + currentUser.getUid() + "/planesNutricion";
+            firebaseFirestore.collection(COLLECTION_PLAN_NUTRITION_USER)
+                    .whereEqualTo("name", namePlanSport)
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                                    String id = documentSnapshot.getId();
+                                    firebaseFirestore.collection(COLLECTION_PLAN_NUTRITION_USER).document(id)
+                                            .delete()
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    firebaseAdminCreateAndShowPlan.deleteNutritionPlanFirebase(true);
                                                 }
-                                            }
-                                        }
-                                    });
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    firebaseAdminCreateAndShowPlan.deleteNutritionPlanFirebase(false);
+
+                                                }
+                                            });
+                                }
+                            }
                         }
-                    }
-                }
-            });
+                    });
         }
     }
 
-    //Update plan sport
+    //DeleteAll sportPlan and nutrtion plan
+
+    public void deleteAllSportPlan(ArrayList<PlanSport> arrSport){
+        if(firebaseAdminCreateAndShowPlan!=null){
+            COLLECTION_PLAN_SPORT_USER = "users/" + currentUser.getUid() + "/planesDeporte";
+            for (PlanSport item:arrSport){
+                firebaseFirestore.collection(COLLECTION_PLAN_SPORT_USER).document(item.getId())
+                        .delete()
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                firebaseAdminCreateAndShowPlan.deleteAllSportPlanFirebase(true);
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                firebaseAdminCreateAndShowPlan.deleteAllSportPlanFirebase(false);
+
+                            }
+                        });
+            }
+        }
+    }
+
+    public void deleteAllNutrtionPlan(ArrayList<PlanNutrition> arrNutrition){
+        if(firebaseAdminCreateAndShowPlan!=null){
+            COLLECTION_PLAN_NUTRITION_USER = "users/" + currentUser.getUid() + "/planesNutricion";
+            for (PlanNutrition item:arrNutrition){
+                firebaseFirestore.collection(COLLECTION_PLAN_NUTRITION_USER).document(item.getId())
+                        .delete()
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                firebaseAdminCreateAndShowPlan.deleteAllNutritionPlanFirebase(true);
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                firebaseAdminCreateAndShowPlan.deleteAllNutritionPlanFirebase(false);
+
+                            }
+                        });
+            }
+        }
+    }
+
+
+    //Update plan sport and nutrition
 
     public void updatePlanSportFirebase(PlanSport planSport) {
         if (firebaseAdminCreateAndShowPlan != null) {
@@ -1540,6 +1633,27 @@ public class FirebaseAdmin {
         }
     }
 
+    public void updatePlanNutrtionFirebase(PlanNutrition planNutrition) {
+        if (firebaseAdminCreateAndShowPlan != null) {
+            COLLECTION_PLAN_NUTRITION_USER = "users/" + currentUser.getUid() + "/planesNutricion";
+            DocumentReference myUserRef = firebaseFirestore.collection(COLLECTION_PLAN_NUTRITION_USER).document(planNutrition.getId());
+            Map<String, Object> plan = new HashMap<>();
+            plan.put("isOk", planNutrition.getIsOk());
+            myUserRef.update(plan)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            firebaseAdminCreateAndShowPlan.updateNutritionPlanFirebase(true);
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            firebaseAdminCreateAndShowPlan.updateNutritionPlanFirebase(false);
+                        }
+                    });
+        }
+    }
 
 
 }

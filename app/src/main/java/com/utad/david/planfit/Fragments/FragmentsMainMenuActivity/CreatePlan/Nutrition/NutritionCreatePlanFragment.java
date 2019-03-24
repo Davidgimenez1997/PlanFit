@@ -25,7 +25,7 @@ import com.utad.david.planfit.R;
 
 import java.util.List;
 
-public class NutritionCreatePlanFragment extends Fragment implements FirebaseAdmin.FirebaseAdminFavoriteSportAndNutrition {
+public class NutritionCreatePlanFragment extends Fragment implements FirebaseAdmin.FirebaseAdminFavoriteSportAndNutrition,CreateNutritionPlanDetailsDialogFragment.CallbackCreateNutrtion{
 
     public NutritionCreatePlanFragment() {
     }
@@ -68,6 +68,11 @@ public class NutritionCreatePlanFragment extends Fragment implements FirebaseAdm
     }
 
     @Override
+    public void onClickClose() {
+        newFragment.dismiss();
+    }
+
+    @Override
     public void downloandCollectionNutritionFavorite(boolean end) {
         if(end==true){
             hideLoading();
@@ -84,7 +89,7 @@ public class NutritionCreatePlanFragment extends Fragment implements FirebaseAdm
                     }
                     transaction.addToBackStack(null);
                     newFragment = CreateNutritionPlanDetailsDialogFragment.newInstance(item);
-                    //newFragment.setListener(fragment);
+                    newFragment.setListener(fragment);
                     newFragment.show(transaction, "dialog");
                 }
             });

@@ -212,6 +212,11 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment impleme
     }
 
     @Override
+    public void deleteAllSportPlanFirebase(boolean end) {
+
+    }
+
+    @Override
     public void updateSportPlanFirebase(boolean end) {
 
     }
@@ -275,6 +280,11 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment impleme
 
     @Override
     public void deleteNutritionPlanFirebase(boolean end) {
+
+    }
+
+    @Override
+    public void deleteAllNutritionPlanFirebase(boolean end) {
 
     }
 

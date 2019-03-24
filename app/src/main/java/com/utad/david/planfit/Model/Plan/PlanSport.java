@@ -25,6 +25,17 @@ public class PlanSport implements Comparable<PlanSport>,Parcelable{
         this.isOk = isOk;
     }
 
+    @Override
+    public int compareTo(PlanSport o) {
+        if(timeStart < o.timeStart){
+            return -1;
+        }
+        if(timeStart > o.timeStart){
+            return 1;
+        }
+        return 0;
+    }
+
 
     protected PlanSport(Parcel in) {
         name = in.readString();
@@ -62,16 +73,6 @@ public class PlanSport implements Comparable<PlanSport>,Parcelable{
         }
     };
 
-    @Override
-    public int compareTo(PlanSport o) {
-        if(timeStart < o.timeStart){
-            return -1;
-        }
-        if(timeStart > o.timeStart){
-            return 1;
-        }
-        return 0;
-    }
 
     public String getName() {
         return name;

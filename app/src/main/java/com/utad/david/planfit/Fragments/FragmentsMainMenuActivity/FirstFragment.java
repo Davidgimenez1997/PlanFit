@@ -20,11 +20,10 @@ import android.widget.Toast;
 import butterknife.ButterKnife;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
-import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.CreatePlan.FragmentCreatePlan;
 import com.utad.david.planfit.R;
 
 
-public class FirstFragment extends Fragment implements FirebaseAdmin.FirebaseAdminCreateAndShowPlan {
+public class FirstFragment extends Fragment{
 
     private static String SELECTED = "SELECTED";
     private int selected;
@@ -70,8 +69,6 @@ public class FirstFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
                 configViewNutrition();
                 break;
             case 2:
-                SessionUser.getInstance().firebaseAdmin.setFirebaseAdminCreateAndShowPlan(this);
-                SessionUser.getInstance().firebaseAdmin.downloadAllSportPlanFavorite();
                 configViewPlan();
                 break;
             case 3:
@@ -204,13 +201,10 @@ public class FirstFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
         textViewInfo.setText(getString(R.string.estas_preparado));
         textViewInfo.setTextSize(35);
         first_button.setText(getString(R.string.crear_plan));
-        three_button.setText("Borrar tu Plan");
         second_button.setText(getString(R.string.ver_tu_plan));
-        //three_button.setVisibility(View.INVISIBLE);
-        showLoading();
+        three_button.setVisibility(View.INVISIBLE);
         onClickCreatePlan();
         onClickShowPlan();
-        onClickDeletePlan();
     }
 
     private void onClickCreatePlan() {
@@ -233,38 +227,6 @@ public class FirstFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
                 }
             }
         });
-    }
-
-    private void onClickDeletePlan(){
-        three_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showDeletePlanDialog();
-            }
-        });
-    }
-
-    private void showDeletePlanDialog() {
-        final CharSequence[] items = {"Plan de deporte", "Plan de nutricion","Cancelar"};
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("¿Cual deseas borrar?");
-        builder.setItems(items, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int item) {
-                switch (item) {
-                    case 0:
-                        showLoading();
-                        SessionUser.getInstance().firebaseAdmin.deleteAllSportPlan();
-                        break;
-                    case 1:
-                        break;
-                    case 2:
-                        dialog.dismiss();
-                        break;
-                }
-            }
-        });
-        builder.show();
     }
 
     private void findViewById(View view){
@@ -326,70 +288,6 @@ public class FirstFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
     public void onPause() {
         super.onPause();
         hideLoading();
-    }
-
-    @Override
-    public void emptySportPlanFirebase(boolean end) {
-        if(end==true){
-            three_button.setEnabled(false);
-            second_button.setEnabled(false);
-            hideLoading();
-        }
-    }
-
-    @Override
-    public void downloadSportPlanFirebase(boolean end) {
-        if(end==true){
-            hideLoading();
-        }
-    }
-
-    @Override
-    public void insertSportPlanFirebase(boolean end) {
-        if(end==true){
-            first_button.setEnabled(false);
-            three_button.setEnabled(true);
-            hideLoading();
-        }
-    }
-
-
-    @Override
-    public void deleteSportPlanFirebase(boolean end) {
-        if(end==true){
-            hideLoading();
-            Toast.makeText(getContext(),"Plan de deportes borrado",Toast.LENGTH_LONG).show();
-        }
-    }
-
-    @Override
-    public void updateSportPlanFirebase(boolean end) {
-
-    }
-
-    @Override
-    public void insertNutritionPlanFirebase(boolean end) {
-
-    }
-
-    @Override
-    public void downloadNutritionPlanFirebase(boolean end) {
-
-    }
-
-    @Override
-    public void emptyNutritionPlanFirebase(boolean end) {
-
-    }
-
-    @Override
-    public void deleteNutritionPlanFirebase(boolean end) {
-
-    }
-
-    @Override
-    public void updateNutritionPlanFirebase(boolean end) {
-
     }
 
     public interface OnFragmentInteractionListener {

@@ -52,7 +52,7 @@ public class MainMenuActivity extends AppCompatActivity
         FirebaseAdmin.FirebaseAdminInsertAndDownloandListener,
         FirstFragment.OnFragmentInteractionListener,
         EditPersonalDataUser.OnFragmentInteractionListener,
-        FragmentCreatePlan.Callback,FragmentShowPlan.Callback{
+        FragmentCreatePlan.Callback,FragmentShowPlan.Callback,ShowSportPlanFragment.Callback{
 
     private ImageView imagemenu;
     private TextView nickname;
@@ -446,6 +446,7 @@ public class MainMenuActivity extends AppCompatActivity
     @Override
     public void onClickNutritionPlan() {
         NutritionCreatePlanFragment nutritionCreatePlanFragment = new NutritionCreatePlanFragment();
+        nutritionCreatePlanFragment.newInstanceSlimming();
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, nutritionCreatePlanFragment);
         fragmentTransaction.addToBackStack(null);
@@ -477,6 +478,15 @@ public class MainMenuActivity extends AppCompatActivity
 
     @Override
     public void onClickButtonShowPlanClose() {
+        int seleted = 2;
+        Fragment fragment = FirstFragment.newInstance(seleted);
+        fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.content_frame, fragment);
+        fragmentTransaction.commit();
+    }
+
+    @Override
+    public void onClickDelete() {
         int seleted = 2;
         Fragment fragment = FirstFragment.newInstance(seleted);
         fragmentTransaction = getSupportFragmentManager().beginTransaction();

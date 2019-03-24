@@ -126,9 +126,15 @@
     <string name="info_show_plan">Tus Planes</string>
     <string name="_1_d_a">1 Día</string>
     <string name="info_create_plan">No puedes elegir la misma hora de comienzo y de fin.</string>
+
     <string name="add_create_sport">agregado al plan de deporte correctamente</string>
     <string name="delete_create_sport">eliminado del plan de deportes correctamente</string>
+
+    <string name="add_create_nutrition">agregado al plan de alimentos correctamente</string>
+    <string name="delete_create_nutrition">eliminado del plan de alimentos correctamente</string>
+
     <string name="info_register">Bienvenido</string>
+    <string name="cuando">¿Cuando?</string>
 
 
     <string-array name="durationPlan">
@@ -161,6 +167,13 @@
         <item>22:00</item>
         <item>23:00</item>
         <item>00:00</item>
+    </string-array>
+
+    <string-array name="nutrition">
+        <item>Desayuno</item>
+        <item>Comida</item>
+        <item>Merienda</item>
+        <item>Cena</item>
     </string-array>
 
 

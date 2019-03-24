@@ -3,11 +3,13 @@ package com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.ShowPlan.Spor
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.telecom.Call;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +20,7 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.TableRow;
+import android.widget.Toast;
 import butterknife.ButterKnife;
 import com.utad.david.planfit.Adapter.Plan.Show.ShowSportPlanAdapter;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
@@ -35,6 +38,10 @@ public class ShowSportPlanFragment extends Fragment implements FirebaseAdmin.Fir
         // Required empty public constructor
     }
 
+    public interface Callback{
+        void onClickDelete();
+    }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,6 +53,7 @@ public class ShowSportPlanFragment extends Fragment implements FirebaseAdmin.Fir
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+    private Callback callback;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -99,14 +107,12 @@ public class ShowSportPlanFragment extends Fragment implements FirebaseAdmin.Fir
         hideLoading();
     }
 
-
     @Override
     public void downloadSportPlanFirebase(boolean end) {
         if(end==true){
             hideLoading();
             final List<PlanSport> planSports = SessionUser.getInstance().firebaseAdmin.allPlanSport;
             ArrayList<PlanSport> arrSport = new ArrayList<>();
-
             for(PlanSport item:planSports){
                 arrSport.add(item);
             }
@@ -115,32 +121,51 @@ public class ShowSportPlanFragment extends Fragment implements FirebaseAdmin.Fir
             mAdapter = new ShowSportPlanAdapter(arrSport, new ShowSportPlanAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(final PlanSport item) {
-                    final CharSequence[] items = {"Si","No","Cancelar"};
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                    builder.setTitle("¿Ya lo has realizado?");
-                    builder.setItems(items, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int itemDialog) {
-                            switch (itemDialog) {
-                                case 0:
-                                    showLoading();
-                                    item.setIsOk("yes");
-                                    SessionUser.getInstance().firebaseAdmin.updatePlanSportFirebase(item);
-                                    mAdapter.notifyDataSetChanged();
-                                    break;
-                                case 1:
-                                    showLoading();
-                                    item.setIsOk("no");
-                                    SessionUser.getInstance().firebaseAdmin.updatePlanSportFirebase(item);
-                                    mAdapter.notifyDataSetChanged();
-                                    break;
-                                case 2:
-                                    dialog.dismiss();
-                                    break;
+
+                    if(item.getIsOk().equals("yes")){
+                        final CharSequence[] items = {"Si","Cancelar"};
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                        builder.setTitle("¿Te has equivocado?");
+                        builder.setItems(items, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int itemDialog) {
+                                switch (itemDialog) {
+                                    case 0:
+                                        showLoading();
+                                        item.setIsOk("no");
+                                        SessionUser.getInstance().firebaseAdmin.updatePlanSportFirebase(item);
+                                        mAdapter.notifyDataSetChanged();
+                                        break;
+                                    case 1:
+                                        dialog.dismiss();
+                                        break;
+                                }
                             }
-                        }
-                    });
-                    builder.show();
+                        });
+                        builder.show();
+                    }else if(item.getIsOk().equals("no")){
+                        final CharSequence[] items = {"Si","Cancelar"};
+                        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                        builder.setTitle("¿Ya lo has realizado?");
+                        builder.setItems(items, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int itemDialog) {
+                                switch (itemDialog) {
+                                    case 0:
+                                        showLoading();
+                                        item.setIsOk("yes");
+                                        SessionUser.getInstance().firebaseAdmin.updatePlanSportFirebase(item);
+                                        mAdapter.notifyDataSetChanged();
+                                        break;
+                                    case 1:
+                                        dialog.dismiss();
+                                        break;
+                                }
+                            }
+                        });
+                        builder.show();
+                    }
+
                 }
             });
             mRecyclerView.setAdapter(mAdapter);
@@ -166,6 +191,15 @@ public class ShowSportPlanFragment extends Fragment implements FirebaseAdmin.Fir
     }
 
     @Override
+    public void deleteAllSportPlanFirebase(boolean end) {
+        if(end==true){
+            if(callback!=null){
+                callback.onClickDelete();
+            }
+        }
+    }
+
+    @Override
     public void updateSportPlanFirebase(boolean end) {
         if(end==true){
             hideLoading();
@@ -187,7 +221,7 @@ public class ShowSportPlanFragment extends Fragment implements FirebaseAdmin.Fir
 
             if(endOk==true){
                 Log.d("TodosOk","estan todos ok");
-                final CharSequence[] items = {"Restablecer","Cancelar"};
+                final CharSequence[] items = {"Restablecer","Borrar plan","Cancelar"};
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 builder.setTitle("Felicidades has completado todos!!!");
                 builder.setItems(items, new DialogInterface.OnClickListener() {
@@ -203,6 +237,10 @@ public class ShowSportPlanFragment extends Fragment implements FirebaseAdmin.Fir
                                 mAdapter.notifyDataSetChanged();
                                 break;
                             case 1:
+                                Toast.makeText(getContext(),"Plan de deportes borrado",Toast.LENGTH_LONG).show();
+                                SessionUser.getInstance().firebaseAdmin.deleteAllSportPlan(arrSport);
+                                break;
+                            case 2:
                                 dialog.dismiss();
                                 break;
                         }
@@ -213,6 +251,23 @@ public class ShowSportPlanFragment extends Fragment implements FirebaseAdmin.Fir
             }
 
         }
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof Callback) {
+            callback = (Callback) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        callback = null;
     }
 
     @Override
@@ -232,6 +287,11 @@ public class ShowSportPlanFragment extends Fragment implements FirebaseAdmin.Fir
 
     @Override
     public void deleteNutritionPlanFirebase(boolean end) {
+
+    }
+
+    @Override
+    public void deleteAllNutritionPlanFirebase(boolean end) {
 
     }
 
