@@ -64,12 +64,15 @@ public class SportFavorite extends Fragment implements FirebaseAdmin.FirebaseAdm
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_sport_favorite, container, false);
+
         showLoading();
         mRecyclerView = view.findViewById(R.id.recycler_view_sport);
         linearLayout = view.findViewById(R.id.linear_empty_favorites);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new GridLayoutManager(getContext(), 2);
         mRecyclerView.setLayoutManager(mLayoutManager);
+        hideLoading();
+
         return view;
     }
 

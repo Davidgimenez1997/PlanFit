@@ -18,15 +18,11 @@ import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.R;
 
-public class FragmentShowPlan extends Fragment implements FirebaseAdmin.FirebaseAdminCreateAndShowPlan {
+public class FragmentShowPlan extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminCreateAndShowPlan(this);
-        showLoading();
-        SessionUser.getInstance().firebaseAdmin.downloadAllSportPlanFavorite();
-        SessionUser.getInstance().firebaseAdmin.downloadAllNutrtionPlanFavorite();
     }
 
     public interface Callback{
@@ -47,10 +43,12 @@ public class FragmentShowPlan extends Fragment implements FirebaseAdmin.Firebase
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_show_plan, container, false);
 
+        showLoading();
         findById(view);
         onClickClose();
         onClickSport();
         onClickNutrition();
+        hideLoading();
 
         return view;
     }
@@ -147,80 +145,6 @@ public class FragmentShowPlan extends Fragment implements FirebaseAdmin.Firebase
     public void onDetach() {
         super.onDetach();
         mListener = null;
-    }
-
-    @Override
-    public void insertSportPlanFirebase(boolean end) {
-        if(end==true){
-            buttonShowSport.setEnabled(true);
-        }
-    }
-
-    @Override
-    public void insertNutritionPlanFirebase(boolean end) {
-        if(end==true){
-            buttonShowNutrition.setEnabled(true);
-        }
-    }
-
-    @Override
-    public void emptySportPlanFirebase(boolean end) {
-        if(end==true){
-            hideLoading();
-            buttonShowSport.setEnabled(false);
-        }
-    }
-
-    @Override
-    public void emptyNutritionPlanFirebase(boolean end) {
-        if(end==true){
-            hideLoading();
-            buttonShowNutrition.setEnabled(false);
-        }
-    }
-
-    @Override
-    public void downloadSportPlanFirebase(boolean end) {
-        if(end==true){
-            hideLoading();
-        }
-    }
-
-    @Override
-    public void downloadNutritionPlanFirebase(boolean end) {
-        if(end==true){
-            hideLoading();
-        }
-    }
-
-    @Override
-    public void deleteSportPlanFirebase(boolean end) {
-
-    }
-
-    @Override
-    public void deleteAllSportPlanFirebase(boolean end) {
-
-    }
-
-    @Override
-    public void updateSportPlanFirebase(boolean end) {
-
-    }
-
-    @Override
-    public void deleteNutritionPlanFirebase(boolean end) {
-
-    }
-
-    @Override
-    public void deleteAllNutritionPlanFirebase(boolean end) {
-
-    }
-
-    @Override
-    public void updateNutritionPlanFirebase(boolean end) {
-
     }
 
 }

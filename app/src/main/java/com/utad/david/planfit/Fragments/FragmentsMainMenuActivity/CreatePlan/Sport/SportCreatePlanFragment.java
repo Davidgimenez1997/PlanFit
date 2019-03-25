@@ -66,6 +66,7 @@ public class SportCreatePlanFragment extends Fragment implements FirebaseAdmin.F
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new GridLayoutManager(getContext(), 2);
         mRecyclerView.setLayoutManager(mLayoutManager);
+        hideLoading();
 
         return view;
     }

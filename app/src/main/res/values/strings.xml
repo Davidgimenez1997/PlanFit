@@ -135,6 +135,10 @@
 
     <string name="info_register">Bienvenido</string>
     <string name="cuando">¿Cuando?</string>
+    <string name="sin_plan_de_ejercicios">Sin plan de ejercicios?</string>
+    <string name="sin_plan_de_alimentos">Sin plan de nutrición?</string>
+    <string name="crea_un_plan_de_ejercicios_para_verlo_aqui">Crea un plan de ejercicios para verlo aqui.</string>
+    <string name="crea_un_plan_de_alimentos_para_verlo_aqui">Crea un plan de nutrición para verlo aqui.</string>
 
 
     <string-array name="durationPlan">

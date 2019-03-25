@@ -74,6 +74,7 @@ public class NutritionFavorite extends Fragment implements FirebaseAdmin.Firebas
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new GridLayoutManager(getContext(), 2);
         mRecyclerView.setLayoutManager(mLayoutManager);
+        hideLoading();
 
         return view;
     }

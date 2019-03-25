@@ -27,6 +27,7 @@ import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Nutrition.Nutr
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Nutrition.NutritionSlimmingFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Nutrition.NutritionToningFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.ShowPlan.FragmentShowPlan;
+import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.ShowPlan.Nutrition.ShowNutritionPlanFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.ShowPlan.Sport.ShowSportPlanFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Sport.SportGainVolumeFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Sport.SportSlimmingFragment;
@@ -52,7 +53,7 @@ public class MainMenuActivity extends AppCompatActivity
         FirebaseAdmin.FirebaseAdminInsertAndDownloandListener,
         FirstFragment.OnFragmentInteractionListener,
         EditPersonalDataUser.OnFragmentInteractionListener,
-        FragmentCreatePlan.Callback,FragmentShowPlan.Callback,ShowSportPlanFragment.Callback{
+        FragmentCreatePlan.Callback,FragmentShowPlan.Callback{
 
     private ImageView imagemenu;
     private TextView nickname;
@@ -473,7 +474,11 @@ public class MainMenuActivity extends AppCompatActivity
 
     @Override
     public void onClickButtonShowPlanNutrition() {
-
+        ShowNutritionPlanFragment showNutritionPlanFragment = new ShowNutritionPlanFragment();
+        fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.content_frame, showNutritionPlanFragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 
     @Override
@@ -486,17 +491,9 @@ public class MainMenuActivity extends AppCompatActivity
     }
 
     @Override
-    public void onClickDelete() {
-        int seleted = 2;
-        Fragment fragment = FirstFragment.newInstance(seleted);
-        fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.content_frame, fragment);
-        fragmentTransaction.commit();
-    }
-
-    @Override
     public void insertUserDataInFirebase(boolean end) {}
 
     @Override
     public void downloadInfotDeveloper(boolean end) {}
+
 }
