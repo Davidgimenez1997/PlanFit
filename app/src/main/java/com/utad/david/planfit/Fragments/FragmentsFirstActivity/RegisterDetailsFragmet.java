@@ -212,7 +212,7 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
     public void registerWithEmailAndPassword(boolean end) {
         if (end == true) {
             endRegister=true;
-            Toast.makeText(getContext(), getString(R.string.info_register)+""+SessionUser.getInstance().user.getFullName().trim(), Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), getString(R.string.info_register)+" "+SessionUser.getInstance().user.getFullName().trim(), Toast.LENGTH_LONG).show();
             SessionUser.getInstance().firebaseAdmin.addDataUserCouldFirestore();
         } else {
             mProgress.dismiss();

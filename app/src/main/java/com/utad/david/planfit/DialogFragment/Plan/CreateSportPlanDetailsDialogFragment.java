@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import com.utad.david.planfit.Model.Plan.PlanSport;
 import com.utad.david.planfit.Model.Sport.DefaultSport;
 import com.utad.david.planfit.R;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -54,6 +56,7 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment impleme
     private CallbackCreateSport listener;
     private String timeStart;
     private String timeEnd;
+    private PlanSport current;
 
     public void setListener(CallbackCreateSport listener) {
         this.listener = listener;
@@ -124,27 +127,38 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment impleme
                     Toast.makeText(getContext(),getString(R.string.info_create_plan),Toast.LENGTH_LONG).show();
                 }else{
                     if(listener!=null){
-                        showLoading();
-                        SessionUser.getInstance().planSport.setName(defaultSport.getName());
-                        SessionUser.getInstance().planSport.setPhoto(defaultSport.getPhoto());
-                        int intStart = convertStringToInt(timeStart);
-                        int intEnd = convertStringToInt(timeEnd);
-                        SessionUser.getInstance().planSport.setTimeStart(intStart);
-                        SessionUser.getInstance().planSport.setTimeEnd(intEnd);
-                        SessionUser.getInstance().planSport.setIsOk("no");
-                        UUID uuid = UUID.randomUUID();
-                        SessionUser.getInstance().planSport.setId(uuid.toString());
-                        SessionUser.getInstance().firebaseAdmin.dataCreateSportPlan();
+
+                        double intStart = convertStringToInt(timeStart);
+                        double intEnd = convertStringToInt(timeEnd);
+
+                        if(intStart>intEnd){
+                            Toast.makeText(getContext(),"No puedes terminar antes de empezar",Toast.LENGTH_LONG).show();
+                        }else{
+                            showLoading();
+                            SessionUser.getInstance().planSport.setName(defaultSport.getName());
+                            SessionUser.getInstance().planSport.setPhoto(defaultSport.getPhoto());
+                            SessionUser.getInstance().planSport.setTimeStart(intStart);
+                            SessionUser.getInstance().planSport.setTimeEnd(intEnd);
+                            SessionUser.getInstance().planSport.setIsOk("no");
+                            UUID uuid = UUID.randomUUID();
+                            SessionUser.getInstance().planSport.setId(uuid.toString());
+                            SessionUser.getInstance().firebaseAdmin.dataCreateSportPlan();
+                        }
                     }
                 }
             }
         });
     }
 
-    private int convertStringToInt(String timeStart){
+    private double convertStringToInt(String timeStart){
         String [] parts = timeStart.split(":");
-        String value = parts[0];
-        return Integer.parseInt(value);
+        String first = parts[0];
+        String second = parts[1];
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(first);
+        stringBuilder.append(".");
+        stringBuilder.append(second);
+        return Double.parseDouble(stringBuilder.toString());
     }
 
     private void onClickButtonDelete(){
@@ -179,13 +193,62 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment impleme
     @Override
     public void downloadSportPlanFirebase(boolean end) {
         if(end==true){
-            hideLoading();
             planSports = new ArrayList<>();
             planSports = SessionUser.getInstance().firebaseAdmin.allPlanSport;
             for(PlanSport item : planSports){
+                current = item;
                 if(item.getName().equals(defaultSport.getName())){
                     buttonSave.setEnabled(false);
                     buttonDelete.setEnabled(true);
+
+                    String [] timePlanArr = getResources().getStringArray(R.array.timePlan);
+
+                    String timeStart;
+                    String str_timeStart = String.valueOf(item.getTimeStart());
+                    BigDecimal bigDecimal_start = new BigDecimal(str_timeStart);
+                    long first_start = bigDecimal_start.longValue();
+                    BigDecimal second_start = bigDecimal_start.remainder(BigDecimal.ONE);
+                    StringBuilder stringBuilder_start = new StringBuilder(second_start.toString());
+                    stringBuilder_start.delete(0,2);
+                    if(stringBuilder_start.toString().length()==1){
+                        timeStart = ("0"+Long.valueOf(first_start)+":"+stringBuilder_start.toString()+"0");
+                    }else{
+                        timeStart = ("0"+Long.valueOf(first_start)+":"+stringBuilder_start.toString());
+                    }
+
+                    String timeEnd;
+                    String str_timeEnd = String.valueOf(item.getTimeEnd());
+                    BigDecimal bigDecimal_end = new BigDecimal(str_timeEnd);
+                    long first_end = bigDecimal_end.longValue();
+                    BigDecimal second_End = bigDecimal_end.remainder(BigDecimal.ONE);
+                    StringBuilder stringBuilder_end = new StringBuilder(second_End.toString());
+                    stringBuilder_end.delete(0,2);
+                    if(stringBuilder_end.toString().length()==1){
+                        timeEnd = ("0"+Long.valueOf(first_end)+":"+stringBuilder_end.toString()+"0");
+                    }else{
+                        timeEnd = ("0"+Long.valueOf(first_end)+":"+stringBuilder_end.toString());
+                    }
+
+
+                    Log.d("PLAAAN",timeStart);
+
+
+                    for(int i=0;i<timePlanArr.length;i++){
+                        Log.d("PLAAAN",timePlanArr[i]);
+                        if(timePlanArr[i].equals(timeStart)){
+                            Log.d("PLAAAN",timePlanArr[i]);
+                            spinnerStart.setSelection(i);
+                        }
+                    }
+
+                    for(int i=0;i<timePlanArr.length;i++){
+                        Log.d("PLAAAN",timePlanArr[i]);
+                        if(timePlanArr[i].equals(timeEnd)){
+                            Log.d("PLAAAN",timePlanArr[i]);
+                            spinnerEnd.setSelection(i);
+                        }
+                    }
+                    hideLoading();
                 }
             }
         }
@@ -218,7 +281,6 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment impleme
 
     @Override
     public void updateSportPlanFirebase(boolean end) {
-
     }
 
     private ProgressDialog progressDialog;

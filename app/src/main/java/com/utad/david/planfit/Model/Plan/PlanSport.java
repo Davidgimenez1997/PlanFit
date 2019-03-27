@@ -8,15 +8,15 @@ public class PlanSport implements Comparable<PlanSport>,Parcelable{
 
     private String name;
     private String photo;
-    private int timeStart;
-    private int timeEnd;
+    private double timeStart;
+    private double timeEnd;
     private String id;
     private String isOk;
 
     public PlanSport() {
     }
 
-    public PlanSport(String name, String photo, int timeStart, int timeEnd, String id, String isOk) {
+    public PlanSport(String name, String photo, double timeStart, double timeEnd, String id, String isOk) {
         this.name = name;
         this.photo = photo;
         this.timeStart = timeStart;
@@ -50,8 +50,8 @@ public class PlanSport implements Comparable<PlanSport>,Parcelable{
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
         dest.writeString(photo);
-        dest.writeInt(timeStart);
-        dest.writeInt(timeEnd);
+        dest.writeDouble(timeStart);
+        dest.writeDouble(timeEnd);
         dest.writeString(id);
         dest.writeString(isOk);
     }
@@ -90,19 +90,19 @@ public class PlanSport implements Comparable<PlanSport>,Parcelable{
         this.photo = photo;
     }
 
-    public int getTimeStart() {
+    public double getTimeStart() {
         return timeStart;
     }
 
-    public void setTimeStart(int timeStart) {
+    public void setTimeStart(double timeStart) {
         this.timeStart = timeStart;
     }
 
-    public int getTimeEnd() {
+    public double getTimeEnd() {
         return timeEnd;
     }
 
-    public void setTimeEnd(int timeEnd) {
+    public void setTimeEnd(double timeEnd) {
         this.timeEnd = timeEnd;
     }
 

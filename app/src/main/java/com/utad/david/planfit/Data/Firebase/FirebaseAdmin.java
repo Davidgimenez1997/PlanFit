@@ -1617,6 +1617,8 @@ public class FirebaseAdmin {
             DocumentReference myUserRef = firebaseFirestore.collection(COLLECTION_PLAN_SPORT_USER).document(planSport.getId());
             Map<String, Object> plan = new HashMap<>();
             plan.put("isOk", planSport.getIsOk());
+            plan.put("timeStart", SessionUser.getInstance().planSport.getTimeStart());
+            plan.put("timeEnd", SessionUser.getInstance().planSport.getTimeEnd());
             myUserRef.update(plan)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
