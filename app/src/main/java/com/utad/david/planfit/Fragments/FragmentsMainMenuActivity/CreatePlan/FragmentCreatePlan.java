@@ -54,10 +54,10 @@ public class FragmentCreatePlan extends Fragment {
     }
 
     private void findById(View view){
-        timeDuration = view.findViewById(R.id.time_plan);
+        //timeDuration = view.findViewById(R.id.time_plan);
         buttonSelectSport = view.findViewById(R.id.button_select_sport);
         buttonSelectNutrition = view.findViewById(R.id.button_Select_nutrition);
-        buttonSaveAndExit = view.findViewById(R.id.button_exit_save);
+        buttonSaveAndExit = view.findViewById(R.id.button_exit);
 
     }
 

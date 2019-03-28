@@ -33,6 +33,12 @@ public class CreateNutritionPlanDetailsDialogFragment extends DialogFragment imp
     private static String NUTRITION = "NUTRITION";
     private DefaultNutrition defaultNutrition;
 
+    private static String DESAYUNO="Desayuno";
+    private static String COMIDA="Comida";
+    private static String MERIENDA="Merienda";
+    private static String CENA="Cena";
+
+
     public static CreateNutritionPlanDetailsDialogFragment newInstance(DefaultNutrition defaultNutrition) {
         CreateNutritionPlanDetailsDialogFragment fragment = new CreateNutritionPlanDetailsDialogFragment();
         Bundle args = new Bundle();
@@ -170,6 +176,32 @@ public class CreateNutritionPlanDetailsDialogFragment extends DialogFragment imp
                 if(item.getName().equals(defaultNutrition.getName())){
                     buttonSave.setEnabled(false);
                     buttonDelete.setEnabled(true);
+
+                    int type = item.getType();
+                    String strType = null;
+                    switch (type){
+                        case 1:
+                            strType = DESAYUNO;
+                            break;
+                        case 2:
+                            strType = COMIDA;
+                            break;
+                        case 3:
+                            strType = MERIENDA;
+                            break;
+                        case 4:
+                            strType = CENA;
+                            break;
+                    }
+
+                    String [] arrType = getResources().getStringArray(R.array.nutrition);
+
+                    for(int i=0;i<arrType.length;i++){
+                        if(arrType[i].equals(strType)){
+                            spinnerType.setSelection(i);
+                        }
+                    }
+
                 }
             }
         }

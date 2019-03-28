@@ -140,6 +140,7 @@
     <string name="crea_un_plan_de_ejercicios_para_verlo_aqui">Crea un plan de ejercicios para verlo aqui.</string>
     <string name="crea_un_plan_de_alimentos_para_verlo_aqui">Crea un plan de nutrición para verlo aqui.</string>
     <string name="update_sport_plan">ACTUALIZAR</string>
+    <string name="elige">Elige</string>
 
 
     <string-array name="durationPlan">

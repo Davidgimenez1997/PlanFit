@@ -22,7 +22,7 @@ import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.CreatePlan.Nut
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.CreatePlan.Sport.SportCreatePlanFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Favorite.NutritionFavorite;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Favorite.SportFavorite;
-import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.FirstFragment;
+import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.RootFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Nutrition.NutritionGainVolumeFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Nutrition.NutritionSlimmingFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Nutrition.NutritionToningFragment;
@@ -51,7 +51,7 @@ import android.widget.TextView;
 public class MainMenuActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         FirebaseAdmin.FirebaseAdminInsertAndDownloandListener,
-        FirstFragment.OnFragmentInteractionListener,
+        RootFragment.OnFragmentInteractionListener,
         EditPersonalDataUser.OnFragmentInteractionListener,
         FragmentCreatePlan.Callback,FragmentShowPlan.Callback{
 
@@ -92,7 +92,7 @@ public class MainMenuActivity extends AppCompatActivity
 
         findByIdNavigetionView();
 
-        setTitle(R.string.first_nav_name);
+        setTitle(R.string.app_name);
         navigateFragmentSport();
         onClickNavigetionHeaderView();
     }
@@ -288,24 +288,20 @@ public class MainMenuActivity extends AppCompatActivity
 
         switch (itemId) {
             case R.id.nav_deportes:
-                setTitle(R.string.first_nav_name);
                 seleted = 0;
-                fragment = FirstFragment.newInstance(seleted);
+                fragment = RootFragment.newInstance(seleted);
                 break;
             case R.id.nav_nutricion:
-                setTitle(R.string.two_nav_name);
                 seleted = 1;
-                fragment = FirstFragment.newInstance(seleted);
+                fragment = RootFragment.newInstance(seleted);
                 break;
             case R.id.nav_crear_tu_plan:
-                setTitle(R.string.three_nav_name);
                 seleted = 2;
-                fragment = FirstFragment.newInstance(seleted);
+                fragment = RootFragment.newInstance(seleted);
                 break;
             case R.id.nav_favorite:
-                setTitle(R.string.itemfavoritos);
                 seleted = 3;
-                fragment = FirstFragment.newInstance(seleted);
+                fragment = RootFragment.newInstance(seleted);
                 break;
         }
 
@@ -322,7 +318,7 @@ public class MainMenuActivity extends AppCompatActivity
 
     public void navigateFragmentSport(){
         int seleted = 0;
-        Fragment fragment = FirstFragment.newInstance(seleted);
+        Fragment fragment = RootFragment.newInstance(seleted);
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, fragment);
         fragmentTransaction.commit();
@@ -457,7 +453,7 @@ public class MainMenuActivity extends AppCompatActivity
     @Override
     public void onClickSaveAndExit() {
         int seleted = 2;
-        Fragment fragment = FirstFragment.newInstance(seleted);
+        Fragment fragment = RootFragment.newInstance(seleted);
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, fragment);
         fragmentTransaction.commit();
@@ -484,7 +480,7 @@ public class MainMenuActivity extends AppCompatActivity
     @Override
     public void onClickButtonShowPlanClose() {
         int seleted = 2;
-        Fragment fragment = FirstFragment.newInstance(seleted);
+        Fragment fragment = RootFragment.newInstance(seleted);
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, fragment);
         fragmentTransaction.commit();

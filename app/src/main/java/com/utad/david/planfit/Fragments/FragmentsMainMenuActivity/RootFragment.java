@@ -1,10 +1,8 @@
 package com.utad.david.planfit.Fragments.FragmentsMainMenuActivity;
 
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -16,20 +14,17 @@ import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 import butterknife.ButterKnife;
-import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
-import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.R;
 
 
-public class FirstFragment extends Fragment{
+public class RootFragment extends Fragment{
 
     private static String SELECTED = "SELECTED";
     private int selected;
 
-    public static FirstFragment newInstance(int selected) {
-        FirstFragment fragment = new FirstFragment();
+    public static RootFragment newInstance(int selected) {
+        RootFragment fragment = new RootFragment();
         Bundle args = new Bundle();
         args.putInt(SELECTED,selected);
         fragment.setArguments(args);
@@ -38,7 +33,7 @@ public class FirstFragment extends Fragment{
 
     private OnFragmentInteractionListener mListener;
 
-    public FirstFragment() {
+    public RootFragment() {
         // Required empty public constructor
     }
 
@@ -57,7 +52,7 @@ public class FirstFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.firstfragment, container, false);
+        View view =  inflater.inflate(R.layout.root_fragment, container, false);
 
         findViewById(view);
 
@@ -111,7 +106,7 @@ public class FirstFragment extends Fragment{
     }
 
     private void configViewSport(){
-        textViewInfo.setText(getString(R.string.qu_buscas));
+        textViewInfo.setText(getString(R.string.first_nav_name));
         first_button.setText(getString(R.string.adelgazar));
         second_button.setText(getString(R.string.tonificar));
         three_button.setText(getString(R.string.ganar_volumen));
@@ -155,7 +150,7 @@ public class FirstFragment extends Fragment{
     }
 
     private void configViewNutrition(){
-        textViewInfo.setText(getString(R.string.qu_buscas));
+        textViewInfo.setText(getString(R.string.two_nav_name));
         first_button.setText(getString(R.string.adelgazar));
         second_button.setText(getString(R.string.tonificar));
         three_button.setText(getString(R.string.ganar_volumen));
