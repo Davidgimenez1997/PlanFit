@@ -288,18 +288,22 @@ public class MainMenuActivity extends AppCompatActivity
 
         switch (itemId) {
             case R.id.nav_deportes:
+                navigationView.getMenu().findItem(R.id.nav_deportes).setChecked(true);
                 seleted = 0;
                 fragment = RootFragment.newInstance(seleted);
                 break;
             case R.id.nav_nutricion:
+                navigationView.getMenu().findItem(R.id.nav_nutricion).setChecked(true);
                 seleted = 1;
                 fragment = RootFragment.newInstance(seleted);
                 break;
             case R.id.nav_crear_tu_plan:
+                navigationView.getMenu().findItem(R.id.nav_crear_tu_plan).setChecked(true);
                 seleted = 2;
                 fragment = RootFragment.newInstance(seleted);
                 break;
             case R.id.nav_favorite:
+                navigationView.getMenu().findItem(R.id.nav_favorite).setChecked(true);
                 seleted = 3;
                 fragment = RootFragment.newInstance(seleted);
                 break;
@@ -317,6 +321,7 @@ public class MainMenuActivity extends AppCompatActivity
     }
 
     public void navigateFragmentSport(){
+        navigationView.getMenu().findItem(R.id.nav_deportes).setChecked(true);
         int seleted = 0;
         Fragment fragment = RootFragment.newInstance(seleted);
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
