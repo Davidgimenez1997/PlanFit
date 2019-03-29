@@ -2,7 +2,6 @@ package com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Favorite;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -17,28 +16,27 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 import butterknife.ButterKnife;
 import com.utad.david.planfit.Adapter.Favorite.NutritionFavoriteAdapter;
-import com.utad.david.planfit.Adapter.Favorite.SportFavoriteAdapter;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.DialogFragment.Favorite.NutritionFavoriteDetailsDialogFragment;
 import com.utad.david.planfit.Model.Nutrition.DefaultNutrition;
-import com.utad.david.planfit.Model.Sport.DefaultSport;
 import com.utad.david.planfit.R;
 
 import java.util.List;
 
-public class NutritionFavorite extends Fragment implements FirebaseAdmin.FirebaseAdminFavoriteSportAndNutrition,
+public class NutritionFavoriteFragment extends Fragment implements FirebaseAdmin.FirebaseAdminFavoriteSportAndNutrition,
         NutritionFavoriteDetailsDialogFragment.CallbackNutritionFavorite {
 
-    public NutritionFavorite() {
+    public NutritionFavoriteFragment() {
         // Required empty public constructor
     }
 
-    private NutritionFavorite fragment;
+    private NutritionFavoriteFragment fragment;
 
-    public NutritionFavorite newInstanceSlimming() {
+    public NutritionFavoriteFragment newInstanceSlimming() {
         this.fragment = this;
         return this.fragment;
     }
@@ -56,7 +54,7 @@ public class NutritionFavorite extends Fragment implements FirebaseAdmin.Firebas
     }
 
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private NutritionFavoriteAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private LinearLayout linearLayout;
     private NutritionFavoriteDetailsDialogFragment newFragment;
@@ -163,6 +161,20 @@ public class NutritionFavorite extends Fragment implements FirebaseAdmin.Firebas
     @Override
     public void onClickClose() {
         newFragment.dismiss();
+    }
+
+    @Override
+    public void setDataChange() {
+        if(mAdapter!=null){
+            showLoading();
+            mAdapter.dataChangedDeleteSport(SessionUser.getInstance().firebaseAdmin.allNutritionFavorite);
+            if(SessionUser.getInstance().firebaseAdmin.allNutritionFavorite.size()==0){
+                linearLayout.setVisibility(View.VISIBLE);
+                mRecyclerView.setVisibility(View.GONE);
+            }
+            Toast.makeText(getContext(),"Favorito borrado correctamente",Toast.LENGTH_LONG).show();
+            hideLoading();
+        }
     }
 
     @Override

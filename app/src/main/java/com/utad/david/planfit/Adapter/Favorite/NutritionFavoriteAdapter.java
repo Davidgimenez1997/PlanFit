@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.utad.david.planfit.Model.Nutrition.DefaultNutrition;
+import com.utad.david.planfit.Model.Sport.DefaultSport;
 import com.utad.david.planfit.R;
 
 import java.util.List;
@@ -25,6 +26,12 @@ public class NutritionFavoriteAdapter extends RecyclerView.Adapter<NutritionFavo
     public NutritionFavoriteAdapter(List<DefaultNutrition> defaultNutritions,OnItemClickListener listener) {
         this.defaultNutritions = defaultNutritions;
         this.listener = listener;
+    }
+
+    public void dataChangedDeleteSport(List<DefaultNutrition> defaultNutritions){
+        this.defaultNutritions.clear();
+        this.defaultNutritions.addAll(defaultNutritions);
+        notifyDataSetChanged();
     }
 
     @Override

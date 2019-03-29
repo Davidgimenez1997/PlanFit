@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -25,6 +26,12 @@ public class SportFavoriteAdapter extends RecyclerView.Adapter<SportFavoriteAdap
     public SportFavoriteAdapter(List<DefaultSport> defaultSports,OnItemClickListener listener) {
         this.defaultSports = defaultSports;
         this.listener = listener;
+    }
+
+    public void dataChangedDeleteSport(List<DefaultSport> defaultSports){
+        this.defaultSports.clear();
+        this.defaultSports.addAll(defaultSports);
+        notifyDataSetChanged();
     }
 
     @Override

@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,26 +16,26 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 import butterknife.ButterKnife;
 import com.utad.david.planfit.Adapter.Favorite.SportFavoriteAdapter;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
-import com.utad.david.planfit.DialogFragment.Favorite.NutritionFavoriteDetailsDialogFragment;
 import com.utad.david.planfit.DialogFragment.Favorite.SportFavoriteDetailsDialogFragment;
 import com.utad.david.planfit.Model.Sport.DefaultSport;
 import com.utad.david.planfit.R;
 
 import java.util.List;
 
-public class SportFavorite extends Fragment implements FirebaseAdmin.FirebaseAdminFavoriteSportAndNutrition, SportFavoriteDetailsDialogFragment.CallbackFavoriteSport{
+public class SportFavoriteFragment extends Fragment implements FirebaseAdmin.FirebaseAdminFavoriteSportAndNutrition, SportFavoriteDetailsDialogFragment.CallbackFavoriteSport{
 
-    public SportFavorite() {
+    public SportFavoriteFragment() {
         // Required empty public constructor
     }
 
-    private SportFavorite fragment;
+    private SportFavoriteFragment fragment;
 
-    public SportFavorite newInstanceSlimming() {
+    public SportFavoriteFragment newInstanceSlimming() {
         this.fragment = this;
         return this.fragment;
     }
@@ -54,7 +53,7 @@ public class SportFavorite extends Fragment implements FirebaseAdmin.FirebaseAdm
     }
 
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private SportFavoriteAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private LinearLayout linearLayout;
     private SportFavoriteDetailsDialogFragment newFragment;
@@ -83,6 +82,7 @@ public class SportFavorite extends Fragment implements FirebaseAdmin.FirebaseAdm
             linearLayout.setVisibility(View.GONE);
             mRecyclerView.setVisibility(View.VISIBLE);
             List<DefaultSport> allSportFavorite = SessionUser.getInstance().firebaseAdmin.allSportFavorite;
+
             mAdapter = new SportFavoriteAdapter(allSportFavorite, new SportFavoriteAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(DefaultSport item) {
@@ -97,7 +97,9 @@ public class SportFavorite extends Fragment implements FirebaseAdmin.FirebaseAdm
                     newFragment.show(transaction, "dialog");
                 }
             });
+
             mRecyclerView.setAdapter(mAdapter);
+
         }
     }
 
@@ -113,6 +115,20 @@ public class SportFavorite extends Fragment implements FirebaseAdmin.FirebaseAdm
     @Override
     public void onClickClose() {
         newFragment.dismiss();
+    }
+
+    @Override
+    public void setDataChange() {
+        if(mAdapter!=null){
+            showLoading();
+            mAdapter.dataChangedDeleteSport(SessionUser.getInstance().firebaseAdmin.allSportFavorite);
+            if(SessionUser.getInstance().firebaseAdmin.allSportFavorite.size()==0){
+                linearLayout.setVisibility(View.VISIBLE);
+                mRecyclerView.setVisibility(View.GONE);
+            }
+            Toast.makeText(getContext(),"Favorito borrado correctamente",Toast.LENGTH_LONG).show();
+            hideLoading();
+        }
     }
 
     @Override

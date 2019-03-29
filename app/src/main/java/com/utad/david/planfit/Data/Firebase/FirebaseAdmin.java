@@ -969,6 +969,39 @@ public class FirebaseAdmin {
         }
     }
 
+    public void deleteDefaultSportFavorite(DefaultSport defaultSport){
+        if (firebaseAdminFavoriteSportAndNutrition != null) {
+            COLLECTION_FAVORITE_SPORT = "users/" + currentUser.getUid() + "/deporteFavorito";
+            firebaseFirestore.collection(COLLECTION_FAVORITE_SPORT)
+                    .whereEqualTo("name", defaultSport.getName())
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                                    String id = documentSnapshot.getId();
+                                    firebaseFirestore.collection(COLLECTION_FAVORITE_SPORT).document(id)
+                                            .delete()
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    firebaseAdminFavoriteSportAndNutrition.deleteFavoriteSport(true);
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    firebaseAdminFavoriteSportAndNutrition.deleteFavoriteSport(false);
+                                                }
+                                            });
+                                }
+                            }
+                        }
+                    });
+        }
+    }
+
     //Insert favorite Nutrition
 
     public void insertFavoriteNutritionnSlimming(Map<String, Object> slimming) {
@@ -1141,6 +1174,39 @@ public class FirebaseAdmin {
             COLLECTION_FAVORITE_NUTRITION = "users/" + currentUser.getUid() + "/nutricionFavorita";
             firebaseFirestore.collection(COLLECTION_FAVORITE_NUTRITION)
                     .whereEqualTo("name", nutritionGainVolume.getName())
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                                    String id = documentSnapshot.getId();
+                                    firebaseFirestore.collection(COLLECTION_FAVORITE_NUTRITION).document(id)
+                                            .delete()
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    firebaseAdminFavoriteSportAndNutrition.deleteFavoriteNutrition(true);
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    firebaseAdminFavoriteSportAndNutrition.deleteFavoriteNutrition(false);
+                                                }
+                                            });
+                                }
+                            }
+                        }
+                    });
+        }
+    }
+
+    public void deleteDefaultNutritionFavorite(DefaultNutrition defaultNutrition){
+        if (firebaseAdminFavoriteSportAndNutrition != null) {
+            COLLECTION_FAVORITE_NUTRITION = "users/" + currentUser.getUid() + "/nutricionFavorita";
+            firebaseFirestore.collection(COLLECTION_FAVORITE_NUTRITION)
+                    .whereEqualTo("name", defaultNutrition.getName())
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override

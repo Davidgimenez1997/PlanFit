@@ -16,10 +16,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
+import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Model.Nutrition.DefaultNutrition;
 import com.utad.david.planfit.R;
 
-public class NutritionFavoriteDetailsDialogFragment extends DialogFragment {
+public class NutritionFavoriteDetailsDialogFragment extends DialogFragment implements FirebaseAdmin.FirebaseAdminFavoriteSportAndNutrition{
 
     private static String NUTRITION = "NUTRITION";
     private DefaultNutrition defaultNutrition;
@@ -34,11 +36,13 @@ public class NutritionFavoriteDetailsDialogFragment extends DialogFragment {
 
     public interface CallbackNutritionFavorite{
         void onClickClose();
+        void setDataChange();
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteSportAndNutrition(this);
         defaultNutrition = getArguments().getParcelable(NUTRITION);
     }
 
@@ -47,6 +51,7 @@ public class NutritionFavoriteDetailsDialogFragment extends DialogFragment {
     private TextView textViewDescription;
     private ImageView imageViewSport;
     private Button buttonClose;
+    private Button buttonDelete;
     private CallbackNutritionFavorite listener;
 
     public void setListener(CallbackNutritionFavorite listener) {
@@ -62,6 +67,7 @@ public class NutritionFavoriteDetailsDialogFragment extends DialogFragment {
         putData();
         onClickButtonOpenRecipe();
         onClickCloseButton();
+        onClickDeleteButton();
         return view;
     }
 
@@ -71,6 +77,7 @@ public class NutritionFavoriteDetailsDialogFragment extends DialogFragment {
         textViewDescription = v.findViewById(R.id.textviewDescriptionNutrition);
         imageViewSport = v.findViewById(R.id.imageViewNutrition);
         buttonClose = v.findViewById(R.id.close_favorite_nutrition);
+        buttonDelete = v.findViewById(R.id.delete_favorite_nutrition);
     }
 
     private void putData() {
@@ -102,4 +109,61 @@ public class NutritionFavoriteDetailsDialogFragment extends DialogFragment {
             }
         });
     }
+
+    private void onClickDeleteButton(){
+        buttonDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(listener!=null){
+                    SessionUser.getInstance().firebaseAdmin.deleteDefaultNutritionFavorite(defaultNutrition);
+                    dismiss();
+                }
+            }
+        });
+    }
+
+    @Override
+    public void deleteFavoriteNutrition(boolean end) {
+        if(end==true){
+            if(listener!=null){
+                listener.setDataChange();
+            }
+        }
+    }
+
+    @Override
+    public void deleteFavoriteSport(boolean end) {
+
+    }
+
+    @Override
+    public void downloandCollectionSportFavorite(boolean end) {
+
+    }
+
+    @Override
+    public void inserSportFavoriteFirebase(boolean end) {
+
+    }
+
+    @Override
+    public void inserNutritionFavoriteFirebase(boolean end) {
+
+    }
+
+    @Override
+    public void emptyCollectionSportFavorite(boolean end) {
+
+    }
+
+    @Override
+    public void downloandCollectionNutritionFavorite(boolean end) {
+
+    }
+
+    @Override
+    public void emptyCollectionNutritionFavorite(boolean end) {
+
+    }
+
 }

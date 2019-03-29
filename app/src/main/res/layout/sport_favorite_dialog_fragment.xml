@@ -33,18 +33,30 @@
                     app:layout_constraintTop_toBottomOf="@+id/imageViewSport" android:layout_marginBottom="16dp"
                     app:layout_constraintBottom_toTopOf="@+id/textviewDescriptionSport"/>
             <Button
+                    android:text="@string/eliminar"
+                    android:layout_width="180dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/button_selector"
+                    android:textColor="@color/colorAccent"
+                    android:id="@+id/delete_favorite_sport"
+                    android:layout_marginStart="64dp"
+                    app:layout_constraintStart_toStartOf="parent" android:layout_marginEnd="64dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginTop="24dp"
+                    app:layout_constraintTop_toBottomOf="@+id/textviewDescriptionSport"
+            />
+            <Button
                     android:text="@string/close_info"
                     android:layout_width="180dp"
                     android:layout_height="wrap_content"
                     android:background="@drawable/button_selector"
                     android:textColor="@color/colorAccent"
                     android:id="@+id/close_favorite_sport"
-                    android:layout_marginStart="64dp"
-                    app:layout_constraintStart_toStartOf="parent" android:layout_marginEnd="64dp"
-                    app:layout_constraintEnd_toEndOf="parent"
                     android:layout_marginTop="24dp"
-                    app:layout_constraintTop_toBottomOf="@+id/textviewDescriptionSport"
-                    app:layout_constraintBottom_toBottomOf="parent" android:layout_marginBottom="24dp"/>
+                    app:layout_constraintTop_toBottomOf="@+id/delete_favorite_sport"
+                    app:layout_constraintBottom_toBottomOf="parent" android:layout_marginBottom="24dp"
+                    app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="64dp"
+                    app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="64dp"/>
             <TextView
                     android:textSize="20dp"
                     android:layout_width="wrap_content"

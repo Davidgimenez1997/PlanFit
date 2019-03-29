@@ -20,8 +20,8 @@ import com.utad.david.planfit.DialogFragment.InfoAboutApp;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.CreatePlan.FragmentCreatePlan;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.CreatePlan.Nutrition.NutritionCreatePlanFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.CreatePlan.Sport.SportCreatePlanFragment;
-import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Favorite.NutritionFavorite;
-import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Favorite.SportFavorite;
+import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Favorite.NutritionFavoriteFragment;
+import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Favorite.SportFavoriteFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.RootFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Nutrition.NutritionGainVolumeFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Nutrition.NutritionSlimmingFragment;
@@ -412,20 +412,20 @@ public class MainMenuActivity extends AppCompatActivity
 
     @Override
     public void clickSportFavorite() {
-        SportFavorite sportFavorite = new SportFavorite();
-        sportFavorite.newInstanceSlimming();
+        SportFavoriteFragment sportFavoriteFragment = new SportFavoriteFragment();
+        sportFavoriteFragment.newInstanceSlimming();
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.content_frame, sportFavorite);
+        fragmentTransaction.replace(R.id.content_frame, sportFavoriteFragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
 
     @Override
     public void clickNutritionFavorite() {
-        NutritionFavorite nutritionFavorite = new NutritionFavorite();
-        nutritionFavorite.newInstanceSlimming();
+        NutritionFavoriteFragment nutritionFavoriteFragment = new NutritionFavoriteFragment();
+        nutritionFavoriteFragment.newInstanceSlimming();
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.content_frame, nutritionFavorite);
+        fragmentTransaction.replace(R.id.content_frame, nutritionFavoriteFragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }

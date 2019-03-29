@@ -13,13 +13,16 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.utad.david.planfit.Activitys.YoutubeActivity;
+import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
+import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Model.Sport.DefaultSport;
 import com.utad.david.planfit.R;
 
-public class SportFavoriteDetailsDialogFragment extends DialogFragment {
+public class SportFavoriteDetailsDialogFragment extends DialogFragment implements FirebaseAdmin.FirebaseAdminFavoriteSportAndNutrition {
 
     private static String SPORT = "SPORT";
     private static String URL = "URL";
@@ -35,11 +38,13 @@ public class SportFavoriteDetailsDialogFragment extends DialogFragment {
 
     public interface CallbackFavoriteSport{
         void onClickClose();
+        void setDataChange();
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteSportAndNutrition(this);
         defaultSport = getArguments().getParcelable(SPORT);
     }
 
@@ -48,6 +53,7 @@ public class SportFavoriteDetailsDialogFragment extends DialogFragment {
     private TextView textViewDescription;
     private ImageView imageViewSport;
     private Button buttonClose;
+    private Button buttonDelete;
     private CallbackFavoriteSport listener;
 
     public void setListener(CallbackFavoriteSport listener) {
@@ -63,6 +69,7 @@ public class SportFavoriteDetailsDialogFragment extends DialogFragment {
         putData();
         onClickButtonOpenYoutube();
         onClickCloseButton();
+        onClickButtonDelete();
         return view;
     }
 
@@ -72,6 +79,7 @@ public class SportFavoriteDetailsDialogFragment extends DialogFragment {
         textViewDescription = v.findViewById(R.id.textviewDescriptionSport);
         imageViewSport = v.findViewById(R.id.imageViewSport);
         buttonClose = v.findViewById(R.id.close_favorite_sport);
+        buttonDelete = v.findViewById(R.id.delete_favorite_sport);
     }
 
     private void putData() {
@@ -94,6 +102,18 @@ public class SportFavoriteDetailsDialogFragment extends DialogFragment {
         });
     }
 
+    private void onClickButtonDelete(){
+        buttonDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(listener!=null){
+                    SessionUser.getInstance().firebaseAdmin.deleteDefaultSportFavorite(defaultSport);
+                    dismiss();
+                }
+            }
+        });
+    }
+
     private void onClickCloseButton(){
         buttonClose.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,5 +124,52 @@ public class SportFavoriteDetailsDialogFragment extends DialogFragment {
             }
         });
     }
+
+
+    @Override
+    public void deleteFavoriteSport(boolean end) {
+        if(end==true){
+            if(listener!=null){
+                listener.setDataChange();
+            }
+        }
+    }
+
+    @Override
+    public void downloandCollectionSportFavorite(boolean end) {
+
+    }
+
+
+    @Override
+    public void inserSportFavoriteFirebase(boolean end) {
+
+    }
+
+    @Override
+    public void inserNutritionFavoriteFirebase(boolean end) {
+
+    }
+
+    @Override
+    public void emptyCollectionSportFavorite(boolean end) {
+
+    }
+
+    @Override
+    public void downloandCollectionNutritionFavorite(boolean end) {
+
+    }
+
+    @Override
+    public void emptyCollectionNutritionFavorite(boolean end) {
+
+    }
+
+    @Override
+    public void deleteFavoriteNutrition(boolean end) {
+
+    }
+
 
 }
