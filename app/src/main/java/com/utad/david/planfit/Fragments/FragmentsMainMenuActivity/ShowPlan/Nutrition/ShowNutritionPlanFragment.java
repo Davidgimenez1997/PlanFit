@@ -193,7 +193,7 @@ public class ShowNutritionPlanFragment extends Fragment implements FirebaseAdmin
 
             if(endOk==true){
                 Log.d("TodosOk","estan todos ok");
-                final CharSequence[] items = {"Restablecer","Borrar plan","Cancelar"};
+                final CharSequence[] items = {"Restablecer","Cancelar"};
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 builder.setTitle("Felicidades has completado todos!!!");
                 builder.setItems(items, new DialogInterface.OnClickListener() {
@@ -209,9 +209,6 @@ public class ShowNutritionPlanFragment extends Fragment implements FirebaseAdmin
                                 mAdapter.notifyDataSetChanged();
                                 break;
                             case 1:
-                                SessionUser.getInstance().firebaseAdmin.deleteAllNutrtionPlan(arrNutrition);
-                                break;
-                            case 2:
                                 dialog.dismiss();
                                 break;
                         }
@@ -224,12 +221,6 @@ public class ShowNutritionPlanFragment extends Fragment implements FirebaseAdmin
         }
     }
 
-    @Override
-    public void deleteAllNutritionPlanFirebase(boolean end) {
-        if(end==true){
-            Toast.makeText(getContext(),"Plan de nutrición borrado",Toast.LENGTH_LONG).show();
-        }
-    }
 
     @Override
     public void insertNutritionPlanFirebase(boolean end) {
@@ -268,11 +259,6 @@ public class ShowNutritionPlanFragment extends Fragment implements FirebaseAdmin
 
     @Override
     public void deleteSportPlanFirebase(boolean end) {
-
-    }
-
-    @Override
-    public void deleteAllSportPlanFirebase(boolean end) {
 
     }
 

@@ -121,4 +121,12 @@ public class PlanSport implements Comparable<PlanSport>,Parcelable{
     public void setIsOk(String isOk) {
         this.isOk = isOk;
     }
+
+    @Override
+    public String toString() {
+        return "PlanSport{" +
+                ", timeStart=" + timeStart +
+                ", timeEnd=" + timeEnd +
+                '}';
+    }
 }

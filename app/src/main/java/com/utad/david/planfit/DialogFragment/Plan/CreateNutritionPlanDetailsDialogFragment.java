@@ -232,10 +232,6 @@ public class CreateNutritionPlanDetailsDialogFragment extends DialogFragment imp
         }
     }
 
-    @Override
-    public void deleteAllNutritionPlanFirebase(boolean end) {
-
-    }
 
     private ProgressDialog progressDialog;
 
@@ -296,11 +292,6 @@ public class CreateNutritionPlanDetailsDialogFragment extends DialogFragment imp
 
     @Override
     public void deleteSportPlanFirebase(boolean end) {
-
-    }
-
-    @Override
-    public void deleteAllSportPlanFirebase(boolean end) {
 
     }
 

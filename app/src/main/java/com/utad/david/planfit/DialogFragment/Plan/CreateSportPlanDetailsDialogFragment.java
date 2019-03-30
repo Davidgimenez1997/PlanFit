@@ -109,41 +109,33 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment impleme
     }
 
     private void onClickButtonClose() {
-        buttonClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(listener!=null){
-                    listener.onClickClose();
-                }
+        buttonClose.setOnClickListener(v -> {
+            if(listener!=null){
+                listener.onClickClose();
             }
         });
     }
 
     private void onClickButtonSave() {
-        buttonSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(timeStart.equals(timeEnd)){
-                    Toast.makeText(getContext(),getString(R.string.info_create_plan),Toast.LENGTH_LONG).show();
-                }else{
-                    if(listener!=null){
-
-                        double intStart = convertStringToInt(timeStart);
-                        double intEnd = convertStringToInt(timeEnd);
-
-                        if(intStart>intEnd){
-                            Toast.makeText(getContext(),"No puedes terminar antes de empezar",Toast.LENGTH_LONG).show();
-                        }else{
-                            showLoading();
-                            SessionUser.getInstance().planSport.setName(defaultSport.getName());
-                            SessionUser.getInstance().planSport.setPhoto(defaultSport.getPhoto());
-                            SessionUser.getInstance().planSport.setTimeStart(intStart);
-                            SessionUser.getInstance().planSport.setTimeEnd(intEnd);
-                            SessionUser.getInstance().planSport.setIsOk("no");
-                            UUID uuid = UUID.randomUUID();
-                            SessionUser.getInstance().planSport.setId(uuid.toString());
-                            SessionUser.getInstance().firebaseAdmin.dataCreateSportPlan();
-                        }
+        buttonSave.setOnClickListener(v -> {
+            if(timeStart.equals(timeEnd)){
+                Toast.makeText(getContext(),getString(R.string.info_create_plan),Toast.LENGTH_LONG).show();
+            }else{
+                if(listener!=null){
+                    double intStart = convertStringToInt(timeStart);
+                    double intEnd = convertStringToInt(timeEnd);
+                    if(intStart>intEnd){
+                        Toast.makeText(getContext(),"No puedes terminar antes de empezar",Toast.LENGTH_LONG).show();
+                    }else{
+                        showLoading();
+                        SessionUser.getInstance().planSport.setName(defaultSport.getName());
+                        SessionUser.getInstance().planSport.setPhoto(defaultSport.getPhoto());
+                        SessionUser.getInstance().planSport.setTimeStart(intStart);
+                        SessionUser.getInstance().planSport.setTimeEnd(intEnd);
+                        SessionUser.getInstance().planSport.setIsOk("no");
+                        UUID uuid = UUID.randomUUID();
+                        SessionUser.getInstance().planSport.setId(uuid.toString());
+                        SessionUser.getInstance().firebaseAdmin.dataCreateSportPlan();
                     }
                 }
             }
@@ -162,12 +154,9 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment impleme
     }
 
     private void onClickButtonDelete(){
-        buttonDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showLoading();
-                SessionUser.getInstance().firebaseAdmin.deleteSportPlan(defaultSport.getName());
-            }
+        buttonDelete.setOnClickListener(v -> {
+            showLoading();
+            SessionUser.getInstance().firebaseAdmin.deleteSportPlan(defaultSport.getName());
         });
     }
 
@@ -204,7 +193,7 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment impleme
                     String [] timePlanArr = getResources().getStringArray(R.array.timePlan);
 
                     String timeStart;
-                    String str_timeStart = String.valueOf(item.getTimeStart());
+                    String str_timeStart = String.valueOf(current.getTimeStart());
                     BigDecimal bigDecimal_start = new BigDecimal(str_timeStart);
                     long first_start = bigDecimal_start.longValue();
                     BigDecimal second_start = bigDecimal_start.remainder(BigDecimal.ONE);
@@ -217,7 +206,7 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment impleme
                     }
 
                     String timeEnd;
-                    String str_timeEnd = String.valueOf(item.getTimeEnd());
+                    String str_timeEnd = String.valueOf(current.getTimeEnd());
                     BigDecimal bigDecimal_end = new BigDecimal(str_timeEnd);
                     long first_end = bigDecimal_end.longValue();
                     BigDecimal second_End = bigDecimal_end.remainder(BigDecimal.ONE);
@@ -230,21 +219,14 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment impleme
                     }
 
 
-                    Log.d("PLAAAN",timeStart);
-
-
                     for(int i=0;i<timePlanArr.length;i++){
-                        Log.d("PLAAAN",timePlanArr[i]);
                         if(timePlanArr[i].equals(timeStart)){
-                            Log.d("PLAAAN",timePlanArr[i]);
                             spinnerStart.setSelection(i);
                         }
                     }
 
                     for(int i=0;i<timePlanArr.length;i++){
-                        Log.d("PLAAAN",timePlanArr[i]);
                         if(timePlanArr[i].equals(timeEnd)){
-                            Log.d("PLAAAN",timePlanArr[i]);
                             spinnerEnd.setSelection(i);
                         }
                     }
@@ -272,15 +254,6 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment impleme
             hideLoading();
             Toast.makeText(getContext(),defaultSport.getName()+" "+getString(R.string.delete_create_sport),Toast.LENGTH_LONG).show();
         }
-    }
-
-    @Override
-    public void deleteAllSportPlanFirebase(boolean end) {
-
-    }
-
-    @Override
-    public void updateSportPlanFirebase(boolean end) {
     }
 
     private ProgressDialog progressDialog;
@@ -321,38 +294,25 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment impleme
     }
 
     @Override
-    public void emptySportPlanFirebase(boolean end) {
-
-    }
+    public void updateSportPlanFirebase(boolean end) {}
 
     @Override
-    public void insertNutritionPlanFirebase(boolean end) {
-
-    }
+    public void emptySportPlanFirebase(boolean end) {}
 
     @Override
-    public void downloadNutritionPlanFirebase(boolean end) {
-
-    }
+    public void insertNutritionPlanFirebase(boolean end) {}
 
     @Override
-    public void emptyNutritionPlanFirebase(boolean end) {
-
-    }
+    public void downloadNutritionPlanFirebase(boolean end) {}
 
     @Override
-    public void deleteNutritionPlanFirebase(boolean end) {
-
-    }
+    public void emptyNutritionPlanFirebase(boolean end) {}
 
     @Override
-    public void deleteAllNutritionPlanFirebase(boolean end) {
-
-    }
+    public void deleteNutritionPlanFirebase(boolean end) {}
 
     @Override
-    public void updateNutritionPlanFirebase(boolean end) {
+    public void updateNutritionPlanFirebase(boolean end) {}
 
-    }
 
 }

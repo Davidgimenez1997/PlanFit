@@ -179,8 +179,6 @@ public class FirebaseAdmin {
 
         void deleteSportPlanFirebase(boolean end);
 
-        void deleteAllSportPlanFirebase(boolean end);
-
         void updateSportPlanFirebase(boolean end);
 
         void insertNutritionPlanFirebase(boolean end);
@@ -191,10 +189,7 @@ public class FirebaseAdmin {
 
         void deleteNutritionPlanFirebase(boolean end);
 
-        void deleteAllNutritionPlanFirebase(boolean end);
-
         void updateNutritionPlanFirebase(boolean end);
-
     }
 
     //Setters
@@ -1626,55 +1621,6 @@ public class FirebaseAdmin {
         }
     }
 
-    //DeleteAll sportPlan and nutrtion plan
-
-    public void deleteAllSportPlan(ArrayList<PlanSport> arrSport){
-        if(firebaseAdminCreateAndShowPlan!=null){
-            COLLECTION_PLAN_SPORT_USER = "users/" + currentUser.getUid() + "/planesDeporte";
-            for (PlanSport item:arrSport){
-                firebaseFirestore.collection(COLLECTION_PLAN_SPORT_USER).document(item.getId())
-                        .delete()
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                firebaseAdminCreateAndShowPlan.deleteAllSportPlanFirebase(true);
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                firebaseAdminCreateAndShowPlan.deleteAllSportPlanFirebase(false);
-
-                            }
-                        });
-            }
-        }
-    }
-
-    public void deleteAllNutrtionPlan(ArrayList<PlanNutrition> arrNutrition){
-        if(firebaseAdminCreateAndShowPlan!=null){
-            COLLECTION_PLAN_NUTRITION_USER = "users/" + currentUser.getUid() + "/planesNutricion";
-            for (PlanNutrition item:arrNutrition){
-                firebaseFirestore.collection(COLLECTION_PLAN_NUTRITION_USER).document(item.getId())
-                        .delete()
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                firebaseAdminCreateAndShowPlan.deleteAllNutritionPlanFirebase(true);
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                firebaseAdminCreateAndShowPlan.deleteAllNutritionPlanFirebase(false);
-
-                            }
-                        });
-            }
-        }
-    }
-
-
     //Update plan sport and nutrition
 
     public void updatePlanSportFirebase(PlanSport planSport) {
@@ -1720,6 +1666,5 @@ public class FirebaseAdmin {
                     });
         }
     }
-
 
 }

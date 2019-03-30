@@ -28,10 +28,12 @@ import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Nutrition.Nutr
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Nutrition.NutritionToningFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.ShowPlan.FragmentShowPlan;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.ShowPlan.Nutrition.ShowNutritionPlanFragment;
+import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.ShowPlan.Sport.DetailsSportPlanFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.ShowPlan.Sport.ShowSportPlanFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Sport.SportGainVolumeFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Sport.SportSlimmingFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Sport.SportToningFragment;
+import com.utad.david.planfit.Model.Plan.PlanSport;
 import com.utad.david.planfit.Model.User;
 import com.utad.david.planfit.R;
 import android.support.design.widget.NavigationView;
@@ -46,6 +48,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 
 
 public class MainMenuActivity extends AppCompatActivity
@@ -467,6 +471,7 @@ public class MainMenuActivity extends AppCompatActivity
     @Override
     public void onClickButtonShowPlanSport() {
         ShowSportPlanFragment showSportPlanFragment = new ShowSportPlanFragment();
+        //showSportPlanFragment.setCallback(this);
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, showSportPlanFragment);
         fragmentTransaction.addToBackStack(null);
