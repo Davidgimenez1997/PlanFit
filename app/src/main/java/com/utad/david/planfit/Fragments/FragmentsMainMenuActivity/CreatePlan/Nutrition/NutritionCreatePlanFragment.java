@@ -16,7 +16,7 @@ import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import butterknife.ButterKnife;
-import com.utad.david.planfit.Adapter.Plan.Create.CreateNutritionPlanAdapter;
+import com.utad.david.planfit.Adapter.Plan.Create.Nutrition.CreateNutritionPlanAdapter;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.DialogFragment.Plan.CreateNutritionPlanDetailsDialogFragment;
@@ -25,7 +25,7 @@ import com.utad.david.planfit.R;
 
 import java.util.List;
 
-public class NutritionCreatePlanFragment extends Fragment implements FirebaseAdmin.FirebaseAdminFavoriteSportAndNutrition,CreateNutritionPlanDetailsDialogFragment.CallbackCreateNutrtion{
+public class NutritionCreatePlanFragment extends Fragment implements FirebaseAdmin.FirebaseAdminFavoriteNutrition,CreateNutritionPlanDetailsDialogFragment.CallbackCreateNutrtion{
 
     public NutritionCreatePlanFragment() {
     }
@@ -45,7 +45,7 @@ public class NutritionCreatePlanFragment extends Fragment implements FirebaseAdm
     @Override
     public void onStart() {
         super.onStart();
-        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteSportAndNutrition(this);
+        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteNutrition(this);
         SessionUser.getInstance().firebaseAdmin.downloadAllNutritionFavorite();
     }
 
@@ -145,32 +145,8 @@ public class NutritionCreatePlanFragment extends Fragment implements FirebaseAdm
     }
 
     @Override
-    public void inserSportFavoriteFirebase(boolean end) {
-
-    }
+    public void inserNutritionFavoriteFirebase(boolean end) {}
 
     @Override
-    public void inserNutritionFavoriteFirebase(boolean end) {
-
-    }
-
-    @Override
-    public void downloandCollectionSportFavorite(boolean end) {
-
-    }
-
-    @Override
-    public void emptyCollectionSportFavorite(boolean end) {
-
-    }
-
-    @Override
-    public void deleteFavoriteSport(boolean end) {
-
-    }
-
-    @Override
-    public void deleteFavoriteNutrition(boolean end) {
-
-    }
+    public void deleteFavoriteNutrition(boolean end) {}
 }

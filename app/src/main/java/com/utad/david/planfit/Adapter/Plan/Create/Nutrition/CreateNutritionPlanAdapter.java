@@ -1,4 +1,4 @@
-package com.utad.david.planfit.Adapter.Plan.Create;
+package com.utad.david.planfit.Adapter.Plan.Create.Nutrition;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;

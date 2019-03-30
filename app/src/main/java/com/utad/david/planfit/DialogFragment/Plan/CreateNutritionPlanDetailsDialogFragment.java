@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class CreateNutritionPlanDetailsDialogFragment extends DialogFragment implements FirebaseAdmin.FirebaseAdminCreateAndShowPlan {
+public class CreateNutritionPlanDetailsDialogFragment extends DialogFragment implements FirebaseAdmin.FirebaseAdminCreateShowPlanNutrition {
 
     private static String NUTRITION = "NUTRITION";
     private DefaultNutrition defaultNutrition;
@@ -67,7 +67,7 @@ public class CreateNutritionPlanDetailsDialogFragment extends DialogFragment imp
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         defaultNutrition = getArguments().getParcelable(NUTRITION);
-        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminCreateAndShowPlan(this);
+        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminCreateShowPlanNutrition(this);
         SessionUser.getInstance().firebaseAdmin.downloadAllNutrtionPlanFavorite();
     }
 
@@ -271,32 +271,5 @@ public class CreateNutritionPlanDetailsDialogFragment extends DialogFragment imp
     }
 
     @Override
-    public void updateNutritionPlanFirebase(boolean end) {
-
-    }
-
-    @Override
-    public void insertSportPlanFirebase(boolean end) {
-
-    }
-
-    @Override
-    public void downloadSportPlanFirebase(boolean end) {
-
-    }
-
-    @Override
-    public void emptySportPlanFirebase(boolean end) {
-
-    }
-
-    @Override
-    public void deleteSportPlanFirebase(boolean end) {
-
-    }
-
-    @Override
-    public void updateSportPlanFirebase(boolean end) {
-
-    }
+    public void updateNutritionPlanFirebase(boolean end) {}
 }

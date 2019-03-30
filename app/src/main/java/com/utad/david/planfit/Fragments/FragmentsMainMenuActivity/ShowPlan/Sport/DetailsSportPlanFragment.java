@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,22 +15,17 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.Toast;
 import butterknife.ButterKnife;
-import com.utad.david.planfit.Adapter.Plan.Show.Details.ShowDetailsSportPlanAdapter;
+import com.utad.david.planfit.Adapter.Plan.Show.Sport.ShowDetailsSportPlanAdapter;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Model.Plan.PlanSport;
 import com.utad.david.planfit.R;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
-public class DetailsSportPlanFragment extends Fragment implements FirebaseAdmin.FirebaseAdminCreateAndShowPlan{
+public class DetailsSportPlanFragment extends Fragment implements FirebaseAdmin.FirebaseAdminCreateShowPlanSport{
 
     private static final String ARG_PARAM1 = "param1";
 
@@ -66,7 +60,7 @@ public class DetailsSportPlanFragment extends Fragment implements FirebaseAdmin.
                              Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_details_sport_plan, container, false);
 
-        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminCreateAndShowPlan(this);
+        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminCreateShowPlanSport(this);
         SessionUser.getInstance().firebaseAdmin.downloadAllSportPlanFavorite();
 
         mRecyclerView = view.findViewById(R.id.recycler_view_sport);
@@ -184,19 +178,4 @@ public class DetailsSportPlanFragment extends Fragment implements FirebaseAdmin.
 
     @Override
     public void deleteSportPlanFirebase(boolean end) {}
-
-    @Override
-    public void insertNutritionPlanFirebase(boolean end) {}
-
-    @Override
-    public void downloadNutritionPlanFirebase(boolean end) {}
-
-    @Override
-    public void emptyNutritionPlanFirebase(boolean end) {}
-
-    @Override
-    public void deleteNutritionPlanFirebase(boolean end) {}
-
-    @Override
-    public void updateNutritionPlanFirebase(boolean end) {}
 }

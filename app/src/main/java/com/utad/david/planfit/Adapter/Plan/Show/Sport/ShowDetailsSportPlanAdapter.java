@@ -1,4 +1,4 @@
-package com.utad.david.planfit.Adapter.Plan.Show.Details;
+package com.utad.david.planfit.Adapter.Plan.Show.Sport;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;

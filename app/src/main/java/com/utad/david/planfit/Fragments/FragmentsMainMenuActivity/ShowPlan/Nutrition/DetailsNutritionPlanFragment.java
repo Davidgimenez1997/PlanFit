@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,17 +17,15 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import butterknife.ButterKnife;
-import com.utad.david.planfit.Adapter.Plan.Show.Details.ShowDetailsNutritionPlanAdapter;
-import com.utad.david.planfit.Adapter.Plan.Show.Details.ShowDetailsSportPlanAdapter;
+import com.utad.david.planfit.Adapter.Plan.Show.Nutrition.ShowDetailsNutritionPlanAdapter;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Model.Plan.PlanNutrition;
-import com.utad.david.planfit.Model.Plan.PlanSport;
 import com.utad.david.planfit.R;
 
 import java.util.ArrayList;
 
-public class DetailsNutritionPlanFragment extends Fragment implements FirebaseAdmin.FirebaseAdminCreateAndShowPlan {
+public class DetailsNutritionPlanFragment extends Fragment implements FirebaseAdmin.FirebaseAdminCreateShowPlanNutrition {
 
     private static final String ARG_PARAM1 = "param1";
     private ArrayList<PlanNutrition> planNutritions;
@@ -64,7 +61,7 @@ public class DetailsNutritionPlanFragment extends Fragment implements FirebaseAd
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_details_nutrition_plan, container, false);
 
-        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminCreateAndShowPlan(this);
+        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminCreateShowPlanNutrition(this);
         SessionUser.getInstance().firebaseAdmin.downloadAllNutrtionPlanFavorite();
 
         mRecyclerView = view.findViewById(R.id.recycler_view_sport);
@@ -168,21 +165,6 @@ public class DetailsNutritionPlanFragment extends Fragment implements FirebaseAd
         super.onPause();
         hideLoading();
     }
-
-    @Override
-    public void updateSportPlanFirebase(boolean end) {}
-
-    @Override
-    public void insertSportPlanFirebase(boolean end) {}
-
-    @Override
-    public void downloadSportPlanFirebase(boolean end) {}
-
-    @Override
-    public void emptySportPlanFirebase(boolean end) {}
-
-    @Override
-    public void deleteSportPlanFirebase(boolean end) {}
 
     @Override
     public void insertNutritionPlanFirebase(boolean end) {}

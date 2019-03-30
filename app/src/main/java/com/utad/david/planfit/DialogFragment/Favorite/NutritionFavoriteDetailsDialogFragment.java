@@ -21,7 +21,7 @@ import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Model.Nutrition.DefaultNutrition;
 import com.utad.david.planfit.R;
 
-public class NutritionFavoriteDetailsDialogFragment extends DialogFragment implements FirebaseAdmin.FirebaseAdminFavoriteSportAndNutrition{
+public class NutritionFavoriteDetailsDialogFragment extends DialogFragment implements FirebaseAdmin.FirebaseAdminFavoriteNutrition{
 
     private static String NUTRITION = "NUTRITION";
     private DefaultNutrition defaultNutrition;
@@ -42,7 +42,7 @@ public class NutritionFavoriteDetailsDialogFragment extends DialogFragment imple
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteSportAndNutrition(this);
+        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteNutrition(this);
         defaultNutrition = getArguments().getParcelable(NUTRITION);
     }
 
@@ -132,38 +132,13 @@ public class NutritionFavoriteDetailsDialogFragment extends DialogFragment imple
     }
 
     @Override
-    public void deleteFavoriteSport(boolean end) {
+    public void inserNutritionFavoriteFirebase(boolean end) {}
 
-    }
-
-    @Override
-    public void downloandCollectionSportFavorite(boolean end) {
-
-    }
 
     @Override
-    public void inserSportFavoriteFirebase(boolean end) {
-
-    }
+    public void downloandCollectionNutritionFavorite(boolean end) {}
 
     @Override
-    public void inserNutritionFavoriteFirebase(boolean end) {
-
-    }
-
-    @Override
-    public void emptyCollectionSportFavorite(boolean end) {
-
-    }
-
-    @Override
-    public void downloandCollectionNutritionFavorite(boolean end) {
-
-    }
-
-    @Override
-    public void emptyCollectionNutritionFavorite(boolean end) {
-
-    }
+    public void emptyCollectionNutritionFavorite(boolean end) {}
 
 }

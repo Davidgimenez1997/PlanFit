@@ -22,7 +22,7 @@ import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Model.Sport.DefaultSport;
 import com.utad.david.planfit.R;
 
-public class SportFavoriteDetailsDialogFragment extends DialogFragment implements FirebaseAdmin.FirebaseAdminFavoriteSportAndNutrition {
+public class SportFavoriteDetailsDialogFragment extends DialogFragment implements FirebaseAdmin.FirebaseAdminFavoriteSport {
 
     private static String SPORT = "SPORT";
     private static String URL = "URL";
@@ -44,7 +44,7 @@ public class SportFavoriteDetailsDialogFragment extends DialogFragment implement
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteSportAndNutrition(this);
+        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteSport(this);
         defaultSport = getArguments().getParcelable(SPORT);
     }
 
@@ -125,7 +125,6 @@ public class SportFavoriteDetailsDialogFragment extends DialogFragment implement
         });
     }
 
-
     @Override
     public void deleteFavoriteSport(boolean end) {
         if(end==true){
@@ -136,40 +135,11 @@ public class SportFavoriteDetailsDialogFragment extends DialogFragment implement
     }
 
     @Override
-    public void downloandCollectionSportFavorite(boolean end) {
-
-    }
-
+    public void downloandCollectionSportFavorite(boolean end) {}
 
     @Override
-    public void inserSportFavoriteFirebase(boolean end) {
-
-    }
+    public void inserSportFavoriteFirebase(boolean end) {}
 
     @Override
-    public void inserNutritionFavoriteFirebase(boolean end) {
-
-    }
-
-    @Override
-    public void emptyCollectionSportFavorite(boolean end) {
-
-    }
-
-    @Override
-    public void downloandCollectionNutritionFavorite(boolean end) {
-
-    }
-
-    @Override
-    public void emptyCollectionNutritionFavorite(boolean end) {
-
-    }
-
-    @Override
-    public void deleteFavoriteNutrition(boolean end) {
-
-    }
-
-
+    public void emptyCollectionSportFavorite(boolean end) {}
 }

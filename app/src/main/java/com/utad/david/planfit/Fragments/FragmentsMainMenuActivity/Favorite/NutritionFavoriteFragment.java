@@ -18,7 +18,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 import butterknife.ButterKnife;
-import com.utad.david.planfit.Adapter.Favorite.NutritionFavoriteAdapter;
+import com.utad.david.planfit.Adapter.Favorite.Nutrition.NutritionFavoriteAdapter;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.DialogFragment.Favorite.NutritionFavoriteDetailsDialogFragment;
@@ -27,7 +27,7 @@ import com.utad.david.planfit.R;
 
 import java.util.List;
 
-public class NutritionFavoriteFragment extends Fragment implements FirebaseAdmin.FirebaseAdminFavoriteSportAndNutrition,
+public class NutritionFavoriteFragment extends Fragment implements FirebaseAdmin.FirebaseAdminFavoriteNutrition,
         NutritionFavoriteDetailsDialogFragment.CallbackNutritionFavorite {
 
     public NutritionFavoriteFragment() {
@@ -49,7 +49,7 @@ public class NutritionFavoriteFragment extends Fragment implements FirebaseAdmin
     @Override
     public void onStart() {
         super.onStart();
-        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteSportAndNutrition(this);
+        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteNutrition(this);
         SessionUser.getInstance().firebaseAdmin.downloadAllNutritionFavorite();
     }
 
@@ -178,32 +178,8 @@ public class NutritionFavoriteFragment extends Fragment implements FirebaseAdmin
     }
 
     @Override
-    public void inserSportFavoriteFirebase(boolean end) {
-
-    }
+    public void inserNutritionFavoriteFirebase(boolean end) {}
 
     @Override
-    public void inserNutritionFavoriteFirebase(boolean end) {
-
-    }
-
-    @Override
-    public void downloandCollectionSportFavorite(boolean end) {
-
-    }
-
-    @Override
-    public void emptyCollectionSportFavorite(boolean end) {
-
-    }
-
-    @Override
-    public void deleteFavoriteSport(boolean end) {
-
-    }
-
-    @Override
-    public void deleteFavoriteNutrition(boolean end) {
-
-    }
+    public void deleteFavoriteNutrition(boolean end) {}
 }

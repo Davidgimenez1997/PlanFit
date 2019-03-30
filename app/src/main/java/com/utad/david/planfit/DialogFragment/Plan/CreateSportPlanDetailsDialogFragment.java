@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class CreateSportPlanDetailsDialogFragment extends DialogFragment implements FirebaseAdmin.FirebaseAdminCreateAndShowPlan{
+public class CreateSportPlanDetailsDialogFragment extends DialogFragment implements FirebaseAdmin.FirebaseAdminCreateShowPlanSport{
 
     private static String SPORT = "SPORT";
     private DefaultSport defaultSport;
@@ -66,7 +66,7 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment impleme
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         defaultSport = getArguments().getParcelable(SPORT);
-        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminCreateAndShowPlan(this);
+        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminCreateShowPlanSport(this);
         SessionUser.getInstance().firebaseAdmin.downloadAllSportPlanFavorite();
     }
 
@@ -298,21 +298,5 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment impleme
 
     @Override
     public void emptySportPlanFirebase(boolean end) {}
-
-    @Override
-    public void insertNutritionPlanFirebase(boolean end) {}
-
-    @Override
-    public void downloadNutritionPlanFirebase(boolean end) {}
-
-    @Override
-    public void emptyNutritionPlanFirebase(boolean end) {}
-
-    @Override
-    public void deleteNutritionPlanFirebase(boolean end) {}
-
-    @Override
-    public void updateNutritionPlanFirebase(boolean end) {}
-
 
 }

@@ -3,11 +3,7 @@ package com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.ShowPlan.Nutr
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -24,23 +20,18 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 import butterknife.ButterKnife;
-import com.utad.david.planfit.Adapter.Plan.Show.Details.ShowDetailsNutritionPlanAdapter;
-import com.utad.david.planfit.Adapter.Plan.Show.ShowNutritionPlanAdapter;
-import com.utad.david.planfit.Adapter.Plan.Show.ShowSportPlanAdapter;
+import com.utad.david.planfit.Adapter.Plan.Show.Nutrition.ShowNutritionPlanAdapter;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
-import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.ShowPlan.Sport.DetailsSportPlanFragment;
 import com.utad.david.planfit.Model.Plan.PlanNutrition;
-import com.utad.david.planfit.Model.Plan.PlanSport;
 import com.utad.david.planfit.R;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class ShowNutritionPlanFragment extends Fragment implements FirebaseAdmin.FirebaseAdminCreateAndShowPlan {
+public class ShowNutritionPlanFragment extends Fragment implements FirebaseAdmin.FirebaseAdminCreateShowPlanNutrition {
 
     public ShowNutritionPlanFragment() {
         // Required empty public constructor
@@ -64,7 +55,7 @@ public class ShowNutritionPlanFragment extends Fragment implements FirebaseAdmin
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_show_nutrition_plan, container, false);
 
-        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminCreateAndShowPlan(this);
+        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminCreateShowPlanNutrition(this);
         SessionUser.getInstance().firebaseAdmin.downloadAllNutrtionPlanFavorite();
         showLoading();
         mRecyclerView = view.findViewById(R.id.recycler_view_nutrition);
@@ -227,20 +218,5 @@ public class ShowNutritionPlanFragment extends Fragment implements FirebaseAdmin
 
     @Override
     public void deleteNutritionPlanFirebase(boolean end) {}
-
-    @Override
-    public void insertSportPlanFirebase(boolean end) {}
-
-    @Override
-    public void downloadSportPlanFirebase(boolean end) {}
-
-    @Override
-    public void emptySportPlanFirebase(boolean end) {}
-
-    @Override
-    public void deleteSportPlanFirebase(boolean end) {}
-
-    @Override
-    public void updateSportPlanFirebase(boolean end) {}
 
 }

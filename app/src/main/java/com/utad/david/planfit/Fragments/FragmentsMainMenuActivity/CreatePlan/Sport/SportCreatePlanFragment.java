@@ -16,7 +16,7 @@ import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import butterknife.ButterKnife;
-import com.utad.david.planfit.Adapter.Plan.Create.CreateSportPlanAdapter;
+import com.utad.david.planfit.Adapter.Plan.Create.Sport.CreateSportPlanAdapter;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.DialogFragment.Plan.CreateSportPlanDetailsDialogFragment;
@@ -25,7 +25,7 @@ import com.utad.david.planfit.R;
 
 import java.util.List;
 
-public class SportCreatePlanFragment extends Fragment implements FirebaseAdmin.FirebaseAdminFavoriteSportAndNutrition,CreateSportPlanDetailsDialogFragment.CallbackCreateSport {
+public class SportCreatePlanFragment extends Fragment implements FirebaseAdmin.FirebaseAdminFavoriteSport,CreateSportPlanDetailsDialogFragment.CallbackCreateSport {
 
     public SportCreatePlanFragment() {}
 
@@ -44,7 +44,7 @@ public class SportCreatePlanFragment extends Fragment implements FirebaseAdmin.F
     @Override
     public void onStart() {
         super.onStart();
-        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteSportAndNutrition(this);
+        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteSport(this);
         SessionUser.getInstance().firebaseAdmin.downloadAllSportFavorite();
     }
 
@@ -156,32 +156,8 @@ public class SportCreatePlanFragment extends Fragment implements FirebaseAdmin.F
     }
 
     @Override
-    public void inserSportFavoriteFirebase(boolean end) {
-
-    }
+    public void inserSportFavoriteFirebase(boolean end) {}
 
     @Override
-    public void inserNutritionFavoriteFirebase(boolean end) {
-
-    }
-
-    @Override
-    public void downloandCollectionNutritionFavorite(boolean end) {
-
-    }
-
-    @Override
-    public void emptyCollectionNutritionFavorite(boolean end) {
-
-    }
-
-    @Override
-    public void deleteFavoriteSport(boolean end) {
-
-    }
-
-    @Override
-    public void deleteFavoriteNutrition(boolean end) {
-
-    }
+    public void deleteFavoriteSport(boolean end) {}
 }

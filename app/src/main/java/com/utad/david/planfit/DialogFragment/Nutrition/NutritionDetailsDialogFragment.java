@@ -30,7 +30,7 @@ import com.utad.david.planfit.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NutritionDetailsDialogFragment extends DialogFragment implements FirebaseAdmin.FirebaseAdminFavoriteSportAndNutrition {
+public class NutritionDetailsDialogFragment extends DialogFragment implements FirebaseAdmin.FirebaseAdminFavoriteNutrition {
 
     public NutritionSlimming nutritionSlimming;
     public NutritionGainVolume nutritionGainVolume;
@@ -52,7 +52,7 @@ public class NutritionDetailsDialogFragment extends DialogFragment implements Fi
         args.putParcelable(SLIMMING, nutritionSlimming);
         args.putInt(OPTION, option);
         fragment.setArguments(args);
-        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteSportAndNutrition(fragment);
+        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteNutrition(fragment);
         SessionUser.getInstance().firebaseAdmin.downloadSlimmingNutritionFavorite();
         return fragment;
     }
@@ -63,7 +63,7 @@ public class NutritionDetailsDialogFragment extends DialogFragment implements Fi
         args.putParcelable(GAINVOLUME, nutritionGainVolume);
         args.putInt(OPTION, option);
         fragment.setArguments(args);
-        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteSportAndNutrition(fragment);
+        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteNutrition(fragment);
         SessionUser.getInstance().firebaseAdmin.downloadGainVolumeNutritionFavorite();
         return fragment;
     }
@@ -74,7 +74,7 @@ public class NutritionDetailsDialogFragment extends DialogFragment implements Fi
         args.putParcelable(TONING, nutritionToning);
         args.putInt(OPTION, option);
         fragment.setArguments(args);
-        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteSportAndNutrition(fragment);
+        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteNutrition(fragment);
         SessionUser.getInstance().firebaseAdmin.downloadToningNutritionFavorite();
         return fragment;
     }
@@ -343,27 +343,5 @@ public class NutritionDetailsDialogFragment extends DialogFragment implements Fi
     }
 
     @Override
-    public void emptyCollectionNutritionFavorite(boolean end) {
-
-    }
-
-    @Override
-    public void inserSportFavoriteFirebase(boolean end) {
-
-    }
-
-    @Override
-    public void deleteFavoriteSport(boolean end) {
-
-    }
-
-    @Override
-    public void downloandCollectionSportFavorite(boolean end) {
-
-    }
-
-    @Override
-    public void emptyCollectionSportFavorite(boolean end) {
-
-    }
+    public void emptyCollectionNutritionFavorite(boolean end) {}
 }

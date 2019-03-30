@@ -1,4 +1,4 @@
-package com.utad.david.planfit.Adapter.Plan.Create;
+package com.utad.david.planfit.Adapter.Favorite.Sport;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,7 +13,7 @@ import com.utad.david.planfit.R;
 
 import java.util.List;
 
-public class CreateSportPlanAdapter extends RecyclerView.Adapter<CreateSportPlanAdapter.CreatePlanSportViewHolder> {
+public class SportFavoriteAdapter extends RecyclerView.Adapter<SportFavoriteAdapter.SportFavoriteViewHolder> {
 
     private List<DefaultSport> defaultSports;
     private OnItemClickListener listener;
@@ -22,19 +22,25 @@ public class CreateSportPlanAdapter extends RecyclerView.Adapter<CreateSportPlan
         void onItemClick(DefaultSport item);
     }
 
-    public CreateSportPlanAdapter(List<DefaultSport> defaultSports, OnItemClickListener listener) {
+    public SportFavoriteAdapter(List<DefaultSport> defaultSports,OnItemClickListener listener) {
         this.defaultSports = defaultSports;
         this.listener = listener;
     }
 
-    @Override
-    public CreateSportPlanAdapter.CreatePlanSportViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View rootView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recycleview, parent, false);
-        return new CreateSportPlanAdapter.CreatePlanSportViewHolder(rootView);
+    public void dataChangedDeleteSport(List<DefaultSport> defaultSports){
+        this.defaultSports.clear();
+        this.defaultSports.addAll(defaultSports);
+        notifyDataSetChanged();
     }
 
     @Override
-    public void onBindViewHolder(CreateSportPlanAdapter.CreatePlanSportViewHolder holder, int position) {
+    public SportFavoriteAdapter.SportFavoriteViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View rootView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recycleview, parent, false);
+        return new SportFavoriteAdapter.SportFavoriteViewHolder(rootView);
+    }
+
+    @Override
+    public void onBindViewHolder(SportFavoriteAdapter.SportFavoriteViewHolder holder, int position) {
         final DefaultSport current = defaultSports.get(position);
         holder.setData(current);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -52,11 +58,11 @@ public class CreateSportPlanAdapter extends RecyclerView.Adapter<CreateSportPlan
         return defaultSports.size();
     }
 
-    public static class CreatePlanSportViewHolder extends RecyclerView.ViewHolder {
+    public static class SportFavoriteViewHolder extends RecyclerView.ViewHolder {
         public TextView nameSlimming;
         private ImageView photoSlimming;
 
-        public CreatePlanSportViewHolder(View v) {
+        public SportFavoriteViewHolder(View v) {
             super(v);
             nameSlimming = v.findViewById(R.id.nameSlimming);
             photoSlimming = v.findViewById(R.id.imageSlimming);
@@ -70,4 +76,3 @@ public class CreateSportPlanAdapter extends RecyclerView.Adapter<CreateSportPlan
         }
     }
 }
-
