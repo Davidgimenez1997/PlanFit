@@ -4,7 +4,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 import com.utad.david.planfit.Model.Plan.PlanSport;
 import com.utad.david.planfit.R;
@@ -28,7 +27,7 @@ public class ShowSportPlanAdapter extends RecyclerView.Adapter<ShowSportPlanAdap
 
     @Override
     public ShowSportPlanAdapter.ShowPlanSportViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View rootView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_plan_sport, parent, false);
+        View rootView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_plan_show, parent, false);
         return new ShowSportPlanAdapter.ShowPlanSportViewHolder(rootView);
     }
 

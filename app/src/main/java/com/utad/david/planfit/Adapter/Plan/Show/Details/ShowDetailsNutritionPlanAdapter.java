@@ -8,7 +8,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.utad.david.planfit.Adapter.Plan.Show.ShowNutritionPlanAdapter;
 import com.utad.david.planfit.Model.Plan.PlanNutrition;
 import com.utad.david.planfit.R;
 
@@ -35,7 +34,7 @@ public class ShowDetailsNutritionPlanAdapter extends RecyclerView.Adapter<ShowDe
 
     @Override
     public ShowDetailsNutritionPlanAdapter.ShowDetailsPlanNutritionViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View rootView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_show_plan_recycleview, parent, false);
+        View rootView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_details_plan, parent, false);
         return new ShowDetailsNutritionPlanAdapter.ShowDetailsPlanNutritionViewHolder(rootView);
     }
 

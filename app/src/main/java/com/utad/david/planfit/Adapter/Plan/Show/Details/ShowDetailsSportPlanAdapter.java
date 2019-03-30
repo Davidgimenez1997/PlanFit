@@ -30,7 +30,7 @@ public class ShowDetailsSportPlanAdapter extends RecyclerView.Adapter<ShowDetail
 
     @Override
     public ShowDetailsSportPlanAdapter.ShowDetailPlanSportViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View rootView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_show_plan_recycleview, parent, false);
+        View rootView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_details_plan, parent, false);
         return new ShowDetailsSportPlanAdapter.ShowDetailPlanSportViewHolder(rootView);
     }
 
