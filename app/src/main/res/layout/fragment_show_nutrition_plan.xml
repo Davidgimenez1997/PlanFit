@@ -30,7 +30,7 @@
             <ImageView
                     android:layout_width="200dp"
                     android:layout_height="200dp"
-                    android:src="@drawable/ic_empty_favorites" />
+                    android:src="@drawable/nutritrion" />
 
             <TextView
                     android:id="@+id/text_empty_list"

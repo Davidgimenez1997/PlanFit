@@ -21,8 +21,8 @@ android:layout_height="wrap_content">
 
             <Button
                     android:text="@string/abrir_video"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:textSize="12dp"
                     android:background="@drawable/button_selector"
                     android:textColor="@color/colorAccent"
@@ -35,9 +35,9 @@ android:layout_height="wrap_content">
                     app:layout_constraintBottom_toTopOf="@+id/textviewDescriptionSport"/>
             <Button
                     android:text="@string/agregar_a_favoritos"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:textSize="12dp"
-                    android:layout_height="match_parent"
                     android:background="@drawable/button_selector"
                     android:textColor="@color/colorAccent"
                     android:id="@+id/insert_favorite_sport"
@@ -48,8 +48,8 @@ android:layout_height="wrap_content">
             />
             <Button
                     android:text="@string/eliminar_de_favoritos"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:textSize="12dp"
                     android:enabled="false"
                     android:background="@drawable/button_selector"
@@ -62,8 +62,8 @@ android:layout_height="wrap_content">
             />
             <Button
                     android:text="@string/close_info"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:textSize="12dp"
                     android:background="@drawable/button_selector"
                     android:textColor="@color/colorAccent"

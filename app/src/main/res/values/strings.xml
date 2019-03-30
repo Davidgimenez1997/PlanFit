@@ -81,8 +81,8 @@
 
     <string name="favorites_saveFavorites_sport_text">Guarda algun deporte para luego verlo aqui.</string>
     <string name="favorites_saveFavorites_nutrition_text">Guarda alguna alimentación para luego verla aqui.</string>
-    <string name="create_plan_sport_text">Para crear un plan debes agregar algun deporte.</string>
-    <string name="create_plan_nutrition_text">Para crear un plan debes agregar alguna alimentación.</string>
+    <string name="create_plan_sport_text">Para crear un plan debes agregar algun deporte a favoritos.</string>
+    <string name="create_plan_nutrition_text">Para crear un plan debes agregar alguna alimentación a favoritos.</string>
 
     <string name="agregarafavoritos">agregado a favoritos</string>
     <string name="eliminarafavoritos">eliminado de favoritos.</string>
@@ -141,7 +141,7 @@
     <string name="crea_un_plan_de_alimentos_para_verlo_aqui">Crea un plan de nutrición para verlo aqui.</string>
     <string name="update_sport_plan">ACTUALIZAR</string>
     <string name="elige">Elige</string>
-
+    <string name="sin_favopritos_para_crear_el_plan">Sin Favoritos para crear el plan?</string>
 
     <string-array name="durationPlan">
         <item>1 Dia</item>
