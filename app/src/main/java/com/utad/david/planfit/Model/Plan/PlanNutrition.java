@@ -1,6 +1,9 @@
 package com.utad.david.planfit.Model.Plan;
 
-public class PlanNutrition implements Comparable<PlanNutrition>{
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class PlanNutrition implements Comparable<PlanNutrition>, Parcelable {
 
     private String name;
     private String photo;
@@ -19,6 +22,40 @@ public class PlanNutrition implements Comparable<PlanNutrition>{
         this.isOk = isOk;
     }
 
+
+    protected PlanNutrition(Parcel in) {
+        name = in.readString();
+        photo = in.readString();
+        type = in.readInt();
+        id = in.readString();
+        isOk = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeString(photo);
+        dest.writeInt(type);
+        dest.writeString(id);
+        dest.writeString(isOk);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<PlanNutrition> CREATOR = new Creator<PlanNutrition>() {
+        @Override
+        public PlanNutrition createFromParcel(Parcel in) {
+            return new PlanNutrition(in);
+        }
+
+        @Override
+        public PlanNutrition[] newArray(int size) {
+            return new PlanNutrition[size];
+        }
+    };
 
     @Override
     public int compareTo(PlanNutrition o) {

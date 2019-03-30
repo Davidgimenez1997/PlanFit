@@ -1,4 +1,4 @@
-package com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.ShowPlan.Sport;
+package com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.ShowPlan.Nutrition;
 
 
 import android.app.AlertDialog;
@@ -16,33 +16,30 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.Toast;
 import butterknife.ButterKnife;
+import com.utad.david.planfit.Adapter.Plan.Show.Details.ShowDetailsNutritionPlanAdapter;
 import com.utad.david.planfit.Adapter.Plan.Show.Details.ShowDetailsSportPlanAdapter;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
+import com.utad.david.planfit.Model.Plan.PlanNutrition;
 import com.utad.david.planfit.Model.Plan.PlanSport;
 import com.utad.david.planfit.R;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
-public class DetailsSportPlanFragment extends Fragment implements FirebaseAdmin.FirebaseAdminCreateAndShowPlan{
+public class DetailsNutritionPlanFragment extends Fragment implements FirebaseAdmin.FirebaseAdminCreateAndShowPlan {
 
     private static final String ARG_PARAM1 = "param1";
+    private ArrayList<PlanNutrition> planNutritions;
 
-    private ArrayList<PlanSport> planSports;
 
-    public DetailsSportPlanFragment() {
+    public DetailsNutritionPlanFragment() {
         // Required empty public constructor
     }
 
-    public static DetailsSportPlanFragment newInstance(ArrayList<PlanSport> defaultSports) {
-        DetailsSportPlanFragment fragment = new DetailsSportPlanFragment();
+    public static DetailsNutritionPlanFragment newInstance(ArrayList<PlanNutrition> defaultSports) {
+        DetailsNutritionPlanFragment fragment = new DetailsNutritionPlanFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(ARG_PARAM1,defaultSports);
         fragment.setArguments(bundle);
@@ -53,28 +50,29 @@ public class DetailsSportPlanFragment extends Fragment implements FirebaseAdmin.
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            planSports = getArguments().getParcelableArrayList(ARG_PARAM1);
+            planNutritions = getArguments().getParcelableArrayList(ARG_PARAM1);
         }
     }
 
     private RecyclerView mRecyclerView;
-    private ShowDetailsSportPlanAdapter mAdapter;
+    private ShowDetailsNutritionPlanAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view =  inflater.inflate(R.layout.fragment_details_sport_plan, container, false);
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_details_nutrition_plan, container, false);
 
         SessionUser.getInstance().firebaseAdmin.setFirebaseAdminCreateAndShowPlan(this);
-        SessionUser.getInstance().firebaseAdmin.downloadAllSportPlanFavorite();
+        SessionUser.getInstance().firebaseAdmin.downloadAllNutrtionPlanFavorite();
 
         mRecyclerView = view.findViewById(R.id.recycler_view_sport);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new GridLayoutManager(getContext(), 1);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        mAdapter = new ShowDetailsSportPlanAdapter(planSports, item -> {
+        mAdapter = new ShowDetailsNutritionPlanAdapter(planNutritions, item -> {
 
             if(item.getIsOk().equals("yes")){
 
@@ -88,7 +86,7 @@ public class DetailsSportPlanFragment extends Fragment implements FirebaseAdmin.
                             case 0:
                                 showLoading();
                                 item.setIsOk("no");
-                                SessionUser.getInstance().firebaseAdmin.updatePlanSportFirebase(item);
+                                SessionUser.getInstance().firebaseAdmin.updatePlanNutrtionFirebase(item);
                                 mAdapter.notifyDataSetChanged();
                                 hideLoading();
                                 break;
@@ -112,7 +110,7 @@ public class DetailsSportPlanFragment extends Fragment implements FirebaseAdmin.
                             case 0:
                                 showLoading();
                                 item.setIsOk("yes");
-                                SessionUser.getInstance().firebaseAdmin.updatePlanSportFirebase(item);
+                                SessionUser.getInstance().firebaseAdmin.updatePlanNutrtionFirebase(item);
                                 mAdapter.notifyDataSetChanged();
                                 hideLoading();
                                 break;
@@ -129,6 +127,7 @@ public class DetailsSportPlanFragment extends Fragment implements FirebaseAdmin.
         });
 
         mRecyclerView.setAdapter(mAdapter);
+
 
         return view;
     }
@@ -199,4 +198,5 @@ public class DetailsSportPlanFragment extends Fragment implements FirebaseAdmin.
 
     @Override
     public void updateNutritionPlanFirebase(boolean end) {}
+
 }

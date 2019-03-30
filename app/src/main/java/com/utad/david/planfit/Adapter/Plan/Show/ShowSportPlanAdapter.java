@@ -74,6 +74,7 @@ public class ShowSportPlanAdapter extends RecyclerView.Adapter<ShowSportPlanAdap
                     timeStart.setText(Long.valueOf(first_start)+":"+stringBuilder_start.toString());
                 }
             }
+
         }
 
     }

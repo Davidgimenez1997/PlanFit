@@ -77,6 +77,109 @@ public class ShowSportPlanFragment extends Fragment implements FirebaseAdmin.Fir
         return view;
     }
 
+    @Override
+    public void downloadSportPlanFirebase(boolean end) {
+        if(end==true){
+            hideLoading();
+
+            linearLayout.setVisibility(View.GONE);
+            mRecyclerView.setVisibility(View.VISIBLE);
+
+            final List<PlanSport> planSports = SessionUser.getInstance().firebaseAdmin.allPlanSport;
+            final ArrayList<PlanSport> arrSport = new ArrayList<>();
+            for(PlanSport item:planSports){
+                arrSport.add(item);
+            }
+
+            Collections.sort(arrSport);
+
+            listToListPlan = new ArrayList<>();
+            double time = arrSport.get(0).getTimeStart();
+            ArrayList<PlanSport> aux = new ArrayList<>();
+            int count =0;
+            listToListPlan.add(aux);
+
+            for(int i=0;i<arrSport.size();i++){
+                if(arrSport.get(i).getTimeStart() != time){
+                    count=count+1;
+                    ArrayList<PlanSport> aux2 = new ArrayList<>();
+                    listToListPlan.add(aux2);
+                }else{
+                }
+                listToListPlan.get(count).add(arrSport.get(i));
+
+                time= arrSport.get(i).getTimeStart();
+
+            }
+
+            mAdapter = new ShowSportPlanAdapter(listToListPlan, planSportsDetails -> {
+                DetailsSportPlanFragment detailsSportPlanFragment = DetailsSportPlanFragment.newInstance(planSportsDetails);
+                FragmentManager fragManager = myContext.getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
+                fragmentTransaction.replace(R.id.content_frame, detailsSportPlanFragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+            });
+            mRecyclerView.setAdapter(mAdapter);
+            if(arrSport.size()==0){
+                updateSportPlanFirebase(false);
+            }else{
+                updateSportPlanFirebase(true);
+            }
+        }
+    }
+
+    @Override
+    public void updateSportPlanFirebase(boolean end) {
+        if(end==true){
+            hideLoading();
+            boolean endOk = true;
+            List<PlanSport> planSports = SessionUser.getInstance().firebaseAdmin.allPlanSport;
+            final ArrayList<PlanSport> arrSport = new ArrayList<>();
+            for(PlanSport item:planSports){
+                arrSport.add(item);
+            }
+            Collections.sort(arrSport);
+            for(int i=0;i<arrSport.size();i++){
+                if(arrSport.get(i).getIsOk().equals("no")){
+                    endOk = false;
+                }
+            }
+            if(endOk==true){
+                Log.d("TodosOk","estan todos ok");
+                final CharSequence[] items = {"Restablecer","Cancelar"};
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("Felicidades has completado todos!!!");
+                builder.setItems(items, (dialog, itemDialog) -> {
+                    switch (itemDialog) {
+                        case 0:
+                            showLoading();
+                            for (PlanSport planSport:arrSport){
+                                planSport.setIsOk("no");
+                                SessionUser.getInstance().firebaseAdmin.updatePlanSportFirebase(planSport);
+                            }
+                            mAdapter.notifyDataSetChanged();
+                            break;
+                        case 1:
+                            dialog.dismiss();
+                            break;
+                    }
+                });
+                builder.show();
+                return;
+            }
+        }
+    }
+
+    @Override
+    public void emptySportPlanFirebase(boolean end) {
+        if(end==true){
+            hideLoading();
+            linearLayout.setVisibility(View.VISIBLE);
+            mRecyclerView.setVisibility(View.GONE);
+        }
+    }
+
     private ProgressDialog progressDialog;
 
     public void showLoading() {
@@ -121,150 +224,23 @@ public class ShowSportPlanFragment extends Fragment implements FirebaseAdmin.Fir
     }
 
     @Override
-    public void downloadSportPlanFirebase(boolean end) {
-        if(end==true){
-            hideLoading();
-
-            linearLayout.setVisibility(View.GONE);
-            mRecyclerView.setVisibility(View.VISIBLE);
-
-            final List<PlanSport> planSports = SessionUser.getInstance().firebaseAdmin.allPlanSport;
-            final ArrayList<PlanSport> arrSport = new ArrayList<>();
-            for(PlanSport item:planSports){
-                arrSport.add(item);
-            }
-
-            Collections.sort(arrSport);
-
-            listToListPlan = new ArrayList<>();
-            double time = arrSport.get(0).getTimeStart();
-            ArrayList<PlanSport> aux = new ArrayList<>();
-            int count =0;
-            listToListPlan.add(aux);
-
-            for(int i=0;i<arrSport.size();i++){
-                    if(arrSport.get(i).getTimeStart() != time){
-                        count=count+1;
-                        ArrayList<PlanSport> aux2 = new ArrayList<>();
-                        listToListPlan.add(aux2);
-                    }else{
-                    }
-                listToListPlan.get(count).add(arrSport.get(i));
-
-                time= arrSport.get(i).getTimeStart();
-
-
-            }
-
-            mAdapter = new ShowSportPlanAdapter(listToListPlan, planSportsDetails -> {
-                DetailsSportPlanFragment detailsSportPlanFragment = DetailsSportPlanFragment.newInstance(planSportsDetails);
-                FragmentManager fragManager = myContext.getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
-                fragmentTransaction.replace(R.id.content_frame, detailsSportPlanFragment);
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
-            });
-            mRecyclerView.setAdapter(mAdapter);
-
-            if(arrSport.size()==0){
-                updateSportPlanFirebase(false);
-            }else{
-                updateSportPlanFirebase(true);
-            }
-        }
-    }
-
+    public void insertSportPlanFirebase(boolean end) {}
 
     @Override
-    public void updateSportPlanFirebase(boolean end) {
-        if(end==true){
-
-            hideLoading();
-
-            boolean endOk = true;
-            List<PlanSport> planSports = SessionUser.getInstance().firebaseAdmin.allPlanSport;
-            final ArrayList<PlanSport> arrSport = new ArrayList<>();
-
-            for(PlanSport item:planSports){
-                arrSport.add(item);
-            }
-            Collections.sort(arrSport);
-
-            for(int i=0;i<arrSport.size();i++){
-                if(arrSport.get(i).getIsOk().equals("no")){
-                    endOk = false;
-
-                }
-            }
-
-            if(endOk==true){
-                Log.d("TodosOk","estan todos ok");
-                final CharSequence[] items = {"Restablecer","Cancelar"};
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle("Felicidades has completado todos!!!");
-                builder.setItems(items, (dialog, itemDialog) -> {
-                    switch (itemDialog) {
-                        case 0:
-                            showLoading();
-                            for (PlanSport planSport:arrSport){
-                                planSport.setIsOk("no");
-                                SessionUser.getInstance().firebaseAdmin.updatePlanSportFirebase(planSport);
-                            }
-                            mAdapter.notifyDataSetChanged();
-                            break;
-                        case 1:
-                            dialog.dismiss();
-                            break;
-                    }
-                });
-                builder.show();
-                return;
-            }
-
-        }
-    }
+    public void deleteSportPlanFirebase(boolean end) {}
 
     @Override
-    public void insertSportPlanFirebase(boolean end) {
-
-    }
+    public void insertNutritionPlanFirebase(boolean end) {}
 
     @Override
-    public void emptySportPlanFirebase(boolean end) {
-        if(end==true){
-            hideLoading();
-            linearLayout.setVisibility(View.VISIBLE);
-            mRecyclerView.setVisibility(View.GONE);
-        }
-    }
+    public void downloadNutritionPlanFirebase(boolean end) {}
 
     @Override
-    public void deleteSportPlanFirebase(boolean end) {
-
-    }
+    public void emptyNutritionPlanFirebase(boolean end) {}
 
     @Override
-    public void insertNutritionPlanFirebase(boolean end) {
-
-    }
+    public void deleteNutritionPlanFirebase(boolean end) {}
 
     @Override
-    public void downloadNutritionPlanFirebase(boolean end) {
-
-    }
-
-    @Override
-    public void emptyNutritionPlanFirebase(boolean end) {
-
-    }
-
-    @Override
-    public void deleteNutritionPlanFirebase(boolean end) {
-
-    }
-
-    @Override
-    public void updateNutritionPlanFirebase(boolean end) {
-
-    }
+    public void updateNutritionPlanFirebase(boolean end) {}
 }
