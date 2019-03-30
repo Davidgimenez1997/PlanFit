@@ -31,52 +31,70 @@ import java.util.Map;
 
 public class FirebaseAdmin {
 
+    /********USUARIO********/
+
     public FirebaseAuth mAuth;
     public FirebaseUser currentUser;
     public FirebaseAuth.AuthStateListener authStateListener;
+    private AuthCredential credential;
+
+    /********BASE DE DATOS********/
+
     public FirebaseFirestore firebaseFirestore;
     public FirebaseStorage storage;
     public StorageReference storageReference;
+
+    /********INTERFAZES********/
 
     public FirebaseAdmin.FirebaseAdminInsertAndDownloandListener firebaseAdminInsertAndDownloandListener;
     public FirebaseAdmin.FirebaseAdminLoginAndRegisterListener firebaseAdminLoginAndRegisterListener;
     public FirebaseAdmin.FirebaseAdminUpdateAndDeleteUserListener firebaseAdminUpdateAndDeleteUserListener;
     public FirebaseAdmin.FirebaseAdminDownloandFragmentData firebaseAdminDownloandFragmentData;
 
-    //public FirebaseAdminFavoriteSportAndNutrition firebaseAdminFavoriteSportAndNutrition;
-    //public FirebaseAdmin.FirebaseAdminCreateAndShowPlan firebaseAdminCreateAndShowPlan;
-
-
     public FirebaseAdmin.FirebaseAdminFavoriteSport firebaseAdminFavoriteSport;
     public FirebaseAdmin.FirebaseAdminFavoriteNutrition firebaseAdminFavoriteNutrition;
+
     public FirebaseAdmin.FirebaseAdminCreateShowPlanSport firebaseAdminCreateShowPlanSport;
     public FirebaseAdmin.FirebaseAdminCreateShowPlanNutrition firebaseAdminCreateShowPlanNutrition;
 
 
     public User userDataFirebase;
     public Developer developerInfo;
-    private AuthCredential credential;
+
+    /********LISTAS DE DEPORTES********/
 
     public List<SportSlimming> sportSlimmingListSport;
-    public List<SportSlimming> sportSlimmingListSportFavorite;
     public List<SportToning> sportToningListSport;
-    public List<SportToning> sportToningListSportFavorite;
     public List<SportGainVolume> sportGainVolumeListSport;
-    public List<SportGainVolume> sportGainVolumeListSportFavorite;
 
     public List<DefaultSport> allSportFavorite;
 
+    /********LISTAS DE ALIMENTOS********/
+
     public List<NutritionSlimming> nutritionSlimmingListNutrition;
-    public List<NutritionSlimming> nutritionSlimmingListNutritionFavorite;
     public List<NutritionToning> nutritionToningsListNutrition;
-    public List<NutritionToning> nutritionToningListNutritionFavorite;
     public List<NutritionGainVolume> nutritionGainVolumeListNutrition;
-    public List<NutritionGainVolume> nutritionGainVolumeListNutritionFavorite;
 
     public List<DefaultNutrition> allNutritionFavorite;
 
+    /********LISTAS DE DEPORTES FAVORITOS********/
+
+    public List<SportSlimming> sportSlimmingListSportFavorite;
+    public List<SportToning> sportToningListSportFavorite;
+    public List<SportGainVolume> sportGainVolumeListSportFavorite;
+
+    /********LISTAS DE ALIMENTOS FAVORITOS********/
+
+    public List<NutritionSlimming> nutritionSlimmingListNutritionFavorite;
+    public List<NutritionToning> nutritionToningListNutritionFavorite;
+    public List<NutritionGainVolume> nutritionGainVolumeListNutritionFavorite;
+
+    /********LISTAS DE PLANES********/
+
     public List<PlanSport> allPlanSport;
     public List<PlanNutrition> allPlanNutrition;
+
+    /********COLECCIONES DE FIREBASE********/
 
     private static String COLLECTION_USER_FIREBASE = "users";
     private static String DOCUMENT_DEVELOPER_INFO_FIREBASE = "david";
@@ -486,23 +504,14 @@ public class FirebaseAdmin {
         }
     }
 
+    //Reauthenticate User update email
+
     public void updateEmailUserInFirebase() {
         if (firebaseAdminUpdateAndDeleteUserListener != null) {
             reauthenticateUserUpdateEmail();
         }
 
     }
-
-
-    public void updatePasswordUserInFirebase(String oldPassword) {
-        if (firebaseAdminUpdateAndDeleteUserListener != null) {
-            currentUser = FirebaseAuth.getInstance().getCurrentUser();
-            String newPassword = userDataFirebase.getPassword();
-            reauthenticateUserUpdatePassword(oldPassword,newPassword);
-        }
-    }
-
-    //Reauthenticate User update email
 
     private void reauthenticateUserUpdateEmail(){
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -541,6 +550,14 @@ public class FirebaseAdmin {
     }
 
     //Reauthenticate User update password
+
+    public void updatePasswordUserInFirebase(String oldPassword) {
+        if (firebaseAdminUpdateAndDeleteUserListener != null) {
+            currentUser = FirebaseAuth.getInstance().getCurrentUser();
+            String newPassword = userDataFirebase.getPassword();
+            reauthenticateUserUpdatePassword(oldPassword,newPassword);
+        }
+    }
 
     private void reauthenticateUserUpdatePassword(String oldPassword, final String newPassword){
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
