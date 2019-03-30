@@ -7,16 +7,16 @@
         android:layout_width="match_parent"
         android:background="@drawable/backgroung_grad"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
     <ScrollView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:background="@drawable/backgroung_grad"
             android:layout_height="wrap_content" app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
     >
         <android.support.constraint.ConstraintLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:background="@drawable/corner_layout"
                 android:layout_height="wrap_content">
 
@@ -25,7 +25,7 @@
                     android:textColor="@color/colorAccent"
                     android:background="@drawable/button_selector"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" android:id="@+id/close_about"
+                    android:layout_height="match_parent" android:id="@+id/close_about"
                     android:layout_marginStart="8dp" app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
                     android:layout_marginBottom="32dp" app:layout_constraintBottom_toBottomOf="parent"
@@ -36,8 +36,8 @@
                     android:textSize="50dp"
                     android:textAlignment="center"
                     android:textColor="@color/colorAccent"
-                    android:layout_width="318dp"
-                    android:layout_height="78dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:id="@+id/textView"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -46,17 +46,21 @@
                     android:layout_marginEnd="24dp"
                     app:layout_constraintHorizontal_bias="0.48" android:layout_marginTop="32dp"/>
             <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:textColor="@color/colorAccent"
                     android:textSize="20dp"
+                    android:textAlignment="center"
                     android:maxLines="2"
-                    android:layout_height="51dp" android:id="@+id/namedeveloper"
+                    android:layout_height="wrap_content" android:id="@+id/namedeveloper"
                     app:layout_constraintStart_toStartOf="parent"
                     android:layout_marginStart="24dp"
-                    android:layout_marginTop="24dp" app:layout_constraintTop_toBottomOf="@+id/textView8"/>
+                    android:layout_marginTop="24dp" app:layout_constraintTop_toBottomOf="@+id/textView8"
+                    app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="24dp"
+            />
             <TextView
                     android:text="@string/desarollado_dise_ado"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
+                    android:textAlignment="center"
                     android:textColor="@color/colorAccent"
                     android:textSize="20dp"
                     android:layout_height="wrap_content" android:id="@+id/textView8"
@@ -70,7 +74,7 @@
                     android:id="@+id/emailDeveloper"
                     android:background="@drawable/icon_email"
                     app:layout_constraintEnd_toStartOf="@+id/likedindDeveloper"
-                    android:layout_marginEnd="24dp" app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginEnd="16dp" app:layout_constraintStart_toStartOf="parent"
                     android:layout_marginStart="96dp"
                     android:layout_marginTop="24dp"
                     app:layout_constraintTop_toBottomOf="@+id/namedeveloper"
@@ -80,7 +84,7 @@
                     android:layout_height="50dp"
                     android:id="@+id/likedindDeveloper"
                     android:background="@drawable/linkedin"
-                    android:layout_marginStart="24dp"
+                    android:layout_marginStart="16dp"
                     app:layout_constraintStart_toEndOf="@+id/emailDeveloper" app:layout_constraintEnd_toEndOf="parent"
                     android:layout_marginEnd="96dp" android:layout_marginTop="24dp"
                     app:layout_constraintTop_toBottomOf="@+id/namedeveloper"

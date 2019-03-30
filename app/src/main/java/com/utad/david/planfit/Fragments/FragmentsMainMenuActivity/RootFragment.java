@@ -194,7 +194,6 @@ public class RootFragment extends Fragment{
 
     private void configViewPlan(){
         textViewInfo.setText(getString(R.string.estas_preparado));
-        textViewInfo.setTextSize(35);
         first_button.setText(getString(R.string.crear_plan));
         second_button.setText(getString(R.string.ver_tu_plan));
         three_button.setVisibility(View.INVISIBLE);

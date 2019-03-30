@@ -5,24 +5,25 @@
         android:layout_width="match_parent"
         android:background="@drawable/backgroung_grad"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
     <ScrollView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:background="@drawable/backgroung_grad"
             android:layout_height="wrap_content" app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent">
         <android.support.constraint.ConstraintLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:background="@drawable/corner_layout"
                 android:layout_height="wrap_content">
 
             <TextView
                     android:text="@string/cuando"
-                    android:textSize="20dp"
-                    android:layout_width="wrap_content"
+                    android:textSize="15dp"
+                    android:textAlignment="center"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/colorAccent"
                     android:id="@+id/info_create_sport"
@@ -34,7 +35,7 @@
             />
             <Button
                     android:text="@string/eliminar"
-                    android:layout_width="180dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/button_selector"
                     android:textColor="@color/colorAccent"
@@ -48,7 +49,7 @@
             />
             <Button
                     android:text="@string/close_info"
-                    android:layout_width="180dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/button_selector"
                     android:textColor="@color/colorAccent"
@@ -62,7 +63,7 @@
                     app:layout_constraintVertical_bias="0.0"/>
             <Button
                     android:text="@string/info_guardar"
-                    android:layout_width="180dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/button_selector"
                     android:textColor="@color/colorAccent"
@@ -73,7 +74,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/spinner_comienzo" android:layout_marginTop="28dp"/>
             <TextView
                     android:textSize="20dp"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/colorAccent"
                     android:maxLines="5"
@@ -94,8 +95,8 @@
                     app:srcCompat="@mipmap/ic_launcher"/>
             <Spinner
                     android:entries="@array/nutrition"
-                    android:layout_width="205dp"
-                    android:layout_height="28dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     style="@style/MySpinnerLook"
                     android:spinnerMode="dropdown"
                     android:id="@+id/spinner_comienzo"

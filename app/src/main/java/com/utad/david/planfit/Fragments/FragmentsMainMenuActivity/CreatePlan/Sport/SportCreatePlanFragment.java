@@ -19,7 +19,7 @@ import butterknife.ButterKnife;
 import com.utad.david.planfit.Adapter.Plan.Create.Sport.CreateSportPlanAdapter;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
-import com.utad.david.planfit.DialogFragment.Plan.CreateSportPlanDetailsDialogFragment;
+import com.utad.david.planfit.DialogFragment.Plan.Sport.CreateSportPlanDetailsDialogFragment;
 import com.utad.david.planfit.Model.Sport.DefaultSport;
 import com.utad.david.planfit.R;
 

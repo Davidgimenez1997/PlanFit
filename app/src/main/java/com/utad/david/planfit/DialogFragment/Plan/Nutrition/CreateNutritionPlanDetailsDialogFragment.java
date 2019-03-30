@@ -1,4 +1,4 @@
-package com.utad.david.planfit.DialogFragment.Plan;
+package com.utad.david.planfit.DialogFragment.Plan.Nutrition;
 
 import android.app.ProgressDialog;
 import android.graphics.Color;
@@ -21,7 +21,6 @@ import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Model.Nutrition.DefaultNutrition;
 import com.utad.david.planfit.Model.Plan.PlanNutrition;
-import com.utad.david.planfit.Model.Plan.PlanSport;
 import com.utad.david.planfit.R;
 
 import java.util.ArrayList;

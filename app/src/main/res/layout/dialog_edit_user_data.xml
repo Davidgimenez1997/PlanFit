@@ -4,7 +4,7 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:background="@color/transparent"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_height="match_parent">
@@ -12,24 +12,26 @@
     <ScrollView
             android:layout_width="wrap_content"
             android:background="@drawable/backgroung_grad"
-            android:layout_height="wrap_content" app:layout_constraintTop_toTopOf="parent"
+            android:layout_height="match_parent" app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent">
         <android.support.constraint.ConstraintLayout
                 android:layout_width="wrap_content"
                 android:background="@drawable/corner_layout"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent">
             <TextView
                     android:text="@string/escoja_una_foto"
+                    android:textSize="15dp"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:textColor="@color/colorAccent"
                     android:id="@+id/textView2"
                     app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="32dp"
                     android:layout_marginTop="40dp" app:layout_constraintTop_toTopOf="parent"/>
             <TextView
                     android:text="@string/actualize_los_campos"
+                    android:textSize="15dp"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:id="@+id/textView3"
                     android:textColor="@color/colorAccent"
                     android:layout_marginTop="23dp"
@@ -38,7 +40,7 @@
 
             <android.support.design.widget.TextInputLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:id="@+id/textInputLayout"
                     android:layout_marginTop="36dp"
                     app:layout_constraintTop_toBottomOf="@+id/button_password_update" app:layout_constraintStart_toStartOf="parent"
@@ -46,7 +48,7 @@
 
                 <EditText
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:inputType="textPersonName"
                         android:hint="@string/nombre_completo"
                         android:ems="10"
@@ -55,14 +57,14 @@
 
             <android.support.design.widget.TextInputLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:id="@+id/textInputLayout2"
                     app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="32dp"
                     android:layout_marginTop="32dp" app:layout_constraintTop_toBottomOf="@+id/button_update_fullname">
 
                 <EditText
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:inputType="textPersonName"
                         android:hint="@string/nick"
                         android:ems="10"
@@ -71,7 +73,7 @@
 
             <android.support.design.widget.TextInputLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:id="@+id/textInputLayout3"
                     app:layout_constraintStart_toStartOf="parent"
                     android:layout_marginStart="32dp" android:layout_marginTop="32dp"
@@ -79,7 +81,7 @@
 
                 <EditText
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:inputType="textPersonName"
                         android:hint="@string/email"
                         android:ems="10"
@@ -88,7 +90,7 @@
 
             <android.support.design.widget.TextInputLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     app:passwordToggleEnabled="true"
                     android:id="@+id/textInputLayout4"
                     app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="32dp"
@@ -96,7 +98,7 @@
 
                 <EditText
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:inputType="textPassword"
                         android:hint="@string/password"
                         android:ems="10"
@@ -116,8 +118,9 @@
                     android:enabled="false"
                     android:text="@string/actualizar_email"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:id="@+id/update_emial_button"
+                    android:textSize="10dp"
                     android:textColor="@color/colorAccent"
                     android:background="@drawable/button_selector"
                     app:layout_constraintStart_toStartOf="parent"
@@ -127,8 +130,9 @@
                     android:enabled="false"
                     android:text="@string/actualizar_contrase_a"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:id="@+id/button_password_update"
+                    android:textSize="10dp"
                     android:textColor="@color/colorAccent"
                     android:background="@drawable/button_selector"
                     android:layout_marginTop="32dp"
@@ -138,9 +142,10 @@
                     android:enabled="false"
                     android:text="@string/actualizar_nick"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:id="@+id/button_nick_update"
                     android:textColor="@color/colorAccent"
+                    android:textSize="10dp"
                     android:background="@drawable/button_selector"
                     android:layout_marginTop="32dp"
                     app:layout_constraintTop_toBottomOf="@+id/textInputLayout2"
@@ -149,10 +154,11 @@
                     android:enabled="false"
                     android:text="@string/actualizar_nombre"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:id="@+id/button_update_fullname"
                     android:layout_marginTop="32dp"
                     android:textColor="@color/colorAccent"
+                    android:textSize="10dp"
                     android:background="@drawable/button_selector"
                     app:layout_constraintTop_toBottomOf="@+id/textInputLayout"
                     app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="32dp"/>
@@ -160,7 +166,8 @@
                     android:text="@string/actualizar_foto"
                     android:enabled="false"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
+                    android:textSize="10dp"
                     android:textColor="@color/colorAccent"
                     android:background="@drawable/button_selector"
                     android:id="@+id/button_update_photo" app:layout_constraintStart_toEndOf="@+id/imageViewEditUser"
@@ -170,8 +177,9 @@
             <Button
                     android:text="@string/borrar_cuenta"
                     android:layout_width="wrap_content"
-                    android:layout_height="49dp"
+                    android:layout_height="match_parent"
                     android:id="@+id/button_delete_account"
+                    android:textSize="10dp"
                     android:textColor="@color/colorAccent"
                     android:background="@drawable/button_selector"
                     android:layout_marginTop="32dp"
@@ -183,8 +191,9 @@
             <Button
                     android:text="@string/close_info"
                     android:layout_width="wrap_content"
-                    android:layout_height="49dp"
+                    android:layout_height="match_parent"
                     android:id="@+id/button_close_info"
+                    android:textSize="10dp"
                     android:textColor="@color/colorAccent"
                     android:background="@drawable/button_selector"
                     app:layout_constraintTop_toBottomOf="@+id/button_delete_account" android:layout_marginTop="32dp"
@@ -194,7 +203,8 @@
             <Button
                     android:text="@string/borrar_foto"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
+                    android:textSize="10dp"
                     android:textColor="@color/colorAccent"
                     android:background="@drawable/button_selector"
                     android:id="@+id/button_delete_photo" android:layout_marginTop="4dp"
