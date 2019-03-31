@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.utad.david.planfit.Activitys.FirstActivity;
+import com.utad.david.planfit.Data.EncryptDecrypt;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Model.User;
@@ -301,8 +302,14 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
             public void onClick(View v) {
                 showDialog(getString(R.string.title_update_pass),getString(R.string.message_update_pass));
                 mProgress.show();
-                SessionUser.getInstance().firebaseAdmin.userDataFirebase = userUpdate;
-                SessionUser.getInstance().firebaseAdmin.updatePasswordUserInFirebase(oldPassword);
+                try {
+                    String pass = EncryptDecrypt.encrypt(userUpdate.getPassword());
+                    userUpdate.setPassword(pass);
+                    SessionUser.getInstance().firebaseAdmin.userDataFirebase = userUpdate;
+                    SessionUser.getInstance().firebaseAdmin.updatePasswordUserInFirebase(oldPassword);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
     }

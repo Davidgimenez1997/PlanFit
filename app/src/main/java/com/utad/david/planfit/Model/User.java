@@ -1,5 +1,7 @@
 package com.utad.david.planfit.Model;
 
+import com.utad.david.planfit.Data.EncryptDecrypt;
+
 public class User {
 
     private String email;

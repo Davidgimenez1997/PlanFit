@@ -9,6 +9,7 @@ import com.google.firebase.firestore.*;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.utad.david.planfit.Data.EncryptDecrypt;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Model.Developer;
 import com.utad.david.planfit.Model.Nutrition.DefaultNutrition;
@@ -369,7 +370,12 @@ public class FirebaseAdmin {
                     if (snapshot != null && snapshot.exists()) {
                         User user = snapshot.toObject(User.class);
                         userDataFirebase = user;
-                        downloadPhoto();
+                        try {
+                            userDataFirebase.setPassword(EncryptDecrypt.decrypt(user.getPassword()));
+                            downloadPhoto();
+                        } catch (Exception e1) {
+                            e1.printStackTrace();
+                        }
                     } else {
                         firebaseAdminInsertAndDownloandListener.downloadUserDataInFirebase(false);
                     }

@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import com.utad.david.planfit.Data.EncryptDecrypt;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.R;
 
@@ -63,11 +64,17 @@ public class RegisterFragment extends Fragment {
         buttonContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mListener!=null){
-                    SessionUser.getInstance().user.setEmail(emailRegister.getText().toString().trim());
-                    SessionUser.getInstance().user.setPassword(passwordRegister.getText().toString().trim());
-                    mListener.clickButtonContinue();
+                try {
+                    String pass = EncryptDecrypt.encrypt(passwordRegister.getText().toString().trim());
+                    if (mListener!=null){
+                        SessionUser.getInstance().user.setEmail(emailRegister.getText().toString().trim());
+                        SessionUser.getInstance().user.setPassword(pass);
+                        mListener.clickButtonContinue();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
+
             }
         });
     }
