@@ -374,7 +374,6 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
-                        mProgress.dismiss();
                     }
                 });
         builder.create();
@@ -442,7 +441,7 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
 
     @Override
     public void updateEmailInFirebase(boolean end) {
-        if(end==true){
+        if(end){
             if(mListener!=null){
                 buttonUpdateEmail.setEnabled(false);
                 mProgress.dismiss();
@@ -470,7 +469,7 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
 
     @Override
     public void updatePasswordInFirebase(boolean end) {
-        if(end==true){
+        if(end){
             buttonUpdatePassword.setEnabled(false);
             mProgress.dismiss();
             Toast.makeText(getContext(),getString(R.string.info_update_password),Toast.LENGTH_LONG).show();
@@ -550,7 +549,7 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
 
     @Override
     public void deleteUserInFirebase(boolean end) {
-        if(end==true){
+        if(end){
             mProgress.dismiss();
             Toast.makeText(getContext(),getString(R.string.info_delete_user),Toast.LENGTH_LONG).show();
             navigatedUserLoginRegister();
