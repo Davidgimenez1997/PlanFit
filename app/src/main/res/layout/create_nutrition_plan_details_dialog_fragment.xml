@@ -35,6 +35,7 @@
             />
             <Button
                     android:text="@string/eliminar"
+                    android:textSize="12dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/button_selector"
@@ -49,6 +50,7 @@
             />
             <Button
                     android:text="@string/close_info"
+                    android:textSize="12dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/button_selector"
@@ -63,6 +65,7 @@
                     app:layout_constraintVertical_bias="0.0"/>
             <Button
                     android:text="@string/info_guardar"
+                    android:textSize="12dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/button_selector"

@@ -157,13 +157,11 @@ public class MainMenuActivity extends AppCompatActivity
     public void downloadUserDataInFirebase(boolean end) {
         if(end==true){
             hideLoading();
-            Log.d("DatosUsuarioFirebase"," "+SessionUser.getInstance().firebaseAdmin.userDataFirebase.toString());
             putInfoUserInHeaderMenu(SessionUser.getInstance().firebaseAdmin.userDataFirebase);
             checkPhotoUserNull(SessionUser.getInstance().firebaseAdmin.userDataFirebase);
         }else{
             if(SessionUser.getInstance().firebaseAdmin.userDataFirebase.getImgUser()!=null){
                 hideLoading();
-                Log.d("DatosUsuarioFirebase"," "+SessionUser.getInstance().firebaseAdmin.userDataFirebase.toString());
                 putInfoUserInHeaderMenu(SessionUser.getInstance().firebaseAdmin.userDataFirebase);
                 checkPhotoUserNull(SessionUser.getInstance().firebaseAdmin.userDataFirebase);
             }

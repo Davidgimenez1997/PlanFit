@@ -21,6 +21,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 import com.google.firebase.auth.*;
 import com.utad.david.planfit.Activitys.MainMenuActivity;
+import com.utad.david.planfit.Data.EncryptDecrypt;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.R;
@@ -115,8 +116,13 @@ public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
                 if (mListener!=null){
                     mProgress.show();
                     SessionUser.getInstance().user.setEmail(emailLogin.getText().toString().trim());
-                    SessionUser.getInstance().user.setPassword(passwordLogin.getText().toString().trim());
-                    mListener.clickButtonLogin();
+                    try {
+                        String password = EncryptDecrypt.encrypt(passwordLogin.getText().toString().trim());
+                        SessionUser.getInstance().user.setPassword(password);
+                        mListener.clickButtonLogin();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }else{
                     mProgress.dismiss();
                 }

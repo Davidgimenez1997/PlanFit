@@ -2,7 +2,6 @@ package com.utad.david.planfit.Data.Firebase;
 
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import com.google.android.gms.tasks.*;
 import com.google.firebase.auth.*;
 import com.google.firebase.firestore.*;
