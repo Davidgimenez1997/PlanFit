@@ -18,12 +18,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 import butterknife.ButterKnife;
+import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Adapter.Favorite.Sport.SportFavoriteAdapter;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.DialogFragment.Favorite.SportFavoriteDetailsDialogFragment;
 import com.utad.david.planfit.Model.Sport.DefaultSport;
 import com.utad.david.planfit.R;
+import io.fabric.sdk.android.Fabric;
 
 import java.util.List;
 
@@ -43,6 +45,8 @@ public class SportFavoriteFragment extends Fragment implements FirebaseAdmin.Fir
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(getContext(), new Crashlytics());
+
     }
 
     @Override

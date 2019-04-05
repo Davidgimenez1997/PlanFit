@@ -17,11 +17,13 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import butterknife.ButterKnife;
+import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Adapter.Plan.Show.Nutrition.ShowDetailsNutritionPlanAdapter;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Model.Plan.PlanNutrition;
 import com.utad.david.planfit.R;
+import io.fabric.sdk.android.Fabric;
 
 import java.util.ArrayList;
 
@@ -46,6 +48,8 @@ public class DetailsNutritionPlanFragment extends Fragment implements FirebaseAd
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(getContext(), new Crashlytics());
+
         if (getArguments() != null) {
             planNutritions = getArguments().getParcelableArrayList(ARG_PARAM1);
         }

@@ -23,12 +23,15 @@ import android.widget.ImageView;
 import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Activitys.FirstActivity;
 import com.utad.david.planfit.Data.EncryptDecrypt;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Model.User;
 import com.utad.david.planfit.R;
+import io.fabric.sdk.android.Fabric;
+
 import java.util.regex.Pattern;
 
 import static android.app.Activity.RESULT_OK;
@@ -38,6 +41,8 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(getContext(), new Crashlytics());
+
         SessionUser.getInstance().firebaseAdmin.setFirebaseAdminUpdateUserListener(this);
     }
 

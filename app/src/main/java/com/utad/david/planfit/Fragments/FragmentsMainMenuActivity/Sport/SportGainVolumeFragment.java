@@ -16,12 +16,14 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import butterknife.ButterKnife;
+import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Adapter.Sport.SportGainVolumeAdapter;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.DialogFragment.Sport.SportDetailsDialogFragment;
 import com.utad.david.planfit.Model.Sport.SportGainVolume;
 import com.utad.david.planfit.R;
+import io.fabric.sdk.android.Fabric;
 
 import java.util.List;
 
@@ -43,6 +45,8 @@ public class SportGainVolumeFragment extends Fragment implements FirebaseAdmin.F
         super.onCreate(savedInstanceState);
         SessionUser.getInstance().firebaseAdmin.setFirebaseAdminDownloandFragmentData(this);
         SessionUser.getInstance().firebaseAdmin.downloadGainVolumeSport();
+        Fabric.with(getContext(), new Crashlytics());
+
     }
 
     private RecyclerView mRecyclerView;

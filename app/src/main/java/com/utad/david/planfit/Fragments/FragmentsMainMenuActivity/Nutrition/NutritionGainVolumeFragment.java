@@ -15,12 +15,14 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import butterknife.ButterKnife;
+import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Adapter.Nutrition.NutritionGainVolumeAdapter;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.DialogFragment.Nutrition.NutritionDetailsDialogFragment;
 import com.utad.david.planfit.Model.Nutrition.NutritionGainVolume;
 import com.utad.david.planfit.R;
+import io.fabric.sdk.android.Fabric;
 
 import java.util.List;
 
@@ -40,6 +42,8 @@ public class NutritionGainVolumeFragment extends Fragment implements FirebaseAdm
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(getContext(), new Crashlytics());
+
         SessionUser.getInstance().firebaseAdmin.setFirebaseAdminDownloandFragmentData(this);
     }
 

@@ -15,7 +15,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
+import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.R;
+import io.fabric.sdk.android.Fabric;
 
 
 public class RootFragment extends Fragment{
@@ -40,6 +42,8 @@ public class RootFragment extends Fragment{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(getContext(), new Crashlytics());
+
         selected = getArguments().getInt(SELECTED);
 
     }

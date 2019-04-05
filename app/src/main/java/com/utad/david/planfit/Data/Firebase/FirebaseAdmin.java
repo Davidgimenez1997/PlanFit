@@ -3,6 +3,7 @@ package com.utad.david.planfit.Data.Firebase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import com.google.android.gms.tasks.*;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.*;
 import com.google.firebase.firestore.*;
 import com.google.firebase.storage.FirebaseStorage;
@@ -460,7 +461,7 @@ public class FirebaseAdmin {
                 @Override
                 public void onFailure(@NonNull Exception exception) {
                     uploadImage(userDataFirebase.getImgUser());
-                    firebaseAdminUpdateAndDeleteUserListener.updatePhotoInFirebase(false);
+                    firebaseAdminUpdateAndDeleteUserListener.updatePhotoInFirebase(true);
                 }
             });
 

@@ -17,11 +17,13 @@ import android.widget.*;
 import butterknife.ButterKnife;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Model.Plan.PlanSport;
 import com.utad.david.planfit.Model.Sport.DefaultSport;
 import com.utad.david.planfit.R;
+import io.fabric.sdk.android.Fabric;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -64,6 +66,9 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment impleme
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Fabric.with(getContext(),new Crashlytics());
+
         defaultSport = getArguments().getParcelable(SPORT);
         SessionUser.getInstance().firebaseAdmin.setFirebaseAdminCreateShowPlanSport(this);
         SessionUser.getInstance().firebaseAdmin.downloadAllSportPlanFavorite();

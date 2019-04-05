@@ -7,6 +7,8 @@ import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerView;
 import com.utad.david.planfit.Data.YoutubePlayerConfig;
 import com.utad.david.planfit.R;
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 
 
 public class YoutubeActivity extends YouTubeBaseActivity {
@@ -18,6 +20,9 @@ public class YoutubeActivity extends YouTubeBaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        Fabric.with(this, new Crashlytics());
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_youtube);
         youTubePlayerView = findViewById(R.id.youtube_player);

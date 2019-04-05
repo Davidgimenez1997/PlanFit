@@ -17,11 +17,13 @@ import android.widget.*;
 import butterknife.ButterKnife;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Model.Nutrition.DefaultNutrition;
 import com.utad.david.planfit.Model.Plan.PlanNutrition;
 import com.utad.david.planfit.R;
+import io.fabric.sdk.android.Fabric;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,6 +67,8 @@ public class CreateNutritionPlanDetailsDialogFragment extends DialogFragment imp
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(getContext(),new Crashlytics());
+
         defaultNutrition = getArguments().getParcelable(NUTRITION);
         SessionUser.getInstance().firebaseAdmin.setFirebaseAdminCreateShowPlanNutrition(this);
         SessionUser.getInstance().firebaseAdmin.downloadAllNutrtionPlanFavorite();

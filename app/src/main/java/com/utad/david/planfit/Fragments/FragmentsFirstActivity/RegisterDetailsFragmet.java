@@ -21,10 +21,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Activitys.MainMenuActivity;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.R;
+import io.fabric.sdk.android.Fabric;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -40,6 +42,7 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(getContext(), new Crashlytics());
         SessionUser.getInstance().firebaseAdmin.setFirebaseAdminLoginAndRegisterListener(this);
         SessionUser.getInstance().firebaseAdmin.setFirebaseAdminInsertAndDownloandListener(this);
 

@@ -20,12 +20,14 @@ import android.widget.Toast;
 import butterknife.ButterKnife;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Model.Nutrition.NutritionGainVolume;
 import com.utad.david.planfit.Model.Nutrition.NutritionSlimming;
 import com.utad.david.planfit.Model.Nutrition.NutritionToning;
 import com.utad.david.planfit.R;
+import io.fabric.sdk.android.Fabric;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,6 +88,9 @@ public class NutritionDetailsDialogFragment extends DialogFragment implements Fi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Fabric.with(getContext(),new Crashlytics());
+
         nutritionSlimming = getArguments().getParcelable(SLIMMING);
         nutritionToning = getArguments().getParcelable(TONING);
         nutritionGainVolume = getArguments().getParcelable(GAINVOLUME);

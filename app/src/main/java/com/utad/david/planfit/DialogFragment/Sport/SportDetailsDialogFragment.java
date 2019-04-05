@@ -19,6 +19,7 @@ import android.widget.Toast;
 import butterknife.ButterKnife;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Activitys.YoutubeActivity;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
@@ -26,6 +27,8 @@ import com.utad.david.planfit.Model.Sport.SportGainVolume;
 import com.utad.david.planfit.Model.Sport.SportSlimming;
 import com.utad.david.planfit.Model.Sport.SportToning;
 import com.utad.david.planfit.R;
+import io.fabric.sdk.android.Fabric;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -86,6 +89,7 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(getContext(),new Crashlytics());
         sportSlimming = getArguments().getParcelable(SLIMMING);
         sportToning = getArguments().getParcelable(TONING);
         sportGainVolume = getArguments().getParcelable(GAINVOLUME);

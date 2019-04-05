@@ -280,4 +280,8 @@
     </string-array>
 
 
+
+    <!--Firebase-->
+    <string name="com.crashlytics.useFirebaseAppId">true</string>
+
 </resources>

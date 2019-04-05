@@ -4,11 +4,14 @@ import android.os.AsyncTask;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.utad.david.planfit.Fragments.FragmentsFirstActivity.LoginFragment;
 import com.utad.david.planfit.Fragments.FragmentsFirstActivity.RegisterDetailsFragmet;
 import com.utad.david.planfit.Fragments.FragmentsFirstActivity.RegisterFragment;
 import com.utad.david.planfit.R;
 import com.utad.david.planfit.Data.SessionUser;
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 
 public class FirstActivity extends AppCompatActivity implements LoginFragment.OnFragmentInteractionListener, RegisterFragment.OnFragmentInteractionListener, RegisterDetailsFragmet.OnFragmentInteractionListener {
 
@@ -20,6 +23,8 @@ public class FirstActivity extends AppCompatActivity implements LoginFragment.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first);
+
+        Fabric.with(this, new Crashlytics());
 
         if (findViewById(R.id.frameLayout_FirstActivity) != null) {
             if (savedInstanceState != null) {

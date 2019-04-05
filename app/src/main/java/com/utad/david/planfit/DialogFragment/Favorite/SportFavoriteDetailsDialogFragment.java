@@ -16,11 +16,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Activitys.YoutubeActivity;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Model.Sport.DefaultSport;
 import com.utad.david.planfit.R;
+import io.fabric.sdk.android.Fabric;
 
 public class SportFavoriteDetailsDialogFragment extends DialogFragment implements FirebaseAdmin.FirebaseAdminFavoriteSport {
 
@@ -44,6 +46,8 @@ public class SportFavoriteDetailsDialogFragment extends DialogFragment implement
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(getContext(),new Crashlytics());
+
         SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteSport(this);
         defaultSport = getArguments().getParcelable(SPORT);
     }

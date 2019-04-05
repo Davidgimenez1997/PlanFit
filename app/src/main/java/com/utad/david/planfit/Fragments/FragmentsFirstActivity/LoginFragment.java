@@ -25,7 +25,8 @@ import com.utad.david.planfit.Data.EncryptDecrypt;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.R;
-
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 import java.util.regex.Pattern;
 
 public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdminLoginAndRegisterListener {
@@ -38,6 +39,7 @@ public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Fabric.with(getContext(), new Crashlytics());
     }
 
     private EditText emailLogin;

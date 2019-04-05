@@ -12,9 +12,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Data.EncryptDecrypt;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.R;
+import io.fabric.sdk.android.Fabric;
 
 import java.util.regex.Pattern;
 
@@ -27,6 +29,9 @@ public class RegisterFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Fabric.with(getContext(), new Crashlytics());
+
     }
 
     private EditText emailRegister;

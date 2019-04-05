@@ -16,10 +16,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Model.Nutrition.DefaultNutrition;
 import com.utad.david.planfit.R;
+import io.fabric.sdk.android.Fabric;
 
 public class NutritionFavoriteDetailsDialogFragment extends DialogFragment implements FirebaseAdmin.FirebaseAdminFavoriteNutrition{
 
@@ -42,6 +44,8 @@ public class NutritionFavoriteDetailsDialogFragment extends DialogFragment imple
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(getContext(),new Crashlytics());
+
         SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteNutrition(this);
         defaultNutrition = getArguments().getParcelable(NUTRITION);
     }
