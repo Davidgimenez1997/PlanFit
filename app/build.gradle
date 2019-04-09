@@ -18,9 +18,9 @@ keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 android {
     signingConfigs {
         config {
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
-            storeFile file(keystoreProperties['storeFile'])
+            keyAlias 'planfit'
+            keyPassword '123456'
+            storeFile file('/Users/davidgimenezrodriguezderiveraa/Desktop/ClaveAPK_PlanFit/Untitled')
             /*keyAlias 'planfit'
             keyPassword '123456'
             storeFile file('/Users/davidgimenezrodriguezderiveraa/Desktop/ClaveAPK_PlanFit/Untitled')*/
@@ -31,7 +31,7 @@ android {
         applicationId "com.utad.david.planfit"
         minSdkVersion 24
         targetSdkVersion 28
-        versionCode 7
+        versionCode 8
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
