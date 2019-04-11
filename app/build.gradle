@@ -17,13 +17,16 @@ keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
     signingConfigs {
-        config {
+        planfit {
             keyAlias 'planfit'
             keyPassword '123456'
             storeFile file('/Users/davidgimenezrodriguezderiveraa/Desktop/ClaveAPK_PlanFit/Untitled')
-            /*keyAlias 'planfit'
-            keyPassword '123456'
-            storeFile file('/Users/davidgimenezrodriguezderiveraa/Desktop/ClaveAPK_PlanFit/Untitled')*/
+        }
+        config {
+            keyAlias 'planfit'
+            keyPassword 'planfit1997'
+            storeFile file('/Users/davidgimenezrodriguezderiveraa/Desktop/ClaveAPK_PlanFit/Untitled')
+            storePassword '123456'
         }
     }
     compileSdkVersion 28
@@ -34,11 +37,12 @@ android {
         versionCode 8
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        signingConfig signingConfigs.planfit
     }
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            //proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.config
         }
     }
@@ -77,6 +81,4 @@ dependencies {
     //Glide
     implementation 'com.github.bumptech.glide:glide:4.8.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.8.0'
-    //Timber
-    implementation 'com.jakewharton.timber:timber:4.7.1'
 }
