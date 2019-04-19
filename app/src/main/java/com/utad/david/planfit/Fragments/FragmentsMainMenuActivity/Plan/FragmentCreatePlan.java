@@ -1,22 +1,18 @@
-package com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.CreatePlan;
+package com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Plan;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
-import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.CreatePlan.Sport.SportCreatePlanFragment;
-import com.utad.david.planfit.Model.Plan.PlanSport;
 import com.utad.david.planfit.R;
+import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
-
-import java.util.List;
 
 public class FragmentCreatePlan extends Fragment {
 
@@ -33,7 +29,12 @@ public class FragmentCreatePlan extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fabric.with(getContext(), new Crashlytics());
+
+        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
+            Fabric.with(getContext(), new Crashlytics());
+        }else{
+            Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
+        }
 
     }
 
@@ -58,7 +59,6 @@ public class FragmentCreatePlan extends Fragment {
     }
 
     private void findById(View view){
-        //timeDuration = view.findViewById(R.id.time_plan);
         buttonSelectSport = view.findViewById(R.id.button_select_sport);
         buttonSelectNutrition = view.findViewById(R.id.button_Select_nutrition);
         buttonSaveAndExit = view.findViewById(R.id.button_exit);
@@ -66,35 +66,34 @@ public class FragmentCreatePlan extends Fragment {
     }
 
     private void onClickOpenNutrition() {
-        buttonSelectNutrition.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
+            buttonSelectNutrition.setOnClickListener(v -> {
                 if(mlistener!=null){
                     mlistener.onClickNutritionPlan();
                 }
-            }
-        });
+            });
+        }else{
+            buttonSelectNutrition.setEnabled(false);
+        }
     }
 
     private void onClickOpenSport() {
-        buttonSelectSport.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
+            buttonSelectSport.setOnClickListener(v -> {
                 if(mlistener!=null){
                     mlistener.onClickSportPlan();
                 }
-            }
-        });
+            });
+        }else{
+            buttonSelectSport.setEnabled(false);
+        }
     }
 
     private void onClickSaveAndClose(){
-        buttonSaveAndExit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mlistener != null) {
-                    getActivity().getSupportFragmentManager().popBackStack();
-                    mlistener.onClickSaveAndExit();
-                }
+        buttonSaveAndExit.setOnClickListener(v -> {
+            if (mlistener != null) {
+                getActivity().getSupportFragmentManager().popBackStack();
+                mlistener.onClickSaveAndExit();
             }
         });
     }

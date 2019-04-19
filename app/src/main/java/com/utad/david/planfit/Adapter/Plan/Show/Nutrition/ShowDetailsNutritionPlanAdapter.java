@@ -21,7 +21,7 @@ public class ShowDetailsNutritionPlanAdapter extends RecyclerView.Adapter<ShowDe
     private static String CENA = "Cena";
 
     private ArrayList<PlanNutrition> planNutritions;
-    private ShowDetailsNutritionPlanAdapter.OnItemClickListener listener;
+    private OnItemClickListener listener;
 
     public interface OnItemClickListener {
         void onItemClick(PlanNutrition item);
@@ -33,21 +33,18 @@ public class ShowDetailsNutritionPlanAdapter extends RecyclerView.Adapter<ShowDe
     }
 
     @Override
-    public ShowDetailsNutritionPlanAdapter.ShowDetailsPlanNutritionViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ShowDetailsPlanNutritionViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View rootView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_details_plan, parent, false);
-        return new ShowDetailsNutritionPlanAdapter.ShowDetailsPlanNutritionViewHolder(rootView);
+        return new ShowDetailsPlanNutritionViewHolder(rootView);
     }
 
     @Override
-    public void onBindViewHolder(ShowDetailsNutritionPlanAdapter.ShowDetailsPlanNutritionViewHolder holder, final int position) {
+    public void onBindViewHolder(ShowDetailsPlanNutritionViewHolder holder, final int position) {
         final PlanNutrition current = planNutritions.get(position);
         holder.setData(current);
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (listener != null) {
-                    listener.onItemClick(current);
-                }
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onItemClick(current);
             }
         });
     }

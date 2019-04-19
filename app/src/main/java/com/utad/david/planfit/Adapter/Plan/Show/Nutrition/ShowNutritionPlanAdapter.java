@@ -30,21 +30,18 @@ public class ShowNutritionPlanAdapter extends RecyclerView.Adapter<ShowNutrition
     }
 
     @Override
-    public ShowNutritionPlanAdapter.ShowPlanNutritionViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ShowPlanNutritionViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View rootView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_plan_show, parent, false);
-        return new ShowNutritionPlanAdapter.ShowPlanNutritionViewHolder(rootView);
+        return new ShowPlanNutritionViewHolder(rootView);
     }
 
     @Override
-    public void onBindViewHolder(ShowNutritionPlanAdapter.ShowPlanNutritionViewHolder holder, final int position) {
+    public void onBindViewHolder(ShowPlanNutritionViewHolder holder, final int position) {
         ArrayList<PlanNutrition> current = planNutritions.get(position);
         holder.setData(current);
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(listener!=null){
-                    listener.onItemClick(current);
-                }
+        holder.itemView.setOnClickListener(v -> {
+            if(listener!=null){
+                listener.onItemClick(current);
             }
         });
     }

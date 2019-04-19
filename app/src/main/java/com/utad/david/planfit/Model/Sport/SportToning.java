@@ -3,7 +3,7 @@ package com.utad.david.planfit.Model.Sport;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class SportToning implements Parcelable {
+public class SportToning implements Parcelable,Comparable<SportToning> {
 
     private String name;
     private String photo;
@@ -32,6 +32,11 @@ public class SportToning implements Parcelable {
             return new SportToning[size];
         }
     };
+
+    @Override
+    public int compareTo(SportToning o) {
+        return this.getName().compareTo(o.getName());
+    }
 
     public String getType() {
         return type;

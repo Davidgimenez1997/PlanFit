@@ -16,19 +16,19 @@ import java.util.List;
 public class SportSlimmingAdapter extends RecyclerView.Adapter<SportSlimmingAdapter.SlimmingViewHolder>  {
 
     private List<SportSlimming> sportSlimmingListm;
-    private SportSlimmingAdapter.OnItemClickListener listener;
+    private OnItemClickListener listener;
 
     public interface OnItemClickListener {
         void onItemClick(SportSlimming item);
     }
 
-    public SportSlimmingAdapter(List<SportSlimming> sportSlimmingListm, SportSlimmingAdapter.OnItemClickListener listener) {
+    public SportSlimmingAdapter(List<SportSlimming> sportSlimmingListm, OnItemClickListener listener) {
         this.sportSlimmingListm = sportSlimmingListm;
         this.listener = listener;
     }
 
     @Override
-    public SportSlimmingAdapter.SlimmingViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public SlimmingViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View rootView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recycleview, parent, false);
         return new SlimmingViewHolder(rootView);
     }
@@ -37,12 +37,9 @@ public class SportSlimmingAdapter extends RecyclerView.Adapter<SportSlimmingAdap
     public void onBindViewHolder(SlimmingViewHolder holder, int position) {
         final SportSlimming current = sportSlimmingListm.get(position);
         holder.setData(current);
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(listener != null)
-                    listener.onItemClick(current);
-            }
+        holder.itemView.setOnClickListener(v -> {
+            if(listener != null)
+                listener.onItemClick(current);
         });
     }
 

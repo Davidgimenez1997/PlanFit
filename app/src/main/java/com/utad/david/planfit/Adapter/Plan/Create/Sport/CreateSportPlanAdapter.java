@@ -28,21 +28,18 @@ public class CreateSportPlanAdapter extends RecyclerView.Adapter<CreateSportPlan
     }
 
     @Override
-    public CreateSportPlanAdapter.CreatePlanSportViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public CreatePlanSportViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View rootView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recycleview, parent, false);
-        return new CreateSportPlanAdapter.CreatePlanSportViewHolder(rootView);
+        return new CreatePlanSportViewHolder(rootView);
     }
 
     @Override
-    public void onBindViewHolder(CreateSportPlanAdapter.CreatePlanSportViewHolder holder, int position) {
+    public void onBindViewHolder(CreatePlanSportViewHolder holder, int position) {
         final DefaultSport current = defaultSports.get(position);
         holder.setData(current);
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(listener!=null){
-                    listener.onItemClick(current);
-                }
+        holder.itemView.setOnClickListener(v -> {
+            if(listener!=null){
+                listener.onItemClick(current);
             }
         });
     }

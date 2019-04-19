@@ -16,33 +16,30 @@ import java.util.List;
 public class NutritionToningAdapter extends RecyclerView.Adapter<NutritionToningAdapter.ToningViewHolder>  {
 
     private List<NutritionToning> nutritionTonings;
-    private NutritionToningAdapter.OnItemClickListener listener;
+    private OnItemClickListener listener;
 
     public interface OnItemClickListener {
         void onItemClick(NutritionToning item);
     }
 
-    public NutritionToningAdapter(List<NutritionToning> nutritionTonings, NutritionToningAdapter.OnItemClickListener listener) {
+    public NutritionToningAdapter(List<NutritionToning> nutritionTonings, OnItemClickListener listener) {
         this.nutritionTonings = nutritionTonings;
         this.listener = listener;
     }
 
     @Override
-    public NutritionToningAdapter.ToningViewHolder onCreateViewHolder(ViewGroup parent,int viewType) {
+    public ToningViewHolder onCreateViewHolder(ViewGroup parent,int viewType) {
         View rootView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recycleview, parent, false);
-        return new NutritionToningAdapter.ToningViewHolder(rootView);
+        return new ToningViewHolder(rootView);
     }
 
     @Override
-    public void onBindViewHolder(NutritionToningAdapter.ToningViewHolder holder, int position) {
+    public void onBindViewHolder(ToningViewHolder holder, int position) {
         final NutritionToning current = nutritionTonings.get(position);
         holder.setData(current);
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(listener != null)
-                    listener.onItemClick(current);
-            }
+        holder.itemView.setOnClickListener(v -> {
+            if(listener != null)
+                listener.onItemClick(current);
         });
     }
 

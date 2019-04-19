@@ -3,7 +3,7 @@ package com.utad.david.planfit.Model.Nutrition;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class NutritionGainVolume implements Parcelable{
+public class NutritionGainVolume implements Parcelable, Comparable<NutritionGainVolume>{
 
     private String name;
     private String photo;
@@ -21,7 +21,7 @@ public class NutritionGainVolume implements Parcelable{
         description = in.readString();
     }
 
-    public static final Parcelable.Creator<NutritionGainVolume> CREATOR = new Parcelable.Creator<NutritionGainVolume>() {
+    public static final Creator<NutritionGainVolume> CREATOR = new Creator<NutritionGainVolume>() {
         @Override
         public NutritionGainVolume createFromParcel(Parcel in) {
             return new NutritionGainVolume(in);
@@ -32,6 +32,11 @@ public class NutritionGainVolume implements Parcelable{
             return new NutritionGainVolume[size];
         }
     };
+
+    @Override
+    public int compareTo(NutritionGainVolume o) {
+        return this.getName().compareTo(o.getName());
+    }
 
     public String getType() {
         return type;

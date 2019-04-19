@@ -1,14 +1,38 @@
 package com.utad.david.planfit.Model;
 
-import com.utad.david.planfit.Data.EncryptDecrypt;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-public class User {
+public class User implements Parcelable {
 
     private String email;
     private String password;
     private String fullName;
     private String nickName;
     private String imgUser;
+
+    public User() {
+    }
+
+    protected User(Parcel in) {
+        email = in.readString();
+        password = in.readString();
+        fullName = in.readString();
+        nickName = in.readString();
+        imgUser = in.readString();
+    }
+
+    public static final Creator<User> CREATOR = new Creator<User>() {
+        @Override
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
 
     public String getEmail() {
         return email;
@@ -59,5 +83,19 @@ public class User {
                 ", nickName='" + nickName + '\'' +
                 ", imgUser='" + imgUser + '\'' +
                 '}';
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(email);
+        dest.writeString(password);
+        dest.writeString(fullName);
+        dest.writeString(nickName);
+        dest.writeString(imgUser);
     }
 }

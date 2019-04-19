@@ -26,6 +26,7 @@ import com.utad.david.planfit.Activitys.MainMenuActivity;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.R;
+import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 
 import java.io.FileNotFoundException;
@@ -42,10 +43,14 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fabric.with(getContext(), new Crashlytics());
-        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminLoginAndRegisterListener(this);
-        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminInsertAndDownloandListener(this);
 
+        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
+            Fabric.with(getContext(), new Crashlytics());
+            SessionUser.getInstance().firebaseAdmin.setFirebaseAdminLoginAndRegisterListener(this);
+            SessionUser.getInstance().firebaseAdmin.setFirebaseAdminInsertAndDownloandListener(this);
+        }else{
+            Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
+        }
     }
 
     private EditText fullName;
@@ -98,9 +103,13 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
     };
 
     private boolean enableButton(){
-        if(!checkEditText()){
-            return true;
-        }else {
+        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
+            if(!checkEditText()){
+                return true;
+            }else {
+                return false;
+            }
+        }else{
             return false;
         }
     }
@@ -122,45 +131,36 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
     }
 
     private void onClickButtonOk(){
-        buttonOk.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mListener!=null){
-                    setDataUser();
-                    mProgress.show();
-                    mListener.clickButtonOk();
-                }else{
-                    mProgress.dismiss();
-                }
+        buttonOk.setOnClickListener(v -> {
+            if (mListener!=null){
+                setDataUser();
+                mProgress.show();
+                mListener.clickButtonOk();
+            }else{
+                mProgress.dismiss();
             }
         });
     }
 
     private void onClickButtonBackDetails(){
-        buttonBackDetails.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mListener!=null){
-                    mListener.clickButtonBackDetails();
-                }
+        buttonBackDetails.setOnClickListener(v -> {
+            if(mListener!=null){
+                mListener.clickButtonBackDetails();
             }
         });
     }
 
     private void openGallery(){
-        imageViewUser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent();
-                if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-                    intent.setAction(Intent.ACTION_GET_CONTENT);
-                } else {
-                    intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
-                    intent.addCategory(Intent.CATEGORY_OPENABLE);
-                }
-                intent.setType("image/*");
-                startActivityForResult(Intent.createChooser(intent, getString(R.string.menuopengalery)),1);
+        imageViewUser.setOnClickListener(v -> {
+            Intent intent = new Intent();
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+            } else {
+                intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
             }
+            intent.setType("image/*");
+            startActivityForResult(Intent.createChooser(intent, getString(R.string.menuopengalery)),1);
         });
     }
 
@@ -247,14 +247,12 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
     private void errorSingInRegister(String title) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext(),R.style.AlertDialogTheme);
         builder.setMessage(title)
-                .setPositiveButton(R.string.info_dialog_err, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        RegisterFragment registerFragment = new RegisterFragment();
-                        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                        transaction.replace(R.id.frameLayout_FirstActivity, registerFragment);
-                        transaction.addToBackStack(null);
-                        transaction.commit();
-                    }
+                .setPositiveButton(R.string.info_dialog_err, (dialog, id) -> {
+                    RegisterFragment registerFragment = new RegisterFragment();
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                    transaction.replace(R.id.frameLayout_FirstActivity, registerFragment);
+                    transaction.addToBackStack(null);
+                    transaction.commit();
                 });
         builder.create();
         builder.show();
@@ -264,8 +262,7 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
     public void singInWithEmailAndPassword(boolean end) {}
 
     @Override
-    public void downloadUserDataInFirebase(boolean end) {
-    }
+    public void downloadUserDataInFirebase(boolean end) {}
 
     @Override
     public void downloadInfotDeveloper(boolean end) {}

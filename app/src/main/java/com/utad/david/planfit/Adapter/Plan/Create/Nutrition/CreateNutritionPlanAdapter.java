@@ -16,33 +16,30 @@ import java.util.List;
 public class CreateNutritionPlanAdapter extends RecyclerView.Adapter<CreateNutritionPlanAdapter.CreatePlanNutritionViewHolder> {
 
     private List<DefaultNutrition> defaultNutritions;
-    private CreateNutritionPlanAdapter.OnItemClickListener listener;
+    private OnItemClickListener listener;
 
     public interface OnItemClickListener {
         void onItemClick(DefaultNutrition item);
     }
 
-    public CreateNutritionPlanAdapter(List<DefaultNutrition> defaultNutritions, CreateNutritionPlanAdapter.OnItemClickListener listener) {
+    public CreateNutritionPlanAdapter(List<DefaultNutrition> defaultNutritions, OnItemClickListener listener) {
         this.defaultNutritions = defaultNutritions;
         this.listener = listener;
     }
 
     @Override
-    public CreateNutritionPlanAdapter.CreatePlanNutritionViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public CreatePlanNutritionViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View rootView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recycleview, parent, false);
-        return new CreateNutritionPlanAdapter.CreatePlanNutritionViewHolder(rootView);
+        return new CreatePlanNutritionViewHolder(rootView);
     }
 
     @Override
-    public void onBindViewHolder(CreateNutritionPlanAdapter.CreatePlanNutritionViewHolder holder, int position) {
+    public void onBindViewHolder(CreatePlanNutritionViewHolder holder, int position) {
         final DefaultNutrition current = defaultNutritions.get(position);
         holder.setData(current);
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(listener!=null){
-                    listener.onItemClick(current);
-                }
+        holder.itemView.setOnClickListener(v -> {
+            if(listener!=null){
+                listener.onItemClick(current);
             }
         });
     }

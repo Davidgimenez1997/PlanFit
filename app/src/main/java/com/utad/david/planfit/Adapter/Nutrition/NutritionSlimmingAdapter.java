@@ -16,33 +16,30 @@ import java.util.List;
 public class NutritionSlimmingAdapter extends RecyclerView.Adapter<NutritionSlimmingAdapter.SlimmingViewHolder>  {
 
     private List<NutritionSlimming> nutritionSlimmingList;
-    private NutritionSlimmingAdapter.OnItemClickListener listener;
+    private OnItemClickListener listener;
 
     public interface OnItemClickListener {
         void onItemClick(NutritionSlimming item);
     }
 
-    public NutritionSlimmingAdapter(List<NutritionSlimming> nutritionSlimmings, NutritionSlimmingAdapter.OnItemClickListener listener) {
+    public NutritionSlimmingAdapter(List<NutritionSlimming> nutritionSlimmings, OnItemClickListener listener) {
         this.nutritionSlimmingList = nutritionSlimmings;
         this.listener = listener;
     }
 
     @Override
-    public NutritionSlimmingAdapter.SlimmingViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public SlimmingViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View rootView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recycleview, parent, false);
-        return new NutritionSlimmingAdapter.SlimmingViewHolder(rootView);
+        return new SlimmingViewHolder(rootView);
     }
 
     @Override
-    public void onBindViewHolder(NutritionSlimmingAdapter.SlimmingViewHolder holder, int position) {
+    public void onBindViewHolder(SlimmingViewHolder holder, int position) {
         final NutritionSlimming current = nutritionSlimmingList.get(position);
         holder.setData(current);
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(listener != null)
-                    listener.onItemClick(current);
-            }
+        holder.itemView.setOnClickListener(v -> {
+            if(listener != null)
+                listener.onItemClick(current);
         });
     }
 

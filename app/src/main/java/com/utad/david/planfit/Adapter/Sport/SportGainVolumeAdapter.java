@@ -16,19 +16,19 @@ import java.util.List;
 public class SportGainVolumeAdapter extends RecyclerView.Adapter<SportGainVolumeAdapter.GainVolumeViewHolder>  {
 
     private List<SportGainVolume> sportGainVolumeList;
-    private SportGainVolumeAdapter.OnItemClickListener listener;
+    private OnItemClickListener listener;
 
     public interface OnItemClickListener {
         void onItemClick(SportGainVolume item);
     }
 
-    public SportGainVolumeAdapter(List<SportGainVolume> sportGainVolumes, SportGainVolumeAdapter.OnItemClickListener listener) {
+    public SportGainVolumeAdapter(List<SportGainVolume> sportGainVolumes, OnItemClickListener listener) {
         this.sportGainVolumeList = sportGainVolumes;
         this.listener = listener;
     }
 
     @Override
-    public SportGainVolumeAdapter.GainVolumeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public GainVolumeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View rootView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recycleview, parent, false);
         return new GainVolumeViewHolder(rootView);
     }
@@ -37,12 +37,9 @@ public class SportGainVolumeAdapter extends RecyclerView.Adapter<SportGainVolume
     public void onBindViewHolder(GainVolumeViewHolder holder, int position) {
         final SportGainVolume current = sportGainVolumeList.get(position);
         holder.setData(current);
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(listener != null)
-                    listener.onItemClick(current);
-            }
+        holder.itemView.setOnClickListener(v -> {
+            if(listener != null)
+                listener.onItemClick(current);
         });
     }
 

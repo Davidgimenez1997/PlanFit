@@ -4,7 +4,6 @@ import android.os.AsyncTask;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.utad.david.planfit.Fragments.FragmentsFirstActivity.LoginFragment;
 import com.utad.david.planfit.Fragments.FragmentsFirstActivity.RegisterDetailsFragmet;
 import com.utad.david.planfit.Fragments.FragmentsFirstActivity.RegisterFragment;

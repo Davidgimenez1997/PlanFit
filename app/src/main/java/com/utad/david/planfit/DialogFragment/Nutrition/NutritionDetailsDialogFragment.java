@@ -1,6 +1,7 @@
 package com.utad.david.planfit.DialogFragment.Nutrition;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -27,6 +28,7 @@ import com.utad.david.planfit.Model.Nutrition.NutritionGainVolume;
 import com.utad.david.planfit.Model.Nutrition.NutritionSlimming;
 import com.utad.david.planfit.Model.Nutrition.NutritionToning;
 import com.utad.david.planfit.R;
+import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 
 import java.util.ArrayList;
@@ -48,36 +50,54 @@ public class NutritionDetailsDialogFragment extends DialogFragment implements Fi
         void onClickClose();
     }
 
-    public static NutritionDetailsDialogFragment newInstanceSlimming(NutritionSlimming nutritionSlimming, int option) {
+    public static NutritionDetailsDialogFragment newInstanceSlimming(NutritionSlimming nutritionSlimming, int option, Context context) {
         NutritionDetailsDialogFragment fragment = new NutritionDetailsDialogFragment();
         Bundle args = new Bundle();
         args.putParcelable(SLIMMING, nutritionSlimming);
         args.putInt(OPTION, option);
         fragment.setArguments(args);
-        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteNutrition(fragment);
-        SessionUser.getInstance().firebaseAdmin.downloadSlimmingNutritionFavorite();
+
+        if(UtilsNetwork.checkConnectionInternetDevice(context)){
+            SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteNutrition(fragment);
+            SessionUser.getInstance().firebaseAdmin.downloadSlimmingNutritionFavorite();
+        }else{
+            Toast.makeText(context,"Comprueba su conexion de internet y reinice la aplicación",Toast.LENGTH_LONG).show();
+        }
+
         return fragment;
     }
 
-    public static NutritionDetailsDialogFragment newInstanceGainVolume(NutritionGainVolume nutritionGainVolume, int option) {
+    public static NutritionDetailsDialogFragment newInstanceGainVolume(NutritionGainVolume nutritionGainVolume, int option, Context context) {
         NutritionDetailsDialogFragment fragment = new NutritionDetailsDialogFragment();
         Bundle args = new Bundle();
         args.putParcelable(GAINVOLUME, nutritionGainVolume);
         args.putInt(OPTION, option);
         fragment.setArguments(args);
-        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteNutrition(fragment);
-        SessionUser.getInstance().firebaseAdmin.downloadGainVolumeNutritionFavorite();
+
+        if(UtilsNetwork.checkConnectionInternetDevice(context)){
+            SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteNutrition(fragment);
+            SessionUser.getInstance().firebaseAdmin.downloadGainVolumeNutritionFavorite();
+        }else{
+            Toast.makeText(context,"Comprueba su conexion de internet y reinice la aplicación",Toast.LENGTH_LONG).show();
+        }
+
         return fragment;
     }
 
-    public static NutritionDetailsDialogFragment newInstanceToning(NutritionToning nutritionToning, int option) {
+    public static NutritionDetailsDialogFragment newInstanceToning(NutritionToning nutritionToning, int option, Context context) {
         NutritionDetailsDialogFragment fragment = new NutritionDetailsDialogFragment();
         Bundle args = new Bundle();
         args.putParcelable(TONING, nutritionToning);
         args.putInt(OPTION, option);
         fragment.setArguments(args);
-        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteNutrition(fragment);
-        SessionUser.getInstance().firebaseAdmin.downloadToningNutritionFavorite();
+
+        if(UtilsNetwork.checkConnectionInternetDevice(context)){
+            SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteNutrition(fragment);
+            SessionUser.getInstance().firebaseAdmin.downloadToningNutritionFavorite();
+        }else{
+            Toast.makeText(context,"Comprueba su conexion de internet y reinice la aplicación",Toast.LENGTH_LONG).show();
+        }
+
         return fragment;
     }
 
@@ -89,7 +109,9 @@ public class NutritionDetailsDialogFragment extends DialogFragment implements Fi
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Fabric.with(getContext(),new Crashlytics());
+        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
+            Fabric.with(getContext(),new Crashlytics());
+        }
 
         nutritionSlimming = getArguments().getParcelable(SLIMMING);
         nutritionToning = getArguments().getParcelable(TONING);
@@ -124,12 +146,9 @@ public class NutritionDetailsDialogFragment extends DialogFragment implements Fi
     }
 
     private void onClickCloseButton(){
-        buttonClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(listener!=null){
-                    listener.onClickClose();
-                }
+        buttonClose.setOnClickListener(v -> {
+            if(listener!=null){
+                listener.onClickClose();
             }
         });
     }
@@ -169,9 +188,8 @@ public class NutritionDetailsDialogFragment extends DialogFragment implements Fi
     }
 
     private void onClickButtonOpenRecipe() {
-        buttonOpenRecipe.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
+            buttonOpenRecipe.setOnClickListener(v -> {
                 Intent i = new Intent(Intent.ACTION_VIEW);
                 switch (option){
                     case 0:
@@ -185,14 +203,15 @@ public class NutritionDetailsDialogFragment extends DialogFragment implements Fi
                         break;
                 }
                 startActivity(i);
-            }
-        });
+            });
+        }else{
+            buttonOpenRecipe.setEnabled(false);
+        }
     }
 
     private void onClickButtonOpenInsertFavorite() {
-        buttonInsert.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
+            buttonInsert.setOnClickListener(v -> {
                 showLoading();
                 switch (option){
                     case 0:
@@ -205,14 +224,15 @@ public class NutritionDetailsDialogFragment extends DialogFragment implements Fi
                         SessionUser.getInstance().firebaseAdmin.addFavoriteNutritionGainVolumeCouldFirestore(nutritionGainVolume);
                         break;
                 }
-            }
-        });
+            });
+        }else{
+            buttonInsert.setEnabled(false);
+        }
     }
 
     private void onClickButtonOpenDeleteFavorite(){
-        buttonDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
+            buttonDelete.setOnClickListener(v -> {
                 showLoading();
                 switch (option){
                     case 0:
@@ -225,8 +245,10 @@ public class NutritionDetailsDialogFragment extends DialogFragment implements Fi
                         SessionUser.getInstance().firebaseAdmin.deleteFavoriteNutritionGainVolume(nutritionGainVolume);
                         break;
                 }
-            }
-        });
+            });
+        }else{
+            buttonDelete.setEnabled(false);
+        }
     }
 
     @Override

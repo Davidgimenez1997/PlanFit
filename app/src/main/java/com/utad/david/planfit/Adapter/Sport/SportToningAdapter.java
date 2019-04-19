@@ -16,19 +16,19 @@ import java.util.List;
 public class SportToningAdapter extends RecyclerView.Adapter<SportToningAdapter.ToningViewHolder>  {
 
     private List<SportToning> sportToningList;
-    private SportToningAdapter.OnItemClickListener listener;
+    private OnItemClickListener listener;
 
     public interface OnItemClickListener {
         void onItemClick(SportToning item);
     }
 
-    public SportToningAdapter(List<SportToning> sportToningList, SportToningAdapter.OnItemClickListener listener) {
+    public SportToningAdapter(List<SportToning> sportToningList, OnItemClickListener listener) {
         this.sportToningList = sportToningList;
         this.listener = listener;
     }
 
     @Override
-    public SportToningAdapter.ToningViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ToningViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View rootView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recycleview, parent, false);
         return new ToningViewHolder(rootView);
     }
@@ -37,12 +37,9 @@ public class SportToningAdapter extends RecyclerView.Adapter<SportToningAdapter.
     public void onBindViewHolder(ToningViewHolder holder, int position) {
         final SportToning current = sportToningList.get(position);
         holder.setData(current);
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(listener != null)
-                    listener.onItemClick(current);
-            }
+        holder.itemView.setOnClickListener(v -> {
+            if(listener != null)
+                listener.onItemClick(current);
         });
     }
 

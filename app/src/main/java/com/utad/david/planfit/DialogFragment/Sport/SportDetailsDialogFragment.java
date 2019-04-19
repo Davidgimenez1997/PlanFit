@@ -1,6 +1,7 @@
 package com.utad.david.planfit.DialogFragment.Sport;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -27,6 +28,7 @@ import com.utad.david.planfit.Model.Sport.SportGainVolume;
 import com.utad.david.planfit.Model.Sport.SportSlimming;
 import com.utad.david.planfit.Model.Sport.SportToning;
 import com.utad.david.planfit.R;
+import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 
 import java.util.ArrayList;
@@ -49,47 +51,69 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
         void onClickClose();
     }
 
-    public static SportDetailsDialogFragment newInstanceSlimming(SportSlimming sportSlimming, int option) {
+    public static SportDetailsDialogFragment newInstanceSlimming(SportSlimming sportSlimming, int option, Context context) {
         SportDetailsDialogFragment fragment = new SportDetailsDialogFragment();
         Bundle args = new Bundle();
         args.putParcelable(SLIMMING, sportSlimming);
         args.putInt(OPTION, option);
         fragment.setArguments(args);
-        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteSport(fragment);
-        SessionUser.getInstance().firebaseAdmin.downloadSlimmingSportFavorite();
+
+        if(UtilsNetwork.checkConnectionInternetDevice(context)){
+            SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteSport(fragment);
+            SessionUser.getInstance().firebaseAdmin.downloadSlimmingSportFavorite();
+        }else{
+            Toast.makeText(context,"Comprueba su conexion de internet y reinice la aplicación",Toast.LENGTH_LONG).show();
+        }
+
         return fragment;
     }
 
-    public static SportDetailsDialogFragment newInstanceGainVolume(SportGainVolume sportGainVolume, int option) {
+    public static SportDetailsDialogFragment newInstanceGainVolume(SportGainVolume sportGainVolume, int option,Context context) {
         SportDetailsDialogFragment fragment = new SportDetailsDialogFragment();
         Bundle args = new Bundle();
         args.putParcelable(GAINVOLUME, sportGainVolume);
         args.putInt(OPTION, option);
         fragment.setArguments(args);
-        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteSport(fragment);
-        SessionUser.getInstance().firebaseAdmin.downloadGainVolumeSportFavorite();
+
+        if(UtilsNetwork.checkConnectionInternetDevice(context)){
+            SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteSport(fragment);
+            SessionUser.getInstance().firebaseAdmin.downloadGainVolumeSportFavorite();
+        }else{
+            Toast.makeText(context,"Comprueba su conexion de internet y reinice la aplicación",Toast.LENGTH_LONG).show();
+        }
+
         return fragment;
     }
 
-    public static SportDetailsDialogFragment newInstanceToning(SportToning sportToning, int option) {
+    public static SportDetailsDialogFragment newInstanceToning(SportToning sportToning, int option,Context context) {
         SportDetailsDialogFragment fragment = new SportDetailsDialogFragment();
         Bundle args = new Bundle();
         args.putParcelable(TONING, sportToning);
         args.putInt(OPTION, option);
         fragment.setArguments(args);
-        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteSport(fragment);
-        SessionUser.getInstance().firebaseAdmin.downloadToningSportFavorite();
+
+        if(UtilsNetwork.checkConnectionInternetDevice(context)){
+            SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteSport(fragment);
+            SessionUser.getInstance().firebaseAdmin.downloadToningSportFavorite();
+        }else{
+            Toast.makeText(context,"Comprueba su conexion de internet y reinice la aplicación",Toast.LENGTH_LONG).show();
+        }
+
         return fragment;
     }
 
-    public void setListener(SportDetailsDialogFragment.CallbackSport listener) {
+    public void setListener(CallbackSport listener) {
         this.listener = listener;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fabric.with(getContext(),new Crashlytics());
+
+        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
+            Fabric.with(getContext(),new Crashlytics());
+        }
+
         sportSlimming = getArguments().getParcelable(SLIMMING);
         sportToning = getArguments().getParcelable(TONING);
         sportGainVolume = getArguments().getParcelable(GAINVOLUME);
@@ -133,12 +157,9 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
     }
 
     private void onClickCloseButton(){
-        buttonClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(listener!=null){
-                    listener.onClickClose();
-                }
+        buttonClose.setOnClickListener(v -> {
+            if(listener!=null){
+                listener.onClickClose();
             }
         });
     }
@@ -168,9 +189,8 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
     }
 
     private void onClickButtonOpenYoutube() {
-        buttonOpenYoutube.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
+            buttonOpenYoutube.setOnClickListener(v -> {
                 Intent intent = new Intent(getContext(), YoutubeActivity.class);
                 switch (option){
                     case 0:
@@ -185,34 +205,37 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
                 }
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
-            }
-        });
+            });
+        }else{
+            buttonOpenYoutube.setEnabled(false);
+        }
     }
 
     private void onClickButtonOpenInsertFavorite() {
-            buttonInsert.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    showLoading();
-                    switch (option){
-                        case 0:
-                            SessionUser.getInstance().firebaseAdmin.addFavoriteSportSlimmingCouldFirestore(sportSlimming);
-                            break;
-                        case 1:
-                            SessionUser.getInstance().firebaseAdmin.addFavoriteSportToningCouldFirestore(sportToning);
-                            break;
-                        case 2:
-                            SessionUser.getInstance().firebaseAdmin.addFavoriteSportGainVolumeCouldFirestore(sportGainVolume);
-                            break;
-                    }
+        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
+            buttonInsert.setOnClickListener(v -> {
+                showLoading();
+                switch (option){
+                    case 0:
+                        SessionUser.getInstance().firebaseAdmin.addFavoriteSportSlimmingCouldFirestore(sportSlimming);
+                        break;
+                    case 1:
+                        SessionUser.getInstance().firebaseAdmin.addFavoriteSportToningCouldFirestore(sportToning);
+                        break;
+                    case 2:
+                        SessionUser.getInstance().firebaseAdmin.addFavoriteSportGainVolumeCouldFirestore(sportGainVolume);
+                        break;
                 }
             });
+        }else{
+            buttonInsert.setEnabled(false);
+        }
+
     }
 
     private void onClickButtonOpenDeleteFavorite(){
-        buttonDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
+            buttonDelete.setOnClickListener(v -> {
                 showLoading();
                 switch (option){
                     case 0:
@@ -225,8 +248,11 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
                         SessionUser.getInstance().firebaseAdmin.deleteFavoriteSportGainVolume(sportGainVolume);
                         break;
                 }
-            }
-        });
+            });
+        }else{
+            buttonDelete.setEnabled(false);
+        }
+
     }
 
     @Override

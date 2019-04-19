@@ -1,4 +1,4 @@
-package com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.CreatePlan.Sport;
+package com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Plan.Create.Sport;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -15,6 +15,7 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 import butterknife.ButterKnife;
 import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Adapter.Plan.Create.Sport.CreateSportPlanAdapter;
@@ -23,8 +24,10 @@ import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.DialogFragment.Plan.Sport.CreateSportPlanDetailsDialogFragment;
 import com.utad.david.planfit.Model.Sport.DefaultSport;
 import com.utad.david.planfit.R;
+import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 
+import java.util.Collections;
 import java.util.List;
 
 public class SportCreatePlanFragment extends Fragment implements FirebaseAdmin.FirebaseAdminFavoriteSport,CreateSportPlanDetailsDialogFragment.CallbackCreateSport {
@@ -41,15 +44,15 @@ public class SportCreatePlanFragment extends Fragment implements FirebaseAdmin.F
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fabric.with(getContext(), new Crashlytics());
-
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteSport(this);
-        SessionUser.getInstance().firebaseAdmin.downloadAllSportFavorite();
+        if (UtilsNetwork.checkConnectionInternetDevice(getContext())) {
+            showLoading();
+            Fabric.with(getContext(), new Crashlytics());
+            SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteSport(this);
+            SessionUser.getInstance().firebaseAdmin.downloadAllSportFavorite();
+        } else {
+            hideLoading();
+            Toast.makeText(getContext(), getString(R.string.info_network_device), Toast.LENGTH_LONG).show();
+        }
     }
 
     private RecyclerView mRecyclerView;
@@ -64,13 +67,11 @@ public class SportCreatePlanFragment extends Fragment implements FirebaseAdmin.F
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_sport_create_plan, container, false);
 
-        showLoading();
         mRecyclerView = view.findViewById(R.id.recycler_view_sport);
         linearLayout = view.findViewById(R.id.linear_empty_favorites);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new GridLayoutManager(getContext(), 2);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        hideLoading();
 
         return view;
     }
@@ -79,23 +80,25 @@ public class SportCreatePlanFragment extends Fragment implements FirebaseAdmin.F
     public void downloandCollectionSportFavorite(boolean end) {
         if(end==true){
             hideLoading();
+
             linearLayout.setVisibility(View.GONE);
             mRecyclerView.setVisibility(View.VISIBLE);
-            List<DefaultSport> allSportFavorite = SessionUser.getInstance().firebaseAdmin.allSportFavorite;
-            mAdapter = new CreateSportPlanAdapter(allSportFavorite, new CreateSportPlanAdapter.OnItemClickListener() {
-                @Override
-                public void onItemClick(DefaultSport item) {
-                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                    Fragment prev = getFragmentManager().findFragmentByTag("dialog");
-                    if (prev != null) {
-                        transaction.remove(prev);
-                    }
-                    transaction.addToBackStack(null);
-                    newFragment = CreateSportPlanDetailsDialogFragment.newInstance(item);
-                    newFragment.setListener(fragment);
-                    newFragment.show(transaction, "dialog");
 
+            List<DefaultSport> allSportFavorite = SessionUser.getInstance().firebaseAdmin.allSportFavorite;
+
+            Collections.sort(allSportFavorite);
+
+            mAdapter = new CreateSportPlanAdapter(allSportFavorite, item -> {
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                Fragment prev = getFragmentManager().findFragmentByTag("dialog");
+                if (prev != null) {
+                    transaction.remove(prev);
                 }
+                transaction.addToBackStack(null);
+                newFragment = CreateSportPlanDetailsDialogFragment.newInstance(item);
+                newFragment.setListener(fragment);
+                newFragment.show(transaction, "dialog");
+
             });
             mRecyclerView.setAdapter(mAdapter);
         }
@@ -115,12 +118,6 @@ public class SportCreatePlanFragment extends Fragment implements FirebaseAdmin.F
         newFragment.dismiss();
     }
 
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        //mListener = null;
-    }
 
     private ProgressDialog progressDialog;
 

@@ -34,21 +34,18 @@ public class SportFavoriteAdapter extends RecyclerView.Adapter<SportFavoriteAdap
     }
 
     @Override
-    public SportFavoriteAdapter.SportFavoriteViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public SportFavoriteViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View rootView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recycleview, parent, false);
-        return new SportFavoriteAdapter.SportFavoriteViewHolder(rootView);
+        return new SportFavoriteViewHolder(rootView);
     }
 
     @Override
-    public void onBindViewHolder(SportFavoriteAdapter.SportFavoriteViewHolder holder, int position) {
+    public void onBindViewHolder(SportFavoriteViewHolder holder, int position) {
         final DefaultSport current = defaultSports.get(position);
         holder.setData(current);
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(listener!=null){
-                    listener.onItemClick(current);
-                }
+        holder.itemView.setOnClickListener(v -> {
+            if(listener!=null){
+                listener.onItemClick(current);
             }
         });
     }

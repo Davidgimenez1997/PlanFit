@@ -16,33 +16,30 @@ import java.util.List;
 public class NutritionGainVolumeAdapter extends RecyclerView.Adapter<NutritionGainVolumeAdapter.GainVolumeViewHolder>{
 
     private List<NutritionGainVolume> nutritionGainVolumeList;
-    private NutritionGainVolumeAdapter.OnItemClickListener listener;
+    private OnItemClickListener listener;
 
     public interface OnItemClickListener {
         void onItemClick(NutritionGainVolume item);
     }
 
-    public NutritionGainVolumeAdapter(List<NutritionGainVolume> nutritionGainVolumes, NutritionGainVolumeAdapter.OnItemClickListener listener) {
+    public NutritionGainVolumeAdapter(List<NutritionGainVolume> nutritionGainVolumes, OnItemClickListener listener) {
         this.nutritionGainVolumeList = nutritionGainVolumes;
         this.listener = listener;
     }
 
     @Override
-    public NutritionGainVolumeAdapter.GainVolumeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public GainVolumeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View rootView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recycleview, parent, false);
-        return new NutritionGainVolumeAdapter.GainVolumeViewHolder(rootView);
+        return new GainVolumeViewHolder(rootView);
     }
 
     @Override
-    public void onBindViewHolder(NutritionGainVolumeAdapter.GainVolumeViewHolder holder, int position) {
+    public void onBindViewHolder(GainVolumeViewHolder holder, int position) {
         final NutritionGainVolume current = nutritionGainVolumeList.get(position);
         holder.setData(current);
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(listener != null)
-                    listener.onItemClick(current);
-            }
+        holder.itemView.setOnClickListener(v -> {
+            if(listener != null)
+                listener.onItemClick(current);
         });
     }
 

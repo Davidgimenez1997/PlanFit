@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.crashlytics.android.Crashlytics;
@@ -21,6 +22,7 @@ import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Model.Nutrition.DefaultNutrition;
 import com.utad.david.planfit.R;
+import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 
 public class NutritionFavoriteDetailsDialogFragment extends DialogFragment implements FirebaseAdmin.FirebaseAdminFavoriteNutrition{
@@ -44,9 +46,14 @@ public class NutritionFavoriteDetailsDialogFragment extends DialogFragment imple
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fabric.with(getContext(),new Crashlytics());
 
-        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteNutrition(this);
+        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
+            Fabric.with(getContext(),new Crashlytics());
+            SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteNutrition(this);
+        }else{
+            Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
+        }
+
         defaultNutrition = getArguments().getParcelable(NUTRITION);
     }
 
@@ -93,37 +100,36 @@ public class NutritionFavoriteDetailsDialogFragment extends DialogFragment imple
     }
 
     private void onClickButtonOpenRecipe() {
-        buttonOpenRecipe.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        if(!UtilsNetwork.checkConnectionInternetDevice(getContext())){
+            buttonOpenRecipe.setEnabled(false);
+        }else{
+            buttonOpenRecipe.setOnClickListener(v -> {
                 Intent i = new Intent(Intent.ACTION_VIEW);
                 i.setData(Uri.parse(defaultNutrition.getUrl()));
                 startActivity(i);
-            }
-        });
+            });
+        }
     }
 
     private void onClickCloseButton(){
-        buttonClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(listener!=null){
-                    listener.onClickClose();
-                }
+        buttonClose.setOnClickListener(v -> {
+            if(listener!=null){
+                listener.onClickClose();
             }
         });
     }
 
     private void onClickDeleteButton(){
-        buttonDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
+            buttonDelete.setOnClickListener(v -> {
                 if(listener!=null){
                     SessionUser.getInstance().firebaseAdmin.deleteDefaultNutritionFavorite(defaultNutrition);
                     dismiss();
                 }
-            }
-        });
+            });
+        }else{
+            buttonDelete.setEnabled(false);
+        }
     }
 
     @Override

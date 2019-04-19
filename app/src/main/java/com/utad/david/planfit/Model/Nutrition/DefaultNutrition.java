@@ -3,7 +3,7 @@ package com.utad.david.planfit.Model.Nutrition;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class DefaultNutrition implements Parcelable {
+public class DefaultNutrition implements Parcelable ,Comparable<DefaultNutrition>{
 
     private String name;
     private String photo;
@@ -47,6 +47,11 @@ public class DefaultNutrition implements Parcelable {
             return new DefaultNutrition[size];
         }
     };
+
+    @Override
+    public int compareTo(DefaultNutrition o) {
+        return this.getName().compareTo(o.getName());
+    }
 
     public String getName() {
         return name;

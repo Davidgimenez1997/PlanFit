@@ -16,12 +16,14 @@ import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import butterknife.ButterKnife;
 import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Model.Developer;
 import com.utad.david.planfit.R;
+import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 
 public class InfoAboutApp extends DialogFragment implements FirebaseAdmin.FirebaseAdminInsertAndDownloandListener {
@@ -29,9 +31,16 @@ public class InfoAboutApp extends DialogFragment implements FirebaseAdmin.Fireba
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fabric.with(getContext(), new Crashlytics());
 
-        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminInsertAndDownloandListener(this);
+        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
+            showLoading();
+            SessionUser.getInstance().firebaseAdmin.setFirebaseAdminInsertAndDownloandListener(this);
+            SessionUser.getInstance().firebaseAdmin.dowloandDataDeveloperFirebase();
+            Fabric.with(getContext(), new Crashlytics());
+        }else{
+            hideLoading();
+            Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
+        }
     }
 
     private Button closeButton;
@@ -47,8 +56,6 @@ public class InfoAboutApp extends DialogFragment implements FirebaseAdmin.Fireba
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         findById(v);
         closeButton();
-        SessionUser.getInstance().firebaseAdmin.dowloandDataDeveloperFirebase();
-        showLoading();
         return v;
     }
 
@@ -61,9 +68,8 @@ public class InfoAboutApp extends DialogFragment implements FirebaseAdmin.Fireba
 
 
     private void clickEmailDeveloperButton(){
-        buttonEmail.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
+            buttonEmail.setOnClickListener(v -> {
                 Intent intent = new Intent(Intent.ACTION_SEND);
                 intent.setType("message/rfc822");
                 String recipientList = developer.getEmailDeveloper() ;
@@ -71,30 +77,29 @@ public class InfoAboutApp extends DialogFragment implements FirebaseAdmin.Fireba
                 intent.putExtra(Intent.EXTRA_EMAIL, recipients);
                 intent.putExtra(Intent.EXTRA_SUBJECT,getString(R.string.message_email_developer)+" "+developer.getFullNameDeveloper());
                 startActivity(Intent.createChooser(intent,"Elije un cliente de email"));
-            }
-        });
+            });
+        }else{
+            Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
+        }
+
     }
 
     private void clickLinkedinDeveloperButton(){
-        buttonLinkedin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
+            buttonLinkedin.setOnClickListener(v -> {
                 String url = developer.getUrlLinkedinDeveloper();
                 Intent i = new Intent(Intent.ACTION_VIEW);
                 i.setData(Uri.parse(url));
                 startActivity(i);
-            }
-        });
+            });
+        }else{
+            Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
+        }
+
     }
 
     private void closeButton(){
-        closeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismiss();
-            }
-        });
-
+        closeButton.setOnClickListener(v -> dismiss());
     }
 
 
@@ -148,13 +153,9 @@ public class InfoAboutApp extends DialogFragment implements FirebaseAdmin.Fireba
     }
 
     @Override
-    public void insertUserDataInFirebase(boolean end) {
-        //Metodo implementado pero no se usa
-    }
+    public void insertUserDataInFirebase(boolean end) {}
 
     @Override
-    public void downloadUserDataInFirebase(boolean end) {
-        //Metodo implementado pero no se usa
-    }
+    public void downloadUserDataInFirebase(boolean end) {}
 
 }

@@ -3,7 +3,7 @@ package com.utad.david.planfit.Model.Sport;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class SportSlimming implements Parcelable {
+public class SportSlimming implements Parcelable,Comparable<SportSlimming>{
 
     private String name;
     private String photo;
@@ -32,6 +32,11 @@ public class SportSlimming implements Parcelable {
             return new SportSlimming[size];
         }
     };
+
+    @Override
+    public int compareTo(SportSlimming o) {
+        return this.getName().compareTo(o.getName());
+    }
 
     public String getName() {
         return name;

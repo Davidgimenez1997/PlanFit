@@ -22,6 +22,7 @@ import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Model.Sport.DefaultSport;
 import com.utad.david.planfit.R;
+import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 
 public class SportFavoriteDetailsDialogFragment extends DialogFragment implements FirebaseAdmin.FirebaseAdminFavoriteSport {
@@ -46,9 +47,14 @@ public class SportFavoriteDetailsDialogFragment extends DialogFragment implement
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fabric.with(getContext(),new Crashlytics());
 
-        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteSport(this);
+        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
+            Fabric.with(getContext(),new Crashlytics());
+            SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteSport(this);
+        }else{
+            Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
+        }
+
         defaultSport = getArguments().getParcelable(SPORT);
     }
 
@@ -95,36 +101,37 @@ public class SportFavoriteDetailsDialogFragment extends DialogFragment implement
     }
 
     private void onClickButtonOpenYoutube() {
-        buttonOpenRecipe.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
+            buttonOpenRecipe.setOnClickListener(v -> {
                 Intent intent = new Intent(getContext(), YoutubeActivity.class);
                 intent.putExtra(URL, defaultSport.getVideo());
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
-            }
-        });
+            });
+        }else{
+            buttonOpenRecipe.setEnabled(false);
+        }
+
     }
 
     private void onClickButtonDelete(){
-        buttonDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
+            buttonDelete.setOnClickListener(v -> {
                 if(listener!=null){
                     SessionUser.getInstance().firebaseAdmin.deleteDefaultSportFavorite(defaultSport);
                     dismiss();
                 }
-            }
-        });
+            });
+        }else{
+            buttonDelete.setEnabled(false);
+        }
+
     }
 
     private void onClickCloseButton(){
-        buttonClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(listener!=null){
-                    listener.onClickClose();
-                }
+        buttonClose.setOnClickListener(v -> {
+            if(listener!=null){
+                listener.onClickClose();
             }
         });
     }

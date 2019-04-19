@@ -5,7 +5,7 @@ import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerView;
-import com.utad.david.planfit.Data.YoutubePlayerConfig;
+import com.utad.david.planfit.Utils.YoutubePlayerConfig;
 import com.utad.david.planfit.R;
 import com.crashlytics.android.Crashlytics;
 import io.fabric.sdk.android.Fabric;

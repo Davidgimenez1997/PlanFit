@@ -21,11 +21,12 @@ import android.widget.EditText;
 import android.widget.Toast;
 import com.google.firebase.auth.*;
 import com.utad.david.planfit.Activitys.MainMenuActivity;
-import com.utad.david.planfit.Data.EncryptDecrypt;
+import com.utad.david.planfit.Utils.UtilsEncryptDecryptAES;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.R;
 import com.crashlytics.android.Crashlytics;
+import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 import java.util.regex.Pattern;
 
@@ -64,18 +65,15 @@ public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
     }
 
     private void checkStatusUserFirebase(){
-        SessionUser.getInstance().firebaseAdmin.authStateListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                SessionUser.getInstance().firebaseAdmin.currentUser = firebaseAuth.getCurrentUser();
-                if (SessionUser.getInstance().firebaseAdmin.currentUser != null) {
-                    Activity activity = getActivity();
-                    if(activity!=null){
-                        Intent intent = new Intent(context, MainMenuActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        activity.startActivity(intent);
-                        activity.finish();
-                    }
+        SessionUser.getInstance().firebaseAdmin.authStateListener = firebaseAuth -> {
+            SessionUser.getInstance().firebaseAdmin.currentUser = firebaseAuth.getCurrentUser();
+            if (SessionUser.getInstance().firebaseAdmin.currentUser != null) {
+                Activity activity = getActivity();
+                if(activity!=null){
+                    Intent intent = new Intent(context, MainMenuActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    activity.startActivity(intent);
+                    activity.finish();
                 }
             }
         };
@@ -92,9 +90,13 @@ public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
     @Override
     public void onStart() {
         super.onStart();
-        SessionUser.getInstance().firebaseAdmin.mAuth.addAuthStateListener(SessionUser.getInstance().firebaseAdmin.authStateListener);
-        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminLoginAndRegisterListener(this);
-        SessionUser.getInstance().firebaseAdmin.mAuth = FirebaseAuth.getInstance();
+        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
+            SessionUser.getInstance().firebaseAdmin.mAuth.addAuthStateListener(SessionUser.getInstance().firebaseAdmin.authStateListener);
+            SessionUser.getInstance().firebaseAdmin.setFirebaseAdminLoginAndRegisterListener(this);
+            SessionUser.getInstance().firebaseAdmin.mAuth = FirebaseAuth.getInstance();
+        }else{
+            Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
+        }
     }
 
     private void configView(){
@@ -112,14 +114,12 @@ public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
     }
 
     private void onClickButtonLogin(){
-        buttonLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+            buttonLogin.setOnClickListener(v -> {
                 if (mListener!=null){
                     mProgress.show();
                     SessionUser.getInstance().user.setEmail(emailLogin.getText().toString().trim());
                     try {
-                        String password = EncryptDecrypt.encrypt(passwordLogin.getText().toString().trim());
+                        String password = UtilsEncryptDecryptAES.encrypt(passwordLogin.getText().toString().trim());
                         SessionUser.getInstance().user.setPassword(password);
                         mListener.clickButtonLogin();
                     } catch (Exception e) {
@@ -128,17 +128,13 @@ public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
                 }else{
                     mProgress.dismiss();
                 }
-            }
-        });
+            });
     }
 
     private void onClickButtonRegister(){
-        buttonRegister.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mListener!=null){
-                    mListener.clickButtonRegister();
-                }
+        buttonRegister.setOnClickListener(v -> {
+            if(mListener!=null){
+                mListener.clickButtonRegister();
             }
         });
     }
@@ -167,9 +163,13 @@ public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
     };
 
     private boolean enableButton() {
-        if (emailValidate(emailUser) && passValidate(passwordUser)) {
-            return true;
-        } else {
+        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
+            if (emailValidate(emailUser) && passValidate(passwordUser)) {
+                return true;
+            } else {
+                return false;
+            }
+        }else{
             return false;
         }
     }
@@ -228,14 +228,12 @@ public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
         if(mListener!=null){
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
             builder.setMessage(title)
-                    .setPositiveButton(R.string.info_dialog_err, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            RegisterFragment registerFragment = new RegisterFragment();
-                            FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                            transaction.replace(R.id.frameLayout_FirstActivity, registerFragment);
-                            transaction.addToBackStack(null);
-                            transaction.commit();
-                        }
+                    .setPositiveButton(R.string.info_dialog_err, (dialog, id) -> {
+                        RegisterFragment registerFragment = new RegisterFragment();
+                        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                        transaction.replace(R.id.frameLayout_FirstActivity, registerFragment);
+                        transaction.addToBackStack(null);
+                        transaction.commit();
                     });
             builder.create();
             builder.show();

@@ -14,6 +14,7 @@ import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
+import android.widget.Toast;
 import butterknife.ButterKnife;
 import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Adapter.Nutrition.NutritionSlimmingAdapter;
@@ -25,8 +26,10 @@ import com.utad.david.planfit.DialogFragment.Sport.SportDetailsDialogFragment;
 import com.utad.david.planfit.Model.Nutrition.NutritionSlimming;
 import com.utad.david.planfit.Model.Sport.SportSlimming;
 import com.utad.david.planfit.R;
+import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 
+import java.util.Collections;
 import java.util.List;
 
 public class NutritionSlimmingFragment extends Fragment implements FirebaseAdmin.FirebaseAdminDownloandFragmentData ,NutritionDetailsDialogFragment.CallbackNutrition{
@@ -45,9 +48,17 @@ public class NutritionSlimmingFragment extends Fragment implements FirebaseAdmin
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fabric.with(getContext(), new Crashlytics());
 
-        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminDownloandFragmentData(this);
+        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
+            showLoading();
+            SessionUser.getInstance().firebaseAdmin.setFirebaseAdminDownloandFragmentData(this);
+            SessionUser.getInstance().firebaseAdmin.downloadSlimmingNutrition();
+            Fabric.with(getContext(), new Crashlytics());
+        }else{
+            hideLoading();
+            Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
+        }
+
     }
 
     private RecyclerView mRecyclerView;
@@ -60,8 +71,7 @@ public class NutritionSlimmingFragment extends Fragment implements FirebaseAdmin
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_nutrition_recycleview, container, false);
-        showLoading();
-        SessionUser.getInstance().firebaseAdmin.downloadSlimmingNutrition();
+
         mRecyclerView = view.findViewById(R.id.recycler_view_nutrition);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new GridLayoutManager(getContext(), 2);
@@ -123,20 +133,21 @@ public class NutritionSlimmingFragment extends Fragment implements FirebaseAdmin
     public void downloandCollectionNutritionSlimming(boolean end) {
         if(end){
             hideLoading();
+
             List<NutritionSlimming> nutritionSlimmingList = SessionUser.getInstance().firebaseAdmin.nutritionSlimmingListNutrition;
-            mAdapter = new NutritionSlimmingAdapter(nutritionSlimmingList, new NutritionSlimmingAdapter.OnItemClickListener() {
-                @Override
-                public void onItemClick(NutritionSlimming item) {
-                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                    Fragment prev = getFragmentManager().findFragmentByTag("dialog");
-                    if (prev != null) {
-                        transaction.remove(prev);
-                    }
-                    transaction.addToBackStack(null);
-                    newFragment = NutritionDetailsDialogFragment.newInstanceSlimming(item,0);
-                    newFragment.setCallbackNutrition(fragment);
-                    newFragment.show(transaction, "dialog");
+
+            Collections.sort(nutritionSlimmingList);
+
+            mAdapter = new NutritionSlimmingAdapter(nutritionSlimmingList, item -> {
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                Fragment prev = getFragmentManager().findFragmentByTag("dialog");
+                if (prev != null) {
+                    transaction.remove(prev);
                 }
+                transaction.addToBackStack(null);
+                newFragment = NutritionDetailsDialogFragment.newInstanceSlimming(item,0,getContext());
+                newFragment.setCallbackNutrition(fragment);
+                newFragment.show(transaction, "dialog");
             });
             mRecyclerView.setAdapter(mAdapter);
         }
@@ -148,28 +159,18 @@ public class NutritionSlimmingFragment extends Fragment implements FirebaseAdmin
     }
 
     @Override
-    public void downloandCollectionSportSlimming(boolean end) {
-
-    }
+    public void downloandCollectionSportSlimming(boolean end) {}
 
     @Override
-    public void downloandCollectionSportToning(boolean end) {
-
-    }
+    public void downloandCollectionSportToning(boolean end) {}
 
     @Override
-    public void downloandCollectionSportGainVolume(boolean end) {
-
-    }
+    public void downloandCollectionSportGainVolume(boolean end) {}
 
     @Override
-    public void downloandCollectionNutritionToning(boolean end) {
-
-    }
+    public void downloandCollectionNutritionToning(boolean end) {}
 
     @Override
-    public void downloandCollectionNutritionGainVolume(boolean end) {
-
-    }
+    public void downloandCollectionNutritionGainVolume(boolean end) {}
 }
 

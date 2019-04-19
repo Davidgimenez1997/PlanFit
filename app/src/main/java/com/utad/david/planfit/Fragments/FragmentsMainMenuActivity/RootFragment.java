@@ -14,9 +14,11 @@ import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import butterknife.ButterKnife;
 import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.R;
+import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 
 
@@ -52,11 +54,18 @@ public class RootFragment extends Fragment{
     private Button first_button;
     private Button second_button;
     private Button three_button;
+    private boolean isDeviceNetwork;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.root_fragment, container, false);
+
+        if (UtilsNetwork.checkConnectionInternetDevice(getContext())) {
+            isDeviceNetwork = true;
+        }else{
+            isDeviceNetwork = false;
+        }
 
         findViewById(view);
 
@@ -83,28 +92,30 @@ public class RootFragment extends Fragment{
         first_button.setText(R.string.first_nav_name);
         second_button.setText(R.string.two_nav_name);
         three_button.setVisibility(View.INVISIBLE);
-        onClickFavoriteSport();
-        onClickFavoriteNutrition();
+
+        if(isDeviceNetwork){
+            onClickFavoriteSport();
+            onClickFavoriteNutrition();
+        }else{
+            Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
+            first_button.setEnabled(false);
+            second_button.setEnabled(false);
+            three_button.setEnabled(false);
+        }
     }
 
     private void onClickFavoriteNutrition() {
-        second_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mListener!=null){
-                    mListener.clickNutritionFavorite();
-                }
+        second_button.setOnClickListener(v -> {
+            if(mListener!=null){
+                mListener.clickNutritionFavorite();
             }
         });
     }
 
     private void onClickFavoriteSport() {
-        first_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mListener!=null){
-                    mListener.clickSportFavorite();
-                }
+        first_button.setOnClickListener(v -> {
+            if(mListener!=null){
+                mListener.clickSportFavorite();
             }
         });
     }
@@ -114,41 +125,40 @@ public class RootFragment extends Fragment{
         first_button.setText(getString(R.string.adelgazar));
         second_button.setText(getString(R.string.tonificar));
         three_button.setText(getString(R.string.ganar_volumen));
-        onClickAdelgazarSport();
-        onClickTonificarSport();
-        onClickGainVolumeSport();
+
+        if(isDeviceNetwork){
+            onClickAdelgazarSport();
+            onClickTonificarSport();
+            onClickGainVolumeSport();
+        }else{
+            Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
+            first_button.setEnabled(false);
+            second_button.setEnabled(false);
+            three_button.setEnabled(false);
+        }
 
     }
 
     private void onClickAdelgazarSport(){
-        first_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mListener!=null){
-                    mListener.clickOnAdelgazarSport();
-                }
+        first_button.setOnClickListener(v -> {
+            if(mListener!=null){
+                mListener.clickOnAdelgazarSport();
             }
         });
     }
 
     private void onClickTonificarSport(){
-        second_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mListener!=null){
-                    mListener.clickOnTonificarSport();
-                }
+        second_button.setOnClickListener(v -> {
+            if(mListener!=null){
+                mListener.clickOnTonificarSport();
             }
         });
     }
 
     private void onClickGainVolumeSport(){
-        three_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mListener!=null){
-                    mListener.clickOnGanarVolumenSport();
-                }
+        three_button.setOnClickListener(v -> {
+            if(mListener!=null){
+                mListener.clickOnGanarVolumenSport();
             }
         });
     }
@@ -158,40 +168,39 @@ public class RootFragment extends Fragment{
         first_button.setText(getString(R.string.adelgazar));
         second_button.setText(getString(R.string.tonificar));
         three_button.setText(getString(R.string.ganar_volumen));
-        onClickAdelgazarNutrition();
-        onClickTonificarNutrition();
-        onClickGainVolumeNutrition();
+
+        if(isDeviceNetwork){
+            onClickAdelgazarNutrition();
+            onClickTonificarNutrition();
+            onClickGainVolumeNutrition();
+        }else{
+            Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
+            first_button.setEnabled(false);
+            second_button.setEnabled(false);
+            three_button.setEnabled(false);
+        }
     }
 
     private void onClickAdelgazarNutrition(){
-        first_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mListener!=null){
-                    mListener.clickOnAdelgazarNutrition();
-                }
+        first_button.setOnClickListener(v -> {
+            if(mListener!=null){
+                mListener.clickOnAdelgazarNutrition();
             }
         });
     }
 
     private void onClickTonificarNutrition(){
-        second_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mListener!=null){
-                    mListener.clickOnTonificarNutrition();
-                }
+        second_button.setOnClickListener(v -> {
+            if(mListener!=null){
+                mListener.clickOnTonificarNutrition();
             }
         });
     }
 
     private void onClickGainVolumeNutrition(){
-        three_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mListener!=null){
-                    mListener.clickOnGanarVolumenNutrition();
-                }
+        three_button.setOnClickListener(v -> {
+            if(mListener!=null){
+                mListener.clickOnGanarVolumenNutrition();
             }
         });
     }
@@ -201,28 +210,30 @@ public class RootFragment extends Fragment{
         first_button.setText(getString(R.string.crear_plan));
         second_button.setText(getString(R.string.ver_tu_plan));
         three_button.setVisibility(View.INVISIBLE);
-        onClickCreatePlan();
-        onClickShowPlan();
+
+        if(isDeviceNetwork){
+            onClickCreatePlan();
+            onClickShowPlan();
+        }else{
+            Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
+            first_button.setEnabled(false);
+            second_button.setEnabled(false);
+            three_button.setEnabled(false);
+        }
     }
 
     private void onClickCreatePlan() {
-        first_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mListener!=null){
-                    mListener.clickOnCreatePlan();
-                }
+        first_button.setOnClickListener(v -> {
+            if(mListener!=null){
+                mListener.clickOnCreatePlan();
             }
         });
     }
 
     private void onClickShowPlan() {
-        second_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mListener!=null){
-                    mListener.clickOnShowPlan();
-                }
+        second_button.setOnClickListener(v -> {
+            if(mListener!=null){
+                mListener.clickOnShowPlan();
             }
         });
     }

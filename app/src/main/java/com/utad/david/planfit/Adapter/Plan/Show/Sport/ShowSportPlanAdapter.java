@@ -17,7 +17,7 @@ public class ShowSportPlanAdapter extends RecyclerView.Adapter<ShowSportPlanAdap
     private OnItemClickListener listener;
 
     public interface OnItemClickListener {
-        void onItemClick(ArrayList<PlanSport>defaultSports);
+        void onItemClick(ArrayList<PlanSport> defaultSports);
     }
 
     public ShowSportPlanAdapter(ArrayList<ArrayList<PlanSport>> planSports, OnItemClickListener listener) {
@@ -26,13 +26,13 @@ public class ShowSportPlanAdapter extends RecyclerView.Adapter<ShowSportPlanAdap
     }
 
     @Override
-    public ShowSportPlanAdapter.ShowPlanSportViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ShowPlanSportViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View rootView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_plan_show, parent, false);
-        return new ShowSportPlanAdapter.ShowPlanSportViewHolder(rootView);
+        return new ShowPlanSportViewHolder(rootView);
     }
 
     @Override
-    public void onBindViewHolder(ShowSportPlanAdapter.ShowPlanSportViewHolder holder, final int position) {
+    public void onBindViewHolder(ShowPlanSportViewHolder holder, final int position) {
         final ArrayList<PlanSport> current = planSports.get(position);
         holder.setData(current);
 

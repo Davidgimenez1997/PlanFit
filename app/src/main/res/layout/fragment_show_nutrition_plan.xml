@@ -4,7 +4,7 @@
              android:layout_width="match_parent"
              android:background="@drawable/backgroung_grad"
              android:layout_height="match_parent"
-             tools:context=".Fragments.FragmentsMainMenuActivity.ShowPlan.Nutrition.ShowNutritionPlanFragment">
+             tools:context=".Fragments.FragmentsMainMenuActivity.Plan.Show.Nutrition.ShowNutritionPlanFragment">
 
     <android.support.constraint.ConstraintLayout
             xmlns:android="http://schemas.android.com/apk/res/android"

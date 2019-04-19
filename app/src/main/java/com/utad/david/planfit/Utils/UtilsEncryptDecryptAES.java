@@ -1,11 +1,11 @@
-package com.utad.david.planfit.Data;
+package com.utad.david.planfit.Utils;
 
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
-public class EncryptDecrypt {
+public class UtilsEncryptDecryptAES {
 
     private static final byte[] keyValue =
             new byte[]{'c', 'o', 'd', 'i', 'n', 'g', 'a', 'f', 'f', 'a', 'i', 'r', 's', 'c', 'o', 'm'};

@@ -23,6 +23,7 @@ import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Model.Nutrition.DefaultNutrition;
 import com.utad.david.planfit.Model.Plan.PlanNutrition;
 import com.utad.david.planfit.R;
+import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 
 import java.util.ArrayList;
@@ -67,11 +68,18 @@ public class CreateNutritionPlanDetailsDialogFragment extends DialogFragment imp
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fabric.with(getContext(),new Crashlytics());
+
+        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
+            showLoading();
+            Fabric.with(getContext(),new Crashlytics());
+            SessionUser.getInstance().firebaseAdmin.setFirebaseAdminCreateShowPlanNutrition(this);
+            SessionUser.getInstance().firebaseAdmin.downloadAllNutrtionPlanFavorite();
+        }else{
+            hideLoading();
+            Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
+        }
 
         defaultNutrition = getArguments().getParcelable(NUTRITION);
-        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminCreateShowPlanNutrition(this);
-        SessionUser.getInstance().firebaseAdmin.downloadAllNutrtionPlanFavorite();
     }
 
     @Override
@@ -79,13 +87,22 @@ public class CreateNutritionPlanDetailsDialogFragment extends DialogFragment imp
         View view = inflater.inflate(R.layout.create_nutrition_plan_details_dialog_fragment, container, false);
         view.setBackgroundResource(R.drawable.corner_dialog_fragment);
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        showLoading();
-        findById(view);
-        putData();
-        onClickButtonClose();
-        onClickButtonSave();
-        onClickButtonDelete();
-        configureSpinnerType();
+
+        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
+            findById(view);
+            putData();
+            onClickButtonClose();
+            onClickButtonSave();
+            onClickButtonDelete();
+            configureSpinnerType();
+        }else{
+            findById(view);
+            onClickButtonClose();
+            putData();
+            buttonSave.setEnabled(false);
+            buttonDelete.setEnabled(false);
+        }
+
         return view;
     }
 
@@ -116,38 +133,29 @@ public class CreateNutritionPlanDetailsDialogFragment extends DialogFragment imp
     }
 
     private void onClickButtonClose() {
-        buttonClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(listener!=null){
-                    listener.onClickClose();
-                }
+        buttonClose.setOnClickListener(v -> {
+            if(listener!=null){
+                listener.onClickClose();
             }
         });
     }
 
     private void onClickButtonSave() {
-        buttonSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SessionUser.getInstance().planNutrition.setName(defaultNutrition.getName());
-                SessionUser.getInstance().planNutrition.setPhoto(defaultNutrition.getPhoto());
-                SessionUser.getInstance().planNutrition.setType(type);
-                SessionUser.getInstance().planNutrition.setIsOk("no");
-                UUID uuid = UUID.randomUUID();
-                SessionUser.getInstance().planNutrition.setId(uuid.toString());
-                SessionUser.getInstance().firebaseAdmin.dataCreateNutrtionPlan();
-            }
+        buttonSave.setOnClickListener(v -> {
+            SessionUser.getInstance().planNutrition.setName(defaultNutrition.getName());
+            SessionUser.getInstance().planNutrition.setPhoto(defaultNutrition.getPhoto());
+            SessionUser.getInstance().planNutrition.setType(type);
+            SessionUser.getInstance().planNutrition.setIsOk("no");
+            UUID uuid = UUID.randomUUID();
+            SessionUser.getInstance().planNutrition.setId(uuid.toString());
+            SessionUser.getInstance().firebaseAdmin.dataCreateNutrtionPlan();
         });
     }
 
     private void onClickButtonDelete(){
-        buttonDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showLoading();
-                SessionUser.getInstance().firebaseAdmin.deleteNutritionPlan(defaultNutrition.getName());
-            }
+        buttonDelete.setOnClickListener(v -> {
+            showLoading();
+            SessionUser.getInstance().firebaseAdmin.deleteNutritionPlan(defaultNutrition.getName());
         });
     }
 
@@ -221,11 +229,6 @@ public class CreateNutritionPlanDetailsDialogFragment extends DialogFragment imp
     }
 
     @Override
-    public void emptyNutritionPlanFirebase(boolean end) {
-
-    }
-
-    @Override
     public void deleteNutritionPlanFirebase(boolean end) {
         if(end==true){
             buttonSave.setEnabled(true);
@@ -234,7 +237,6 @@ public class CreateNutritionPlanDetailsDialogFragment extends DialogFragment imp
             Toast.makeText(getContext(),defaultNutrition.getName()+" "+getString(R.string.delete_create_nutrition),Toast.LENGTH_LONG).show();
         }
     }
-
 
     private ProgressDialog progressDialog;
 
@@ -275,4 +277,7 @@ public class CreateNutritionPlanDetailsDialogFragment extends DialogFragment imp
 
     @Override
     public void updateNutritionPlanFirebase(boolean end) {}
+
+    @Override
+    public void emptyNutritionPlanFirebase(boolean end) {}
 }

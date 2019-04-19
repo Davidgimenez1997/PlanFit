@@ -14,6 +14,7 @@ import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
+import android.widget.Toast;
 import butterknife.ButterKnife;
 import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Adapter.Nutrition.NutritionGainVolumeAdapter;
@@ -22,8 +23,10 @@ import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.DialogFragment.Nutrition.NutritionDetailsDialogFragment;
 import com.utad.david.planfit.Model.Nutrition.NutritionGainVolume;
 import com.utad.david.planfit.R;
+import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 
+import java.util.Collections;
 import java.util.List;
 
 public class NutritionGainVolumeFragment extends Fragment implements FirebaseAdmin.FirebaseAdminDownloandFragmentData,NutritionDetailsDialogFragment.CallbackNutrition {
@@ -42,9 +45,16 @@ public class NutritionGainVolumeFragment extends Fragment implements FirebaseAdm
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fabric.with(getContext(), new Crashlytics());
 
-        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminDownloandFragmentData(this);
+        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
+            showLoading();
+            SessionUser.getInstance().firebaseAdmin.setFirebaseAdminDownloandFragmentData(this);
+            SessionUser.getInstance().firebaseAdmin.downloadGainVolumeNutrition();
+            Fabric.with(getContext(), new Crashlytics());
+        }else{
+            hideLoading();
+            Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
+        }
     }
 
     private RecyclerView mRecyclerView;
@@ -57,8 +67,7 @@ public class NutritionGainVolumeFragment extends Fragment implements FirebaseAdm
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_nutrition_recycleview, container, false);
-        showLoading();
-        SessionUser.getInstance().firebaseAdmin.downloadGainVolumeNutrition();
+
         mRecyclerView = view.findViewById(R.id.recycler_view_nutrition);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new GridLayoutManager(getContext(), 2);
@@ -119,20 +128,21 @@ public class NutritionGainVolumeFragment extends Fragment implements FirebaseAdm
     public void downloandCollectionNutritionGainVolume(boolean end) {
         if(end){
             hideLoading();
+
             List<NutritionGainVolume> nutritionGainVolumes = SessionUser.getInstance().firebaseAdmin.nutritionGainVolumeListNutrition;
-            mAdapter = new NutritionGainVolumeAdapter(nutritionGainVolumes, new NutritionGainVolumeAdapter.OnItemClickListener() {
-                @Override
-                public void onItemClick(NutritionGainVolume item) {
-                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                    Fragment prev = getFragmentManager().findFragmentByTag("dialog");
-                    if (prev != null) {
-                        transaction.remove(prev);
-                    }
-                    transaction.addToBackStack(null);
-                    newFragment = NutritionDetailsDialogFragment.newInstanceGainVolume(item,2);
-                    newFragment.setCallbackNutrition(fragment);
-                    newFragment.show(transaction, "dialog");
+
+            Collections.sort(nutritionGainVolumes);
+
+            mAdapter = new NutritionGainVolumeAdapter(nutritionGainVolumes, item -> {
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                Fragment prev = getFragmentManager().findFragmentByTag("dialog");
+                if (prev != null) {
+                    transaction.remove(prev);
                 }
+                transaction.addToBackStack(null);
+                newFragment = NutritionDetailsDialogFragment.newInstanceGainVolume(item,2,getContext());
+                newFragment.setCallbackNutrition(fragment);
+                newFragment.show(transaction, "dialog");
             });
             mRecyclerView.setAdapter(mAdapter);
         }
@@ -144,25 +154,17 @@ public class NutritionGainVolumeFragment extends Fragment implements FirebaseAdm
     }
 
     @Override
-    public void downloandCollectionSportGainVolume(boolean end) {
-
-    }
+    public void downloandCollectionSportGainVolume(boolean end) {}
 
     @Override
-    public void downloandCollectionNutritionSlimming(boolean end) {
-
-    }
+    public void downloandCollectionNutritionSlimming(boolean end) {}
 
     @Override
-    public void downloandCollectionNutritionToning(boolean end) {
-    }
+    public void downloandCollectionNutritionToning(boolean end) {}
 
     @Override
-    public void downloandCollectionSportSlimming(boolean end) {
-    }
+    public void downloandCollectionSportSlimming(boolean end) {}
 
     @Override
-    public void downloandCollectionSportToning(boolean end) {
-
-    }
+    public void downloandCollectionSportToning(boolean end) {}
 }

@@ -25,8 +25,10 @@ import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.DialogFragment.Favorite.NutritionFavoriteDetailsDialogFragment;
 import com.utad.david.planfit.Model.Nutrition.DefaultNutrition;
 import com.utad.david.planfit.R;
+import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 
+import java.util.Collections;
 import java.util.List;
 
 public class NutritionFavoriteFragment extends Fragment implements FirebaseAdmin.FirebaseAdminFavoriteNutrition,
@@ -46,16 +48,19 @@ public class NutritionFavoriteFragment extends Fragment implements FirebaseAdmin
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fabric.with(getContext(), new Crashlytics());
+
+        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
+            showLoading();
+            SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteNutrition(this);
+            SessionUser.getInstance().firebaseAdmin.downloadAllNutritionFavorite();
+            Fabric.with(getContext(), new Crashlytics());
+        }else{
+            hideLoading();
+            Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
+        }
 
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteNutrition(this);
-        SessionUser.getInstance().firebaseAdmin.downloadAllNutritionFavorite();
-    }
 
     private RecyclerView mRecyclerView;
     private NutritionFavoriteAdapter mAdapter;
@@ -70,13 +75,11 @@ public class NutritionFavoriteFragment extends Fragment implements FirebaseAdmin
 
         View view = inflater.inflate(R.layout.fragment_nutrition_favorite, container, false);
 
-        showLoading();
         mRecyclerView = view.findViewById(R.id.recycler_view_nutrition);
         linearLayout = view.findViewById(R.id.linear_empty_favorites);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new GridLayoutManager(getContext(), 2);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        hideLoading();
 
         return view;
     }
@@ -134,20 +137,21 @@ public class NutritionFavoriteFragment extends Fragment implements FirebaseAdmin
             hideLoading();
             linearLayout.setVisibility(View.GONE);
             mRecyclerView.setVisibility(View.VISIBLE);
+
             List<DefaultNutrition> allFavoriteFavorite = SessionUser.getInstance().firebaseAdmin.allNutritionFavorite;
-            mAdapter = new NutritionFavoriteAdapter(allFavoriteFavorite, new NutritionFavoriteAdapter.OnItemClickListener() {
-                @Override
-                public void onItemClick(DefaultNutrition item) {
-                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                    Fragment prev = getFragmentManager().findFragmentByTag("dialog");
-                    if (prev != null) {
-                        transaction.remove(prev);
-                    }
-                    transaction.addToBackStack(null);
-                    newFragment = NutritionFavoriteDetailsDialogFragment.newInstance(item);
-                    newFragment.setListener(fragment);
-                    newFragment.show(transaction, "dialog");
+
+            Collections.sort(allFavoriteFavorite);
+
+            mAdapter = new NutritionFavoriteAdapter(allFavoriteFavorite, item -> {
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                Fragment prev = getFragmentManager().findFragmentByTag("dialog");
+                if (prev != null) {
+                    transaction.remove(prev);
                 }
+                transaction.addToBackStack(null);
+                newFragment = NutritionFavoriteDetailsDialogFragment.newInstance(item);
+                newFragment.setListener(fragment);
+                newFragment.show(transaction, "dialog");
             });
             mRecyclerView.setAdapter(mAdapter);
         }

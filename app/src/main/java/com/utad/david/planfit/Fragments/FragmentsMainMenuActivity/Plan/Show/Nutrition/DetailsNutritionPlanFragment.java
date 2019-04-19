@@ -1,4 +1,4 @@
-package com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.ShowPlan.Nutrition;
+package com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Plan.Show.Nutrition;
 
 
 import android.app.AlertDialog;
@@ -16,6 +16,7 @@ import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
+import android.widget.Toast;
 import butterknife.ButterKnife;
 import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Adapter.Plan.Show.Nutrition.ShowDetailsNutritionPlanAdapter;
@@ -23,6 +24,7 @@ import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Model.Plan.PlanNutrition;
 import com.utad.david.planfit.R;
+import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 
 import java.util.ArrayList;
@@ -48,7 +50,13 @@ public class DetailsNutritionPlanFragment extends Fragment implements FirebaseAd
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fabric.with(getContext(), new Crashlytics());
+
+        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
+            showLoading();
+            SessionUser.getInstance().firebaseAdmin.setFirebaseAdminCreateShowPlanNutrition(this);
+            SessionUser.getInstance().firebaseAdmin.downloadAllNutrtionPlanFavorite();
+            Fabric.with(getContext(), new Crashlytics());
+        }
 
         if (getArguments() != null) {
             planNutritions = getArguments().getParcelableArrayList(ARG_PARAM1);
@@ -65,70 +73,66 @@ public class DetailsNutritionPlanFragment extends Fragment implements FirebaseAd
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_details_nutrition_plan, container, false);
 
-        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminCreateShowPlanNutrition(this);
-        SessionUser.getInstance().firebaseAdmin.downloadAllNutrtionPlanFavorite();
-
         mRecyclerView = view.findViewById(R.id.recycler_view_sport);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new GridLayoutManager(getContext(), 1);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        mAdapter = new ShowDetailsNutritionPlanAdapter(planNutritions, item -> {
+        if(!UtilsNetwork.checkConnectionInternetDevice(getContext())){
+            Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
+        }else{
+            mAdapter = new ShowDetailsNutritionPlanAdapter(planNutritions, item -> {
 
-            if(item.getIsOk().equals("yes")){
+                if(!UtilsNetwork.checkConnectionInternetDevice(getContext())){
+                    Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
+                }else{
+                    if(item.getIsOk().equals("yes")){
 
-                final CharSequence[] items = {"Si","Cancelar"};
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle("¿Te has equivocado?");
-                builder.setItems(items, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int itemDialog) {
-                        switch (itemDialog) {
-                            case 0:
-                                showLoading();
-                                item.setIsOk("no");
-                                SessionUser.getInstance().firebaseAdmin.updatePlanNutrtionFirebase(item);
-                                mAdapter.notifyDataSetChanged();
-                                hideLoading();
-                                break;
-                            case 1:
-                                dialog.dismiss();
-                                break;
-                        }
+                        final CharSequence[] items = {getString(R.string.si),getString(R.string.cancelar)};
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                        builder.setTitle(getString(R.string.te_has_equivocado));
+                        builder.setItems(items, (dialog, itemDialog) -> {
+                            switch (itemDialog) {
+                                case 0:
+                                    showLoading();
+                                    item.setIsOk("no");
+                                    SessionUser.getInstance().firebaseAdmin.updatePlanNutrtionFirebase(item);
+                                    mAdapter.notifyDataSetChanged();
+                                    hideLoading();
+                                    break;
+                                case 1:
+                                    dialog.dismiss();
+                                    break;
+                            }
+                        });
+                        builder.show();
+
+                    }else if(item.getIsOk().equals("no")){
+
+                        final CharSequence[] items = {getString(R.string.si),getString(R.string.cancelar)};
+                        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                        builder.setTitle(getString(R.string.ya_lo_has_realizado));
+                        builder.setItems(items, (dialog, itemDialog) -> {
+                            switch (itemDialog) {
+                                case 0:
+                                    showLoading();
+                                    item.setIsOk("yes");
+                                    SessionUser.getInstance().firebaseAdmin.updatePlanNutrtionFirebase(item);
+                                    mAdapter.notifyDataSetChanged();
+                                    hideLoading();
+                                    break;
+                                case 1:
+                                    dialog.dismiss();
+                                    break;
+                            }
+                        });
+                        builder.show();
                     }
-                });
-                builder.show();
+                }
+            });
 
-            }else if(item.getIsOk().equals("no")){
-
-                final CharSequence[] items = {"Si","Cancelar"};
-                final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle("¿Ya lo has realizado?");
-                builder.setItems(items, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int itemDialog) {
-                        switch (itemDialog) {
-                            case 0:
-                                showLoading();
-                                item.setIsOk("yes");
-                                SessionUser.getInstance().firebaseAdmin.updatePlanNutrtionFirebase(item);
-                                mAdapter.notifyDataSetChanged();
-                                hideLoading();
-                                break;
-                            case 1:
-                                dialog.dismiss();
-                                break;
-                        }
-                    }
-                });
-                builder.show();
-
-
-            }
-        });
-
-        mRecyclerView.setAdapter(mAdapter);
-
+            mRecyclerView.setAdapter(mAdapter);
+        }
 
         return view;
     }
@@ -171,10 +175,10 @@ public class DetailsNutritionPlanFragment extends Fragment implements FirebaseAd
     }
 
     @Override
-    public void insertNutritionPlanFirebase(boolean end) {}
+    public void downloadNutritionPlanFirebase(boolean end) {hideLoading();}
 
     @Override
-    public void downloadNutritionPlanFirebase(boolean end) {}
+    public void insertNutritionPlanFirebase(boolean end) {}
 
     @Override
     public void emptyNutritionPlanFirebase(boolean end) {}
@@ -184,5 +188,4 @@ public class DetailsNutritionPlanFragment extends Fragment implements FirebaseAd
 
     @Override
     public void updateNutritionPlanFirebase(boolean end) {}
-
 }

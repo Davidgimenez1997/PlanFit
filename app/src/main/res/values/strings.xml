@@ -142,6 +142,7 @@
     <string name="update_sport_plan">ACTUALIZAR</string>
     <string name="elige">Elige</string>
     <string name="sin_favopritos_para_crear_el_plan">Sin Favoritos para crear el plan?</string>
+    <string name="info_network_device">Comprueba su conexion de internet y reinice la aplicación</string>
 
     <string-array name="durationPlan">
         <item>1 Dia</item>
@@ -283,5 +284,13 @@
 
     <!--Firebase-->
     <string name="com.crashlytics.useFirebaseAppId">true</string>
+
+    <string name="API_KEY">AIzaSyDSXa5CPSaAJKDCFUgBLWXCYT8fU3QBZUc</string>
+    <string name="mensaje_complete_all_plan">Felicidades has completado todos!!!</string>
+    <string name="restablecer">Restablecer</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="si">Si</string>
+    <string name="te_has_equivocado">¿Te has equivocado?</string>
+    <string name="ya_lo_has_realizado">¿Ya lo has realizado?</string>
 
 </resources>

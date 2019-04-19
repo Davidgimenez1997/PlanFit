@@ -3,7 +3,7 @@ package com.utad.david.planfit.Model.Sport;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class SportGainVolume implements Parcelable {
+public class SportGainVolume implements Parcelable,Comparable<SportGainVolume> {
 
     private String name;
     private String photo;
@@ -32,6 +32,11 @@ public class SportGainVolume implements Parcelable {
             return new SportGainVolume[size];
         }
     };
+
+    @Override
+    public int compareTo(SportGainVolume o) {
+        return this.getName().compareTo(o.getName());
+    }
 
     public String getType() {
         return type;

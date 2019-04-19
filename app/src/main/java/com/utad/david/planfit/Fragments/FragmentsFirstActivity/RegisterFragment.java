@@ -12,10 +12,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
-import com.utad.david.planfit.Data.EncryptDecrypt;
+import com.utad.david.planfit.Utils.UtilsEncryptDecryptAES;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.R;
+import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 
 import java.util.regex.Pattern;
@@ -25,6 +27,14 @@ public class RegisterFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
 
     public RegisterFragment() {}
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if(!UtilsNetwork.checkConnectionInternetDevice(getContext())){
+            Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
+        }
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -66,31 +76,25 @@ public class RegisterFragment extends Fragment {
     }
 
     private void onClickButtonContinue(){
-        buttonContinue.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    String pass = EncryptDecrypt.encrypt(passwordRegister.getText().toString().trim());
-                    if (mListener!=null){
-                        SessionUser.getInstance().user.setEmail(emailRegister.getText().toString().trim());
-                        SessionUser.getInstance().user.setPassword(pass);
-                        mListener.clickButtonContinue();
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+        buttonContinue.setOnClickListener(v -> {
+            try {
+                String pass = UtilsEncryptDecryptAES.encrypt(passwordRegister.getText().toString().trim());
+                if (mListener!=null){
+                    SessionUser.getInstance().user.setEmail(emailRegister.getText().toString().trim());
+                    SessionUser.getInstance().user.setPassword(pass);
+                    mListener.clickButtonContinue();
                 }
-
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+
         });
     }
 
     private void onClickButtonBack(){
-        buttonBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mListener!=null){
-                    mListener.clickButtonBack();
-                }
+        buttonBack.setOnClickListener(v -> {
+            if(mListener!=null){
+                mListener.clickButtonBack();
             }
         });
     }
@@ -119,9 +123,13 @@ public class RegisterFragment extends Fragment {
     };
 
     private boolean enableButton() {
-        if (emailValidate(emailUser) && passValidate(passwordUser)) {
-            return true;
-        } else {
+        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
+            if (emailValidate(emailUser) && passValidate(passwordUser)) {
+                return true;
+            } else {
+                return false;
+            }
+        }else{
             return false;
         }
     }

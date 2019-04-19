@@ -3,13 +3,12 @@ package com.utad.david.planfit.Data.Firebase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import com.google.android.gms.tasks.*;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.*;
 import com.google.firebase.firestore.*;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.utad.david.planfit.Data.EncryptDecrypt;
+import com.utad.david.planfit.Utils.UtilsEncryptDecryptAES;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Model.Developer;
 import com.utad.david.planfit.Model.Nutrition.DefaultNutrition;
@@ -47,16 +46,16 @@ public class FirebaseAdmin {
 
     /********INTERFAZES********/
 
-    public FirebaseAdmin.FirebaseAdminInsertAndDownloandListener firebaseAdminInsertAndDownloandListener;
-    public FirebaseAdmin.FirebaseAdminLoginAndRegisterListener firebaseAdminLoginAndRegisterListener;
-    public FirebaseAdmin.FirebaseAdminUpdateAndDeleteUserListener firebaseAdminUpdateAndDeleteUserListener;
-    public FirebaseAdmin.FirebaseAdminDownloandFragmentData firebaseAdminDownloandFragmentData;
+    public FirebaseAdminInsertAndDownloandListener firebaseAdminInsertAndDownloandListener;
+    public FirebaseAdminLoginAndRegisterListener firebaseAdminLoginAndRegisterListener;
+    public FirebaseAdminUpdateAndDeleteUserListener firebaseAdminUpdateAndDeleteUserListener;
+    public FirebaseAdminDownloandFragmentData firebaseAdminDownloandFragmentData;
 
-    public FirebaseAdmin.FirebaseAdminFavoriteSport firebaseAdminFavoriteSport;
-    public FirebaseAdmin.FirebaseAdminFavoriteNutrition firebaseAdminFavoriteNutrition;
+    public FirebaseAdminFavoriteSport firebaseAdminFavoriteSport;
+    public FirebaseAdminFavoriteNutrition firebaseAdminFavoriteNutrition;
 
-    public FirebaseAdmin.FirebaseAdminCreateShowPlanSport firebaseAdminCreateShowPlanSport;
-    public FirebaseAdmin.FirebaseAdminCreateShowPlanNutrition firebaseAdminCreateShowPlanNutrition;
+    public FirebaseAdminCreateShowPlanSport firebaseAdminCreateShowPlanSport;
+    public FirebaseAdminCreateShowPlanNutrition firebaseAdminCreateShowPlanNutrition;
 
 
     public User userDataFirebase;
@@ -263,17 +262,14 @@ public class FirebaseAdmin {
     public void registerWithEmailAndPassword(String email, String password) {
         if (firebaseAdminLoginAndRegisterListener != null) {
             mAuth.createUserWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                currentUser = mAuth.getCurrentUser();
-                                COLLECTION_FAVORITE_SPORT = "users/" + currentUser.getUid() + "/deporteFavorito";
-                                COLLECTION_FAVORITE_NUTRITION = "users/" + currentUser.getUid() + "/nutricionFavorita";
-                                firebaseAdminLoginAndRegisterListener.registerWithEmailAndPassword(true);
-                            } else {
-                                firebaseAdminLoginAndRegisterListener.registerWithEmailAndPassword(false);
-                            }
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            currentUser = mAuth.getCurrentUser();
+                            COLLECTION_FAVORITE_SPORT = "users/" + currentUser.getUid() + "/deporteFavorito";
+                            COLLECTION_FAVORITE_NUTRITION = "users/" + currentUser.getUid() + "/nutricionFavorita";
+                            firebaseAdminLoginAndRegisterListener.registerWithEmailAndPassword(true);
+                        } else {
+                            firebaseAdminLoginAndRegisterListener.registerWithEmailAndPassword(false);
                         }
                     });
         }
@@ -283,17 +279,14 @@ public class FirebaseAdmin {
     public void singInWithEmailAndPassword(String email, String password) {
         if (firebaseAdminLoginAndRegisterListener != null) {
             mAuth.signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                currentUser = mAuth.getCurrentUser();
-                                COLLECTION_FAVORITE_SPORT = "users/" + currentUser.getUid() + "/deporteFavorito";
-                                COLLECTION_FAVORITE_NUTRITION = "users/" + currentUser.getUid() + "/nutricionFavorita";
-                                firebaseAdminLoginAndRegisterListener.singInWithEmailAndPassword(true);
-                            } else {
-                                firebaseAdminLoginAndRegisterListener.singInWithEmailAndPassword(false);
-                            }
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            currentUser = mAuth.getCurrentUser();
+                            COLLECTION_FAVORITE_SPORT = "users/" + currentUser.getUid() + "/deporteFavorito";
+                            COLLECTION_FAVORITE_NUTRITION = "users/" + currentUser.getUid() + "/nutricionFavorita";
+                            firebaseAdminLoginAndRegisterListener.singInWithEmailAndPassword(true);
+                        } else {
+                            firebaseAdminLoginAndRegisterListener.singInWithEmailAndPassword(false);
                         }
                     });
         }
@@ -321,18 +314,8 @@ public class FirebaseAdmin {
     public void insertDataUserIntoFirebase(Map<String, Object> user) {
         firebaseFirestore.collection(COLLECTION_USER_FIREBASE).document(currentUser.getUid())
                 .set(user)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        firebaseAdminInsertAndDownloandListener.insertUserDataInFirebase(true);
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        firebaseAdminInsertAndDownloandListener.insertUserDataInFirebase(false);
-                    }
-                });
+                .addOnSuccessListener(aVoid -> firebaseAdminInsertAndDownloandListener.insertUserDataInFirebase(true))
+                .addOnFailureListener(e -> firebaseAdminInsertAndDownloandListener.insertUserDataInFirebase(false));
     }
 
     public void uploadImage(final String image) {
@@ -340,18 +323,7 @@ public class FirebaseAdmin {
             Uri uri = Uri.parse(image);
                 StorageReference ref = storageReference.child("images/" + currentUser.getUid());
                 ref.putFile(uri)
-                        .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                            @Override
-                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                SessionUser.getInstance().user.setImgUser(image);
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                //firebaseAdminInsertAndDownloandListener.insertUserDataInFirebase(false);
-                            }
-                        });
+                        .addOnSuccessListener(taskSnapshot -> SessionUser.getInstance().user.setImgUser(image));
         }
     }
 
@@ -360,43 +332,31 @@ public class FirebaseAdmin {
     public void dowloandDataUserFirebase() {
         DocumentReference myUserRef = firebaseFirestore.collection(COLLECTION_USER_FIREBASE).document(currentUser.getUid());
         if (firebaseAdminInsertAndDownloandListener != null) {
-            myUserRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-
-                @Override
-                public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException e) {
-                    if (e != null) {
-                        firebaseAdminInsertAndDownloandListener.downloadUserDataInFirebase(false);
+            myUserRef.addSnapshotListener((snapshot, e) -> {
+                if (e != null) {
+                    firebaseAdminInsertAndDownloandListener.downloadUserDataInFirebase(false);
+                }
+                if (snapshot != null && snapshot.exists()) {
+                    User user = snapshot.toObject(User.class);
+                    userDataFirebase = user;
+                    try {
+                        userDataFirebase.setPassword(UtilsEncryptDecryptAES.decrypt(user.getPassword()));
+                        downloadPhoto();
+                    } catch (Exception e1) {
+                        e1.printStackTrace();
                     }
-                    if (snapshot != null && snapshot.exists()) {
-                        User user = snapshot.toObject(User.class);
-                        userDataFirebase = user;
-                        try {
-                            userDataFirebase.setPassword(EncryptDecrypt.decrypt(user.getPassword()));
-                            downloadPhoto();
-                        } catch (Exception e1) {
-                            e1.printStackTrace();
-                        }
-                    } else {
-                        firebaseAdminInsertAndDownloandListener.downloadUserDataInFirebase(false);
-                    }
+                } else {
+                    firebaseAdminInsertAndDownloandListener.downloadUserDataInFirebase(false);
                 }
             });
         }
     }
 
     public void downloadPhoto() {
-        storageReference.child("images/" + currentUser.getUid()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                userDataFirebase.setImgUser(uri.toString());
-                firebaseAdminInsertAndDownloandListener.downloadUserDataInFirebase(true);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                firebaseAdminInsertAndDownloandListener.downloadUserDataInFirebase(false);
-            }
-        });
+        storageReference.child("images/" + currentUser.getUid()).getDownloadUrl().addOnSuccessListener(uri -> {
+            userDataFirebase.setImgUser(uri.toString());
+            firebaseAdminInsertAndDownloandListener.downloadUserDataInFirebase(true);
+        }).addOnFailureListener(exception -> firebaseAdminInsertAndDownloandListener.downloadUserDataInFirebase(false));
     }
 
     //Update info user
@@ -404,65 +364,31 @@ public class FirebaseAdmin {
     public void deletePhoto() {
         if (firebaseAdminUpdateAndDeleteUserListener != null) {
             StorageReference desertRef = storageReference.child("images/" + currentUser.getUid());
-            desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void aVoid) {
-                    DocumentReference myUserRef = firebaseFirestore.collection(COLLECTION_USER_FIREBASE).document(currentUser.getUid());
-                    Map<String, Object> user = new HashMap<>();
-                    user.put("imgUser", "");
-                    myUserRef.update(user)
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    firebaseAdminUpdateAndDeleteUserListener.deletePhotoInFirebase(true);
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    firebaseAdminUpdateAndDeleteUserListener.deletePhotoInFirebase(false);
-                                }
-                            });
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    firebaseAdminUpdateAndDeleteUserListener.deletePhotoInFirebase(false);
-                }
-            });
+            desertRef.delete().addOnSuccessListener(aVoid -> {
+                DocumentReference myUserRef = firebaseFirestore.collection(COLLECTION_USER_FIREBASE).document(currentUser.getUid());
+                Map<String, Object> user = new HashMap<>();
+                user.put("imgUser", "");
+                myUserRef.update(user)
+                        .addOnSuccessListener(aVoid1 -> firebaseAdminUpdateAndDeleteUserListener.deletePhotoInFirebase(true))
+                        .addOnFailureListener(e -> firebaseAdminUpdateAndDeleteUserListener.deletePhotoInFirebase(false));
+            }).addOnFailureListener(exception -> firebaseAdminUpdateAndDeleteUserListener.deletePhotoInFirebase(false));
         }
     }
 
     public void updatePhotoUserInFirebase() {
         if (firebaseAdminUpdateAndDeleteUserListener != null) {
             StorageReference desertRef = storageReference.child("images/" + currentUser.getUid());
-            desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void aVoid) {
-                    uploadImage(userDataFirebase.getImgUser());
-                    DocumentReference myUserRef = firebaseFirestore.collection(COLLECTION_USER_FIREBASE).document(currentUser.getUid());
-                    Map<String, Object> user = new HashMap<>();
-                    user.put("imgUser", userDataFirebase.getImgUser());
-                    myUserRef.update(user)
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    firebaseAdminUpdateAndDeleteUserListener.updatePhotoInFirebase(true);
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    firebaseAdminUpdateAndDeleteUserListener.updatePhotoInFirebase(false);
-                                }
-                            });
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    uploadImage(userDataFirebase.getImgUser());
-                    firebaseAdminUpdateAndDeleteUserListener.updatePhotoInFirebase(true);
-                }
+            desertRef.delete().addOnSuccessListener(aVoid -> {
+                uploadImage(userDataFirebase.getImgUser());
+                DocumentReference myUserRef = firebaseFirestore.collection(COLLECTION_USER_FIREBASE).document(currentUser.getUid());
+                Map<String, Object> user = new HashMap<>();
+                user.put("imgUser", userDataFirebase.getImgUser());
+                myUserRef.update(user)
+                        .addOnSuccessListener(aVoid1 -> firebaseAdminUpdateAndDeleteUserListener.updatePhotoInFirebase(true))
+                        .addOnFailureListener(e -> firebaseAdminUpdateAndDeleteUserListener.updatePhotoInFirebase(false));
+            }).addOnFailureListener(exception -> {
+                uploadImage(userDataFirebase.getImgUser());
+                firebaseAdminUpdateAndDeleteUserListener.updatePhotoInFirebase(true);
             });
 
         }
@@ -474,18 +400,8 @@ public class FirebaseAdmin {
             Map<String, Object> user = new HashMap<>();
             user.put("fullName", userDataFirebase.getFullName());
             myUserRef.update(user)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            firebaseAdminUpdateAndDeleteUserListener.updateFullNameInFirebase(true);
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            firebaseAdminUpdateAndDeleteUserListener.updateFullNameInFirebase(false);
-                        }
-                    });
+                    .addOnSuccessListener(aVoid -> firebaseAdminUpdateAndDeleteUserListener.updateFullNameInFirebase(true))
+                    .addOnFailureListener(e -> firebaseAdminUpdateAndDeleteUserListener.updateFullNameInFirebase(false));
         }
     }
 
@@ -495,18 +411,8 @@ public class FirebaseAdmin {
             Map<String, Object> user = new HashMap<>();
             user.put("nickName", userDataFirebase.getNickName());
             myUserRef.update(user)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            firebaseAdminUpdateAndDeleteUserListener.updateNickNameInFirebase(true);
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            firebaseAdminUpdateAndDeleteUserListener.updateNickNameInFirebase(false);
-                        }
-                    });
+                    .addOnSuccessListener(aVoid -> firebaseAdminUpdateAndDeleteUserListener.updateNickNameInFirebase(true))
+                    .addOnFailureListener(e -> firebaseAdminUpdateAndDeleteUserListener.updateNickNameInFirebase(false));
         }
     }
 
@@ -524,35 +430,20 @@ public class FirebaseAdmin {
         credential = EmailAuthProvider
                 .getCredential(currentUser.getEmail(), userDataFirebase.getPassword());
         currentUser.reauthenticate(credential)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        currentUser.updateEmail(userDataFirebase.getEmail())
-                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        if (task.isSuccessful()) {
-                                            DocumentReference myUserRef = firebaseFirestore.collection(COLLECTION_USER_FIREBASE).document(currentUser.getUid());
-                                            Map<String, Object> user = new HashMap<>();
-                                            user.put("email", userDataFirebase.getEmail());
-                                            myUserRef.update(user)
-                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                        @Override
-                                                        public void onSuccess(Void aVoid) {
-                                                            firebaseAdminUpdateAndDeleteUserListener.updateEmailInFirebase(true);
-                                                        }
-                                                    })
-                                                    .addOnFailureListener(new OnFailureListener() {
-                                                        @Override
-                                                        public void onFailure(@NonNull Exception e) {
-                                                            firebaseAdminUpdateAndDeleteUserListener.updateEmailInFirebase(false);
-                                                        }
-                                                    });
-                                        }
-                                    }
-                                });
-                    }
-                });
+                .addOnCompleteListener(task -> currentUser.updateEmail(userDataFirebase.getEmail())
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    DocumentReference myUserRef = firebaseFirestore.collection(COLLECTION_USER_FIREBASE).document(currentUser.getUid());
+                                    Map<String, Object> user = new HashMap<>();
+                                    user.put("email", userDataFirebase.getEmail());
+                                    myUserRef.update(user)
+                                            .addOnSuccessListener(aVoid -> firebaseAdminUpdateAndDeleteUserListener.updateEmailInFirebase(true))
+                                            .addOnFailureListener(e -> firebaseAdminUpdateAndDeleteUserListener.updateEmailInFirebase(false));
+                                }
+                            }
+                        }));
     }
 
     //Reauthenticate User update password
@@ -570,35 +461,20 @@ public class FirebaseAdmin {
         credential = EmailAuthProvider
                 .getCredential(userDataFirebase.getEmail(), oldPassword);
         currentUser.reauthenticate(credential)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        currentUser.updatePassword(newPassword)
-                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        if (task.isSuccessful()) {
-                                            DocumentReference myUserRef = firebaseFirestore.collection(COLLECTION_USER_FIREBASE).document(currentUser.getUid());
-                                            Map<String, Object> user = new HashMap<>();
-                                            user.put("password", userDataFirebase.getPassword());
-                                            myUserRef.update(user)
-                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                        @Override
-                                                        public void onSuccess(Void aVoid) {
-                                                            firebaseAdminUpdateAndDeleteUserListener.updatePasswordInFirebase(true);
-                                                        }
-                                                    })
-                                                    .addOnFailureListener(new OnFailureListener() {
-                                                        @Override
-                                                        public void onFailure(@NonNull Exception e) {
-                                                            firebaseAdminUpdateAndDeleteUserListener.updatePasswordInFirebase(false);
-                                                        }
-                                                    });
-                                        }
-                                    }
-                                });
-                    }
-                });
+                .addOnCompleteListener(task -> currentUser.updatePassword(newPassword)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    DocumentReference myUserRef = firebaseFirestore.collection(COLLECTION_USER_FIREBASE).document(currentUser.getUid());
+                                    Map<String, Object> user = new HashMap<>();
+                                    user.put("password", userDataFirebase.getPassword());
+                                    myUserRef.update(user)
+                                            .addOnSuccessListener(aVoid -> firebaseAdminUpdateAndDeleteUserListener.updatePasswordInFirebase(true))
+                                            .addOnFailureListener(e -> firebaseAdminUpdateAndDeleteUserListener.updatePasswordInFirebase(false));
+                                }
+                            }
+                        }));
     }
 
     //Delete user account
@@ -607,33 +483,17 @@ public class FirebaseAdmin {
         if (firebaseAdminUpdateAndDeleteUserListener != null) {
             firebaseFirestore.collection(COLLECTION_USER_FIREBASE).document(currentUser.getUid())
                     .delete()
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            if(userDataFirebase.getImgUser().equals("")){
-                                reauthenticateUserDeleteAccount();
-                            }else{
-                                StorageReference desertRef = storageReference.child("images/" + currentUser.getUid());
-                                desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        reauthenticateUserDeleteAccount();
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception exception) {
-                                        firebaseAdminUpdateAndDeleteUserListener.deleteUserInFirebase(false);
-                                    }
-                                });
-                            }
+                    .addOnSuccessListener(aVoid -> {
+                        if(userDataFirebase.getImgUser().equals("")){
+                            reauthenticateUserDeleteAccount();
+                        }else{
+                            StorageReference desertRef = storageReference.child("images/" + currentUser.getUid());
+                            desertRef.delete()
+                                    .addOnSuccessListener(aVoid1 -> reauthenticateUserDeleteAccount())
+                                    .addOnFailureListener(exception -> firebaseAdminUpdateAndDeleteUserListener.deleteUserInFirebase(false));
                         }
                     })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            firebaseAdminUpdateAndDeleteUserListener.deleteUserInFirebase(false);
-                        }
-                    });
+                    .addOnFailureListener(e -> firebaseAdminUpdateAndDeleteUserListener.deleteUserInFirebase(false));
         }
     }
 
@@ -644,20 +504,12 @@ public class FirebaseAdmin {
         credential = EmailAuthProvider
                 .getCredential(userDataFirebase.getEmail(), userDataFirebase.getPassword());
         currentUser.reauthenticate(credential)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        currentUser.delete()
-                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        if (task.isSuccessful()) {
-                                            firebaseAdminUpdateAndDeleteUserListener.deleteUserInFirebase(true);
-                                        }
-                                    }
-                                });
-                    }
-                });
+                .addOnCompleteListener(task -> currentUser.delete()
+                        .addOnCompleteListener(task1 -> {
+                            if (task1.isSuccessful()) {
+                                firebaseAdminUpdateAndDeleteUserListener.deleteUserInFirebase(true);
+                            }
+                        }));
     }
 
     //Download developer data
@@ -665,19 +517,16 @@ public class FirebaseAdmin {
     public void dowloandDataDeveloperFirebase() {
         DocumentReference myDeveloperRef = firebaseFirestore.collection(COLLECTION_DEVELOPER_INFO_FIREBASE).document(DOCUMENT_DEVELOPER_INFO_FIREBASE);
         if (firebaseAdminInsertAndDownloandListener != null) {
-            myDeveloperRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                @Override
-                public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException e) {
-                    if (e != null) {
-                        firebaseAdminInsertAndDownloandListener.downloadInfotDeveloper(false);
-                    }
-                    if (snapshot != null && snapshot.exists()) {
-                        Developer developerData = snapshot.toObject(Developer.class);
-                        developerInfo = developerData;
-                        firebaseAdminInsertAndDownloandListener.downloadInfotDeveloper(true);
-                    } else {
-                        firebaseAdminInsertAndDownloandListener.downloadInfotDeveloper(false);
-                    }
+            myDeveloperRef.addSnapshotListener((snapshot, e) -> {
+                if (e != null) {
+                    firebaseAdminInsertAndDownloandListener.downloadInfotDeveloper(false);
+                }
+                if (snapshot != null && snapshot.exists()) {
+                    Developer developerData = snapshot.toObject(Developer.class);
+                    developerInfo = developerData;
+                    firebaseAdminInsertAndDownloandListener.downloadInfotDeveloper(true);
+                } else {
+                    firebaseAdminInsertAndDownloandListener.downloadInfotDeveloper(false);
                 }
             });
         }
@@ -688,19 +537,16 @@ public class FirebaseAdmin {
     public void downloadSlimmingSport() {
         if (firebaseAdminDownloandFragmentData != null) {
             CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_SPORT_SLIMMING);
-            collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
-                @Override
-                public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                    if (e != null) {
-                        firebaseAdminDownloandFragmentData.downloandCollectionSportSlimming(false);
-                    }
-                    List<SportSlimming> sportSlimmingList = new ArrayList<>();
-                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                        sportSlimmingList.add(doc.toObject(SportSlimming.class));
-                    }
-                    sportSlimmingListSport = sportSlimmingList;
-                    firebaseAdminDownloandFragmentData.downloandCollectionSportSlimming(true);
+            collectionReference.addSnapshotListener((queryDocumentSnapshots, e) -> {
+                if (e != null) {
+                    firebaseAdminDownloandFragmentData.downloandCollectionSportSlimming(false);
                 }
+                List<SportSlimming> sportSlimmingList = new ArrayList<>();
+                for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                    sportSlimmingList.add(doc.toObject(SportSlimming.class));
+                }
+                sportSlimmingListSport = sportSlimmingList;
+                firebaseAdminDownloandFragmentData.downloandCollectionSportSlimming(true);
             });
         }
     }
@@ -708,19 +554,16 @@ public class FirebaseAdmin {
     public void downloadTiningSport() {
         if (firebaseAdminDownloandFragmentData != null) {
             CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_SPORT_TONING);
-            collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
-                @Override
-                public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                    if (e != null) {
-                        firebaseAdminDownloandFragmentData.downloandCollectionSportToning(false);
-                    }
-                    List<SportToning> sportToningList = new ArrayList<>();
-                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                        sportToningList.add(doc.toObject(SportToning.class));
-                    }
-                    sportToningListSport = sportToningList;
-                    firebaseAdminDownloandFragmentData.downloandCollectionSportToning(true);
+            collectionReference.addSnapshotListener((queryDocumentSnapshots, e) -> {
+                if (e != null) {
+                    firebaseAdminDownloandFragmentData.downloandCollectionSportToning(false);
                 }
+                List<SportToning> sportToningList = new ArrayList<>();
+                for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                    sportToningList.add(doc.toObject(SportToning.class));
+                }
+                sportToningListSport = sportToningList;
+                firebaseAdminDownloandFragmentData.downloandCollectionSportToning(true);
             });
         }
     }
@@ -728,19 +571,16 @@ public class FirebaseAdmin {
     public void downloadGainVolumeSport() {
         if (firebaseAdminDownloandFragmentData != null) {
             CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_SPORT_GAIN_VOLUME);
-            collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
-                @Override
-                public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                    if (e != null) {
-                        firebaseAdminDownloandFragmentData.downloandCollectionSportGainVolume(false);
-                    }
-                    List<SportGainVolume> sportGainVolumes = new ArrayList<>();
-                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                        sportGainVolumes.add(doc.toObject(SportGainVolume.class));
-                    }
-                    sportGainVolumeListSport = sportGainVolumes;
-                    firebaseAdminDownloandFragmentData.downloandCollectionSportGainVolume(true);
+            collectionReference.addSnapshotListener((queryDocumentSnapshots, e) -> {
+                if (e != null) {
+                    firebaseAdminDownloandFragmentData.downloandCollectionSportGainVolume(false);
                 }
+                List<SportGainVolume> sportGainVolumes = new ArrayList<>();
+                for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                    sportGainVolumes.add(doc.toObject(SportGainVolume.class));
+                }
+                sportGainVolumeListSport = sportGainVolumes;
+                firebaseAdminDownloandFragmentData.downloandCollectionSportGainVolume(true);
             });
         }
     }
@@ -750,19 +590,16 @@ public class FirebaseAdmin {
     public void downloadSlimmingNutrition() {
         if (firebaseAdminDownloandFragmentData != null) {
             CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_NUTRITION_SLIMMING);
-            collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
-                @Override
-                public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                    if (e != null) {
-                        firebaseAdminDownloandFragmentData.downloandCollectionNutritionSlimming(false);
-                    }
-                    List<NutritionSlimming> nutritionSlimmingList = new ArrayList<>();
-                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                        nutritionSlimmingList.add(doc.toObject(NutritionSlimming.class));
-                    }
-                    nutritionSlimmingListNutrition = nutritionSlimmingList;
-                    firebaseAdminDownloandFragmentData.downloandCollectionNutritionSlimming(true);
+            collectionReference.addSnapshotListener((queryDocumentSnapshots, e) -> {
+                if (e != null) {
+                    firebaseAdminDownloandFragmentData.downloandCollectionNutritionSlimming(false);
                 }
+                List<NutritionSlimming> nutritionSlimmingList = new ArrayList<>();
+                for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                    nutritionSlimmingList.add(doc.toObject(NutritionSlimming.class));
+                }
+                nutritionSlimmingListNutrition = nutritionSlimmingList;
+                firebaseAdminDownloandFragmentData.downloandCollectionNutritionSlimming(true);
             });
         }
     }
@@ -770,19 +607,16 @@ public class FirebaseAdmin {
     public void downloadTiningNutrition() {
         if (firebaseAdminDownloandFragmentData != null) {
             CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_NUTRITION_TONING);
-            collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
-                @Override
-                public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                    if (e != null) {
-                        firebaseAdminDownloandFragmentData.downloandCollectionNutritionToning(false);
-                    }
-                    List<NutritionToning> nutritionTonings = new ArrayList<>();
-                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                        nutritionTonings.add(doc.toObject(NutritionToning.class));
-                    }
-                    nutritionToningsListNutrition = nutritionTonings;
-                    firebaseAdminDownloandFragmentData.downloandCollectionNutritionToning(true);
+            collectionReference.addSnapshotListener((queryDocumentSnapshots, e) -> {
+                if (e != null) {
+                    firebaseAdminDownloandFragmentData.downloandCollectionNutritionToning(false);
                 }
+                List<NutritionToning> nutritionTonings = new ArrayList<>();
+                for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                    nutritionTonings.add(doc.toObject(NutritionToning.class));
+                }
+                nutritionToningsListNutrition = nutritionTonings;
+                firebaseAdminDownloandFragmentData.downloandCollectionNutritionToning(true);
             });
         }
     }
@@ -790,19 +624,16 @@ public class FirebaseAdmin {
     public void downloadGainVolumeNutrition() {
         if (firebaseAdminDownloandFragmentData != null) {
             CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_NUTRITION_GAIN_VOLUME);
-            collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
-                @Override
-                public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                    if (e != null) {
-                        firebaseAdminDownloandFragmentData.downloandCollectionNutritionGainVolume(false);
-                    }
-                    List<NutritionGainVolume> nutritionGainVolumes = new ArrayList<>();
-                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                        nutritionGainVolumes.add(doc.toObject(NutritionGainVolume.class));
-                    }
-                    nutritionGainVolumeListNutrition = nutritionGainVolumes;
-                    firebaseAdminDownloandFragmentData.downloandCollectionNutritionGainVolume(true);
+            collectionReference.addSnapshotListener((queryDocumentSnapshots, e) -> {
+                if (e != null) {
+                    firebaseAdminDownloandFragmentData.downloandCollectionNutritionGainVolume(false);
                 }
+                List<NutritionGainVolume> nutritionGainVolumes = new ArrayList<>();
+                for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                    nutritionGainVolumes.add(doc.toObject(NutritionGainVolume.class));
+                }
+                nutritionGainVolumeListNutrition = nutritionGainVolumes;
+                firebaseAdminDownloandFragmentData.downloandCollectionNutritionGainVolume(true);
             });
         }
     }
@@ -814,18 +645,8 @@ public class FirebaseAdmin {
         if (firebaseAdminFavoriteSport != null) {
             firebaseFirestore.collection(COLLECTION_FAVORITE_SPORT).document()
                     .set(slimming)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            firebaseAdminFavoriteSport.inserSportFavoriteFirebase(true);
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            firebaseAdminFavoriteSport.inserSportFavoriteFirebase(false);
-                        }
-                    });
+                    .addOnSuccessListener(aVoid -> firebaseAdminFavoriteSport.inserSportFavoriteFirebase(true))
+                    .addOnFailureListener(e -> firebaseAdminFavoriteSport.inserSportFavoriteFirebase(false));
         }
     }
 
@@ -846,18 +667,8 @@ public class FirebaseAdmin {
         if (firebaseAdminFavoriteSport != null) {
             firebaseFirestore.collection(COLLECTION_FAVORITE_SPORT).document()
                     .set(toning)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            firebaseAdminFavoriteSport.inserSportFavoriteFirebase(true);
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            firebaseAdminFavoriteSport.inserSportFavoriteFirebase(false);
-                        }
-                    });
+                    .addOnSuccessListener(aVoid -> firebaseAdminFavoriteSport.inserSportFavoriteFirebase(true))
+                    .addOnFailureListener(e -> firebaseAdminFavoriteSport.inserSportFavoriteFirebase(false));
         }
     }
 
@@ -878,18 +689,8 @@ public class FirebaseAdmin {
         if (firebaseAdminFavoriteSport != null) {
             firebaseFirestore.collection(COLLECTION_FAVORITE_SPORT).document()
                     .set(gainVolume)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            firebaseAdminFavoriteSport.inserSportFavoriteFirebase(true);
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            firebaseAdminFavoriteSport.inserSportFavoriteFirebase(false);
-                        }
-                    });
+                    .addOnSuccessListener(aVoid -> firebaseAdminFavoriteSport.inserSportFavoriteFirebase(true))
+                    .addOnFailureListener(e -> firebaseAdminFavoriteSport.inserSportFavoriteFirebase(false));
         }
     }
 
@@ -913,28 +714,14 @@ public class FirebaseAdmin {
             firebaseFirestore.collection(COLLECTION_FAVORITE_SPORT)
                     .whereEqualTo("name",sportSlimming.getName())
                     .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if(task.isSuccessful()){
-                                for (QueryDocumentSnapshot documentSnapshot : task.getResult()){
-                                    String id = documentSnapshot.getId();
-                                    firebaseFirestore.collection(COLLECTION_FAVORITE_SPORT).document(id)
-                                            .delete()
-                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
-                                                    firebaseAdminFavoriteSport.deleteFavoriteSport(true);
-                                                }
-                                            })
-                                            .addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    firebaseAdminFavoriteSport.deleteFavoriteSport(false);
-
-                                                }
-                                            });
-                                }
+                    .addOnCompleteListener(task -> {
+                        if(task.isSuccessful()){
+                            for (QueryDocumentSnapshot documentSnapshot : task.getResult()){
+                                String id = documentSnapshot.getId();
+                                firebaseFirestore.collection(COLLECTION_FAVORITE_SPORT).document(id)
+                                        .delete()
+                                        .addOnSuccessListener(aVoid -> firebaseAdminFavoriteSport.deleteFavoriteSport(true))
+                                        .addOnFailureListener(e -> firebaseAdminFavoriteSport.deleteFavoriteSport(false));
                             }
                         }
                     });
@@ -948,27 +735,14 @@ public class FirebaseAdmin {
             firebaseFirestore.collection(COLLECTION_FAVORITE_SPORT)
                     .whereEqualTo("name", sportToning.getName())
                     .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful()) {
-                                for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
-                                    String id = documentSnapshot.getId();
-                                    firebaseFirestore.collection(COLLECTION_FAVORITE_SPORT).document(id)
-                                            .delete()
-                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
-                                                    firebaseAdminFavoriteSport.deleteFavoriteSport(true);
-                                                }
-                                            })
-                                            .addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    firebaseAdminFavoriteSport.deleteFavoriteSport(false);
-                                                }
-                                            });
-                                }
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                                String id = documentSnapshot.getId();
+                                firebaseFirestore.collection(COLLECTION_FAVORITE_SPORT).document(id)
+                                        .delete()
+                                        .addOnSuccessListener(aVoid -> firebaseAdminFavoriteSport.deleteFavoriteSport(true))
+                                        .addOnFailureListener(e -> firebaseAdminFavoriteSport.deleteFavoriteSport(false));
                             }
                         }
                     });
@@ -981,27 +755,14 @@ public class FirebaseAdmin {
             firebaseFirestore.collection(COLLECTION_FAVORITE_SPORT)
                     .whereEqualTo("name", sportGainVolume.getName())
                     .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful()) {
-                                for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
-                                    String id = documentSnapshot.getId();
-                                    firebaseFirestore.collection(COLLECTION_FAVORITE_SPORT).document(id)
-                                            .delete()
-                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
-                                                    firebaseAdminFavoriteSport.deleteFavoriteSport(true);
-                                                }
-                                            })
-                                            .addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    firebaseAdminFavoriteSport.deleteFavoriteSport(false);
-                                                }
-                                            });
-                                }
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                                String id = documentSnapshot.getId();
+                                firebaseFirestore.collection(COLLECTION_FAVORITE_SPORT).document(id)
+                                        .delete()
+                                        .addOnSuccessListener(aVoid -> firebaseAdminFavoriteSport.deleteFavoriteSport(true))
+                                        .addOnFailureListener(e -> firebaseAdminFavoriteSport.deleteFavoriteSport(false));
                             }
                         }
                     });
@@ -1014,27 +775,14 @@ public class FirebaseAdmin {
             firebaseFirestore.collection(COLLECTION_FAVORITE_SPORT)
                     .whereEqualTo("name", defaultSport.getName())
                     .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful()) {
-                                for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
-                                    String id = documentSnapshot.getId();
-                                    firebaseFirestore.collection(COLLECTION_FAVORITE_SPORT).document(id)
-                                            .delete()
-                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
-                                                    firebaseAdminFavoriteSport.deleteFavoriteSport(true);
-                                                }
-                                            })
-                                            .addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    firebaseAdminFavoriteSport.deleteFavoriteSport(false);
-                                                }
-                                            });
-                                }
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                                String id = documentSnapshot.getId();
+                                firebaseFirestore.collection(COLLECTION_FAVORITE_SPORT).document(id)
+                                        .delete()
+                                        .addOnSuccessListener(aVoid -> firebaseAdminFavoriteSport.deleteFavoriteSport(true))
+                                        .addOnFailureListener(e -> firebaseAdminFavoriteSport.deleteFavoriteSport(false));
                             }
                         }
                     });
@@ -1048,18 +796,8 @@ public class FirebaseAdmin {
         if (firebaseAdminFavoriteNutrition != null) {
             firebaseFirestore.collection(COLLECTION_FAVORITE_NUTRITION).document()
                     .set(slimming)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            firebaseAdminFavoriteNutrition.inserNutritionFavoriteFirebase(true);
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            firebaseAdminFavoriteNutrition.inserNutritionFavoriteFirebase(false);
-                        }
-                    });
+                    .addOnSuccessListener(aVoid -> firebaseAdminFavoriteNutrition.inserNutritionFavoriteFirebase(true))
+                    .addOnFailureListener(e -> firebaseAdminFavoriteNutrition.inserNutritionFavoriteFirebase(false));
         }
     }
 
@@ -1080,18 +818,8 @@ public class FirebaseAdmin {
         if (firebaseAdminFavoriteNutrition != null) {
             firebaseFirestore.collection(COLLECTION_FAVORITE_NUTRITION).document()
                     .set(toning)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            firebaseAdminFavoriteNutrition.inserNutritionFavoriteFirebase(true);
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            firebaseAdminFavoriteNutrition.inserNutritionFavoriteFirebase(false);
-                        }
-                    });
+                    .addOnSuccessListener(aVoid -> firebaseAdminFavoriteNutrition.inserNutritionFavoriteFirebase(true))
+                    .addOnFailureListener(e -> firebaseAdminFavoriteNutrition.inserNutritionFavoriteFirebase(false));
         }
     }
 
@@ -1112,18 +840,8 @@ public class FirebaseAdmin {
         if (firebaseAdminFavoriteNutrition != null) {
             firebaseFirestore.collection(COLLECTION_FAVORITE_NUTRITION).document()
                     .set(gainVolume)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            firebaseAdminFavoriteNutrition.inserNutritionFavoriteFirebase(true);
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            firebaseAdminFavoriteNutrition.inserNutritionFavoriteFirebase(false);
-                        }
-                    });
+                    .addOnSuccessListener(aVoid -> firebaseAdminFavoriteNutrition.inserNutritionFavoriteFirebase(true))
+                    .addOnFailureListener(e -> firebaseAdminFavoriteNutrition.inserNutritionFavoriteFirebase(false));
         }
     }
 
@@ -1147,27 +865,14 @@ public class FirebaseAdmin {
             firebaseFirestore.collection(COLLECTION_FAVORITE_NUTRITION)
                     .whereEqualTo("name",nutritionSlimming.getName())
                     .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if(task.isSuccessful()){
-                                for (QueryDocumentSnapshot documentSnapshot : task.getResult()){
-                                    String id = documentSnapshot.getId();
-                                    firebaseFirestore.collection(COLLECTION_FAVORITE_NUTRITION).document(id)
-                                            .delete()
-                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
-                                                    firebaseAdminFavoriteNutrition.deleteFavoriteNutrition(true);
-                                                }
-                                            })
-                                            .addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    firebaseAdminFavoriteNutrition.deleteFavoriteNutrition(false);
-                                                }
-                                            });
-                                }
+                    .addOnCompleteListener(task -> {
+                        if(task.isSuccessful()){
+                            for (QueryDocumentSnapshot documentSnapshot : task.getResult()){
+                                String id = documentSnapshot.getId();
+                                firebaseFirestore.collection(COLLECTION_FAVORITE_NUTRITION).document(id)
+                                        .delete()
+                                        .addOnSuccessListener(aVoid -> firebaseAdminFavoriteNutrition.deleteFavoriteNutrition(true))
+                                        .addOnFailureListener(e -> firebaseAdminFavoriteNutrition.deleteFavoriteNutrition(false));
                             }
                         }
                     });
@@ -1181,27 +886,14 @@ public class FirebaseAdmin {
             firebaseFirestore.collection(COLLECTION_FAVORITE_NUTRITION)
                     .whereEqualTo("name", nutritionToning.getName())
                     .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful()) {
-                                for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
-                                    String id = documentSnapshot.getId();
-                                    firebaseFirestore.collection(COLLECTION_FAVORITE_NUTRITION).document(id)
-                                            .delete()
-                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
-                                                    firebaseAdminFavoriteNutrition.deleteFavoriteNutrition(true);
-                                                }
-                                            })
-                                            .addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    firebaseAdminFavoriteNutrition.deleteFavoriteNutrition(false);
-                                                }
-                                            });
-                                }
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                                String id = documentSnapshot.getId();
+                                firebaseFirestore.collection(COLLECTION_FAVORITE_NUTRITION).document(id)
+                                        .delete()
+                                        .addOnSuccessListener(aVoid -> firebaseAdminFavoriteNutrition.deleteFavoriteNutrition(true))
+                                        .addOnFailureListener(e -> firebaseAdminFavoriteNutrition.deleteFavoriteNutrition(false));
                             }
                         }
                     });
@@ -1214,27 +906,14 @@ public class FirebaseAdmin {
             firebaseFirestore.collection(COLLECTION_FAVORITE_NUTRITION)
                     .whereEqualTo("name", nutritionGainVolume.getName())
                     .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful()) {
-                                for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
-                                    String id = documentSnapshot.getId();
-                                    firebaseFirestore.collection(COLLECTION_FAVORITE_NUTRITION).document(id)
-                                            .delete()
-                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
-                                                    firebaseAdminFavoriteNutrition.deleteFavoriteNutrition(true);
-                                                }
-                                            })
-                                            .addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    firebaseAdminFavoriteNutrition.deleteFavoriteNutrition(false);
-                                                }
-                                            });
-                                }
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                                String id = documentSnapshot.getId();
+                                firebaseFirestore.collection(COLLECTION_FAVORITE_NUTRITION).document(id)
+                                        .delete()
+                                        .addOnSuccessListener(aVoid -> firebaseAdminFavoriteNutrition.deleteFavoriteNutrition(true))
+                                        .addOnFailureListener(e -> firebaseAdminFavoriteNutrition.deleteFavoriteNutrition(false));
                             }
                         }
                     });
@@ -1247,27 +926,14 @@ public class FirebaseAdmin {
             firebaseFirestore.collection(COLLECTION_FAVORITE_NUTRITION)
                     .whereEqualTo("name", defaultNutrition.getName())
                     .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful()) {
-                                for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
-                                    String id = documentSnapshot.getId();
-                                    firebaseFirestore.collection(COLLECTION_FAVORITE_NUTRITION).document(id)
-                                            .delete()
-                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
-                                                    firebaseAdminFavoriteNutrition.deleteFavoriteNutrition(true);
-                                                }
-                                            })
-                                            .addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    firebaseAdminFavoriteNutrition.deleteFavoriteNutrition(false);
-                                                }
-                                            });
-                                }
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                                String id = documentSnapshot.getId();
+                                firebaseFirestore.collection(COLLECTION_FAVORITE_NUTRITION).document(id)
+                                        .delete()
+                                        .addOnSuccessListener(aVoid -> firebaseAdminFavoriteNutrition.deleteFavoriteNutrition(true))
+                                        .addOnFailureListener(e -> firebaseAdminFavoriteNutrition.deleteFavoriteNutrition(false));
                             }
                         }
                     });
@@ -1281,21 +947,18 @@ public class FirebaseAdmin {
             COLLECTION_FAVORITE_SPORT = "users/" + currentUser.getUid() + "/deporteFavorito";
             CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_FAVORITE_SPORT);
             collectionReference.whereEqualTo("type", "adelgazar")
-                    .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                        @Override
-                        public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                            if (e != null) {
-                                firebaseAdminFavoriteSport.downloandCollectionSportFavorite(false);
-                            }
-                            List<SportSlimming> toningList = new ArrayList<>();
-                            for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                                if (doc.get("type") != null) {
-                                    toningList.add(doc.toObject(SportSlimming.class));
-                                }
-                            }
-                            sportSlimmingListSportFavorite = toningList;
-                            firebaseAdminFavoriteSport.downloandCollectionSportFavorite(true);
+                    .addSnapshotListener((queryDocumentSnapshots, e) -> {
+                        if (e != null) {
+                            firebaseAdminFavoriteSport.downloandCollectionSportFavorite(false);
                         }
+                        List<SportSlimming> toningList = new ArrayList<>();
+                        for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                            if (doc.get("type") != null) {
+                                toningList.add(doc.toObject(SportSlimming.class));
+                            }
+                        }
+                        sportSlimmingListSportFavorite = toningList;
+                        firebaseAdminFavoriteSport.downloandCollectionSportFavorite(true);
                     });
         }
     }
@@ -1305,21 +968,18 @@ public class FirebaseAdmin {
             COLLECTION_FAVORITE_SPORT = "users/" + currentUser.getUid() + "/deporteFavorito";
             CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_FAVORITE_SPORT);
             collectionReference.whereEqualTo("type", "tonificar")
-                    .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                        @Override
-                        public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                            if (e != null) {
-                                firebaseAdminFavoriteSport.downloandCollectionSportFavorite(false);
-                            }
-                            List<SportToning> sportToningList = new ArrayList<>();
-                            for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                                if (doc.get("type") != null) {
-                                    sportToningList.add(doc.toObject(SportToning.class));
-                                }
-                            }
-                            sportToningListSportFavorite = sportToningList;
-                            firebaseAdminFavoriteSport.downloandCollectionSportFavorite(true);
+                    .addSnapshotListener((queryDocumentSnapshots, e) -> {
+                        if (e != null) {
+                            firebaseAdminFavoriteSport.downloandCollectionSportFavorite(false);
                         }
+                        List<SportToning> sportToningList = new ArrayList<>();
+                        for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                            if (doc.get("type") != null) {
+                                sportToningList.add(doc.toObject(SportToning.class));
+                            }
+                        }
+                        sportToningListSportFavorite = sportToningList;
+                        firebaseAdminFavoriteSport.downloandCollectionSportFavorite(true);
                     });
         }
     }
@@ -1329,21 +989,18 @@ public class FirebaseAdmin {
             COLLECTION_FAVORITE_SPORT = "users/" + currentUser.getUid() + "/deporteFavorito";
             CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_FAVORITE_SPORT);
             collectionReference.whereEqualTo("type", "ganarVolumen")
-                    .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                        @Override
-                        public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                            if (e != null) {
-                                firebaseAdminFavoriteSport.downloandCollectionSportFavorite(false);
-                            }
-                            List<SportGainVolume> sportGainVolumes = new ArrayList<>();
-                            for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                                if (doc.get("type") != null) {
-                                    sportGainVolumes.add(doc.toObject(SportGainVolume.class));
-                                }
-                            }
-                            sportGainVolumeListSportFavorite = sportGainVolumes;
-                            firebaseAdminFavoriteSport.downloandCollectionSportFavorite(true);
+                    .addSnapshotListener((queryDocumentSnapshots, e) -> {
+                        if (e != null) {
+                            firebaseAdminFavoriteSport.downloandCollectionSportFavorite(false);
                         }
+                        List<SportGainVolume> sportGainVolumes = new ArrayList<>();
+                        for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                            if (doc.get("type") != null) {
+                                sportGainVolumes.add(doc.toObject(SportGainVolume.class));
+                            }
+                        }
+                        sportGainVolumeListSportFavorite = sportGainVolumes;
+                        firebaseAdminFavoriteSport.downloandCollectionSportFavorite(true);
                     });
         }
     }
@@ -1354,22 +1011,19 @@ public class FirebaseAdmin {
         if (firebaseAdminFavoriteSport != null) {
             COLLECTION_FAVORITE_SPORT = "users/" + currentUser.getUid() + "/deporteFavorito";
             CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_FAVORITE_SPORT);
-            collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
-                @Override
-                public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                    if (e != null) {
-                        firebaseAdminFavoriteSport.downloandCollectionSportFavorite(false);
-                    }
-                    List<DefaultSport> defaultSports = new ArrayList<>();
-                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                        defaultSports.add(doc.toObject(DefaultSport.class));
-                    }
-                    allSportFavorite = defaultSports;
-                    if(allSportFavorite.size()==0){
-                        firebaseAdminFavoriteSport.emptyCollectionSportFavorite(true);
-                    }else if(allSportFavorite.size()!=0){
-                        firebaseAdminFavoriteSport.downloandCollectionSportFavorite(true);
-                    }
+            collectionReference.addSnapshotListener((queryDocumentSnapshots, e) -> {
+                if (e != null) {
+                    firebaseAdminFavoriteSport.downloandCollectionSportFavorite(false);
+                }
+                List<DefaultSport> defaultSports = new ArrayList<>();
+                for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                    defaultSports.add(doc.toObject(DefaultSport.class));
+                }
+                allSportFavorite = defaultSports;
+                if(allSportFavorite.size()==0){
+                    firebaseAdminFavoriteSport.emptyCollectionSportFavorite(true);
+                }else if(allSportFavorite.size()!=0){
+                    firebaseAdminFavoriteSport.downloandCollectionSportFavorite(true);
                 }
             });
         }
@@ -1383,21 +1037,18 @@ public class FirebaseAdmin {
             COLLECTION_FAVORITE_NUTRITION = "users/" + currentUser.getUid() + "/nutricionFavorita";
             CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_FAVORITE_NUTRITION);
             collectionReference.whereEqualTo("type", "adelgazar")
-                    .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                        @Override
-                        public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                            if (e != null) {
-                                firebaseAdminFavoriteNutrition.downloandCollectionNutritionFavorite(false);
-                            }
-                            List<NutritionSlimming> nutritionSlimmings = new ArrayList<>();
-                            for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                                if (doc.get("type") != null) {
-                                    nutritionSlimmings.add(doc.toObject(NutritionSlimming.class));
-                                }
-                            }
-                            nutritionSlimmingListNutritionFavorite = nutritionSlimmings;
-                            firebaseAdminFavoriteNutrition.downloandCollectionNutritionFavorite(true);
+                    .addSnapshotListener((queryDocumentSnapshots, e) -> {
+                        if (e != null) {
+                            firebaseAdminFavoriteNutrition.downloandCollectionNutritionFavorite(false);
                         }
+                        List<NutritionSlimming> nutritionSlimmings = new ArrayList<>();
+                        for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                            if (doc.get("type") != null) {
+                                nutritionSlimmings.add(doc.toObject(NutritionSlimming.class));
+                            }
+                        }
+                        nutritionSlimmingListNutritionFavorite = nutritionSlimmings;
+                        firebaseAdminFavoriteNutrition.downloandCollectionNutritionFavorite(true);
                     });
         }
     }
@@ -1407,21 +1058,18 @@ public class FirebaseAdmin {
             COLLECTION_FAVORITE_NUTRITION = "users/" + currentUser.getUid() + "/nutricionFavorita";
             CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_FAVORITE_NUTRITION);
             collectionReference.whereEqualTo("type", "tonificar")
-                    .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                        @Override
-                        public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                            if (e != null) {
-                                firebaseAdminFavoriteNutrition.downloandCollectionNutritionFavorite(false);
-                            }
-                            List<NutritionToning> nutritionTonings = new ArrayList<>();
-                            for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                                if (doc.get("type") != null) {
-                                    nutritionTonings.add(doc.toObject(NutritionToning.class));
-                                }
-                            }
-                            nutritionToningListNutritionFavorite = nutritionTonings;
-                            firebaseAdminFavoriteNutrition.downloandCollectionNutritionFavorite(true);
+                    .addSnapshotListener((queryDocumentSnapshots, e) -> {
+                        if (e != null) {
+                            firebaseAdminFavoriteNutrition.downloandCollectionNutritionFavorite(false);
                         }
+                        List<NutritionToning> nutritionTonings = new ArrayList<>();
+                        for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                            if (doc.get("type") != null) {
+                                nutritionTonings.add(doc.toObject(NutritionToning.class));
+                            }
+                        }
+                        nutritionToningListNutritionFavorite = nutritionTonings;
+                        firebaseAdminFavoriteNutrition.downloandCollectionNutritionFavorite(true);
                     });
         }
     }
@@ -1432,21 +1080,18 @@ public class FirebaseAdmin {
             COLLECTION_FAVORITE_NUTRITION = "users/" + currentUser.getUid() + "/nutricionFavorita";
             CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_FAVORITE_NUTRITION);
             collectionReference.whereEqualTo("type", "ganarVolumen")
-                    .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                        @Override
-                        public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                            if (e != null) {
-                                firebaseAdminFavoriteNutrition.downloandCollectionNutritionFavorite(false);
-                            }
-                            List<NutritionGainVolume> nutritionGainVolumes = new ArrayList<>();
-                            for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                                if (doc.get("type") != null) {
-                                    nutritionGainVolumes.add(doc.toObject(NutritionGainVolume.class));
-                                }
-                            }
-                            nutritionGainVolumeListNutritionFavorite = nutritionGainVolumes;
-                            firebaseAdminFavoriteNutrition.downloandCollectionNutritionFavorite(true);
+                    .addSnapshotListener((queryDocumentSnapshots, e) -> {
+                        if (e != null) {
+                            firebaseAdminFavoriteNutrition.downloandCollectionNutritionFavorite(false);
                         }
+                        List<NutritionGainVolume> nutritionGainVolumes = new ArrayList<>();
+                        for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                            if (doc.get("type") != null) {
+                                nutritionGainVolumes.add(doc.toObject(NutritionGainVolume.class));
+                            }
+                        }
+                        nutritionGainVolumeListNutritionFavorite = nutritionGainVolumes;
+                        firebaseAdminFavoriteNutrition.downloandCollectionNutritionFavorite(true);
                     });
         }
 
@@ -1458,22 +1103,19 @@ public class FirebaseAdmin {
         if (firebaseAdminFavoriteNutrition != null) {
             COLLECTION_FAVORITE_NUTRITION = "users/" + currentUser.getUid() + "/nutricionFavorita";
             CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_FAVORITE_NUTRITION);
-            collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
-                @Override
-                public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                    if (e != null) {
-                        firebaseAdminFavoriteNutrition.downloandCollectionNutritionFavorite(false);
-                    }
-                    List<DefaultNutrition> defaultNutritions = new ArrayList<>();
-                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                        defaultNutritions.add(doc.toObject(DefaultNutrition.class));
-                    }
-                    allNutritionFavorite = defaultNutritions;
-                    if(allNutritionFavorite.size()==0){
-                        firebaseAdminFavoriteNutrition.emptyCollectionNutritionFavorite(true);
-                    }else if(allNutritionFavorite.size()!=0){
-                        firebaseAdminFavoriteNutrition.downloandCollectionNutritionFavorite(true);
-                    }
+            collectionReference.addSnapshotListener((queryDocumentSnapshots, e) -> {
+                if (e != null) {
+                    firebaseAdminFavoriteNutrition.downloandCollectionNutritionFavorite(false);
+                }
+                List<DefaultNutrition> defaultNutritions = new ArrayList<>();
+                for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                    defaultNutritions.add(doc.toObject(DefaultNutrition.class));
+                }
+                allNutritionFavorite = defaultNutritions;
+                if(allNutritionFavorite.size()==0){
+                    firebaseAdminFavoriteNutrition.emptyCollectionNutritionFavorite(true);
+                }else if(allNutritionFavorite.size()!=0){
+                    firebaseAdminFavoriteNutrition.downloandCollectionNutritionFavorite(true);
                 }
             });
         }
@@ -1498,18 +1140,8 @@ public class FirebaseAdmin {
             COLLECTION_PLAN_SPORT_USER = "users/" + currentUser.getUid() + "/planesDeporte";
             firebaseFirestore.collection(COLLECTION_PLAN_SPORT_USER).document(id)
                     .set(planSport)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            firebaseAdminCreateShowPlanSport.insertSportPlanFirebase(true);
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            firebaseAdminCreateShowPlanSport.insertSportPlanFirebase(false);
-                        }
-                    });
+                    .addOnSuccessListener(aVoid -> firebaseAdminCreateShowPlanSport.insertSportPlanFirebase(true))
+                    .addOnFailureListener(e -> firebaseAdminCreateShowPlanSport.insertSportPlanFirebase(false));
         }
     }
 
@@ -1528,18 +1160,8 @@ public class FirebaseAdmin {
             COLLECTION_PLAN_NUTRITION_USER = "users/" + currentUser.getUid() + "/planesNutricion";
             firebaseFirestore.collection(COLLECTION_PLAN_NUTRITION_USER).document(id)
                     .set(planNutrition)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            firebaseAdminCreateShowPlanNutrition.insertNutritionPlanFirebase(true);
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            firebaseAdminCreateShowPlanNutrition.insertNutritionPlanFirebase(false);
-                        }
-                    });
+                    .addOnSuccessListener(aVoid -> firebaseAdminCreateShowPlanNutrition.insertNutritionPlanFirebase(true))
+                    .addOnFailureListener(e -> firebaseAdminCreateShowPlanNutrition.insertNutritionPlanFirebase(false));
         }
     }
 
@@ -1549,22 +1171,19 @@ public class FirebaseAdmin {
         if (firebaseAdminCreateShowPlanSport != null) {
             COLLECTION_PLAN_SPORT_USER = "users/" + currentUser.getUid() + "/planesDeporte";
             CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_PLAN_SPORT_USER);
-            collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
-                @Override
-                public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                    if (e != null) {
-                        firebaseAdminCreateShowPlanSport.downloadSportPlanFirebase(false);
-                    }
-                    List<PlanSport> planSports = new ArrayList<>();
-                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                        planSports.add(doc.toObject(PlanSport.class));
-                    }
-                    allPlanSport = planSports;
-                    if(allPlanSport.size()==0){
-                        firebaseAdminCreateShowPlanSport.emptySportPlanFirebase(true);
-                    }else if(allPlanSport.size()!=0){
-                        firebaseAdminCreateShowPlanSport.downloadSportPlanFirebase(true);
-                    }
+            collectionReference.addSnapshotListener((queryDocumentSnapshots, e) -> {
+                if (e != null) {
+                    firebaseAdminCreateShowPlanSport.downloadSportPlanFirebase(false);
+                }
+                List<PlanSport> planSports = new ArrayList<>();
+                for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                    planSports.add(doc.toObject(PlanSport.class));
+                }
+                allPlanSport = planSports;
+                if(allPlanSport.size()==0){
+                    firebaseAdminCreateShowPlanSport.emptySportPlanFirebase(true);
+                }else if(allPlanSport.size()!=0){
+                    firebaseAdminCreateShowPlanSport.downloadSportPlanFirebase(true);
                 }
             });
         }
@@ -1574,22 +1193,19 @@ public class FirebaseAdmin {
         if (firebaseAdminCreateShowPlanNutrition != null) {
             COLLECTION_PLAN_NUTRITION_USER = "users/" + currentUser.getUid() + "/planesNutricion";
             CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_PLAN_NUTRITION_USER);
-            collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
-                @Override
-                public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                    if (e != null) {
-                        firebaseAdminCreateShowPlanNutrition.downloadNutritionPlanFirebase(false);
-                    }
-                    List<PlanNutrition> planNutritions = new ArrayList<>();
-                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                        planNutritions.add(doc.toObject(PlanNutrition.class));
-                    }
-                    allPlanNutrition = planNutritions;
-                    if(allPlanNutrition.size()==0){
-                        firebaseAdminCreateShowPlanNutrition.emptyNutritionPlanFirebase(true);
-                    }else if(allPlanNutrition.size()!=0){
-                        firebaseAdminCreateShowPlanNutrition.downloadNutritionPlanFirebase(true);
-                    }
+            collectionReference.addSnapshotListener((queryDocumentSnapshots, e) -> {
+                if (e != null) {
+                    firebaseAdminCreateShowPlanNutrition.downloadNutritionPlanFirebase(false);
+                }
+                List<PlanNutrition> planNutritions = new ArrayList<>();
+                for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                    planNutritions.add(doc.toObject(PlanNutrition.class));
+                }
+                allPlanNutrition = planNutritions;
+                if(allPlanNutrition.size()==0){
+                    firebaseAdminCreateShowPlanNutrition.emptyNutritionPlanFirebase(true);
+                }else if(allPlanNutrition.size()!=0){
+                    firebaseAdminCreateShowPlanNutrition.downloadNutritionPlanFirebase(true);
                 }
             });
         }
@@ -1603,28 +1219,14 @@ public class FirebaseAdmin {
                 firebaseFirestore.collection(COLLECTION_PLAN_SPORT_USER)
                         .whereEqualTo("name", namePlanSport)
                         .get()
-                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
-                                        String id = documentSnapshot.getId();
-                                        firebaseFirestore.collection(COLLECTION_PLAN_SPORT_USER).document(id)
-                                                .delete()
-                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                    @Override
-                                                    public void onSuccess(Void aVoid) {
-                                                        firebaseAdminCreateShowPlanSport.deleteSportPlanFirebase(true);
-                                                    }
-                                                })
-                                                .addOnFailureListener(new OnFailureListener() {
-                                                    @Override
-                                                    public void onFailure(@NonNull Exception e) {
-                                                        firebaseAdminCreateShowPlanSport.deleteSportPlanFirebase(false);
-
-                                                    }
-                                                });
-                                    }
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                                    String id = documentSnapshot.getId();
+                                    firebaseFirestore.collection(COLLECTION_PLAN_SPORT_USER).document(id)
+                                            .delete()
+                                            .addOnSuccessListener(aVoid -> firebaseAdminCreateShowPlanSport.deleteSportPlanFirebase(true))
+                                            .addOnFailureListener(e -> firebaseAdminCreateShowPlanSport.deleteSportPlanFirebase(false));
                                 }
                             }
                         });
@@ -1637,28 +1239,14 @@ public class FirebaseAdmin {
             firebaseFirestore.collection(COLLECTION_PLAN_NUTRITION_USER)
                     .whereEqualTo("name", namePlanSport)
                     .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful()) {
-                                for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
-                                    String id = documentSnapshot.getId();
-                                    firebaseFirestore.collection(COLLECTION_PLAN_NUTRITION_USER).document(id)
-                                            .delete()
-                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
-                                                    firebaseAdminCreateShowPlanNutrition.deleteNutritionPlanFirebase(true);
-                                                }
-                                            })
-                                            .addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    firebaseAdminCreateShowPlanNutrition.deleteNutritionPlanFirebase(false);
-
-                                                }
-                                            });
-                                }
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                                String id = documentSnapshot.getId();
+                                firebaseFirestore.collection(COLLECTION_PLAN_NUTRITION_USER).document(id)
+                                        .delete()
+                                        .addOnSuccessListener(aVoid -> firebaseAdminCreateShowPlanNutrition.deleteNutritionPlanFirebase(true))
+                                        .addOnFailureListener(e -> firebaseAdminCreateShowPlanNutrition.deleteNutritionPlanFirebase(false));
                             }
                         }
                     });
@@ -1674,18 +1262,8 @@ public class FirebaseAdmin {
             Map<String, Object> plan = new HashMap<>();
             plan.put("isOk", planSport.getIsOk());
             myUserRef.update(plan)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            firebaseAdminCreateShowPlanSport.updateSportPlanFirebase(true);
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            firebaseAdminCreateShowPlanSport.updateSportPlanFirebase(false);
-                        }
-                    });
+                    .addOnSuccessListener(aVoid -> firebaseAdminCreateShowPlanSport.updateSportPlanFirebase(true))
+                    .addOnFailureListener(e -> firebaseAdminCreateShowPlanSport.updateSportPlanFirebase(false));
         }
     }
 
@@ -1696,18 +1274,8 @@ public class FirebaseAdmin {
             Map<String, Object> plan = new HashMap<>();
             plan.put("isOk", planNutrition.getIsOk());
             myUserRef.update(plan)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            firebaseAdminCreateShowPlanNutrition.updateNutritionPlanFirebase(true);
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            firebaseAdminCreateShowPlanNutrition.updateNutritionPlanFirebase(false);
-                        }
-                    });
+                    .addOnSuccessListener(aVoid -> firebaseAdminCreateShowPlanNutrition.updateNutritionPlanFirebase(true))
+                    .addOnFailureListener(e -> firebaseAdminCreateShowPlanNutrition.updateNutritionPlanFirebase(false));
         }
     }
 

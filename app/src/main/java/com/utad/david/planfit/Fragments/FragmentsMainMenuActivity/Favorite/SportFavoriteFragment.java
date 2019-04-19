@@ -25,8 +25,10 @@ import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.DialogFragment.Favorite.SportFavoriteDetailsDialogFragment;
 import com.utad.david.planfit.Model.Sport.DefaultSport;
 import com.utad.david.planfit.R;
+import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 
+import java.util.Collections;
 import java.util.List;
 
 public class SportFavoriteFragment extends Fragment implements FirebaseAdmin.FirebaseAdminFavoriteSport, SportFavoriteDetailsDialogFragment.CallbackFavoriteSport{
@@ -45,15 +47,17 @@ public class SportFavoriteFragment extends Fragment implements FirebaseAdmin.Fir
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fabric.with(getContext(), new Crashlytics());
 
-    }
+        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
+            showLoading();
+            SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteSport(this);
+            SessionUser.getInstance().firebaseAdmin.downloadAllSportFavorite();
+            Fabric.with(getContext(), new Crashlytics());
+        }else{
+            hideLoading();
+            Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
+        }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteSport(this);
-        SessionUser.getInstance().firebaseAdmin.downloadAllSportFavorite();
     }
 
     private RecyclerView mRecyclerView;
@@ -68,13 +72,11 @@ public class SportFavoriteFragment extends Fragment implements FirebaseAdmin.Fir
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_sport_favorite, container, false);
 
-        showLoading();
         mRecyclerView = view.findViewById(R.id.recycler_view_sport);
         linearLayout = view.findViewById(R.id.linear_empty_favorites);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new GridLayoutManager(getContext(), 2);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        hideLoading();
 
         return view;
     }
@@ -83,23 +85,24 @@ public class SportFavoriteFragment extends Fragment implements FirebaseAdmin.Fir
     public void downloandCollectionSportFavorite(boolean end) {
         if(end==true){
             hideLoading();
+
             linearLayout.setVisibility(View.GONE);
             mRecyclerView.setVisibility(View.VISIBLE);
+
             List<DefaultSport> allSportFavorite = SessionUser.getInstance().firebaseAdmin.allSportFavorite;
 
-            mAdapter = new SportFavoriteAdapter(allSportFavorite, new SportFavoriteAdapter.OnItemClickListener() {
-                @Override
-                public void onItemClick(DefaultSport item) {
-                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                    Fragment prev = getFragmentManager().findFragmentByTag("dialog");
-                    if (prev != null) {
-                        transaction.remove(prev);
-                    }
-                    transaction.addToBackStack(null);
-                    newFragment = SportFavoriteDetailsDialogFragment.newInstance(item);
-                    newFragment.setListener(fragment);
-                    newFragment.show(transaction, "dialog");
+            Collections.sort(allSportFavorite);
+
+            mAdapter = new SportFavoriteAdapter(allSportFavorite, item -> {
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                Fragment prev = getFragmentManager().findFragmentByTag("dialog");
+                if (prev != null) {
+                    transaction.remove(prev);
                 }
+                transaction.addToBackStack(null);
+                newFragment = SportFavoriteDetailsDialogFragment.newInstance(item);
+                newFragment.setListener(fragment);
+                newFragment.show(transaction, "dialog");
             });
 
             mRecyclerView.setAdapter(mAdapter);

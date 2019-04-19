@@ -1,4 +1,4 @@
-package com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.ShowPlan;
+package com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Plan;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -13,11 +13,13 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 import butterknife.ButterKnife;
 import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.R;
+import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 
 public class FragmentShowPlan extends Fragment {
@@ -25,8 +27,12 @@ public class FragmentShowPlan extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fabric.with(getContext(), new Crashlytics());
 
+        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
+            Fabric.with(getContext(), new Crashlytics());
+        }else{
+            Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
+        }
     }
 
     public interface Callback{
@@ -47,25 +53,24 @@ public class FragmentShowPlan extends Fragment {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_show_plan, container, false);
 
-        showLoading();
         findById(view);
         onClickClose();
         onClickSport();
         onClickNutrition();
-        hideLoading();
 
         return view;
     }
 
     private void onClickNutrition() {
-        buttonShowNutrition.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
+            buttonShowNutrition.setOnClickListener(v -> {
                 if(mListener!=null){
                     mListener.onClickButtonShowPlanNutrition();
                 }
-            }
-        });
+            });
+        }else{
+            buttonShowNutrition.setEnabled(false);
+        }
     }
 
     private void findById(View view) {
@@ -75,26 +80,24 @@ public class FragmentShowPlan extends Fragment {
     }
 
     private void onClickClose(){
-        buttonShowClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mListener!=null){
-                    getActivity().getSupportFragmentManager().popBackStack();
-                    mListener.onClickButtonShowPlanClose();
-                }
+        buttonShowClose.setOnClickListener(v -> {
+            if(mListener!=null){
+                getActivity().getSupportFragmentManager().popBackStack();
+                mListener.onClickButtonShowPlanClose();
             }
         });
     }
 
     private void onClickSport(){
-        buttonShowSport.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
+            buttonShowSport.setOnClickListener(v -> {
                 if(mListener!=null){
                     mListener.onClickButtonShowPlanSport();
                 }
-            }
-        });
+            });
+        }else{
+            buttonShowSport.setEnabled(false);
+        }
     }
 
     @Override
@@ -106,43 +109,6 @@ public class FragmentShowPlan extends Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
-    }
-
-    private ProgressDialog progressDialog;
-
-    public void showLoading() {
-        if (progressDialog != null && progressDialog.isShowing()) {
-            return;
-        }
-        progressDialog = new ProgressDialog(getContext(), R.style.TransparentProgressDialog);
-        progressDialog.show();
-        progressDialog.setContentView(R.layout.progress_dialog);
-        progressDialog.setCancelable(false);
-        RotateAnimation rotate = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        rotate.setInterpolator(new LinearInterpolator());
-        rotate.setDuration(1000);
-        rotate.setRepeatCount(Animation.INFINITE);
-        ImageView ivLoading = ButterKnife.findById(progressDialog, R.id.image_cards_animation);
-        ivLoading.startAnimation(rotate);
-        progressDialog.show();
-    }
-
-    public void hideLoading() {
-        if (progressDialog != null) {
-            progressDialog.dismiss();
-        }
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        hideLoading();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        hideLoading();
     }
 
     @Override

@@ -23,6 +23,7 @@ import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Model.Plan.PlanSport;
 import com.utad.david.planfit.Model.Sport.DefaultSport;
 import com.utad.david.planfit.R;
+import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 
 import java.math.BigDecimal;
@@ -67,11 +68,17 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment impleme
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Fabric.with(getContext(),new Crashlytics());
+        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
+            showLoading();
+            Fabric.with(getContext(),new Crashlytics());
+            SessionUser.getInstance().firebaseAdmin.setFirebaseAdminCreateShowPlanSport(this);
+            SessionUser.getInstance().firebaseAdmin.downloadAllSportPlanFavorite();
+        }else{
+            hideLoading();
+            Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
+        }
 
         defaultSport = getArguments().getParcelable(SPORT);
-        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminCreateShowPlanSport(this);
-        SessionUser.getInstance().firebaseAdmin.downloadAllSportPlanFavorite();
     }
 
     @Override
@@ -79,14 +86,23 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment impleme
         View view = inflater.inflate(R.layout.create_sport_plan_details_dialog_fragment, container, false);
         view.setBackgroundResource(R.drawable.corner_dialog_fragment);
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        showLoading();
-        findById(view);
-        putData();
-        onClickButtonClose();
-        onClickButtonSave();
-        onClickButtonDelete();
-        configureSpinnerStart();
-        configureSpinnerEnd();
+
+        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
+            findById(view);
+            putData();
+            onClickButtonClose();
+            onClickButtonSave();
+            onClickButtonDelete();
+            configureSpinnerStart();
+            configureSpinnerEnd();
+        }else{
+            findById(view);
+            onClickButtonClose();
+            putData();
+            buttonSave.setEnabled(false);
+            buttonDelete.setEnabled(false);
+        }
+
         return view;
     }
 
@@ -243,10 +259,10 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment impleme
     @Override
     public void insertSportPlanFirebase(boolean end) {
         if(end){
+            Toast.makeText(getContext(),defaultSport.getName()+" "+getString(R.string.add_create_sport),Toast.LENGTH_LONG).show();
             buttonSave.setEnabled(false);
             buttonDelete.setEnabled(true);
             hideLoading();
-            Toast.makeText(getContext(),defaultSport.getName()+" "+getString(R.string.add_create_sport),Toast.LENGTH_LONG).show();
         }
     }
 

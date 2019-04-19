@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
+import android.widget.Toast;
 import butterknife.ButterKnife;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -16,18 +17,18 @@ import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.DialogFragment.EditPersonalDataUser;
 import com.utad.david.planfit.DialogFragment.InfoAboutApp;
-import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.CreatePlan.FragmentCreatePlan;
-import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.CreatePlan.Nutrition.NutritionCreatePlanFragment;
-import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.CreatePlan.Sport.SportCreatePlanFragment;
+import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Plan.FragmentCreatePlan;
+import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Plan.Create.Nutrition.NutritionCreatePlanFragment;
+import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Plan.Create.Sport.SportCreatePlanFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Favorite.NutritionFavoriteFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Favorite.SportFavoriteFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.RootFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Nutrition.NutritionGainVolumeFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Nutrition.NutritionSlimmingFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Nutrition.NutritionToningFragment;
-import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.ShowPlan.FragmentShowPlan;
-import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.ShowPlan.Nutrition.ShowNutritionPlanFragment;
-import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.ShowPlan.Sport.ShowSportPlanFragment;
+import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Plan.FragmentShowPlan;
+import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Plan.Show.Nutrition.ShowNutritionPlanFragment;
+import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Plan.Show.Sport.ShowSportPlanFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Sport.SportGainVolumeFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Sport.SportSlimmingFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Sport.SportToningFragment;
@@ -46,6 +47,7 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.crashlytics.android.Crashlytics;
+import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 
 
@@ -146,12 +148,13 @@ public class MainMenuActivity extends AppCompatActivity
 
     public void onClickNavigetionHeaderView(){
         navigationHeaderView = navigationView.getHeaderView(0);
-        navigationHeaderView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        navigationHeaderView.setOnClickListener(v -> {
+            if(UtilsNetwork.checkConnectionInternetDevice(this)){
                 editUser();
                 assert drawer != null;
                 drawer.closeDrawer(GravityCompat.START);
+            }else{
+                Toast.makeText(this,getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -224,13 +227,25 @@ public class MainMenuActivity extends AppCompatActivity
 
         switch (item.getItemId()){
             case R.id.action_logout:
-                logout();
+                if(UtilsNetwork.checkConnectionInternetDevice(this)){
+                    logout();
+                }else{
+                    Toast.makeText(this,getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
+                }
                 break;
             case R.id.action_edit_user:
-                editUser();
+                if(UtilsNetwork.checkConnectionInternetDevice(this)){
+                    editUser();
+                }else{
+                    Toast.makeText(this,getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
+                }
                 break;
             case R.id.action_about_app:
-                aboutApp();
+                if(UtilsNetwork.checkConnectionInternetDevice(this)){
+                    aboutApp();
+                }else{
+                    Toast.makeText(this,getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
+                }
                 break;
         }
 
@@ -321,6 +336,10 @@ public class MainMenuActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
     }
 
+    /********************************CARGA LA PRIMERA PANTALLA*************************************+/
+     *
+     */
+
     public void navigateFragmentSport(){
         navigationView.getMenu().findItem(R.id.nav_deportes).setChecked(true);
         int seleted = 0;
@@ -330,11 +349,19 @@ public class MainMenuActivity extends AppCompatActivity
         fragmentTransaction.commit();
     }
 
+    /********************************CALLBACK EDITAR PERFIL*************************************+/
+     *
+     */
+
     @Override
     public void updateData(User user) {
         putInfoUserInHeaderMenu(user);
         checkPhotoUserNull(user);
     }
+
+    /********************************CALLBACK DEPORTE*************************************+/
+     *
+     */
 
     @Override
     public void clickOnAdelgazarSport() {
@@ -366,6 +393,10 @@ public class MainMenuActivity extends AppCompatActivity
         fragmentTransaction.commit();
     }
 
+    /********************************CALLBACK NUTRICIÓN*************************************+/
+     *
+     */
+
     @Override
     public void clickOnAdelgazarNutrition() {
         NutritionSlimmingFragment nutritionSlimmingFragment = new NutritionSlimmingFragment();
@@ -396,25 +427,9 @@ public class MainMenuActivity extends AppCompatActivity
         fragmentTransaction.commit();
     }
 
-
-    @Override
-    public void clickOnCreatePlan() {
-        FragmentCreatePlan fragmentCreatePlan = new FragmentCreatePlan();
-        fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.content_frame, fragmentCreatePlan);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
-    }
-
-
-    @Override
-    public void clickOnShowPlan() {
-        FragmentShowPlan fragmentShowPlan = new FragmentShowPlan();
-        fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.content_frame, fragmentShowPlan);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
-    }
+    /********************************CALLBACK FAVORITOS*************************************+/
+     *
+     */
 
     @Override
     public void clickSportFavorite() {
@@ -435,6 +450,33 @@ public class MainMenuActivity extends AppCompatActivity
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
+
+    /********************************CALLBACK PLAN*************************************+/
+     *
+     */
+
+    @Override
+    public void clickOnCreatePlan() {
+        FragmentCreatePlan fragmentCreatePlan = new FragmentCreatePlan();
+        fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.content_frame, fragmentCreatePlan);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
+
+
+    @Override
+    public void clickOnShowPlan() {
+        FragmentShowPlan fragmentShowPlan = new FragmentShowPlan();
+        fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.content_frame, fragmentShowPlan);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
+
+    /********************************CALLBACK CREAR PLAN DEPORTE Y NUTRICIÓN*************************************+/
+     *
+     */
 
     @Override
     public void onClickSportPlan() {
@@ -465,10 +507,13 @@ public class MainMenuActivity extends AppCompatActivity
         fragmentTransaction.commit();
     }
 
+    /********************************CALLBACK VER PLAN DEPORTE Y NUTRICIÓN*************************************+/
+     *
+     */
+
     @Override
     public void onClickButtonShowPlanSport() {
         ShowSportPlanFragment showSportPlanFragment = new ShowSportPlanFragment();
-        //showSportPlanFragment.setCallback(this);
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, showSportPlanFragment);
         fragmentTransaction.addToBackStack(null);

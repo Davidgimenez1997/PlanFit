@@ -34,21 +34,18 @@ public class NutritionFavoriteAdapter extends RecyclerView.Adapter<NutritionFavo
     }
 
     @Override
-    public NutritionFavoriteAdapter.NutritionFavoriteViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public NutritionFavoriteViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View rootView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recycleview, parent, false);
-        return new NutritionFavoriteAdapter.NutritionFavoriteViewHolder(rootView);
+        return new NutritionFavoriteViewHolder(rootView);
     }
 
     @Override
-    public void onBindViewHolder(NutritionFavoriteAdapter.NutritionFavoriteViewHolder holder, int position) {
+    public void onBindViewHolder(NutritionFavoriteViewHolder holder, int position) {
         final DefaultNutrition current = defaultNutritions.get(position);
         holder.setData(current);
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(listener!=null){
-                    listener.onItemClick(current);
-                }
+        holder.itemView.setOnClickListener(v -> {
+            if(listener!=null){
+                listener.onItemClick(current);
             }
         });
     }

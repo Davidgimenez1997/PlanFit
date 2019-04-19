@@ -3,7 +3,7 @@ package com.utad.david.planfit.Model.Nutrition;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class NutritionToning implements Parcelable {
+public class NutritionToning implements Parcelable ,Comparable<NutritionToning>{
 
     private String name;
     private String photo;
@@ -32,6 +32,11 @@ public class NutritionToning implements Parcelable {
             return new NutritionToning[size];
         }
     };
+
+    @Override
+    public int compareTo(NutritionToning o) {
+        return this.getName().compareTo(o.getName());
+    }
 
     public String getType() {
         return type;
