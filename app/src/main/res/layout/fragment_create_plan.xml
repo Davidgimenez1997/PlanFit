@@ -7,7 +7,7 @@
              android:id="@+id/frameLayout">
     <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:background="@drawable/backgroung_grad"
+            android:background="@drawable/bg_welcome"
             android:layout_height="match_parent">
 
         <TextView

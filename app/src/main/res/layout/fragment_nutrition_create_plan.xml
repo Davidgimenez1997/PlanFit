@@ -3,7 +3,7 @@
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             android:background="@drawable/backgroung_grad"
+             android:background="@drawable/bg_welcome"
              tools:context=".Fragments.FragmentsMainMenuActivity.Plan.Create.Nutrition.NutritionCreatePlanFragment">
 
     <android.support.constraint.ConstraintLayout

@@ -11,7 +11,7 @@
 
     <ScrollView
             android:layout_width="wrap_content"
-            android:background="@drawable/backgroung_grad"
+            android:background="@drawable/bg_welcome"
             android:layout_height="match_parent" app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent">
         <android.support.constraint.ConstraintLayout
@@ -21,9 +21,9 @@
             <TextView
                     android:text="@string/escoja_una_foto"
                     android:textSize="15dp"
+                    android:textColor="@color/white"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:textColor="@color/colorAccent"
                     android:id="@+id/textView2"
                     app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="32dp"
                     android:layout_marginTop="40dp" app:layout_constraintTop_toTopOf="parent"/>
@@ -33,7 +33,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:id="@+id/textView3"
-                    android:textColor="@color/colorAccent"
+                    android:textColor="@color/white"
                     android:layout_marginTop="23dp"
                     app:layout_constraintTop_toBottomOf="@+id/imageViewEditUser"
                     app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="32dp"/>
@@ -41,6 +41,8 @@
             <android.support.design.widget.TextInputLayout
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:textColor="@color/white"
+                    style="@style/TextLabel"
                     android:id="@+id/textInputLayout"
                     android:layout_marginTop="36dp"
                     app:layout_constraintTop_toBottomOf="@+id/button_password_update" app:layout_constraintStart_toStartOf="parent"
@@ -51,13 +53,17 @@
                         android:layout_height="match_parent"
                         android:inputType="textPersonName"
                         android:hint="@string/nombre_completo"
+                        android:textColor="@color/white"
+                        android:maxLength="10"
                         android:ems="10"
                         android:id="@+id/fullNameEditUser"/>
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
                     android:layout_width="wrap_content"
+                    style="@style/TextLabel"
                     android:layout_height="match_parent"
+                    android:textColor="@color/white"
                     android:id="@+id/textInputLayout2"
                     app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="32dp"
                     android:layout_marginTop="32dp" app:layout_constraintTop_toBottomOf="@+id/button_update_fullname">
@@ -66,6 +72,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:inputType="textPersonName"
+                        android:maxLength="20"
+                        android:textColor="@color/white"
                         android:hint="@string/nick"
                         android:ems="10"
                         android:id="@+id/nickNameEditUser"/>
@@ -74,6 +82,8 @@
             <android.support.design.widget.TextInputLayout
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:textColor="@color/white"
+                    style="@style/TextLabel"
                     android:id="@+id/textInputLayout3"
                     app:layout_constraintStart_toStartOf="parent"
                     android:layout_marginStart="32dp" android:layout_marginTop="32dp"
@@ -83,6 +93,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:inputType="textPersonName"
+                        android:textColor="@color/white"
                         android:hint="@string/email"
                         android:ems="10"
                         android:id="@+id/nickEmailEditUser"/>
@@ -90,8 +101,10 @@
 
             <android.support.design.widget.TextInputLayout
                     android:layout_width="wrap_content"
+                    android:textColor="@color/white"
                     android:layout_height="match_parent"
                     app:passwordToggleEnabled="true"
+                    style="@style/TextLabel"
                     android:id="@+id/textInputLayout4"
                     app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="32dp"
                     android:layout_marginTop="32dp" app:layout_constraintTop_toBottomOf="@+id/update_emial_button">
@@ -100,6 +113,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:inputType="textPassword"
+                        android:textColor="@color/white"
                         android:hint="@string/password"
                         android:ems="10"
                         android:id="@+id/passwordEditUser"/>
@@ -120,8 +134,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:id="@+id/update_emial_button"
+                    android:textColor="@color/white"
                     android:textSize="10dp"
-                    android:textColor="@color/colorAccent"
                     android:background="@drawable/button_selector"
                     app:layout_constraintStart_toStartOf="parent"
                     android:layout_marginStart="32dp" android:layout_marginTop="32dp"
@@ -132,8 +146,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:id="@+id/button_password_update"
+                    android:textColor="@color/white"
                     android:textSize="10dp"
-                    android:textColor="@color/colorAccent"
                     android:background="@drawable/button_selector"
                     android:layout_marginTop="32dp"
                     app:layout_constraintTop_toBottomOf="@+id/textInputLayout4"
@@ -144,7 +158,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:id="@+id/button_nick_update"
-                    android:textColor="@color/colorAccent"
+                    android:textColor="@color/white"
                     android:textSize="10dp"
                     android:background="@drawable/button_selector"
                     android:layout_marginTop="32dp"
@@ -156,8 +170,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:id="@+id/button_update_fullname"
+                    android:textColor="@color/white"
                     android:layout_marginTop="32dp"
-                    android:textColor="@color/colorAccent"
                     android:textSize="10dp"
                     android:background="@drawable/button_selector"
                     app:layout_constraintTop_toBottomOf="@+id/textInputLayout"
@@ -167,8 +181,8 @@
                     android:enabled="false"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:textColor="@color/white"
                     android:textSize="10dp"
-                    android:textColor="@color/colorAccent"
                     android:background="@drawable/button_selector"
                     android:id="@+id/button_update_photo" app:layout_constraintStart_toEndOf="@+id/imageViewEditUser"
                     android:layout_marginStart="32dp" android:layout_marginTop="80dp"
@@ -179,8 +193,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:id="@+id/button_delete_account"
+                    android:textColor="@color/white"
                     android:textSize="10dp"
-                    android:textColor="@color/colorAccent"
                     android:background="@drawable/button_selector"
                     android:layout_marginTop="32dp"
                     app:layout_constraintTop_toBottomOf="@+id/button_nick_update"
@@ -194,7 +208,7 @@
                     android:layout_height="match_parent"
                     android:id="@+id/button_close_info"
                     android:textSize="10dp"
-                    android:textColor="@color/colorAccent"
+                    android:textColor="@color/white"
                     android:background="@drawable/button_selector"
                     app:layout_constraintTop_toBottomOf="@+id/button_delete_account" android:layout_marginTop="32dp"
                     app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="32dp"
@@ -205,7 +219,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:textSize="10dp"
-                    android:textColor="@color/colorAccent"
+                    android:textColor="@color/white"
                     android:background="@drawable/button_selector"
                     android:id="@+id/button_delete_photo" android:layout_marginTop="4dp"
                     app:layout_constraintTop_toBottomOf="@+id/button_update_photo"

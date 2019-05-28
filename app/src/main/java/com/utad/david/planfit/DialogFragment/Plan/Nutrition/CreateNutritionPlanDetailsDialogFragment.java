@@ -90,6 +90,7 @@ public class CreateNutritionPlanDetailsDialogFragment extends DialogFragment imp
 
         if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
             findById(view);
+            configureSpinnerDiseng();
             putData();
             onClickButtonClose();
             onClickButtonSave();
@@ -97,6 +98,7 @@ public class CreateNutritionPlanDetailsDialogFragment extends DialogFragment imp
             configureSpinnerType();
         }else{
             findById(view);
+            configureSpinnerDiseng();
             onClickButtonClose();
             putData();
             buttonSave.setEnabled(false);
@@ -104,6 +106,12 @@ public class CreateNutritionPlanDetailsDialogFragment extends DialogFragment imp
         }
 
         return view;
+    }
+
+    private void configureSpinnerDiseng() {
+        ArrayAdapter spinnerArrayAdapter = ArrayAdapter.createFromResource(getContext(), R.array.nutrition, R.layout.spinner_item);
+        spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_item);
+        spinnerType.setAdapter(spinnerArrayAdapter);
     }
 
     private int type;

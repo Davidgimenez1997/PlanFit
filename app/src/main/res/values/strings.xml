@@ -99,6 +99,7 @@
     <string name="message_update_name">Porfavor, espere mientras se actualiza tu nombre.</string>
     <string name="title_update_nick">Actualizando nick</string>
     <string name="message_update_nick">Porfavor, espere mientras se actualiza tu nick.</string>
+    <string name="message_delete_acount">Porfavor, espere mientras se borra tu cuenta.</string>
     <string name="menuopengalery">Selecciona imagen...</string>
     <string name="info_update_photo">Foto actualizada correctamente</string>
     <string name="error_update_photo">Error al actualizar la foto del perfil, vuelve a intentarlo.</string>
@@ -143,11 +144,6 @@
     <string name="elige">Elige</string>
     <string name="sin_favopritos_para_crear_el_plan">Sin Favoritos para crear el plan?</string>
     <string name="info_network_device">Comprueba su conexion de internet y reinice la aplicación</string>
-
-    <string-array name="durationPlan">
-        <item>1 Dia</item>
-        <item>1 Semana</item>
-    </string-array>
 
     <string-array name="timePlan">
 
@@ -292,5 +288,6 @@
     <string name="si">Si</string>
     <string name="te_has_equivocado">¿Te has equivocado?</string>
     <string name="ya_lo_has_realizado">¿Ya lo has realizado?</string>
+    <string name="pulsa_para_mas_informaci_n">Pulsa para mas información</string>
 
 </resources>

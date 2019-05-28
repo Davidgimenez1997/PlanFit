@@ -90,6 +90,7 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment impleme
         if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
             findById(view);
             putData();
+            configureSpinnerDiseng();
             onClickButtonClose();
             onClickButtonSave();
             onClickButtonDelete();
@@ -97,6 +98,7 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment impleme
             configureSpinnerEnd();
         }else{
             findById(view);
+            configureSpinnerDiseng();
             onClickButtonClose();
             putData();
             buttonSave.setEnabled(false);
@@ -104,6 +106,16 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment impleme
         }
 
         return view;
+    }
+
+    private void configureSpinnerDiseng() {
+        ArrayAdapter spinnerArrayAdapter = ArrayAdapter.createFromResource(getContext(), R.array.timePlan, R.layout.spinner_item);
+        spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_item);
+        spinnerEnd.setAdapter(spinnerArrayAdapter);
+
+        ArrayAdapter spinnerArrayAdapter1 = ArrayAdapter.createFromResource(getContext(), R.array.timePlan, R.layout.spinner_item);
+        spinnerArrayAdapter1.setDropDownViewResource(R.layout.spinner_item);
+        spinnerStart.setAdapter(spinnerArrayAdapter1);
     }
 
     private void configureSpinnerStart() {
