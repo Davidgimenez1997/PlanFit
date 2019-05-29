@@ -1,18 +1,26 @@
 package com.utad.david.planfit.DialogFragment;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Base64;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,12 +40,18 @@ import com.utad.david.planfit.Model.User;
 import com.utad.david.planfit.R;
 import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
+import pub.devrel.easypermissions.AppSettingsDialog;
+import pub.devrel.easypermissions.EasyPermissions;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import static android.app.Activity.RESULT_OK;
 
-public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmin.FirebaseAdminUpdateAndDeleteUserListener {
+public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmin.FirebaseAdminUpdateAndDeleteUserListener, EasyPermissions.PermissionCallbacks {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -68,6 +82,10 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
     private OnFragmentInteractionListener mListener;
     private ProgressDialog mProgress;
 
+    private int REQUEST_GALLERY = 1;
+    public static final int REQUEST_IMAGE_PERMISSIONS = 1;
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.dialog_edit_user_data, container, false);
@@ -80,7 +98,7 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
             findById(v);
             putData();
             checkImageUser();
-            openGallery();
+            onClickImage();
             onClickButtonDeletePhoto();
             onClickButtonUpdateEmail();
             onClickButtonUpdatePassword();
@@ -114,18 +132,52 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
         }
     }
 
-    private void openGallery(){
-        imageView.setOnClickListener(v -> {
-            Intent intent = new Intent();
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-            } else {
-                intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
+    private void onClickImage(){
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
+
+                if (EasyPermissions.hasPermissions(getContext(), perms)) {
+                    showTakePictureDialog();
+                } else {
+                    // Do not have permissions, request them now
+                    EasyPermissions.requestPermissions(getActivity(), getString(R.string.permissions_picture_rationale), REQUEST_IMAGE_PERMISSIONS, perms);
+                }
             }
-            intent.setType("image/*");
-            startActivityForResult(Intent.createChooser(intent, getString(R.string.menuopengalery)),1);
         });
+    }
+
+    private void openGallery(){
+        Intent intent = new Intent();
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+        } else {
+            intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+        }
+        intent.setType("image/*");
+        startActivityForResult(Intent.createChooser(intent, getString(R.string.menuopengalery)),REQUEST_GALLERY);
+    }
+
+    private void showTakePictureDialog() {
+        final CharSequence[] items = {"Abrir Galeria", "Cancelar"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Escoja una foto");
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                switch (item) {
+                    case 0:
+                        openGallery();
+                        break;
+                    case 1:
+                        dialog.dismiss();
+                        break;
+                }
+            }
+        });
+        builder.show();
     }
 
     private TextWatcher textWatcherEditPesonalDataEmail = new TextWatcher() {
@@ -273,6 +325,7 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
         requestOptions.placeholder(R.drawable.icon_user);
         Glide.with(this).setDefaultRequestOptions(requestOptions).load(stringUri).into(imageView);
     }
+
 
     private void onClickButtonDeletePhoto(){
         buttonDeletePhoto.setOnClickListener(v -> {
@@ -555,18 +608,21 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
         super.onActivityResult(requestCode, resultCode, data);
         Uri imageUri;
         if (resultCode == RESULT_OK) {
-            try {
-                imageUri = data.getData();
-                putPhotoUser(imageUri.toString());
-                buttonUpdatePhoto.setEnabled(true);
-                if(imageUri!=null){
-                   userUpdate.setImgUser(imageUri.toString());
-                   onClickButtonUpdatePhoto();
+            if(requestCode == REQUEST_GALLERY){
+                try {
+                    imageUri = data.getData();
+                    putPhotoUser(imageUri.toString());
+                    buttonUpdatePhoto.setEnabled(true);
+                    if(imageUri!=null){
+                        userUpdate.setImgUser(imageUri.toString());
+                        onClickButtonUpdatePhoto();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(getActivity().getApplicationContext(), getString(R.string.error_gallery_1), Toast.LENGTH_LONG).show();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-                Toast.makeText(getActivity().getApplicationContext(), getString(R.string.error_gallery_1), Toast.LENGTH_LONG).show();
             }
+
         }else {
             Toast.makeText(getActivity().getApplicationContext(), getString(R.string.error_gallery_2),Toast.LENGTH_LONG).show();
         }
@@ -606,5 +662,31 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
 
     public interface OnFragmentInteractionListener {
         void  updateData(User user);
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+        try {
+            showTakePictureDialog();
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+            new AppSettingsDialog.Builder(this)
+                    .setTitle(getString(R.string.permissions_denied_title))
+                    .setRationale(getString(R.string.permissions_denied_body)).build().show();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        // Forward results to EasyPermissions
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
     }
 }
