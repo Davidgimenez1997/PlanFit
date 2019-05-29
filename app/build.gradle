@@ -4,24 +4,8 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'io.fabric'
 
-
-// Create a variable called keystorePropertiesFile, and initialize it to your
-// keystore.properties file, in the rootProject folder.
-def keystorePropertiesFile = rootProject.file("keystore.properties")
-
-// Initialize a new Properties() object called keystoreProperties.
-def keystoreProperties = new Properties()
-
-// Load your keystore.properties file into the keystoreProperties object.
-keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
-
 android {
     signingConfigs {
-        planfit {
-            keyAlias 'planfit'
-            keyPassword '123456'
-            storeFile file('/Users/davidgimenezrodriguezderiveraa/Desktop/ClaveAPK_PlanFit/Untitled')
-        }
         config {
             keyAlias 'planfit'
             keyPassword 'planfit1997'
@@ -37,7 +21,7 @@ android {
         versionCode 11
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        signingConfig signingConfigs.planfit
+        signingConfig signingConfigs.config
     }
     buildTypes {
         release {
