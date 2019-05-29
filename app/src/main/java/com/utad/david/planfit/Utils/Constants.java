@@ -68,16 +68,18 @@ public class Constants {
         String TAG = "DIALOG";
     }
 
+
     public interface TiposPlanNutricion{
-        String DESAYUNO = "DESAYUNO";
-        String COMIDA = "COMIDA";
-        String MERIENDA = "MERIENDA";
-        String CENA = "CENA";
-        int MODE_DESAYUNO = 1;
-        int MODE_COMIDA = 2;
-        int MODE_MERIENDA = 3;
-        int MODE_CENA = 4;
+        String DESAYUNO = "Desayuno";
+        String COMIDA = "Comida";
+        String MERIENDA = "Merienda";
+        String CENA = "Cena";
+        int MODE_DESAYUNO = 0;
+        int MODE_COMIDA = 1;
+        int MODE_MERIENDA = 2;
+        int MODE_CENA = 3;
     }
+
 
     public interface ModePlan{
         String YES = "yes";
