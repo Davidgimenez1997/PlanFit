@@ -277,7 +277,6 @@
     </string-array>
 
 
-
     <!--Firebase-->
     <string name="com.crashlytics.useFirebaseAppId">true</string>
 
@@ -291,8 +290,13 @@
     <string name="pulsa_para_mas_informaci_n">Pulsa para mas información</string>
 
     <string name="permissions_denied_title">Permisos Requeridos</string>
-    <string name="permissions_denied_body">La aplicación no será capaz de realizar esta funcionalidad sin los permisos solicitados. Acceda a la pantalla de configuración de la app para modificar sus permisos.</string>
-    <string name="permissions_picture_rationale">La aplicación necesita acceder al almacenamiento del dispositivo y a la cámara para utilizar esta funcionalidad.</string>
+    <string name="permissions_denied_body">La aplicación no será capaz de realizar esta funcionalidad sin los permisos
+        solicitados. Acceda a la pantalla de configuración de la app para modificar sus permisos.
+    </string>
+    <string name="permissions_picture_rationale">La aplicación necesita acceder al almacenamiento del dispositivo y a la
+        cámara para utilizar esta funcionalidad.
+    </string>
+    <string name="title_activity_web_view">WebViewActivity</string>
 
 
 </resources>

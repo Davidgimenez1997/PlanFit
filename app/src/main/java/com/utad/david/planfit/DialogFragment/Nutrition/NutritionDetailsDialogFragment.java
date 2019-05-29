@@ -22,6 +22,7 @@ import butterknife.ButterKnife;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.crashlytics.android.Crashlytics;
+import com.utad.david.planfit.Activitys.WebViewActivity;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Model.Nutrition.NutritionGainVolume;
@@ -190,19 +191,29 @@ public class NutritionDetailsDialogFragment extends DialogFragment implements Fi
     private void onClickButtonOpenRecipe() {
         if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
             buttonOpenRecipe.setOnClickListener(v -> {
-                Intent i = new Intent(Intent.ACTION_VIEW);
+
+                String title = null,url = null;
+
                 switch (option){
                     case 0:
-                        i.setData(Uri.parse(nutritionSlimming.getUrl()));
+                        title = nutritionSlimming.getName();
+                        url = nutritionSlimming.getUrl();
                         break;
                     case 1:
-                        i.setData(Uri.parse(nutritionToning.getUrl()));
+                        title = nutritionToning.getName();
+                        url = nutritionToning.getUrl();
                         break;
                     case 2:
-                        i.setData(Uri.parse(nutritionGainVolume.getUrl()));
+                        title = nutritionGainVolume.getName();
+                        url = nutritionGainVolume.getUrl();
                         break;
                 }
-                startActivity(i);
+
+                Intent intent = new Intent(getContext(), WebViewActivity.class);
+                intent.putExtra(WebViewActivity.EXTRA_TITLE, title);
+                intent.putExtra(WebViewActivity.EXTRA_URL, url);
+                getActivity().overridePendingTransition(R.anim.slide_in_bottom, R.anim.stay);
+                startActivity(intent);
             });
         }else{
             buttonOpenRecipe.setEnabled(false);

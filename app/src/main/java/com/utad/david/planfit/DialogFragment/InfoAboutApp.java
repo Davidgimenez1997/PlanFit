@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import butterknife.ButterKnife;
 import com.crashlytics.android.Crashlytics;
+import com.utad.david.planfit.Activitys.WebViewActivity;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Model.Developer;
@@ -87,10 +88,11 @@ public class InfoAboutApp extends DialogFragment implements FirebaseAdmin.Fireba
     private void clickLinkedinDeveloperButton(){
         if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
             buttonLinkedin.setOnClickListener(v -> {
-                String url = developer.getUrlLinkedinDeveloper();
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(url));
-                startActivity(i);
+                Intent intent = new Intent(getContext(), WebViewActivity.class);
+                intent.putExtra(WebViewActivity.EXTRA_TITLE, developer.getFullNameDeveloper());
+                intent.putExtra(WebViewActivity.EXTRA_URL, developer.getUrlLinkedinDeveloper());
+                getActivity().overridePendingTransition(R.anim.slide_in_bottom, R.anim.stay);
+                startActivity(intent);
             });
         }else{
             Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
