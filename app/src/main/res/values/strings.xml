@@ -61,7 +61,9 @@
     <string name="ganar_volumen">Ganar Volumen</string>
     <string name="estas_preparado">¿Estás Preparado?</string>
     <string name="crear_plan">Crear tu plan</string>
+    <string name="crear_plan_title">Crear plan</string>
     <string name="ver_tu_plan">Ver tu plan</string>
+    <string name="ver_tu_plan_title">Ver plan</string>
     <string name="mensajes">Mensajes</string>
     <string name="mensajes_deportes">Mensajes Deportes</string>
     <string name="mensajes_nutricion">Mensajes Nutricion</string>
@@ -293,10 +295,29 @@
     <string name="permissions_denied_body">La aplicación no será capaz de realizar esta funcionalidad sin los permisos
         solicitados. Acceda a la pantalla de configuración de la app para modificar sus permisos.
     </string>
-    <string name="permissions_picture_rationale">La aplicación necesita acceder al almacenamiento del dispositivo y a la
-        cámara para utilizar esta funcionalidad.
+    <string name="permissions_picture_rationale">La aplicación necesita acceder al almacenamiento del dispositivo para utilizar esta funcionalidad.
     </string>
     <string name="title_activity_web_view">WebViewActivity</string>
+    <string name="mode_recipe">Abrir receta en el navegador</string>
+    <string name="mode_linkedin">Abrir LinkedIn en el navegador</string>
+
+    <string name="titulo_deportes">Deportes</string>
+    <string name="titulo_nutricion">Nutrición</string>
+    <string name="titulo_favoritos">Favoritos</string>
+    <string name="titulo_plan">Plan</string>
+    <string name="deportes_adelgazar">Deportes Adelgazar</string>
+    <string name="deporte_tonificar">Deportes Tonificar</string>
+    <string name="deporte_ganar_volumen">Deportes Ganar Volumen</string>
+    <string name="nutricion_adelgazar">Nutrición Adelgazar</string>
+    <string name="nutricion_tonificar">Nutrición Tonificar</string>
+    <string name="nutricion_ganar_volumen">Nutrición Ganar Volumen</string>
+    <string name="deportes_favoritos">Deportes Favoritos</string>
+    <string name="nutricion_favorita">Nutriciónes Favoritas</string>
+    <string name="plan_deporte">Plan Deporte</string>
+    <string name="plan_nutricion">Plan Nutrición</string>
+    <string name="plan">Plan</string>
+    <string name="favorito_borrado_correctamente">Favorito borrado correctamente</string>
+    <string name="favorito_borrado">Favorito borrado correctamente</string>
 
 
 </resources>

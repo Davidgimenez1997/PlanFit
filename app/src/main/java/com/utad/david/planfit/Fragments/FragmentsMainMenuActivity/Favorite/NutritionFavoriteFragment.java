@@ -25,6 +25,7 @@ import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.DialogFragment.Favorite.NutritionFavoriteDetailsDialogFragment;
 import com.utad.david.planfit.Model.Nutrition.DefaultNutrition;
 import com.utad.david.planfit.R;
+import com.utad.david.planfit.Utils.Constants;
 import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 
@@ -154,14 +155,14 @@ public class NutritionFavoriteFragment extends Fragment implements FirebaseAdmin
 
             mAdapter = new NutritionFavoriteAdapter(allFavoriteFavorite, item -> {
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                Fragment prev = getFragmentManager().findFragmentByTag("dialog");
+                Fragment prev = getFragmentManager().findFragmentByTag(Constants.TagDialogFragment.TAG);
                 if (prev != null) {
                     transaction.remove(prev);
                 }
                 transaction.addToBackStack(null);
                 newFragment = NutritionFavoriteDetailsDialogFragment.newInstance(item);
                 newFragment.setListener(fragment);
-                newFragment.show(transaction, "dialog");
+                newFragment.show(transaction, Constants.TagDialogFragment.TAG);
             });
             mRecyclerView.setAdapter(mAdapter);
         }
@@ -190,7 +191,7 @@ public class NutritionFavoriteFragment extends Fragment implements FirebaseAdmin
                 linearLayout.setVisibility(View.VISIBLE);
                 mRecyclerView.setVisibility(View.GONE);
             }
-            Toast.makeText(getContext(),"Favorito borrado correctamente",Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(),getString(R.string.favorito_borrado_correctamente),Toast.LENGTH_LONG).show();
             hideLoading();
         }
     }

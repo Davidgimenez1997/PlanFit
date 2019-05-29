@@ -3,7 +3,6 @@ package com.utad.david.planfit.DialogFragment.Favorite;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -18,22 +17,23 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.crashlytics.android.Crashlytics;
+import com.utad.david.planfit.Activitys.WebViewActivity;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Model.Nutrition.DefaultNutrition;
 import com.utad.david.planfit.R;
+import com.utad.david.planfit.Utils.Constants;
 import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 
 public class NutritionFavoriteDetailsDialogFragment extends DialogFragment implements FirebaseAdmin.FirebaseAdminFavoriteNutrition{
 
-    private static String NUTRITION = "NUTRITION";
     private DefaultNutrition defaultNutrition;
 
     public static NutritionFavoriteDetailsDialogFragment newInstance(DefaultNutrition defaultNutrition) {
         NutritionFavoriteDetailsDialogFragment fragment = new NutritionFavoriteDetailsDialogFragment();
         Bundle args = new Bundle();
-        args.putParcelable(NUTRITION, defaultNutrition);
+        args.putParcelable(Constants.NutricionFavoriteDetails.EXTRA_NUTRICION, defaultNutrition);
         fragment.setArguments(args);
         return fragment;
     }
@@ -54,7 +54,7 @@ public class NutritionFavoriteDetailsDialogFragment extends DialogFragment imple
             Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
         }
 
-        defaultNutrition = getArguments().getParcelable(NUTRITION);
+        defaultNutrition = getArguments().getParcelable(Constants.NutricionFavoriteDetails.EXTRA_NUTRICION);
     }
 
     private TextView textViewTitle;
@@ -104,9 +104,12 @@ public class NutritionFavoriteDetailsDialogFragment extends DialogFragment imple
             buttonOpenRecipe.setEnabled(false);
         }else{
             buttonOpenRecipe.setOnClickListener(v -> {
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(defaultNutrition.getUrl()));
-                startActivity(i);
+                Intent intent = new Intent(getContext(), WebViewActivity.class);
+                intent.putExtra(WebViewActivity.EXTRA_TITLE, defaultNutrition.getName());
+                intent.putExtra(WebViewActivity.EXTRA_URL, defaultNutrition.getUrl());
+                intent.putExtra(WebViewActivity.EXTRA_MODE, Constants.ModeWebView.MODE_RECIPE);
+                getActivity().overridePendingTransition(R.anim.slide_in_bottom, R.anim.stay);
+                startActivity(intent);
             });
         }
     }

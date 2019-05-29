@@ -37,12 +37,12 @@ import java.io.InputStream;
 import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
+import static com.utad.david.planfit.Utils.Constants.RequestPermisos.REQUEST_GALLERY;
+import static com.utad.david.planfit.Utils.Constants.RequestPermisos.REQUEST_IMAGE_PERMISSIONS;
 
 public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.FirebaseAdminLoginAndRegisterListener,FirebaseAdmin.FirebaseAdminInsertAndDownloandListener, EasyPermissions.PermissionCallbacks {
 
     private OnFragmentInteractionListener mListener;
-    private int REQUEST_GALLERY = 1;
-    public static final int REQUEST_IMAGE_PERMISSIONS = 1;
 
     public RegisterDetailsFragmet() {}
 

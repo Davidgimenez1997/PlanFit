@@ -28,6 +28,7 @@ import com.utad.david.planfit.Model.Sport.SportGainVolume;
 import com.utad.david.planfit.Model.Sport.SportSlimming;
 import com.utad.david.planfit.Model.Sport.SportToning;
 import com.utad.david.planfit.R;
+import com.utad.david.planfit.Utils.Constants;
 import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 
@@ -41,11 +42,11 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
     public SportToning sportToning;
     public CallbackSport listener;
     public int option;
-    private static String SLIMMING = "SLIMMING";
-    private static String GAINVOLUME = "GAINVOLUME";
-    private static String TONING = "TONING";
-    private static String OPTION = "OPTION";
-    private String URL = "URL";
+    private static String SLIMMING = Constants.DeportesDetails.EXTRA_SLIMMING;
+    private static String GAINVOLUME = Constants.DeportesDetails.EXTRA_GAINVOLUME;
+    private static String TONING = Constants.DeportesDetails.EXTRA_TONING;
+    private static String OPTION = Constants.DeportesDetails.EXTRA_OPTION;
+    private String URL = Constants.DeportesDetails.EXTRA_URL;
 
     public interface CallbackSport{
         void onClickClose();

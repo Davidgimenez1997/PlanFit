@@ -28,6 +28,7 @@ import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Model.Plan.PlanNutrition;
 import com.utad.david.planfit.R;
+import com.utad.david.planfit.Utils.Constants;
 import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 
@@ -123,12 +124,7 @@ public class ShowNutritionPlanFragment extends Fragment implements FirebaseAdmin
 
             mAdapter = new ShowNutritionPlanAdapter(listToListPlan, planNutritionDetails -> {
                 DetailsNutritionPlanFragment detailsNutritionPlanFragment = DetailsNutritionPlanFragment.newInstance(planNutritionDetails);
-                detailsNutritionPlanFragment.setToolbarRunnable(new Runnable() {
-                    @Override
-                    public void run() {
-                        getActivity().setTitle("Plan Nutrición");
-                    }
-                });
+                detailsNutritionPlanFragment.setToolbarRunnable(() -> getActivity().setTitle(getResources().getString(R.string.plan_nutricion)));
                 FragmentManager fragManager = myContext.getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
                 fragmentTransaction.replace(R.id.content_frame, detailsNutritionPlanFragment);
@@ -156,7 +152,7 @@ public class ShowNutritionPlanFragment extends Fragment implements FirebaseAdmin
             }
             Collections.sort(arrNutrition);
             for(int i=0;i<arrNutrition.size();i++){
-                if(arrNutrition.get(i).getIsOk().equals("no")){
+                if(arrNutrition.get(i).getIsOk().equals(Constants.ModePlan.NO)){
                     endOk = false;
                 }
             }
@@ -169,7 +165,7 @@ public class ShowNutritionPlanFragment extends Fragment implements FirebaseAdmin
                         case 0:
                             showLoading();
                             for (PlanNutrition planNutrition:arrNutrition){
-                                planNutrition.setIsOk("no");
+                                planNutrition.setIsOk(Constants.ModePlan.NO);
                                 SessionUser.getInstance().firebaseAdmin.updatePlanNutrtionFirebase(planNutrition);
                             }
                             mAdapter.notifyDataSetChanged();

@@ -90,10 +90,10 @@ public class RootFragment extends Fragment{
                 configViewNutrition();
                 break;
             case 2:
-                configViewPlan();
+                configFavorite();
                 break;
             case 3:
-                configFavorite();
+                configViewPlan();
                 break;
         }
 

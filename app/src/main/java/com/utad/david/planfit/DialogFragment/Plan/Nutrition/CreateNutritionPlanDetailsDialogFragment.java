@@ -23,6 +23,7 @@ import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Model.Nutrition.DefaultNutrition;
 import com.utad.david.planfit.Model.Plan.PlanNutrition;
 import com.utad.david.planfit.R;
+import com.utad.david.planfit.Utils.Constants;
 import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 
@@ -32,13 +33,13 @@ import java.util.UUID;
 
 public class CreateNutritionPlanDetailsDialogFragment extends DialogFragment implements FirebaseAdmin.FirebaseAdminCreateShowPlanNutrition {
 
-    private static String NUTRITION = "NUTRITION";
+    private static String NUTRITION = Constants.NutricionPlanDetails.EXTRA_NUTRITION;
     private DefaultNutrition defaultNutrition;
 
-    private static String DESAYUNO="Desayuno";
-    private static String COMIDA="Comida";
-    private static String MERIENDA="Merienda";
-    private static String CENA="Cena";
+    private static String DESAYUNO = Constants.TiposPlanNutricion.DESAYUNO;
+    private static String COMIDA = Constants.TiposPlanNutricion.COMIDA;
+    private static String MERIENDA = Constants.TiposPlanNutricion.MERIENDA;
+    private static String CENA = Constants.TiposPlanNutricion.CENA;
 
 
     public static CreateNutritionPlanDetailsDialogFragment newInstance(DefaultNutrition defaultNutrition) {
@@ -121,16 +122,16 @@ public class CreateNutritionPlanDetailsDialogFragment extends DialogFragment imp
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 switch (spinnerType.getSelectedItem().toString()){
-                    case "Desayuno":
+                    case Constants.TiposPlanNutricion.DESAYUNO:
                         type=1;
                         break;
-                    case "Comida":
+                    case Constants.TiposPlanNutricion.COMIDA:
                         type=2;
                         break;
-                    case "Merienda":
+                    case Constants.TiposPlanNutricion.MERIENDA:
                         type=3;
                         break;
-                    case "Cena":
+                    case Constants.TiposPlanNutricion.CENA:
                         type=4;
                         break;
                 }
@@ -153,7 +154,7 @@ public class CreateNutritionPlanDetailsDialogFragment extends DialogFragment imp
             SessionUser.getInstance().planNutrition.setName(defaultNutrition.getName());
             SessionUser.getInstance().planNutrition.setPhoto(defaultNutrition.getPhoto());
             SessionUser.getInstance().planNutrition.setType(type);
-            SessionUser.getInstance().planNutrition.setIsOk("no");
+            SessionUser.getInstance().planNutrition.setIsOk(Constants.ModePlan.NO);
             UUID uuid = UUID.randomUUID();
             SessionUser.getInstance().planNutrition.setId(uuid.toString());
             SessionUser.getInstance().firebaseAdmin.dataCreateNutrtionPlan();

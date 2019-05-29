@@ -29,6 +29,7 @@ import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Model.Plan.PlanSport;
 import com.utad.david.planfit.R;
+import com.utad.david.planfit.Utils.Constants;
 import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 
@@ -129,7 +130,7 @@ public class ShowSportPlanFragment extends Fragment implements FirebaseAdmin.Fir
                 detailsSportPlanFragment.setToolbarRunnable(new Runnable() {
                     @Override
                     public void run() {
-                        getActivity().setTitle("Plan Deporte");
+                        getActivity().setTitle(getResources().getString(R.string.plan_deporte));
                     }
                 });
                 FragmentManager fragManager = myContext.getSupportFragmentManager();
@@ -159,7 +160,7 @@ public class ShowSportPlanFragment extends Fragment implements FirebaseAdmin.Fir
             }
             Collections.sort(arrSport);
             for(int i=0;i<arrSport.size();i++){
-                if(arrSport.get(i).getIsOk().equals("no")){
+                if(arrSport.get(i).getIsOk().equals(Constants.ModePlan.NO)){
                     endOk = false;
                 }
             }
@@ -172,7 +173,7 @@ public class ShowSportPlanFragment extends Fragment implements FirebaseAdmin.Fir
                         case 0:
                             showLoading();
                             for (PlanSport planSport:arrSport){
-                                planSport.setIsOk("no");
+                                planSport.setIsOk(Constants.ModePlan.NO);
                                 SessionUser.getInstance().firebaseAdmin.updatePlanSportFirebase(planSport);
                             }
                             mAdapter.notifyDataSetChanged();

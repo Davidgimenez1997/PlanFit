@@ -23,6 +23,7 @@ import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.DialogFragment.Nutrition.NutritionDetailsDialogFragment;
 import com.utad.david.planfit.Model.Nutrition.NutritionGainVolume;
 import com.utad.david.planfit.R;
+import com.utad.david.planfit.Utils.Constants;
 import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 
@@ -146,14 +147,14 @@ public class NutritionGainVolumeFragment extends Fragment implements FirebaseAdm
 
             mAdapter = new NutritionGainVolumeAdapter(nutritionGainVolumes, item -> {
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                Fragment prev = getFragmentManager().findFragmentByTag("dialog");
+                Fragment prev = getFragmentManager().findFragmentByTag(Constants.TagDialogFragment.TAG);
                 if (prev != null) {
                     transaction.remove(prev);
                 }
                 transaction.addToBackStack(null);
                 newFragment = NutritionDetailsDialogFragment.newInstanceGainVolume(item,2,getContext());
                 newFragment.setCallbackNutrition(fragment);
-                newFragment.show(transaction, "dialog");
+                newFragment.show(transaction, Constants.TagDialogFragment.TAG);
             });
             mRecyclerView.setAdapter(mAdapter);
         }

@@ -8,7 +8,7 @@ public class YoutubePlayerConfig {
     }
 
     //API KEY YoutubePlayer
-    public static final String API_KEY = String.valueOf(R.string.API_KEY);
+    public static final String API_KEY = Constants.ConfigureYouTube.API_KEY;
 
     public static String getApiKey() {
         return API_KEY;

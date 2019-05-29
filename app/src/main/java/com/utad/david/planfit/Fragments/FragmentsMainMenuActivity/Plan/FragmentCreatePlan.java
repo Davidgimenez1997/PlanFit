@@ -38,7 +38,6 @@ public class FragmentCreatePlan extends Fragment {
 
     }
 
-    private TextView timeDuration;
     private Button buttonSelectSport;
     private Button buttonSelectNutrition;
     private Button buttonSaveAndExit;

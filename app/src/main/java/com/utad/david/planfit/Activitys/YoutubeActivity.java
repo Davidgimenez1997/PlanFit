@@ -5,6 +5,7 @@ import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerView;
+import com.utad.david.planfit.Utils.Constants;
 import com.utad.david.planfit.Utils.YoutubePlayerConfig;
 import com.utad.david.planfit.R;
 import com.crashlytics.android.Crashlytics;
@@ -16,7 +17,7 @@ public class YoutubeActivity extends YouTubeBaseActivity {
     private YouTubePlayerView youTubePlayerView;
     private YouTubePlayer.OnInitializedListener onInitializedListener;
     private String urlData;
-    private String URL = "URL";
+    private String URL = Constants.ConfigureYouTube.EXTRA_URL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

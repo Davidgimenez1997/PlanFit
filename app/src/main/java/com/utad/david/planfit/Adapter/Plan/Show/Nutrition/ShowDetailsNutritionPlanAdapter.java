@@ -10,15 +10,13 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.utad.david.planfit.Model.Plan.PlanNutrition;
 import com.utad.david.planfit.R;
+import com.utad.david.planfit.Utils.Constants;
 
 import java.util.ArrayList;
 
-public class ShowDetailsNutritionPlanAdapter extends RecyclerView.Adapter<ShowDetailsNutritionPlanAdapter.ShowDetailsPlanNutritionViewHolder> {
+import static com.utad.david.planfit.Utils.Constants.TiposPlanNutricion.*;
 
-    private static String DESAYUNO = "Desayuno";
-    private static String COMIDA = "Comida";
-    private static String MERIENDA = "Merienda";
-    private static String CENA = "Cena";
+public class ShowDetailsNutritionPlanAdapter extends RecyclerView.Adapter<ShowDetailsNutritionPlanAdapter.ShowDetailsPlanNutritionViewHolder> {
 
     private ArrayList<PlanNutrition> planNutritions;
     private OnItemClickListener listener;
@@ -77,25 +75,25 @@ public class ShowDetailsNutritionPlanAdapter extends RecyclerView.Adapter<ShowDe
             requestOptions.placeholder(R.drawable.icon_gallery);
             Glide.with(itemView).setDefaultRequestOptions(requestOptions).load(planNutrition.getPhoto()).into(photoNutrition);
             switch (planNutrition.getType()) {
-                case 1:
-                    timeStart.setText(DESAYUNO);
+                case Constants.TiposPlanNutricion.MODE_DESAYUNO:
+                    timeStart.setText(Constants.TiposPlanNutricion.DESAYUNO);
                     break;
-                case 2:
-                    timeStart.setText(COMIDA);
+                case Constants.TiposPlanNutricion.MODE_COMIDA:
+                    timeStart.setText(Constants.TiposPlanNutricion.COMIDA);
                     break;
-                case 3:
-                    timeStart.setText(MERIENDA);
+                case Constants.TiposPlanNutricion.MODE_MERIENDA:
+                    timeStart.setText(Constants.TiposPlanNutricion.MERIENDA);
                     break;
-                case 4:
-                    timeStart.setText(CENA);
+                case Constants.TiposPlanNutricion.MODE_CENA:
+                    timeStart.setText(Constants.TiposPlanNutricion.CENA);
                     break;
 
             }
             timeEnd.setVisibility(View.INVISIBLE);
 
-            if (planNutrition.getIsOk().equals("yes")) {
+            if (planNutrition.getIsOk().equals(Constants.ModePlan.YES)) {
                 imageViewCheck.setVisibility(View.VISIBLE);
-            } else if (planNutrition.getIsOk().equals("no")) {
+            } else if (planNutrition.getIsOk().equals(Constants.ModePlan.NO)) {
                 imageViewCheck.setVisibility(View.INVISIBLE);
             }
         }

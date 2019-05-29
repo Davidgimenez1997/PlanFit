@@ -24,6 +24,7 @@ import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.DialogFragment.Sport.SportDetailsDialogFragment;
 import com.utad.david.planfit.Model.Sport.SportSlimming;
 import com.utad.david.planfit.R;
+import com.utad.david.planfit.Utils.Constants;
 import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 
@@ -146,14 +147,14 @@ public class SportSlimmingFragment extends Fragment implements FirebaseAdmin.Fir
 
             mAdapter = new SportSlimmingAdapter(sportSlimmingList, item -> {
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                Fragment prev = getFragmentManager().findFragmentByTag("dialog");
+                Fragment prev = getFragmentManager().findFragmentByTag(Constants.TagDialogFragment.TAG);
                 if (prev != null) {
                     transaction.remove(prev);
                 }
                 transaction.addToBackStack(null);
                 newFragment = SportDetailsDialogFragment.newInstanceSlimming(item,0,getContext());
                 newFragment.setListener(fragment);
-                newFragment.show(transaction, "dialog");
+                newFragment.show(transaction, Constants.TagDialogFragment.TAG);
             });
             mRecyclerView.setAdapter(mAdapter);
         }

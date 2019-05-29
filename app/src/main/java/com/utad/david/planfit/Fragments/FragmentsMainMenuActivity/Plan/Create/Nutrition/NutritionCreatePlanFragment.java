@@ -24,6 +24,7 @@ import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.DialogFragment.Plan.Nutrition.CreateNutritionPlanDetailsDialogFragment;
 import com.utad.david.planfit.Model.Nutrition.DefaultNutrition;
 import com.utad.david.planfit.R;
+import com.utad.david.planfit.Utils.Constants;
 import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 
@@ -105,14 +106,14 @@ public class NutritionCreatePlanFragment extends Fragment implements FirebaseAdm
 
             mAdapter = new CreateNutritionPlanAdapter(allFavoriteFavorite, item -> {
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                Fragment prev = getFragmentManager().findFragmentByTag("dialog");
+                Fragment prev = getFragmentManager().findFragmentByTag(Constants.TagDialogFragment.TAG);
                 if (prev != null) {
                     transaction.remove(prev);
                 }
                 transaction.addToBackStack(null);
                 newFragment = CreateNutritionPlanDetailsDialogFragment.newInstance(item);
                 newFragment.setListener(fragment);
-                newFragment.show(transaction, "dialog");
+                newFragment.show(transaction, Constants.TagDialogFragment.TAG);
             });
             mRecyclerView.setAdapter(mAdapter);
         }

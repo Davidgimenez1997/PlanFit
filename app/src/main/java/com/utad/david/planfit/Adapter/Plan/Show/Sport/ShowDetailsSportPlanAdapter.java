@@ -10,6 +10,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.utad.david.planfit.Model.Plan.PlanSport;
 import com.utad.david.planfit.R;
+import com.utad.david.planfit.Utils.Constants;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -97,9 +98,9 @@ public class ShowDetailsSportPlanAdapter extends RecyclerView.Adapter<ShowDetail
                 timeEnd.setText(Long.valueOf(first_end)+":"+stringBuilder_end.toString());
             }
 
-            if(planSport.getIsOk().equals("yes")){
+            if(planSport.getIsOk().equals(Constants.ModePlan.YES)){
                 imageViewCheck.setVisibility(View.VISIBLE);
-            }else if(planSport.getIsOk().equals("no")){
+            }else if(planSport.getIsOk().equals(Constants.ModePlan.NO)){
                 imageViewCheck.setVisibility(View.INVISIBLE);
             }
         }

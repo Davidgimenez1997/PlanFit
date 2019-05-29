@@ -24,6 +24,7 @@ import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Model.Plan.PlanSport;
 import com.utad.david.planfit.R;
+import com.utad.david.planfit.Utils.Constants;
 import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 
@@ -90,7 +91,7 @@ public class DetailsSportPlanFragment extends Fragment implements FirebaseAdmin.
             mAdapter = new ShowDetailsSportPlanAdapter(planSports, item -> {
 
                 if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
-                    if(item.getIsOk().equals("yes")){
+                    if(item.getIsOk().equals(Constants.ModePlan.YES)){
 
                         final CharSequence[] items = {getString(R.string.si),getString(R.string.cancelar)};
                         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -99,7 +100,7 @@ public class DetailsSportPlanFragment extends Fragment implements FirebaseAdmin.
                             switch (itemDialog) {
                                 case 0:
                                     showLoading();
-                                    item.setIsOk("no");
+                                    item.setIsOk(Constants.ModePlan.NO);
                                     SessionUser.getInstance().firebaseAdmin.updatePlanSportFirebase(item);
                                     mAdapter.notifyDataSetChanged();
                                     hideLoading();
@@ -111,7 +112,7 @@ public class DetailsSportPlanFragment extends Fragment implements FirebaseAdmin.
                         });
                         builder.show();
 
-                    }else if(item.getIsOk().equals("no")){
+                    }else if(item.getIsOk().equals(Constants.ModePlan.NO)){
 
                         final CharSequence[] items = {getString(R.string.si),getString(R.string.cancelar)};
                         final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -120,7 +121,7 @@ public class DetailsSportPlanFragment extends Fragment implements FirebaseAdmin.
                             switch (itemDialog) {
                                 case 0:
                                     showLoading();
-                                    item.setIsOk("yes");
+                                    item.setIsOk(Constants.ModePlan.YES);
                                     SessionUser.getInstance().firebaseAdmin.updatePlanSportFirebase(item);
                                     mAdapter.notifyDataSetChanged();
                                     hideLoading();

@@ -6,7 +6,7 @@
 
         <item
             android:id="@+id/nav_open_web"
-            android:title="Abrir en navegador" />
+            android:title="" />
 
     </group>
 

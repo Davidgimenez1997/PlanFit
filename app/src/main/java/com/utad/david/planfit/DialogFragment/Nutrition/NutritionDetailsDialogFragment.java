@@ -29,6 +29,7 @@ import com.utad.david.planfit.Model.Nutrition.NutritionGainVolume;
 import com.utad.david.planfit.Model.Nutrition.NutritionSlimming;
 import com.utad.david.planfit.Model.Nutrition.NutritionToning;
 import com.utad.david.planfit.R;
+import com.utad.david.planfit.Utils.Constants;
 import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 
@@ -42,10 +43,10 @@ public class NutritionDetailsDialogFragment extends DialogFragment implements Fi
     public NutritionToning nutritionToning;
     public int option;
     private CallbackNutrition listener;
-    private static String SLIMMING = "SLIMMING";
-    private static String GAINVOLUME = "GAINVOLUME";
-    private static String TONING = "TONING";
-    private static String OPTION = "OPTION";
+    private static String SLIMMING = Constants.NutritionDetails.EXTRA_SLIMMING;
+    private static String GAINVOLUME = Constants.NutritionDetails.EXTRA_GAINVOLUME;
+    private static String TONING = Constants.NutritionDetails.EXTRA_TONING;
+    private static String OPTION = Constants.NutritionDetails.EXTRA_OPTION;
 
     public interface CallbackNutrition{
         void onClickClose();
@@ -212,6 +213,7 @@ public class NutritionDetailsDialogFragment extends DialogFragment implements Fi
                 Intent intent = new Intent(getContext(), WebViewActivity.class);
                 intent.putExtra(WebViewActivity.EXTRA_TITLE, title);
                 intent.putExtra(WebViewActivity.EXTRA_URL, url);
+                intent.putExtra(WebViewActivity.EXTRA_MODE, Constants.ModeWebView.MODE_RECIPE);
                 getActivity().overridePendingTransition(R.anim.slide_in_bottom, R.anim.stay);
                 startActivity(intent);
             });

@@ -22,15 +22,18 @@ import android.widget.ImageView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.utad.david.planfit.R;
+import com.utad.david.planfit.Utils.Constants;
 
 public class WebViewActivity extends AppCompatActivity {
 
-    public static String EXTRA_TITLE = "title";
-    public static String EXTRA_URL = "url";
+    public static String EXTRA_TITLE = Constants.ConfigurateWebView.EXTRA_TITLE;
+    public static String EXTRA_URL = Constants.ConfigurateWebView.EXTRA_URL;
+    public static String EXTRA_MODE = Constants.ModeWebView.EXTRA_MODE;
 
     private WebView webView;
     private String title;
     private String url;
+    private int mode;
     private Toolbar toolbar;
 
     @Override
@@ -42,6 +45,7 @@ public class WebViewActivity extends AppCompatActivity {
         if(extras != null){
             title = extras.getString(EXTRA_TITLE);
             url = extras.getString(EXTRA_URL);
+            mode = extras.getInt(EXTRA_MODE);
         }
 
         toolbar = findViewById(R.id.toolbar);
@@ -132,6 +136,14 @@ public class WebViewActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_option_web, menu);
+        switch (mode){
+            case Constants.ModeWebView.MODE_RECIPE:
+                menu.getItem(0).setTitle(getString(R.string.mode_recipe));
+                break;
+            case Constants.ModeWebView.MODE_LINKEDIN:
+                menu.getItem(0).setTitle(getString(R.string.mode_linkedin));
+                break;
+        }
         return true;
     }
 

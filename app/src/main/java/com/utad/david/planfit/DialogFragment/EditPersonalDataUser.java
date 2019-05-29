@@ -50,6 +50,8 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import static android.app.Activity.RESULT_OK;
+import static com.utad.david.planfit.Utils.Constants.RequestPermisos.REQUEST_GALLERY;
+import static com.utad.david.planfit.Utils.Constants.RequestPermisos.REQUEST_IMAGE_PERMISSIONS;
 
 public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmin.FirebaseAdminUpdateAndDeleteUserListener, EasyPermissions.PermissionCallbacks {
 
@@ -81,9 +83,6 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
     private String oldPassword;
     private OnFragmentInteractionListener mListener;
     private ProgressDialog mProgress;
-
-    private int REQUEST_GALLERY = 1;
-    public static final int REQUEST_IMAGE_PERMISSIONS = 1;
 
 
     @Override

@@ -22,13 +22,14 @@ import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Model.Sport.DefaultSport;
 import com.utad.david.planfit.R;
+import com.utad.david.planfit.Utils.Constants;
 import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 
 public class SportFavoriteDetailsDialogFragment extends DialogFragment implements FirebaseAdmin.FirebaseAdminFavoriteSport {
 
-    private static String SPORT = "SPORT";
-    private static String URL = "URL";
+    private static String SPORT = Constants.DeportesFavoriteDetails.EXTRA_SPORT;
+    private static String URL = Constants.DeportesFavoriteDetails.EXTRA_URL;
     private DefaultSport defaultSport;
 
     public static SportFavoriteDetailsDialogFragment newInstance(DefaultSport defaultSport) {
