@@ -34,6 +34,11 @@ public class DetailsSportPlanFragment extends Fragment implements FirebaseAdmin.
     private static final String ARG_PARAM1 = "param1";
 
     private ArrayList<PlanSport> planSports;
+    private Runnable toolbarRunnable;
+
+    public void setToolbarRunnable(Runnable toolbarRunnable) {
+        this.toolbarRunnable = toolbarRunnable;
+    }
 
     public DetailsSportPlanFragment() {
         // Required empty public constructor
@@ -71,6 +76,10 @@ public class DetailsSportPlanFragment extends Fragment implements FirebaseAdmin.
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_details_sport_plan, container, false);
+
+        if(toolbarRunnable != null) {
+            toolbarRunnable.run();
+        }
 
         mRecyclerView = view.findViewById(R.id.recycler_view_sport);
         mRecyclerView.setHasFixedSize(true);

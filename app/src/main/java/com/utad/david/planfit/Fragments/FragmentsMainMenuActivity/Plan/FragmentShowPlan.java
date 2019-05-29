@@ -46,12 +46,22 @@ public class FragmentShowPlan extends Fragment {
     private Button buttonShowNutrition;
     private Button buttonShowClose;
     private Callback mListener;
+    private Runnable toolbarRunnable;
+
+    public void setToolbarRunnable(Runnable toolbarRunnable) {
+        this.toolbarRunnable = toolbarRunnable;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_show_plan, container, false);
+
+
+        if(toolbarRunnable != null) {
+            toolbarRunnable.run();
+        }
 
         findById(view);
         onClickClose();

@@ -39,10 +39,15 @@ public class NutritionSlimmingFragment extends Fragment implements FirebaseAdmin
     }
 
     private NutritionSlimmingFragment fragment;
+    private Runnable toolbarRunnable;
 
     public NutritionSlimmingFragment newInstanceSlimming() {
         this.fragment = this;
         return this.fragment;
+    }
+
+    public void setToolbarRunnable(Runnable toolbarRunnable) {
+        this.toolbarRunnable = toolbarRunnable;
     }
 
     @Override
@@ -71,6 +76,10 @@ public class NutritionSlimmingFragment extends Fragment implements FirebaseAdmin
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_nutrition_recycleview, container, false);
+
+        if(toolbarRunnable != null) {
+            toolbarRunnable.run();
+        }
 
         mRecyclerView = view.findViewById(R.id.recycler_view_nutrition);
         mRecyclerView.setHasFixedSize(true);

@@ -39,10 +39,16 @@ public class NutritionFavoriteFragment extends Fragment implements FirebaseAdmin
     }
 
     private NutritionFavoriteFragment fragment;
+    private Runnable toolbarRunnable;
+
 
     public NutritionFavoriteFragment newInstanceSlimming() {
         this.fragment = this;
         return this.fragment;
+    }
+
+    public void setToolbarRunnable(Runnable toolbarRunnable) {
+        this.toolbarRunnable = toolbarRunnable;
     }
 
     @Override
@@ -74,6 +80,10 @@ public class NutritionFavoriteFragment extends Fragment implements FirebaseAdmin
         // Inflate the layout for this fragment
 
         View view = inflater.inflate(R.layout.fragment_nutrition_favorite, container, false);
+
+        if(toolbarRunnable != null) {
+            toolbarRunnable.run();
+        }
 
         mRecyclerView = view.findViewById(R.id.recycler_view_nutrition);
         linearLayout = view.findViewById(R.id.linear_empty_favorites);

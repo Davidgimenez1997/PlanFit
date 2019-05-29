@@ -43,12 +43,22 @@ public class FragmentCreatePlan extends Fragment {
     private Button buttonSelectNutrition;
     private Button buttonSaveAndExit;
     private Callback mlistener;
+    private Runnable toolbarRunnable;
+
+    public void setToolbarRunnable(Runnable toolbarRunnable) {
+        this.toolbarRunnable = toolbarRunnable;
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_create_plan, container, false);
+
+        if(toolbarRunnable != null) {
+            toolbarRunnable.run();
+        }
 
         findById(view);
         onClickOpenSport();

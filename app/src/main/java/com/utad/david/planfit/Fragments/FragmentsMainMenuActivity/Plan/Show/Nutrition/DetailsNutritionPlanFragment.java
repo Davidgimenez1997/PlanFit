@@ -33,10 +33,15 @@ public class DetailsNutritionPlanFragment extends Fragment implements FirebaseAd
 
     private static final String ARG_PARAM1 = "param1";
     private ArrayList<PlanNutrition> planNutritions;
+    private Runnable toolbarRunnable;
 
 
     public DetailsNutritionPlanFragment() {
         // Required empty public constructor
+    }
+
+    public void setToolbarRunnable(Runnable toolbarRunnable) {
+        this.toolbarRunnable = toolbarRunnable;
     }
 
     public static DetailsNutritionPlanFragment newInstance(ArrayList<PlanNutrition> defaultSports) {
@@ -72,6 +77,10 @@ public class DetailsNutritionPlanFragment extends Fragment implements FirebaseAd
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_details_nutrition_plan, container, false);
+
+        if(toolbarRunnable != null) {
+            toolbarRunnable.run();
+        }
 
         mRecyclerView = view.findViewById(R.id.recycler_view_sport);
         mRecyclerView.setHasFixedSize(true);

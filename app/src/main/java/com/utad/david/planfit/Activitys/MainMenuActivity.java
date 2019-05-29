@@ -97,7 +97,7 @@ public class MainMenuActivity extends AppCompatActivity
 
         findByIdNavigetionView();
 
-        setTitle(R.string.app_name);
+        setTitle("Deportes");
         navigateFragmentSport();
         onClickNavigetionHeaderView();
     }
@@ -300,7 +300,7 @@ public class MainMenuActivity extends AppCompatActivity
 
         Fragment fragment = null;
 
-        int seleted;
+        int seleted = 0;
 
         switch (itemId) {
             case R.id.nav_deportes:
@@ -326,6 +326,26 @@ public class MainMenuActivity extends AppCompatActivity
         }
 
         if (fragment != null) {
+            int finalSeleted = seleted;
+            ((RootFragment) fragment).setToolbarRunnable(new Runnable() {
+                @Override
+                public void run() {
+                    switch (finalSeleted){
+                        case 0:
+                            setTitle("Deportes");
+                            break;
+                        case 1:
+                            setTitle("Nutrición");
+                            break;
+                        case 3:
+                            setTitle("Favoritos");
+                            break;
+                        case 2:
+                            setTitle("Plan");
+                            break;
+                    }
+                }
+            });
             fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.content_frame, fragment);
             fragmentTransaction.addToBackStack(null);
@@ -344,6 +364,12 @@ public class MainMenuActivity extends AppCompatActivity
         navigationView.getMenu().findItem(R.id.nav_deportes).setChecked(true);
         int seleted = 0;
         Fragment fragment = RootFragment.newInstance(seleted);
+        ((RootFragment) fragment).setToolbarRunnable(new Runnable() {
+            @Override
+            public void run() {
+                setTitle("Deportes");
+            }
+        });
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, fragment);
         fragmentTransaction.commit();
@@ -367,6 +393,12 @@ public class MainMenuActivity extends AppCompatActivity
     public void clickOnAdelgazarSport() {
         SportSlimmingFragment sportSlimmingFragment = new SportSlimmingFragment();
         sportSlimmingFragment.newInstanceSlimming();
+        sportSlimmingFragment.setToolbarRunnable(new Runnable() {
+            @Override
+            public void run() {
+                setTitle("Deportes Adelgazar");
+            }
+        });
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, sportSlimmingFragment);
         fragmentTransaction.addToBackStack(null);
@@ -377,6 +409,12 @@ public class MainMenuActivity extends AppCompatActivity
     public void clickOnTonificarSport() {
         SportToningFragment sportToningFragment = new SportToningFragment();
         sportToningFragment.newInstanceSlimming();
+        sportToningFragment.setToolbarRunnable(new Runnable() {
+            @Override
+            public void run() {
+                setTitle("Deportes Tonificar");
+            }
+        });
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, sportToningFragment);
         fragmentTransaction.addToBackStack(null);
@@ -387,6 +425,12 @@ public class MainMenuActivity extends AppCompatActivity
     public void clickOnGanarVolumenSport() {
         SportGainVolumeFragment sportGainVolumeFragment = new SportGainVolumeFragment();
         sportGainVolumeFragment.newInstanceSlimming();
+        sportGainVolumeFragment.setToolbarRunnable(new Runnable() {
+            @Override
+            public void run() {
+                setTitle("Deportes Ganar Volumen");
+            }
+        });
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, sportGainVolumeFragment);
         fragmentTransaction.addToBackStack(null);
@@ -401,6 +445,12 @@ public class MainMenuActivity extends AppCompatActivity
     public void clickOnAdelgazarNutrition() {
         NutritionSlimmingFragment nutritionSlimmingFragment = new NutritionSlimmingFragment();
         nutritionSlimmingFragment.newInstanceSlimming();
+        nutritionSlimmingFragment.setToolbarRunnable(new Runnable() {
+            @Override
+            public void run() {
+                setTitle("Nutrición Adelgazar");
+            }
+        });
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, nutritionSlimmingFragment);
         fragmentTransaction.addToBackStack(null);
@@ -411,6 +461,12 @@ public class MainMenuActivity extends AppCompatActivity
     public void clickOnTonificarNutrition() {
         NutritionToningFragment nutritionToningFragment = new NutritionToningFragment();
         nutritionToningFragment.newInstanceSlimming();
+        nutritionToningFragment.setToolbarRunnable(new Runnable() {
+            @Override
+            public void run() {
+                setTitle("Nutrición Tonificar");
+            }
+        });
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, nutritionToningFragment);
         fragmentTransaction.addToBackStack(null);
@@ -421,6 +477,12 @@ public class MainMenuActivity extends AppCompatActivity
     public void clickOnGanarVolumenNutrition() {
         NutritionGainVolumeFragment nutritionGainVolumeFragment = new NutritionGainVolumeFragment();
         nutritionGainVolumeFragment.newInstanceSlimming();
+        nutritionGainVolumeFragment.setToolbarRunnable(new Runnable() {
+            @Override
+            public void run() {
+                setTitle("Nutrición Ganar Volumen");
+            }
+        });
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, nutritionGainVolumeFragment);
         fragmentTransaction.addToBackStack(null);
@@ -435,6 +497,12 @@ public class MainMenuActivity extends AppCompatActivity
     public void clickSportFavorite() {
         SportFavoriteFragment sportFavoriteFragment = new SportFavoriteFragment();
         sportFavoriteFragment.newInstanceSlimming();
+        sportFavoriteFragment.setToolbarRunnable(new Runnable() {
+            @Override
+            public void run() {
+                setTitle("Deportes Favoritos");
+            }
+        });
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, sportFavoriteFragment);
         fragmentTransaction.addToBackStack(null);
@@ -445,6 +513,12 @@ public class MainMenuActivity extends AppCompatActivity
     public void clickNutritionFavorite() {
         NutritionFavoriteFragment nutritionFavoriteFragment = new NutritionFavoriteFragment();
         nutritionFavoriteFragment.newInstanceSlimming();
+        nutritionFavoriteFragment.setToolbarRunnable(new Runnable() {
+            @Override
+            public void run() {
+                setTitle("Nutriciónes Favoritas");
+            }
+        });
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, nutritionFavoriteFragment);
         fragmentTransaction.addToBackStack(null);
@@ -458,6 +532,12 @@ public class MainMenuActivity extends AppCompatActivity
     @Override
     public void clickOnCreatePlan() {
         FragmentCreatePlan fragmentCreatePlan = new FragmentCreatePlan();
+        fragmentCreatePlan.setToolbarRunnable(new Runnable() {
+            @Override
+            public void run() {
+                setTitle("Crear Plan");
+            }
+        });
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, fragmentCreatePlan);
         fragmentTransaction.addToBackStack(null);
@@ -468,6 +548,12 @@ public class MainMenuActivity extends AppCompatActivity
     @Override
     public void clickOnShowPlan() {
         FragmentShowPlan fragmentShowPlan = new FragmentShowPlan();
+        fragmentShowPlan.setToolbarRunnable(new Runnable() {
+            @Override
+            public void run() {
+                setTitle("Ver Plan");
+            }
+        });
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, fragmentShowPlan);
         fragmentTransaction.addToBackStack(null);
@@ -482,6 +568,12 @@ public class MainMenuActivity extends AppCompatActivity
     public void onClickSportPlan() {
         SportCreatePlanFragment sportCreatePlanFragment = new SportCreatePlanFragment();
         sportCreatePlanFragment.newInstanceSlimming();
+        sportCreatePlanFragment.setToolbarRunnable(new Runnable() {
+            @Override
+            public void run() {
+                setTitle("Plan Deporte");
+            }
+        });
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, sportCreatePlanFragment);
         fragmentTransaction.addToBackStack(null);
@@ -492,6 +584,12 @@ public class MainMenuActivity extends AppCompatActivity
     public void onClickNutritionPlan() {
         NutritionCreatePlanFragment nutritionCreatePlanFragment = new NutritionCreatePlanFragment();
         nutritionCreatePlanFragment.newInstanceSlimming();
+        nutritionCreatePlanFragment.setToolbarRunnable(new Runnable() {
+            @Override
+            public void run() {
+                setTitle("Plan Nutrición");
+            }
+        });
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, nutritionCreatePlanFragment);
         fragmentTransaction.addToBackStack(null);
@@ -502,6 +600,12 @@ public class MainMenuActivity extends AppCompatActivity
     public void onClickSaveAndExit() {
         int seleted = 2;
         Fragment fragment = RootFragment.newInstance(seleted);
+        ((RootFragment) fragment).setToolbarRunnable(new Runnable() {
+            @Override
+            public void run() {
+                setTitle("Plan");
+            }
+        });
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, fragment);
         fragmentTransaction.commit();
@@ -514,6 +618,12 @@ public class MainMenuActivity extends AppCompatActivity
     @Override
     public void onClickButtonShowPlanSport() {
         ShowSportPlanFragment showSportPlanFragment = new ShowSportPlanFragment();
+        showSportPlanFragment.setToolbarRunnable(new Runnable() {
+            @Override
+            public void run() {
+                setTitle("Plan Deporte");
+            }
+        });
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, showSportPlanFragment);
         fragmentTransaction.addToBackStack(null);
@@ -523,6 +633,12 @@ public class MainMenuActivity extends AppCompatActivity
     @Override
     public void onClickButtonShowPlanNutrition() {
         ShowNutritionPlanFragment showNutritionPlanFragment = new ShowNutritionPlanFragment();
+        showNutritionPlanFragment.setToolbarRunnable(new Runnable() {
+            @Override
+            public void run() {
+                setTitle("Plan Nutrición");
+            }
+        });
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, showNutritionPlanFragment);
         fragmentTransaction.addToBackStack(null);
@@ -533,6 +649,12 @@ public class MainMenuActivity extends AppCompatActivity
     public void onClickButtonShowPlanClose() {
         int seleted = 2;
         Fragment fragment = RootFragment.newInstance(seleted);
+        ((RootFragment) fragment).setToolbarRunnable(new Runnable() {
+            @Override
+            public void run() {
+                setTitle("Plan");
+            }
+        });
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, fragment);
         fragmentTransaction.commit();

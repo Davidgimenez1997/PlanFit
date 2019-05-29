@@ -60,12 +60,22 @@ public class SportCreatePlanFragment extends Fragment implements FirebaseAdmin.F
     private RecyclerView.LayoutManager mLayoutManager;
     private LinearLayout linearLayout;
     private CreateSportPlanDetailsDialogFragment newFragment;
+    private Runnable toolbarRunnable;
+
+    public void setToolbarRunnable(Runnable toolbarRunnable) {
+        this.toolbarRunnable = toolbarRunnable;
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_sport_create_plan, container, false);
+
+        if(toolbarRunnable != null) {
+            toolbarRunnable.run();
+        }
 
         mRecyclerView = view.findViewById(R.id.recycler_view_sport);
         linearLayout = view.findViewById(R.id.linear_empty_favorites);
