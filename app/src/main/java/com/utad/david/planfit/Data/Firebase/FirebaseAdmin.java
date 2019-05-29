@@ -148,15 +148,16 @@ public class FirebaseAdmin {
 
         void deletePhotoInFirebase(boolean end);
 
-        void updateEmailInFirebase(boolean end);
-
-        void updatePasswordInFirebase(boolean end);
-
         void updateNickNameInFirebase(boolean end);
 
         void updateFullNameInFirebase(boolean end);
 
         void deleteUserInFirebase(boolean end);
+
+        //void updateEmailInFirebase(boolean end);
+
+        //void updatePasswordInFirebase(boolean end);
+
     }
 
     //Download sport and nutrition data
@@ -416,6 +417,8 @@ public class FirebaseAdmin {
         }
     }
 
+    //TODO:NO IMPLEMENTADO (ACTUALIZAR EMAIL Y PASS)
+
     //Reauthenticate User update email
 
     public void updateEmailUserInFirebase() {
@@ -438,9 +441,9 @@ public class FirebaseAdmin {
                                     DocumentReference myUserRef = firebaseFirestore.collection(COLLECTION_USER_FIREBASE).document(currentUser.getUid());
                                     Map<String, Object> user = new HashMap<>();
                                     user.put("email", userDataFirebase.getEmail());
-                                    myUserRef.update(user)
-                                            .addOnSuccessListener(aVoid -> firebaseAdminUpdateAndDeleteUserListener.updateEmailInFirebase(true))
-                                            .addOnFailureListener(e -> firebaseAdminUpdateAndDeleteUserListener.updateEmailInFirebase(false));
+                                    //myUserRef.update(user)
+                                            //.addOnSuccessListener(aVoid -> firebaseAdminUpdateAndDeleteUserListener.updateEmailInFirebase(true))
+                                            //.addOnFailureListener(e -> firebaseAdminUpdateAndDeleteUserListener.updateEmailInFirebase(false));
                                 }
                             }
                         }));
@@ -469,9 +472,9 @@ public class FirebaseAdmin {
                                     DocumentReference myUserRef = firebaseFirestore.collection(COLLECTION_USER_FIREBASE).document(currentUser.getUid());
                                     Map<String, Object> user = new HashMap<>();
                                     user.put("password", userDataFirebase.getPassword());
-                                    myUserRef.update(user)
-                                            .addOnSuccessListener(aVoid -> firebaseAdminUpdateAndDeleteUserListener.updatePasswordInFirebase(true))
-                                            .addOnFailureListener(e -> firebaseAdminUpdateAndDeleteUserListener.updatePasswordInFirebase(false));
+                                    //myUserRef.update(user)
+                                            //.addOnSuccessListener(aVoid -> firebaseAdminUpdateAndDeleteUserListener.updatePasswordInFirebase(true))
+                                            //.addOnFailureListener(e -> firebaseAdminUpdateAndDeleteUserListener.updatePasswordInFirebase(false));
                                 }
                             }
                         }));

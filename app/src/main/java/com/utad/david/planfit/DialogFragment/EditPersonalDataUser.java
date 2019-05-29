@@ -67,12 +67,12 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
     }
 
     private ImageView imageView;
-    private EditText editTextEmail;
-    private EditText editTextPassword;
+    //private EditText editTextEmail;
+    //private EditText editTextPassword;
     private EditText editTextFullName;
     private EditText editTextNickName;
-    private Button buttonUpdateEmail;
-    private Button buttonUpdatePassword;
+    //private Button buttonUpdateEmail;
+    //private Button buttonUpdatePassword;
     private Button buttonUpdateNickName;
     private Button buttonUpdateFullName;
     private Button buttonDeletePhoto;
@@ -99,8 +99,8 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
             checkImageUser();
             onClickImage();
             onClickButtonDeletePhoto();
-            onClickButtonUpdateEmail();
-            onClickButtonUpdatePassword();
+            //onClickButtonUpdateEmail();
+            //onClickButtonUpdatePassword();
             onClickButtonUpdateNickName();
             onClickButtonUpdateFullName();
             onClickButtonDeleteAccount();
@@ -116,8 +116,8 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
 
     private void configView(){
         buttonUpdatePhoto.setEnabled(false);
-        editTextEmail.addTextChangedListener(textWatcherEditPesonalDataEmail);
-        editTextPassword.addTextChangedListener(textWatcherEditPesonalDataPassword);
+        //editTextEmail.addTextChangedListener(textWatcherEditPesonalDataEmail);
+        //editTextPassword.addTextChangedListener(textWatcherEditPesonalDataPassword);
         editTextFullName.addTextChangedListener(textWatcherEditPesonalDataFullName);
         editTextNickName.addTextChangedListener(textWatcherEditPesonalDataNickName);
     }
@@ -179,6 +179,7 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
         builder.show();
     }
 
+    /*
     private TextWatcher textWatcherEditPesonalDataEmail = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -216,6 +217,7 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
             }
         }
     };
+    */
 
     private TextWatcher textWatcherEditPesonalDataFullName = new TextWatcher() {
         @Override
@@ -286,15 +288,15 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
 
     private void findById(View v){
         imageView = v.findViewById(R.id.imageViewEditUser);
-        editTextEmail = v.findViewById(R.id.nickEmailEditUser);
+        //editTextEmail = v.findViewById(R.id.nickEmailEditUser);
         editTextFullName = v.findViewById(R.id.fullNameEditUser);
         editTextNickName  = v.findViewById(R.id.nickNameEditUser);
-        editTextPassword  = v.findViewById(R.id.passwordEditUser);
-        buttonUpdateEmail = v.findViewById(R.id.update_emial_button);
+        //editTextPassword  = v.findViewById(R.id.passwordEditUser);
+        //buttonUpdateEmail = v.findViewById(R.id.update_emial_button);
         buttonDeletePhoto = v.findViewById(R.id.button_delete_photo);
         buttonUpdateFullName = v.findViewById(R.id.button_update_fullname);
         buttonUpdateNickName = v.findViewById(R.id.button_nick_update);
-        buttonUpdatePassword = v.findViewById(R.id.button_password_update);
+        //buttonUpdatePassword = v.findViewById(R.id.button_password_update);
         buttonUpdatePhoto = v.findViewById(R.id.button_update_photo);
         buttonDeleteAccount = v.findViewById(R.id.button_delete_account);
         buttonClose = v.findViewById(R.id.button_close_info);
@@ -303,8 +305,8 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
     private void putData(){
         User user = SessionUser.getInstance().firebaseAdmin.userDataFirebase;
         if(user !=null){
-            editTextEmail.setText(user.getEmail());
-            editTextPassword.setText(user.getPassword());
+            //editTextEmail.setText(user.getEmail());
+            //editTextPassword.setText(user.getPassword());
             editTextNickName.setText(user.getNickName());
             editTextFullName.setText(user.getFullName());
             checkAndPhotoUser(user);
@@ -353,6 +355,7 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
 
     }
 
+    /*
     private void onClickButtonUpdatePassword(){
         buttonUpdatePassword.setOnClickListener(v -> {
             if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
@@ -385,6 +388,8 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
             }
         });
     }
+
+    */
 
     private void onClickButtonUpdateFullName(){
         buttonUpdateFullName.setOnClickListener(v -> {
@@ -490,6 +495,7 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
         builder.show();
     }
 
+    /*
     @Override
     public void updateEmailInFirebase(boolean end) {
         if(end){
@@ -505,6 +511,7 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
 
         }
     }
+    */
 
     private void errorUpdateEmail(String message) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
@@ -514,6 +521,7 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
         builder.show();
     }
 
+    /*
     @Override
     public void updatePasswordInFirebase(boolean end) {
         if(end){
@@ -525,6 +533,7 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
             errorUpdatePassword(getString(R.string.error_password));
         }
     }
+    */
 
     private void errorUpdatePassword(String message) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
