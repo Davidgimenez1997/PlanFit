@@ -14,8 +14,6 @@ import com.utad.david.planfit.Utils.Constants;
 
 import java.util.ArrayList;
 
-import static com.utad.david.planfit.Utils.Constants.TiposPlanNutricion.*;
-
 public class ShowDetailsNutritionPlanAdapter extends RecyclerView.Adapter<ShowDetailsNutritionPlanAdapter.ShowDetailsPlanNutritionViewHolder> {
 
     private ArrayList<PlanNutrition> planNutritions;
