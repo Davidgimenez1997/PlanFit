@@ -38,10 +38,16 @@ public class SportSlimmingFragment extends Fragment implements FirebaseAdmin.Fir
     }
 
     private SportSlimmingFragment fragment;
+    private Runnable toolbarRunnable;
+
 
     public SportSlimmingFragment newInstanceSlimming() {
         this.fragment = this;
         return this.fragment;
+    }
+
+    public void setToolbarRunnable(Runnable toolbarRunnable) {
+        this.toolbarRunnable = toolbarRunnable;
     }
 
     @Override
@@ -70,6 +76,10 @@ public class SportSlimmingFragment extends Fragment implements FirebaseAdmin.Fir
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
        View view = inflater.inflate(R.layout.fragment_sport_recycleview, container, false);
+
+        if(toolbarRunnable != null) {
+            toolbarRunnable.run();
+        }
 
        mRecyclerView = view.findViewById(R.id.recycler_view_sport);
        mRecyclerView.setHasFixedSize(true);

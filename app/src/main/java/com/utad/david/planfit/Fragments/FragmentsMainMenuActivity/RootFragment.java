@@ -26,6 +26,7 @@ public class RootFragment extends Fragment{
 
     private static String SELECTED = "SELECTED";
     private int selected;
+    private Runnable toolbarRunnable;
 
     public static RootFragment newInstance(int selected) {
         RootFragment fragment = new RootFragment();
@@ -36,6 +37,10 @@ public class RootFragment extends Fragment{
     }
 
     private OnFragmentInteractionListener mListener;
+
+    public void setToolbarRunnable(Runnable toolbarRunnable) {
+        this.toolbarRunnable = toolbarRunnable;
+    }
 
     public RootFragment() {
         // Required empty public constructor
@@ -61,10 +66,18 @@ public class RootFragment extends Fragment{
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.root_fragment, container, false);
 
+        if(toolbarRunnable != null) {
+            toolbarRunnable.run();
+        }
+
         if (UtilsNetwork.checkConnectionInternetDevice(getContext())) {
             isDeviceNetwork = true;
         }else{
             isDeviceNetwork = false;
+        }
+
+        if(toolbarRunnable != null) {
+            toolbarRunnable.run();
         }
 
         findViewById(view);

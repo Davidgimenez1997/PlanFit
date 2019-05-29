@@ -53,6 +53,11 @@ public class ShowNutritionPlanFragment extends Fragment implements FirebaseAdmin
     private LinearLayout linearLayout;
     private FragmentActivity myContext;
     private ArrayList<ArrayList<PlanNutrition>> listToListPlan;
+    private Runnable toolbarRunnable;
+
+    public void setToolbarRunnable(Runnable toolbarRunnable) {
+        this.toolbarRunnable = toolbarRunnable;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -67,6 +72,10 @@ public class ShowNutritionPlanFragment extends Fragment implements FirebaseAdmin
             Fabric.with(getContext(), new Crashlytics());
         }else{
             Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
+        }
+
+        if(toolbarRunnable != null) {
+            toolbarRunnable.run();
         }
 
         mRecyclerView = view.findViewById(R.id.recycler_view_nutrition);
@@ -114,6 +123,12 @@ public class ShowNutritionPlanFragment extends Fragment implements FirebaseAdmin
 
             mAdapter = new ShowNutritionPlanAdapter(listToListPlan, planNutritionDetails -> {
                 DetailsNutritionPlanFragment detailsNutritionPlanFragment = DetailsNutritionPlanFragment.newInstance(planNutritionDetails);
+                detailsNutritionPlanFragment.setToolbarRunnable(new Runnable() {
+                    @Override
+                    public void run() {
+                        getActivity().setTitle("Plan Nutrición");
+                    }
+                });
                 FragmentManager fragManager = myContext.getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
                 fragmentTransaction.replace(R.id.content_frame, detailsNutritionPlanFragment);

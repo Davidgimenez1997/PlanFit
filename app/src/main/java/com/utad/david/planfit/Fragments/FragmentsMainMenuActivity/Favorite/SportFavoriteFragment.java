@@ -38,10 +38,15 @@ public class SportFavoriteFragment extends Fragment implements FirebaseAdmin.Fir
     }
 
     private SportFavoriteFragment fragment;
+    private Runnable toolbarRunnable;
 
     public SportFavoriteFragment newInstanceSlimming() {
         this.fragment = this;
         return this.fragment;
+    }
+
+    public void setToolbarRunnable(Runnable toolbarRunnable) {
+        this.toolbarRunnable = toolbarRunnable;
     }
 
     @Override
@@ -71,6 +76,10 @@ public class SportFavoriteFragment extends Fragment implements FirebaseAdmin.Fir
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_sport_favorite, container, false);
+
+        if(toolbarRunnable != null) {
+            toolbarRunnable.run();
+        }
 
         mRecyclerView = view.findViewById(R.id.recycler_view_sport);
         linearLayout = view.findViewById(R.id.linear_empty_favorites);

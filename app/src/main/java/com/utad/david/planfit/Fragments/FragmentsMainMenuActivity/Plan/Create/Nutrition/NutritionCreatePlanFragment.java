@@ -62,10 +62,21 @@ public class NutritionCreatePlanFragment extends Fragment implements FirebaseAdm
     private RecyclerView.LayoutManager mLayoutManager;
     private LinearLayout linearLayout;
     private CreateNutritionPlanDetailsDialogFragment newFragment;
+    private Runnable toolbarRunnable;
+
+    public void setToolbarRunnable(Runnable toolbarRunnable) {
+        this.toolbarRunnable = toolbarRunnable;
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View  view =  inflater.inflate(R.layout.fragment_nutrition_create_plan, container, false);
+
+
+        if(toolbarRunnable != null) {
+            toolbarRunnable.run();
+        }
 
         mRecyclerView = view.findViewById(R.id.recycler_view_nutrition);
         linearLayout = view.findViewById(R.id.linear_empty_favorites);

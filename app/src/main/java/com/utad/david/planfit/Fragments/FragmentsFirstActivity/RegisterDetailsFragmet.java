@@ -1,5 +1,6 @@
 package com.utad.david.planfit.Fragments.FragmentsFirstActivity;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -28,15 +29,20 @@ import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.R;
 import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
+import pub.devrel.easypermissions.AppSettingsDialog;
+import pub.devrel.easypermissions.EasyPermissions;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
 
-public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.FirebaseAdminLoginAndRegisterListener,FirebaseAdmin.FirebaseAdminInsertAndDownloandListener {
+public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.FirebaseAdminLoginAndRegisterListener,FirebaseAdmin.FirebaseAdminInsertAndDownloandListener, EasyPermissions.PermissionCallbacks {
 
     private OnFragmentInteractionListener mListener;
+    private int REQUEST_GALLERY = 1;
+    public static final int REQUEST_IMAGE_PERMISSIONS = 1;
 
     public RegisterDetailsFragmet() {}
 
@@ -67,10 +73,26 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
         findViewById(view);
         onClickButtonOk();
         onClickButtonBackDetails();
-        openGallery();
+        onClickImage();
         configView();
         showDialog();
         return view;
+    }
+
+    private void onClickImage() {
+        imageViewUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
+
+                if (EasyPermissions.hasPermissions(getContext(), perms)) {
+                    showTakePictureDialog();
+                } else {
+                    // Do not have permissions, request them now
+                    EasyPermissions.requestPermissions(getActivity(), getString(R.string.permissions_picture_rationale), REQUEST_IMAGE_PERMISSIONS, perms);
+                }
+            }
+        });
     }
 
     private void configView(){
@@ -151,37 +173,57 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
     }
 
     private void openGallery(){
-        imageViewUser.setOnClickListener(v -> {
-            Intent intent = new Intent();
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-            } else {
-                intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
+        Intent intent = new Intent();
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+        } else {
+            intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+        }
+        intent.setType("image/*");
+        startActivityForResult(Intent.createChooser(intent, getString(R.string.menuopengalery)),REQUEST_GALLERY);
+    }
+
+    private void showTakePictureDialog() {
+        final CharSequence[] items = {"Abrir Galeria", "Cancelar"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Escoja una foto");
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                switch (item) {
+                    case 0:
+                        openGallery();
+                        break;
+                    case 1:
+                        dialog.dismiss();
+                        break;
+                }
             }
-            intent.setType("image/*");
-            startActivityForResult(Intent.createChooser(intent, getString(R.string.menuopengalery)),1);
         });
+        builder.show();
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            try {
-                imageUri = data.getData();
-                final InputStream imageStream = getActivity().getApplicationContext().getContentResolver().openInputStream(imageUri);
-                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-                imageViewUser.setImageBitmap(selectedImage);
-                if(imageUri!=null){
-                    SessionUser.getInstance().user.setImgUser(imageUri.toString());
-                }else{
-                    SessionUser.getInstance().user.setImgUser(null);
-                }
+            if(requestCode == REQUEST_GALLERY){
+                try {
+                    imageUri = data.getData();
+                    final InputStream imageStream = getActivity().getApplicationContext().getContentResolver().openInputStream(imageUri);
+                    final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+                    imageViewUser.setImageBitmap(selectedImage);
+                    if(imageUri!=null){
+                        SessionUser.getInstance().user.setImgUser(imageUri.toString());
+                    }else{
+                        SessionUser.getInstance().user.setImgUser(null);
+                    }
 
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-                Toast.makeText(getActivity().getApplicationContext(), getString(R.string.error_gallery_1), Toast.LENGTH_LONG).show();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getActivity().getApplicationContext(), getString(R.string.error_gallery_1), Toast.LENGTH_LONG).show();
+                }
             }
         }else {
             Toast.makeText(getActivity().getApplicationContext(), getString(R.string.error_gallery_2),Toast.LENGTH_LONG).show();
@@ -277,4 +319,31 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
         void clickButtonOk();
         void clickButtonBackDetails();
     }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+        try {
+            showTakePictureDialog();
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+            new AppSettingsDialog.Builder(this)
+                    .setTitle(getString(R.string.permissions_denied_title))
+                    .setRationale(getString(R.string.permissions_denied_body)).build().show();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        // Forward results to EasyPermissions
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
 }

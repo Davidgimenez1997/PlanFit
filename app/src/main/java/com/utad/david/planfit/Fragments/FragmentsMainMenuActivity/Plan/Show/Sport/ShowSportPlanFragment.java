@@ -55,12 +55,21 @@ public class ShowSportPlanFragment extends Fragment implements FirebaseAdmin.Fir
     private LinearLayout linearLayout;
     private FragmentActivity myContext;
     private ArrayList<ArrayList<PlanSport>> listToListPlan;
+    private Runnable toolbarRunnable;
+
+    public void setToolbarRunnable(Runnable toolbarRunnable) {
+        this.toolbarRunnable = toolbarRunnable;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_show_sport_plan, container, false);
+
+        if(toolbarRunnable != null) {
+            toolbarRunnable.run();
+        }
 
         if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
             showLoading();
@@ -117,6 +126,12 @@ public class ShowSportPlanFragment extends Fragment implements FirebaseAdmin.Fir
 
             mAdapter = new ShowSportPlanAdapter(listToListPlan, planSportsDetails -> {
                 DetailsSportPlanFragment detailsSportPlanFragment = DetailsSportPlanFragment.newInstance(planSportsDetails);
+                detailsSportPlanFragment.setToolbarRunnable(new Runnable() {
+                    @Override
+                    public void run() {
+                        getActivity().setTitle("Plan Deporte");
+                    }
+                });
                 FragmentManager fragManager = myContext.getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
                 fragmentTransaction.replace(R.id.content_frame, detailsSportPlanFragment);
