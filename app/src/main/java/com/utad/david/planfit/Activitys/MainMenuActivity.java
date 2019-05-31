@@ -322,16 +322,16 @@ public class MainMenuActivity extends AppCompatActivity
             int finalSeleted = seleted;
             ((RootFragment) fragment).setToolbarRunnable(() -> {
                 switch (finalSeleted){
-                    case 0:
+                    case Constants.ModeRootFragment.MODE_SPORT:
                         setTitle(R.string.titulo_deportes);
                         break;
-                    case 1:
+                    case Constants.ModeRootFragment.MODE_NUTRITION:
                         setTitle(R.string.titulo_nutricion);
                         break;
-                    case 3:
+                    case Constants.ModeRootFragment.MODE_FAVORITE:
                         setTitle(R.string.titulo_favoritos);
                         break;
-                    case 2:
+                    case Constants.ModeRootFragment.MODE_PLAN:
                         setTitle(R.string.titulo_plan);
                         break;
                 }
