@@ -1,4 +1,4 @@
-package com.utad.david.planfit.Fragments.FragmentsFirstActivity;
+package com.utad.david.planfit.Fragments.FragmentsFirstActivity.Login;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
@@ -21,6 +22,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 import com.google.firebase.auth.*;
 import com.utad.david.planfit.Activitys.MainMenuActivity;
+import com.utad.david.planfit.Fragments.FragmentsFirstActivity.RegisterFragment;
 import com.utad.david.planfit.Utils.UtilsEncryptDecryptAES;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
@@ -30,7 +32,7 @@ import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 import java.util.regex.Pattern;
 
-public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdminLoginAndRegisterListener {
+public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdminLoginAndRegisterListener,LoginView {
 
     private OnFragmentInteractionListener mListener;
 
@@ -51,32 +53,38 @@ public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
     private String passwordUser;
     private ProgressDialog mProgress;
     public Context context;
+    public LoginPresenter presenter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
        View view = inflater.inflate(R.layout.fragment_login, container, false);
+
+       presenter = new LoginPresenter();
+
        findViewById(view);
        onClickButtonLogin();
        onClickButtonRegister();
        configView();
        checkStatusUserFirebase();
        showDialog();
+
        return view;
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        presenter.onViewAttached(this);
+    }
+
+    @Override
+    public void onDestroyView() {
+        presenter.onViewDetached();
+        super.onDestroyView();
+    }
+
     private void checkStatusUserFirebase(){
-        SessionUser.getInstance().firebaseAdmin.authStateListener = firebaseAuth -> {
-            SessionUser.getInstance().firebaseAdmin.currentUser = firebaseAuth.getCurrentUser();
-            if (SessionUser.getInstance().firebaseAdmin.currentUser != null) {
-                Activity activity = getActivity();
-                if(activity!=null){
-                    Intent intent = new Intent(context, MainMenuActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    activity.startActivity(intent);
-                    activity.finish();
-                }
-            }
-        };
+        presenter.checkLoggedUser();
     }
 
     private void showDialog(){
@@ -209,6 +217,10 @@ public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
         mListener = null;
     }
 
+    /******************************** FirebaseAdminLoginAndRegisterListener Callback *************************************+/
+     *
+     */
+
     @Override
     public void singInWithEmailAndPassword(boolean end) {
         if (end == true) {
@@ -242,6 +254,25 @@ public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
 
     @Override
     public void registerWithEmailAndPassword(boolean end) {}
+
+    /******************************** Login View Callback *************************************+/
+     *
+     */
+
+    @Override
+    public void userStatusLogged() {
+        Activity activity = getActivity();
+        if(activity!=null){
+            Intent intent = new Intent(context, MainMenuActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            activity.startActivity(intent);
+            activity.finish();
+        }
+    }
+
+    /******************************** Login Fragment Callback *************************************+/
+     *
+     */
 
     public interface OnFragmentInteractionListener {
         void clickButtonLogin();

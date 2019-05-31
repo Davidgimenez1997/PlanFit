@@ -31,4 +31,12 @@ public class SessionUser {
         }
         return instance;
     }
+
+    public void removeUser(){
+        user.setEmail(null);
+        user.setPassword(null);
+        user.setImgUser(null);
+        user.setNickName(null);
+        user.setFullName(null);
+    }
 }

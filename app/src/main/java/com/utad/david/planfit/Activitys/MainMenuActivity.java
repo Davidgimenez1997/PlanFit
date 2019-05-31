@@ -275,19 +275,11 @@ public class MainMenuActivity extends AppCompatActivity
 
     private void logout() {
         SessionUser.getInstance().firebaseAdmin.mAuth.getInstance().signOut();
-        setEmptyItems();
+        SessionUser.getInstance().removeUser();
         Intent intent =new Intent(MainMenuActivity.this,FirstActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();
-    }
-
-    public void setEmptyItems() {
-        SessionUser.getInstance().user.setEmail(null);
-        SessionUser.getInstance().user.setPassword(null);
-        SessionUser.getInstance().user.setImgUser(null);
-        SessionUser.getInstance().user.setNickName(null);
-        SessionUser.getInstance().user.setFullName(null);
     }
 
     @Override
