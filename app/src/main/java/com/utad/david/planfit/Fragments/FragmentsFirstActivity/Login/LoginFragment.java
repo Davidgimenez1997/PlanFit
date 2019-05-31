@@ -77,6 +77,10 @@ public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
         presenter.onViewAttached(this);
     }
 
+
+
+
+
     @Override
     public void onDestroyView() {
         presenter.onViewDetached();
