@@ -295,7 +295,7 @@
     <string name="permissions_denied_body">La aplicación no será capaz de realizar esta funcionalidad sin los permisos
         solicitados. Acceda a la pantalla de configuración de la app para modificar sus permisos.
     </string>
-    <string name="permissions_picture_rationale">La aplicación necesita acceder al almacenamiento del dispositivo para utilizar esta funcionalidad.
+    <string name="permissions_picture_rationale">La aplicación necesita acceder al almacenamiento y a la camara del dispositivo para utilizar esta funcionalidad.
     </string>
     <string name="title_activity_web_view">WebViewActivity</string>
     <string name="mode_recipe">Abrir receta en el navegador</string>
