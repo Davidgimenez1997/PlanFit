@@ -33,6 +33,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Activitys.FirstActivity;
+import com.utad.david.planfit.Utils.Constants;
+import com.utad.david.planfit.Utils.Utils;
 import com.utad.david.planfit.Utils.UtilsEncryptDecryptAES;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
@@ -83,6 +85,7 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
     private String oldPassword;
     private OnFragmentInteractionListener mListener;
     private ProgressDialog mProgress;
+    private String photoPath;
 
 
     @Override
@@ -132,17 +135,14 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
     }
 
     private void onClickImage(){
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
+        imageView.setOnClickListener(v -> {
+            String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.CAMERA};
 
-                if (EasyPermissions.hasPermissions(getContext(), perms)) {
-                    showTakePictureDialog();
-                } else {
-                    // Do not have permissions, request them now
-                    EasyPermissions.requestPermissions(getActivity(), getString(R.string.permissions_picture_rationale), REQUEST_IMAGE_PERMISSIONS, perms);
-                }
+            if (EasyPermissions.hasPermissions(getContext(), perms)) {
+                showTakePictureDialog();
+            } else {
+                // Do not have permissions, request them now
+                EasyPermissions.requestPermissions(getActivity(), getString(R.string.permissions_picture_rationale), REQUEST_IMAGE_PERMISSIONS, perms);
             }
         });
     }
@@ -160,7 +160,7 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
     }
 
     private void showTakePictureDialog() {
-        final CharSequence[] items = {"Abrir Galeria", "Cancelar"};
+        final CharSequence[] items = {"Galeria","Camara", "Cancelar"};
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Escoja una foto");
         builder.setItems(items, new DialogInterface.OnClickListener() {
@@ -171,12 +171,35 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
                         openGallery();
                         break;
                     case 1:
+                        openCamara();
+                        break;
+                    case 2:
                         dialog.dismiss();
                         break;
                 }
             }
         });
         builder.show();
+    }
+
+    private void openCamara() {
+        File photoFile = null;
+        try {
+            photoFile = Utils.createImageFile();
+            photoPath = photoFile.getAbsolutePath();
+        } catch (IOException ex) {
+            // TODO: Set error occurred while creating the File
+            ex.printStackTrace();
+        }
+        // Continue only if the File was successfully created
+        if (photoFile != null) {
+            Intent intentCamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            Uri photoURI = FileProvider.getUriForFile(getActivity(),
+                    "com.utad.david.planfit.camera.fileprovider",
+                    photoFile);
+            intentCamera.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+            startActivityForResult(intentCamera, Constants.RequestPermisos.REQUEST_CAMERA);
+        }
     }
 
     /*
@@ -628,6 +651,18 @@ public class EditPersonalDataUser extends DialogFragment implements FirebaseAdmi
                 } catch (Exception e) {
                     e.printStackTrace();
                     Toast.makeText(getActivity().getApplicationContext(), getString(R.string.error_gallery_1), Toast.LENGTH_LONG).show();
+                }
+            }
+            if(requestCode ==  Constants.RequestPermisos.REQUEST_CAMERA){
+                Bitmap photo = Utils.getBitmapFromPath(photoPath);
+                if (photo != null) {
+                    Uri tempUri = Utils.getImageUri(getContext(), photo);
+                    putPhotoUser(tempUri.toString());
+                    buttonUpdatePhoto.setEnabled(true);
+                    if(tempUri!=null){
+                        userUpdate.setImgUser(tempUri.toString());
+                        onClickButtonUpdatePhoto();
+                    }
                 }
             }
 

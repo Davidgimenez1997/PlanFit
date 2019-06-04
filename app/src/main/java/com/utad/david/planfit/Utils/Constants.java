@@ -43,6 +43,7 @@ public class Constants {
     }
 
     public interface RequestPermisos{
+        int REQUEST_CAMERA = 0;
         int REQUEST_GALLERY = 1;
         int REQUEST_IMAGE_PERMISSIONS = 1;
     }

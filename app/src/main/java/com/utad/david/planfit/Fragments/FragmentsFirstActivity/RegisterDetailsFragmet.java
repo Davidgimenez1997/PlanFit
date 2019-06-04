@@ -10,8 +10,10 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -27,12 +29,16 @@ import com.utad.david.planfit.Activitys.MainMenuActivity;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.R;
+import com.utad.david.planfit.Utils.Constants;
+import com.utad.david.planfit.Utils.Utils;
 import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
@@ -66,6 +72,7 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
     private Button buttonBackDetails;
     private Uri imageUri;
     private ProgressDialog mProgress;
+    private String photoPath;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -83,7 +90,7 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
         imageViewUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
+                String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.CAMERA};
 
                 if (EasyPermissions.hasPermissions(getContext(), perms)) {
                     showTakePictureDialog();
@@ -185,7 +192,7 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
     }
 
     private void showTakePictureDialog() {
-        final CharSequence[] items = {"Abrir Galeria", "Cancelar"};
+        final CharSequence[] items = {"Galeria","Camara", "Cancelar"};
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Escoja una foto");
         builder.setItems(items, new DialogInterface.OnClickListener() {
@@ -196,12 +203,35 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
                         openGallery();
                         break;
                     case 1:
+                        openCamera();
+                        break;
+                    case 2:
                         dialog.dismiss();
                         break;
                 }
             }
         });
         builder.show();
+    }
+
+    private void openCamera() {
+        File photoFile = null;
+        try {
+            photoFile = Utils.createImageFile();
+            photoPath = photoFile.getAbsolutePath();
+        } catch (IOException ex) {
+            // TODO: Set error occurred while creating the File
+            ex.printStackTrace();
+        }
+        // Continue only if the File was successfully created
+        if (photoFile != null) {
+            Intent intentCamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            Uri photoURI = FileProvider.getUriForFile(getActivity(),
+                    "com.utad.david.planfit.camera.fileprovider",
+                    photoFile);
+            intentCamera.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+            startActivityForResult(intentCamera, Constants.RequestPermisos.REQUEST_CAMERA);
+        }
     }
 
     @Override
@@ -223,6 +253,16 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                     Toast.makeText(getActivity().getApplicationContext(), getString(R.string.error_gallery_1), Toast.LENGTH_LONG).show();
+                }
+            }
+            if(requestCode ==  Constants.RequestPermisos.REQUEST_CAMERA){
+                Bitmap photo = Utils.getBitmapFromPath(photoPath);
+                imageViewUser.setImageBitmap(photo);
+                imageUri = Utils.getImageUri(getContext(), photo);
+                if(imageUri!=null){
+                    SessionUser.getInstance().user.setImgUser(imageUri.toString());
+                }else{
+                    SessionUser.getInstance().user.setImgUser(null);
                 }
             }
         }else {
