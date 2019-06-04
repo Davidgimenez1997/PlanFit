@@ -15,6 +15,7 @@ public class Constants {
         String EXTRA_MODE = "MODE";
         int MODE_LINKEDIN = 1;
         int MODE_RECIPE = 0;
+        int MODE_PRIVACITY = 2;
     }
 
     public interface ConfigureYouTube{
@@ -25,6 +26,8 @@ public class Constants {
     public interface ConfigurateWebView{
         String EXTRA_TITLE = "EXTRA_TITLE";
         String EXTRA_URL = "EXTRA_URL";
+        String TITLE_PRIVACITY = "Politica de Privacidad";
+        String URL_PRIVACITY = "https://politicayprivacidadplanfit.000webhostapp.com/planfit.html";
     }
 
     public interface NutritionDetails{

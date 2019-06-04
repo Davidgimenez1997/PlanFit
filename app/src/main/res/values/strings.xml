@@ -318,6 +318,8 @@
     <string name="plan">Plan</string>
     <string name="favorito_borrado_correctamente">Favorito borrado correctamente</string>
     <string name="favorito_borrado">Favorito borrado correctamente</string>
+    <string name="politica_de_privacidad">Politica de privacidad</string>
+    <string name="abrir_politica">Abrir politica de privacidad en el navegador</string>
 
 
 </resources>

@@ -143,6 +143,9 @@ public class WebViewActivity extends AppCompatActivity {
             case Constants.ModeWebView.MODE_LINKEDIN:
                 menu.getItem(0).setTitle(getString(R.string.mode_linkedin));
                 break;
+            case Constants.ModeWebView.MODE_PRIVACITY:
+                menu.getItem(0).setTitle(getString(R.string.abrir_politica));
+                break;
         }
         return true;
     }

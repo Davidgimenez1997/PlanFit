@@ -18,4 +18,9 @@
             android:orderInCategory="100"
             android:title="@string/sobre_nosotros"
             app:showAsAction="never" />
+    <item
+            android:id="@+id/polity"
+            android:orderInCategory="100"
+            android:title="@string/politica_de_privacidad"
+            app:showAsAction="never" />
 </menu>

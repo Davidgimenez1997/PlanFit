@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
@@ -48,6 +49,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Utils.Constants;
+import com.utad.david.planfit.Utils.UtilsEncryptDecryptAES;
 import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 
@@ -248,9 +250,25 @@ public class MainMenuActivity extends AppCompatActivity
                     Toast.makeText(this,getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
                 }
                 break;
+            case R.id.polity:
+                if(UtilsNetwork.checkConnectionInternetDevice(this)){
+                    openPolity();
+                }else{
+                    Toast.makeText(this,getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
+                }
+                break;
         }
 
         return true;
+    }
+
+    private void openPolity() {
+        Intent intent = new Intent(this, WebViewActivity.class);
+        intent.putExtra(WebViewActivity.EXTRA_TITLE, Constants.ConfigurateWebView.TITLE_PRIVACITY);
+        intent.putExtra(WebViewActivity.EXTRA_URL, Constants.ConfigurateWebView.URL_PRIVACITY);
+        intent.putExtra(WebViewActivity.EXTRA_MODE, Constants.ModeWebView.MODE_PRIVACITY);
+        overridePendingTransition(R.anim.slide_in_bottom, R.anim.stay);
+        startActivity(intent);
     }
 
     private void aboutApp() {
