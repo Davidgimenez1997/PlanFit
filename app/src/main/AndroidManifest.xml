@@ -20,18 +20,29 @@
             android:usesCleartextTraffic="true"
             android:theme="@style/AppTheme"
             tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".Activitys.FirstActivity">
+
+        <activity
+                android:name=".Activitys.FirstActivity"
+                android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+
         </activity>
-        <activity android:name=".Activitys.MainMenuActivity">
+        <activity
+                android:name=".Activitys.MainMenuActivity"
+                android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".Activitys.YoutubeActivity">
+
+        <activity
+                android:name=".Activitys.YoutubeActivity">
         </activity>
-        <activity android:name=".Activitys.WebViewActivity">
+
+        <activity
+                android:name=".Activitys.WebViewActivity"
+                android:screenOrientation="portrait">
         </activity>
 
         <provider
@@ -43,6 +54,7 @@
                     android:name="android.support.FILE_PROVIDER_PATHS"
                     android:resource="@xml/file_paths" />
         </provider>
+
     </application>
 
 </manifest>

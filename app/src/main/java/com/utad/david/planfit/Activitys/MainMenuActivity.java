@@ -14,6 +14,7 @@ import android.widget.Toast;
 import butterknife.ButterKnife;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.utad.david.planfit.Base.BaseActivity;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.DialogFragment.EditPersonalDataUser;
@@ -54,7 +55,7 @@ import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 
 
-public class MainMenuActivity extends AppCompatActivity
+public class MainMenuActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         FirebaseAdmin.FirebaseAdminInsertAndDownloandListener,
         RootFragment.OnFragmentInteractionListener,
