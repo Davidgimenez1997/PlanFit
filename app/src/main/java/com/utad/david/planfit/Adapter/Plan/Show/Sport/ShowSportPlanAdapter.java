@@ -14,13 +14,13 @@ import java.util.ArrayList;
 public class ShowSportPlanAdapter extends RecyclerView.Adapter<ShowSportPlanAdapter.ShowPlanSportViewHolder> {
 
     private ArrayList<ArrayList<PlanSport>> planSports;
-    private OnItemClickListener listener;
+    private Callback listener;
 
-    public interface OnItemClickListener {
+    public interface Callback {
         void onItemClick(ArrayList<PlanSport> defaultSports);
     }
 
-    public ShowSportPlanAdapter(ArrayList<ArrayList<PlanSport>> planSports, OnItemClickListener listener) {
+    public ShowSportPlanAdapter(ArrayList<ArrayList<PlanSport>> planSports, Callback listener) {
         this.planSports = planSports;
         this.listener = listener;
     }
@@ -61,12 +61,14 @@ public class ShowSportPlanAdapter extends RecyclerView.Adapter<ShowSportPlanAdap
         public void setData(ArrayList<PlanSport> planSport){
 
             for(int i=0;i<planSport.size();i++){
+
                 String str_timeStart = String.valueOf(planSport.get(i).getTimeStart());
                 BigDecimal bigDecimal_start = new BigDecimal(str_timeStart);
                 long first_start = bigDecimal_start.longValue();
                 BigDecimal second_start = bigDecimal_start.remainder(BigDecimal.ONE);
                 StringBuilder stringBuilder_start = new StringBuilder(second_start.toString());
                 stringBuilder_start.delete(0,2);
+
                 if(stringBuilder_start.toString().length()==1){
                     timeStart.setText(Long.valueOf(first_start)+":"+stringBuilder_start.toString()+"0");
                 }else{

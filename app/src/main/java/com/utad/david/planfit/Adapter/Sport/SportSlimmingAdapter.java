@@ -10,19 +10,20 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.utad.david.planfit.Model.Sport.SportSlimming;
 import com.utad.david.planfit.R;
+import com.utad.david.planfit.Utils.Utils;
 
 import java.util.List;
 
 public class SportSlimmingAdapter extends RecyclerView.Adapter<SportSlimmingAdapter.SlimmingViewHolder>  {
 
     private List<SportSlimming> sportSlimmingListm;
-    private OnItemClickListener listener;
+    private Callback listener;
 
-    public interface OnItemClickListener {
+    public interface Callback {
         void onItemClick(SportSlimming item);
     }
 
-    public SportSlimmingAdapter(List<SportSlimming> sportSlimmingListm, OnItemClickListener listener) {
+    public SportSlimmingAdapter(List<SportSlimming> sportSlimmingListm, Callback listener) {
         this.sportSlimmingListm = sportSlimmingListm;
         this.listener = listener;
     }
@@ -60,9 +61,7 @@ public class SportSlimmingAdapter extends RecyclerView.Adapter<SportSlimmingAdap
 
         public void setData(SportSlimming sportSlimming){
             nameSlimming.setText(sportSlimming.getName());
-            RequestOptions requestOptions = new RequestOptions();
-            requestOptions.placeholder(R.drawable.icon_gallery);
-            Glide.with(itemView).setDefaultRequestOptions(requestOptions).load(sportSlimming.getPhoto()).into(photoSlimming);
+            Utils.loadImage(sportSlimming.getPhoto(),photoSlimming,Utils.PLACEHOLDER_GALLERY);
         }
     }
 

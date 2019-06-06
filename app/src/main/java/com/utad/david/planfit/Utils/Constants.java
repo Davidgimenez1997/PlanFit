@@ -72,7 +72,6 @@ public class Constants {
         String TAG = "DIALOG";
     }
 
-
     public interface TiposPlanNutricion{
         String DESAYUNO = "Desayuno";
         String COMIDA = "Comida";
@@ -83,7 +82,6 @@ public class Constants {
         int MODE_MERIENDA = 3;
         int MODE_CENA = 4;
     }
-
 
     public interface ModePlan{
         String YES = "yes";

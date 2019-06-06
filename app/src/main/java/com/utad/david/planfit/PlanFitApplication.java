@@ -7,6 +7,10 @@ public class PlanFitApplication extends MultiDexApplication{
 
     private static Context context;
 
+    /******************************** DAMOS VALOR A CONTEXT *************************************+/
+     *
+     */
+
     @Override
     public void onCreate() {
         super.onCreate();

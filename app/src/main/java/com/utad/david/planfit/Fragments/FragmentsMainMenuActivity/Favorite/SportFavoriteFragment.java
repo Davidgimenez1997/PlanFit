@@ -32,23 +32,84 @@ import io.fabric.sdk.android.Fabric;
 import java.util.Collections;
 import java.util.List;
 
-public class SportFavoriteFragment extends Fragment implements FirebaseAdmin.FirebaseAdminFavoriteSport, SportFavoriteDetailsDialogFragment.CallbackFavoriteSport{
+public class SportFavoriteFragment extends Fragment
+        implements FirebaseAdmin.FirebaseAdminFavoriteSport,
+        SportFavoriteDetailsDialogFragment.Callback {
 
-    public SportFavoriteFragment() {
-        // Required empty public constructor
-    }
+    /******************************** VARIABLES *************************************+/
+     *
+     */
 
     private SportFavoriteFragment fragment;
     private Runnable toolbarRunnable;
+
+    private RecyclerView mRecyclerView;
+    private SportFavoriteAdapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private LinearLayout linearLayout;
+    private SportFavoriteDetailsDialogFragment newFragment;
+
+    /******************************** PROGRESS DIALOG Y METODOS *************************************+/
+     *
+     */
+
+    private ProgressDialog progressDialog;
+
+    public void showLoading() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            return;
+        }
+        progressDialog = new ProgressDialog(getContext(), R.style.TransparentProgressDialog);
+        progressDialog.show();
+        progressDialog.setContentView(R.layout.progress_dialog);
+        progressDialog.setCancelable(false);
+        RotateAnimation rotate = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        rotate.setInterpolator(new LinearInterpolator());
+        rotate.setDuration(1000);
+        rotate.setRepeatCount(Animation.INFINITE);
+        ImageView ivLoading = ButterKnife.findById(progressDialog, R.id.image_cards_animation);
+        ivLoading.startAnimation(rotate);
+        progressDialog.show();
+    }
+
+    public void hideLoading() {
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        hideLoading();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        hideLoading();
+    }
+
+    /******************************** NEW INSTANCE *************************************+/
+     *
+     */
 
     public SportFavoriteFragment newInstanceSlimming() {
         this.fragment = this;
         return this.fragment;
     }
 
+    /******************************** SET Runnable *************************************+/
+     *
+     */
+
     public void setToolbarRunnable(Runnable toolbarRunnable) {
         this.toolbarRunnable = toolbarRunnable;
     }
+
+    /******************************** SET CALLBACK FIREBASE *************************************+/
+     *
+     */
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -66,16 +127,10 @@ public class SportFavoriteFragment extends Fragment implements FirebaseAdmin.Fir
 
     }
 
-    private RecyclerView mRecyclerView;
-    private SportFavoriteAdapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
-    private LinearLayout linearLayout;
-    private SportFavoriteDetailsDialogFragment newFragment;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
         View view = inflater.inflate(R.layout.fragment_sport_favorite, container, false);
 
         if(toolbarRunnable != null) {
@@ -90,6 +145,33 @@ public class SportFavoriteFragment extends Fragment implements FirebaseAdmin.Fir
 
         return view;
     }
+
+    /******************************** SportFavoriteDetailsDialogFragment.Callback *************************************+/
+     *
+     */
+
+    @Override
+    public void onClickClose() {
+        newFragment.dismiss();
+    }
+
+    @Override
+    public void setDataChange() {
+        if(mAdapter!=null){
+            showLoading();
+            mAdapter.dataChangedDeleteSport(SessionUser.getInstance().firebaseAdmin.allSportFavorite);
+            if(SessionUser.getInstance().firebaseAdmin.allSportFavorite.size()==0){
+                linearLayout.setVisibility(View.VISIBLE);
+                mRecyclerView.setVisibility(View.GONE);
+            }
+            Toast.makeText(getContext(),getString(R.string.favorito_borrado),Toast.LENGTH_LONG).show();
+            hideLoading();
+        }
+    }
+
+    /******************************** CALLBACK FIREBASE *************************************+/
+     *
+     */
 
     @Override
     public void downloandCollectionSportFavorite(boolean end) {
@@ -130,74 +212,7 @@ public class SportFavoriteFragment extends Fragment implements FirebaseAdmin.Fir
     }
 
     @Override
-    public void onClickClose() {
-        newFragment.dismiss();
-    }
-
-    @Override
-    public void setDataChange() {
-        if(mAdapter!=null){
-            showLoading();
-            mAdapter.dataChangedDeleteSport(SessionUser.getInstance().firebaseAdmin.allSportFavorite);
-            if(SessionUser.getInstance().firebaseAdmin.allSportFavorite.size()==0){
-                linearLayout.setVisibility(View.VISIBLE);
-                mRecyclerView.setVisibility(View.GONE);
-            }
-            Toast.makeText(getContext(),getString(R.string.favorito_borrado),Toast.LENGTH_LONG).show();
-            hideLoading();
-        }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-    }
-
-    private ProgressDialog progressDialog;
-
-    public void showLoading() {
-        if (progressDialog != null && progressDialog.isShowing()) {
-            return;
-        }
-        progressDialog = new ProgressDialog(getContext(), R.style.TransparentProgressDialog);
-        progressDialog.show();
-        progressDialog.setContentView(R.layout.progress_dialog);
-        progressDialog.setCancelable(false);
-        RotateAnimation rotate = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        rotate.setInterpolator(new LinearInterpolator());
-        rotate.setDuration(1000);
-        rotate.setRepeatCount(Animation.INFINITE);
-        ImageView ivLoading = ButterKnife.findById(progressDialog, R.id.image_cards_animation);
-        ivLoading.startAnimation(rotate);
-        progressDialog.show();
-    }
-
-    public void hideLoading() {
-        if (progressDialog != null) {
-            progressDialog.dismiss();
-        }
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        hideLoading();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        hideLoading();
-    }
-
-    @Override
     public void inserSportFavoriteFirebase(boolean end) {}
-
     @Override
     public void deleteFavoriteSport(boolean end) {}
 }

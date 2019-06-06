@@ -10,19 +10,20 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.utad.david.planfit.Model.Sport.DefaultSport;
 import com.utad.david.planfit.R;
+import com.utad.david.planfit.Utils.Utils;
 
 import java.util.List;
 
 public class CreateSportPlanAdapter extends RecyclerView.Adapter<CreateSportPlanAdapter.CreatePlanSportViewHolder> {
 
     private List<DefaultSport> defaultSports;
-    private OnItemClickListener listener;
+    private Callback listener;
 
-    public interface OnItemClickListener {
+    public interface Callback {
         void onItemClick(DefaultSport item);
     }
 
-    public CreateSportPlanAdapter(List<DefaultSport> defaultSports, OnItemClickListener listener) {
+    public CreateSportPlanAdapter(List<DefaultSport> defaultSports, Callback listener) {
         this.defaultSports = defaultSports;
         this.listener = listener;
     }
@@ -61,9 +62,8 @@ public class CreateSportPlanAdapter extends RecyclerView.Adapter<CreateSportPlan
 
         public void setData(DefaultSport defaultSport){
             nameSlimming.setText(defaultSport.getName());
-            RequestOptions requestOptions = new RequestOptions();
-            requestOptions.placeholder(R.drawable.icon_gallery);
-            Glide.with(itemView).setDefaultRequestOptions(requestOptions).load(defaultSport.getPhoto()).into(photoSlimming);
+            Utils.loadImage(defaultSport.getPhoto(),photoSlimming,Utils.PLACEHOLDER_GALLERY);
+
         }
     }
 }

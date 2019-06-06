@@ -6,23 +6,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.utad.david.planfit.Model.Sport.SportGainVolume;
 import com.utad.david.planfit.R;
+import com.utad.david.planfit.Utils.Utils;
 
 import java.util.List;
 
 public class SportGainVolumeAdapter extends RecyclerView.Adapter<SportGainVolumeAdapter.GainVolumeViewHolder>  {
 
     private List<SportGainVolume> sportGainVolumeList;
-    private OnItemClickListener listener;
+    private Callback listener;
 
-    public interface OnItemClickListener {
+    public interface Callback {
         void onItemClick(SportGainVolume item);
     }
 
-    public SportGainVolumeAdapter(List<SportGainVolume> sportGainVolumes, OnItemClickListener listener) {
+    public SportGainVolumeAdapter(List<SportGainVolume> sportGainVolumes, Callback listener) {
         this.sportGainVolumeList = sportGainVolumes;
         this.listener = listener;
     }
@@ -60,9 +59,8 @@ public class SportGainVolumeAdapter extends RecyclerView.Adapter<SportGainVolume
 
         public void setData(SportGainVolume sportGainVolume){
             nameSlimming.setText(sportGainVolume.getName());
-            RequestOptions requestOptions = new RequestOptions();
-            requestOptions.placeholder(R.drawable.icon_gallery);
-            Glide.with(itemView).setDefaultRequestOptions(requestOptions).load(sportGainVolume.getPhoto()).into(photoSlimming);
+            Utils.loadImage(sportGainVolume.getPhoto(),photoSlimming,Utils.PLACEHOLDER_GALLERY);
+
         }
     }
 

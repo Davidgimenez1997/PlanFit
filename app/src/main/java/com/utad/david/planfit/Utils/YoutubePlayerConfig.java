@@ -5,9 +5,13 @@ import com.utad.david.planfit.R;
 public class YoutubePlayerConfig {
 
     public YoutubePlayerConfig() {
+
     }
 
-    //API KEY YoutubePlayer
+    /******************************** API KEY YoutubePlayer *************************************+/
+     *
+     */
+
     public static final String API_KEY = Constants.ConfigureYouTube.API_KEY;
 
     public static String getApiKey() {

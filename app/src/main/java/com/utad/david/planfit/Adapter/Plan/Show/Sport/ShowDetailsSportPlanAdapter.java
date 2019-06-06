@@ -11,6 +11,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.utad.david.planfit.Model.Plan.PlanSport;
 import com.utad.david.planfit.R;
 import com.utad.david.planfit.Utils.Constants;
+import com.utad.david.planfit.Utils.Utils;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -18,13 +19,13 @@ import java.util.ArrayList;
 public class ShowDetailsSportPlanAdapter extends RecyclerView.Adapter<ShowDetailsSportPlanAdapter.ShowDetailPlanSportViewHolder> {
 
     private ArrayList<PlanSport> planSports;
-    private OnItemClickListener listener;
+    private Callback listener;
 
-    public interface OnItemClickListener {
+    public interface Callback {
         void onItemClick(PlanSport item);
     }
 
-    public ShowDetailsSportPlanAdapter(ArrayList<PlanSport> planSports, OnItemClickListener listener) {
+    public ShowDetailsSportPlanAdapter(ArrayList<PlanSport> planSports, Callback listener) {
         this.planSports = planSports;
         this.listener = listener;
     }
@@ -70,9 +71,8 @@ public class ShowDetailsSportPlanAdapter extends RecyclerView.Adapter<ShowDetail
 
         public void setData(PlanSport planSport){
             name.setText(planSport.getName());
-            RequestOptions requestOptions = new RequestOptions();
-            requestOptions.placeholder(R.drawable.icon_gallery);
-            Glide.with(itemView).setDefaultRequestOptions(requestOptions).load(planSport.getPhoto()).into(photo);
+
+            Utils.loadImage(planSport.getPhoto(),photo,Utils.PLACEHOLDER_GALLERY);
 
             String str_timeStart = String.valueOf(planSport.getTimeStart());
             BigDecimal bigDecimal_start = new BigDecimal(str_timeStart);
@@ -80,6 +80,7 @@ public class ShowDetailsSportPlanAdapter extends RecyclerView.Adapter<ShowDetail
             BigDecimal second_start = bigDecimal_start.remainder(BigDecimal.ONE);
             StringBuilder stringBuilder_start = new StringBuilder(second_start.toString());
             stringBuilder_start.delete(0,2);
+
             if(stringBuilder_start.toString().length()==1){
                 timeStart.setText(Long.valueOf(first_start)+":"+stringBuilder_start.toString()+"0");
             }else{
@@ -92,6 +93,7 @@ public class ShowDetailsSportPlanAdapter extends RecyclerView.Adapter<ShowDetail
             BigDecimal second_End = bigDecimal_end.remainder(BigDecimal.ONE);
             StringBuilder stringBuilder_end = new StringBuilder(second_End.toString());
             stringBuilder_end.delete(0,2);
+
             if(stringBuilder_end.toString().length()==1){
                 timeEnd.setText(Long.valueOf(first_end)+":"+stringBuilder_end.toString()+"0");
             }else{
@@ -103,6 +105,7 @@ public class ShowDetailsSportPlanAdapter extends RecyclerView.Adapter<ShowDetail
             }else if(planSport.getIsOk().equals(Constants.ModePlan.NO)){
                 imageViewCheck.setVisibility(View.INVISIBLE);
             }
+
         }
     }
 }

@@ -11,19 +11,20 @@ import com.bumptech.glide.request.RequestOptions;
 import com.utad.david.planfit.Model.Plan.PlanNutrition;
 import com.utad.david.planfit.R;
 import com.utad.david.planfit.Utils.Constants;
+import com.utad.david.planfit.Utils.Utils;
 
 import java.util.ArrayList;
 
 public class ShowDetailsNutritionPlanAdapter extends RecyclerView.Adapter<ShowDetailsNutritionPlanAdapter.ShowDetailsPlanNutritionViewHolder> {
 
     private ArrayList<PlanNutrition> planNutritions;
-    private OnItemClickListener listener;
+    private Callback listener;
 
-    public interface OnItemClickListener {
+    public interface Callback {
         void onItemClick(PlanNutrition item);
     }
 
-    public ShowDetailsNutritionPlanAdapter(ArrayList<PlanNutrition> planNutritions, OnItemClickListener listener) {
+    public ShowDetailsNutritionPlanAdapter(ArrayList<PlanNutrition> planNutritions, Callback listener) {
         this.planNutritions = planNutritions;
         this.listener = listener;
     }
@@ -68,10 +69,12 @@ public class ShowDetailsNutritionPlanAdapter extends RecyclerView.Adapter<ShowDe
         }
 
         public void setData(PlanNutrition planNutrition) {
+
             nameNutrition.setText(planNutrition.getName());
-            RequestOptions requestOptions = new RequestOptions();
-            requestOptions.placeholder(R.drawable.icon_gallery);
-            Glide.with(itemView).setDefaultRequestOptions(requestOptions).load(planNutrition.getPhoto()).into(photoNutrition);
+
+            Utils.loadImage(planNutrition.getPhoto(),photoNutrition,Utils.PLACEHOLDER_GALLERY);
+
+
             switch (planNutrition.getType()) {
                 case Constants.TiposPlanNutricion.MODE_DESAYUNO:
                     timeStart.setText(Constants.TiposPlanNutricion.DESAYUNO);
@@ -87,6 +90,7 @@ public class ShowDetailsNutritionPlanAdapter extends RecyclerView.Adapter<ShowDe
                     break;
 
             }
+
             timeEnd.setVisibility(View.INVISIBLE);
 
             if (planNutrition.getIsOk().equals(Constants.ModePlan.YES)) {
@@ -94,6 +98,7 @@ public class ShowDetailsNutritionPlanAdapter extends RecyclerView.Adapter<ShowDe
             } else if (planNutrition.getIsOk().equals(Constants.ModePlan.NO)) {
                 imageViewCheck.setVisibility(View.INVISIBLE);
             }
+
         }
     }
 }

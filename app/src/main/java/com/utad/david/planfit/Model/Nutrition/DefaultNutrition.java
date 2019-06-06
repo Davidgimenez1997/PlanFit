@@ -3,7 +3,13 @@ package com.utad.david.planfit.Model.Nutrition;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class DefaultNutrition implements Parcelable ,Comparable<DefaultNutrition>{
+public class DefaultNutrition
+        implements Parcelable,
+        Comparable<DefaultNutrition>{
+
+    /******************************** VARIABLES *************************************+/
+     *
+     */
 
     private String name;
     private String photo;
@@ -12,46 +18,21 @@ public class DefaultNutrition implements Parcelable ,Comparable<DefaultNutrition
     private String type;
 
     public DefaultNutrition() {
+
     }
 
-    protected DefaultNutrition(Parcel in) {
-        name = in.readString();
-        photo = in.readString();
-        url = in.readString();
-        description = in.readString();
-        type = in.readString();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(name);
-        dest.writeString(photo);
-        dest.writeString(url);
-        dest.writeString(description);
-        dest.writeString(type);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<DefaultNutrition> CREATOR = new Creator<DefaultNutrition>() {
-        @Override
-        public DefaultNutrition createFromParcel(Parcel in) {
-            return new DefaultNutrition(in);
-        }
-
-        @Override
-        public DefaultNutrition[] newArray(int size) {
-            return new DefaultNutrition[size];
-        }
-    };
+    /******************************** COMPARA POR NOMBRE ALFABETICAMENTE *************************************+/
+     *
+     */
 
     @Override
     public int compareTo(DefaultNutrition o) {
         return this.getName().compareTo(o.getName());
     }
+
+    /******************************** GETTERS Y SETTERS *************************************+/
+     *
+     */
 
     public String getName() {
         return name;
@@ -92,4 +73,42 @@ public class DefaultNutrition implements Parcelable ,Comparable<DefaultNutrition
     public void setType(String type) {
         this.type = type;
     }
+
+    /******************************** Parcelable *************************************+/
+     *
+     */
+
+    protected DefaultNutrition(Parcel in) {
+        name = in.readString();
+        photo = in.readString();
+        url = in.readString();
+        description = in.readString();
+        type = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeString(photo);
+        dest.writeString(url);
+        dest.writeString(description);
+        dest.writeString(type);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<DefaultNutrition> CREATOR = new Creator<DefaultNutrition>() {
+        @Override
+        public DefaultNutrition createFromParcel(Parcel in) {
+            return new DefaultNutrition(in);
+        }
+
+        @Override
+        public DefaultNutrition[] newArray(int size) {
+            return new DefaultNutrition[size];
+        }
+    };
 }

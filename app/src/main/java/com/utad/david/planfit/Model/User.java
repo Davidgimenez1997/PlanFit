@@ -3,7 +3,12 @@ package com.utad.david.planfit.Model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class User implements Parcelable {
+public class User
+        implements Parcelable {
+
+    /******************************** VARIABLES *************************************+/
+     *
+     */
 
     private String email;
     private String password;
@@ -12,27 +17,12 @@ public class User implements Parcelable {
     private String imgUser;
 
     public User() {
+
     }
 
-    protected User(Parcel in) {
-        email = in.readString();
-        password = in.readString();
-        fullName = in.readString();
-        nickName = in.readString();
-        imgUser = in.readString();
-    }
-
-    public static final Creator<User> CREATOR = new Creator<User>() {
-        @Override
-        public User createFromParcel(Parcel in) {
-            return new User(in);
-        }
-
-        @Override
-        public User[] newArray(int size) {
-            return new User[size];
-        }
-    };
+    /******************************** GETTERS Y SETTERS *************************************+/
+     *
+     */
 
     public String getEmail() {
         return email;
@@ -74,16 +64,30 @@ public class User implements Parcelable {
         this.imgUser = imgUser;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", fullName='" + fullName + '\'' +
-                ", nickName='" + nickName + '\'' +
-                ", imgUser='" + imgUser + '\'' +
-                '}';
+
+    /******************************** Parcelable *************************************+/
+     *
+     */
+
+    protected User(Parcel in) {
+        email = in.readString();
+        password = in.readString();
+        fullName = in.readString();
+        nickName = in.readString();
+        imgUser = in.readString();
     }
+
+    public static final Creator<User> CREATOR = new Creator<User>() {
+        @Override
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
 
     @Override
     public int describeContents() {

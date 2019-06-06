@@ -3,7 +3,13 @@ package com.utad.david.planfit.Model.Nutrition;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class NutritionToning implements Parcelable ,Comparable<NutritionToning>{
+public class NutritionToning
+        implements Parcelable,
+        Comparable<NutritionToning>{
+
+    /******************************** VARIABLES *************************************+/
+     *
+     */
 
     private String name;
     private String photo;
@@ -12,31 +18,21 @@ public class NutritionToning implements Parcelable ,Comparable<NutritionToning>{
     private String type;
 
     public NutritionToning() {
+
     }
 
-    protected NutritionToning(Parcel in) {
-        name = in.readString();
-        photo = in.readString();
-        url = in.readString();
-        description = in.readString();
-    }
-
-    public static final Creator<NutritionToning> CREATOR = new Creator<NutritionToning>() {
-        @Override
-        public NutritionToning createFromParcel(Parcel in) {
-            return new NutritionToning(in);
-        }
-
-        @Override
-        public NutritionToning[] newArray(int size) {
-            return new NutritionToning[size];
-        }
-    };
+    /******************************** COMPARA POR NOMBRE ALFABETICAMENTE *************************************+/
+     *
+     */
 
     @Override
     public int compareTo(NutritionToning o) {
         return this.getName().compareTo(o.getName());
     }
+
+    /******************************** GETTERS Y SETTERS *************************************+/
+     *
+     */
 
     public String getType() {
         return type;
@@ -77,6 +73,29 @@ public class NutritionToning implements Parcelable ,Comparable<NutritionToning>{
     public void setDescription(String description) {
         this.description = description;
     }
+
+    /******************************** Parcelable *************************************+/
+     *
+     */
+
+    protected NutritionToning(Parcel in) {
+        name = in.readString();
+        photo = in.readString();
+        url = in.readString();
+        description = in.readString();
+    }
+
+    public static final Creator<NutritionToning> CREATOR = new Creator<NutritionToning>() {
+        @Override
+        public NutritionToning createFromParcel(Parcel in) {
+            return new NutritionToning(in);
+        }
+
+        @Override
+        public NutritionToning[] newArray(int size) {
+            return new NutritionToning[size];
+        }
+    };
 
     @Override
     public int describeContents() {

@@ -3,7 +3,13 @@ package com.utad.david.planfit.Model.Sport;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class SportGainVolume implements Parcelable,Comparable<SportGainVolume> {
+public class SportGainVolume
+        implements Parcelable,
+        Comparable<SportGainVolume> {
+
+    /******************************** VARIABLES *************************************+/
+     *
+     */
 
     private String name;
     private String photo;
@@ -12,31 +18,22 @@ public class SportGainVolume implements Parcelable,Comparable<SportGainVolume> {
     private String type;
 
     public SportGainVolume() {
+
     }
 
-    protected SportGainVolume(Parcel in) {
-        name = in.readString();
-        photo = in.readString();
-        video = in.readString();
-        description = in.readString();
-    }
-
-    public static final Creator<SportGainVolume> CREATOR = new Creator<SportGainVolume>() {
-        @Override
-        public SportGainVolume createFromParcel(Parcel in) {
-            return new SportGainVolume(in);
-        }
-
-        @Override
-        public SportGainVolume[] newArray(int size) {
-            return new SportGainVolume[size];
-        }
-    };
+    /******************************** COMPARA POR NOMBRE ALFABETICAMENTE *************************************+/
+     *
+     */
 
     @Override
     public int compareTo(SportGainVolume o) {
         return this.getName().compareTo(o.getName());
     }
+
+
+    /******************************** GETTERS Y SETTERS *************************************+/
+     *
+     */
 
     public String getType() {
         return type;
@@ -77,6 +74,29 @@ public class SportGainVolume implements Parcelable,Comparable<SportGainVolume> {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    /******************************** Parcelable *************************************+/
+     *
+     */
+
+    protected SportGainVolume(Parcel in) {
+        name = in.readString();
+        photo = in.readString();
+        video = in.readString();
+        description = in.readString();
+    }
+
+    public static final Creator<SportGainVolume> CREATOR = new Creator<SportGainVolume>() {
+        @Override
+        public SportGainVolume createFromParcel(Parcel in) {
+            return new SportGainVolume(in);
+        }
+
+        @Override
+        public SportGainVolume[] newArray(int size) {
+            return new SportGainVolume[size];
+        }
+    };
 
     @Override
     public int describeContents() {

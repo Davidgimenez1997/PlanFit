@@ -30,7 +30,6 @@
     <string name="escoja_una_foto_opcional">Escoja una foto (Opcional)</string>
     <string name="campos_obligatorios">Campos Obligatorios</string>
     <string name="editar_perfil">Editar Perfil</string>
-    <string name="escoja_una_foto">Escoja una foto</string>
     <string name="actualize_los_campos">Actualize los campos</string>
     <string name="nombre_completo">Nombre Completo</string>
     <string name="nick">Nick</string>
@@ -285,7 +284,6 @@
     <string name="API_KEY">AIzaSyDSXa5CPSaAJKDCFUgBLWXCYT8fU3QBZUc</string>
     <string name="mensaje_complete_all_plan">Felicidades has completado todos!!!</string>
     <string name="restablecer">Restablecer</string>
-    <string name="cancelar">Cancelar</string>
     <string name="si">Si</string>
     <string name="te_has_equivocado">¿Te has equivocado?</string>
     <string name="ya_lo_has_realizado">¿Ya lo has realizado?</string>
@@ -320,6 +318,10 @@
     <string name="favorito_borrado">Favorito borrado correctamente</string>
     <string name="politica_de_privacidad">Politica de privacidad</string>
     <string name="abrir_politica">Abrir politica de privacidad en el navegador</string>
+    <string name="galeria">Galeria</string>
+    <string name="camara">Camara</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="escoja_una_foto">Escoja una foto</string>
 
 
 </resources>

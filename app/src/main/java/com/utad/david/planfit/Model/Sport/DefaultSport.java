@@ -3,7 +3,13 @@ package com.utad.david.planfit.Model.Sport;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class DefaultSport implements Parcelable,Comparable<DefaultSport> {
+public class DefaultSport
+        implements Parcelable,
+        Comparable<DefaultSport> {
+
+    /******************************** VARIABLES *************************************+/
+     *
+     */
 
     private String name;
     private String photo;
@@ -12,31 +18,21 @@ public class DefaultSport implements Parcelable,Comparable<DefaultSport> {
     private String type;
 
     public DefaultSport() {
+
     }
 
-    protected DefaultSport(Parcel in) {
-        name = in.readString();
-        photo = in.readString();
-        video = in.readString();
-        description = in.readString();
-    }
-
-    public static final Creator<DefaultSport> CREATOR = new Creator<DefaultSport>() {
-        @Override
-        public DefaultSport createFromParcel(Parcel in) {
-            return new DefaultSport(in);
-        }
-
-        @Override
-        public DefaultSport[] newArray(int size) {
-            return new DefaultSport[size];
-        }
-    };
+    /******************************** COMPARA POR NOMBRE ALFABETICAMENTE *************************************+/
+     *
+     */
 
     @Override
     public int compareTo(DefaultSport o) {
         return this.getName().compareTo(o.getName());
     }
+
+    /******************************** GETTERS Y SETTERS *************************************+/
+     *
+     */
 
     public String getType() {
         return type;
@@ -77,6 +73,30 @@ public class DefaultSport implements Parcelable,Comparable<DefaultSport> {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    /******************************** Parcelable *************************************+/
+     *
+     */
+
+
+    protected DefaultSport(Parcel in) {
+        name = in.readString();
+        photo = in.readString();
+        video = in.readString();
+        description = in.readString();
+    }
+
+    public static final Creator<DefaultSport> CREATOR = new Creator<DefaultSport>() {
+        @Override
+        public DefaultSport createFromParcel(Parcel in) {
+            return new DefaultSport(in);
+        }
+
+        @Override
+        public DefaultSport[] newArray(int size) {
+            return new DefaultSport[size];
+        }
+    };
 
     @Override
     public int describeContents() {

@@ -29,18 +29,24 @@ import com.utad.david.planfit.Model.Sport.SportSlimming;
 import com.utad.david.planfit.Model.Sport.SportToning;
 import com.utad.david.planfit.R;
 import com.utad.david.planfit.Utils.Constants;
+import com.utad.david.planfit.Utils.Utils;
 import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SportDetailsDialogFragment extends DialogFragment implements FirebaseAdmin.FirebaseAdminFavoriteSport {
+public class SportDetailsDialogFragment extends DialogFragment
+        implements FirebaseAdmin.FirebaseAdminFavoriteSport {
+
+    /******************************** VARIABLES *************************************+/
+     *
+     */
 
     public SportSlimming sportSlimming;
     public SportGainVolume sportGainVolume;
     public SportToning sportToning;
-    public CallbackSport listener;
+    public Callback listener;
     public int option;
     private static String SLIMMING = Constants.DeportesDetails.EXTRA_SLIMMING;
     private static String GAINVOLUME = Constants.DeportesDetails.EXTRA_GAINVOLUME;
@@ -48,9 +54,74 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
     private static String OPTION = Constants.DeportesDetails.EXTRA_OPTION;
     private String URL = Constants.DeportesDetails.EXTRA_URL;
 
-    public interface CallbackSport{
+    private TextView textViewTitle;
+    private Button buttonOpenYoutube;
+    private TextView textViewDescription;
+    private ImageView imageViewSport;
+    private Button buttonInsert;
+    private Button buttonDelete;
+    private Button buttonClose;
+
+    private List<SportSlimming> sportSlimmingList;
+    private List<SportToning> sportToningList;
+    private List<SportGainVolume> sportGainVolumeList;
+
+    /******************************** PROGRESS DIALOG Y METODOS *************************************+/
+     *
+     */
+
+    private ProgressDialog progressDialog;
+
+    public void showLoading() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            return;
+        }
+        progressDialog = new ProgressDialog(getContext(), R.style.TransparentProgressDialog);
+        progressDialog.show();
+        progressDialog.setContentView(R.layout.progress_dialog);
+        progressDialog.setCancelable(false);
+        RotateAnimation rotate = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        rotate.setInterpolator(new LinearInterpolator());
+        rotate.setDuration(1000);
+        rotate.setRepeatCount(Animation.INFINITE);
+        ImageView ivLoading = ButterKnife.findById(progressDialog, R.id.image_cards_animation);
+        ivLoading.startAnimation(rotate);
+        progressDialog.show();
+    }
+
+    public void hideLoading() {
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        hideLoading();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        hideLoading();
+    }
+
+    /******************************** INTERFAZ *************************************+/
+     *
+     */
+
+    public interface Callback {
         void onClickClose();
     }
+
+    public void setListener(Callback listener) {
+        this.listener = listener;
+    }
+
+    /******************************** NEW INSTANCE ADELGAZAR *************************************+/
+     *
+     */
 
     public static SportDetailsDialogFragment newInstanceSlimming(SportSlimming sportSlimming, int option, Context context) {
         SportDetailsDialogFragment fragment = new SportDetailsDialogFragment();
@@ -69,6 +140,10 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
         return fragment;
     }
 
+    /******************************** NEW INSTANCE GANAR VOLUMEN *************************************+/
+     *
+     */
+
     public static SportDetailsDialogFragment newInstanceGainVolume(SportGainVolume sportGainVolume, int option,Context context) {
         SportDetailsDialogFragment fragment = new SportDetailsDialogFragment();
         Bundle args = new Bundle();
@@ -85,6 +160,10 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
 
         return fragment;
     }
+
+    /******************************** NEW INSTANCE TONIFICAR *************************************+/
+     *
+     */
 
     public static SportDetailsDialogFragment newInstanceToning(SportToning sportToning, int option,Context context) {
         SportDetailsDialogFragment fragment = new SportDetailsDialogFragment();
@@ -103,9 +182,9 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
         return fragment;
     }
 
-    public void setListener(CallbackSport listener) {
-        this.listener = listener;
-    }
+    /******************************** GET ARGUMENTS *************************************+/
+     *
+     */
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -121,22 +200,14 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
         option = getArguments().getInt(OPTION);
     }
 
-    private TextView textViewTitle;
-    private Button buttonOpenYoutube;
-    private TextView textViewDescription;
-    private ImageView imageViewSport;
-    private Button buttonInsert;
-    private Button buttonDelete;
-    private Button buttonClose;
-    private List<SportSlimming> sportSlimmingList;
-    private List<SportToning> sportToningList;
-    private List<SportGainVolume> sportGainVolumeList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.sport_dialog_fragment, container, false);
         view.setBackgroundResource(R.drawable.corner_dialog_fragment);
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
         showLoading();
         findById(view);
         putData();
@@ -144,8 +215,13 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
         onClickButtonOpenInsertFavorite();
         onClickButtonOpenDeleteFavorite();
         onClickCloseButton();
+
         return view;
     }
+
+    /******************************** CONFIGURA VISTA *************************************+/
+     *
+     */
 
     public void findById(View v) {
         textViewTitle = v.findViewById(R.id.textTitleSport);
@@ -157,6 +233,31 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
         buttonClose = v.findViewById(R.id.close_info_sport);
     }
 
+    private void putData() {
+        switch (option){
+            case 0:
+                textViewTitle.setText(sportSlimming.getName());
+                textViewDescription.setText(sportSlimming.getDescription());
+                Utils.loadImage(sportSlimming.getPhoto(),imageViewSport,Utils.PLACEHOLDER_GALLERY);
+
+                break;
+            case 1:
+                textViewTitle.setText(sportToning.getName());
+                textViewDescription.setText(sportToning.getDescription());
+                Utils.loadImage(sportToning.getPhoto(),imageViewSport,Utils.PLACEHOLDER_GALLERY);
+                break;
+            case 2:
+                textViewTitle.setText(sportGainVolume.getName());
+                textViewDescription.setText(sportGainVolume.getDescription());
+                Utils.loadImage(sportGainVolume.getPhoto(),imageViewSport,Utils.PLACEHOLDER_GALLERY);
+                break;
+        }
+    }
+
+    /******************************** CIERRA LA PANTALLA *************************************+/
+     *
+     */
+
     private void onClickCloseButton(){
         buttonClose.setOnClickListener(v -> {
             if(listener!=null){
@@ -165,29 +266,9 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
         });
     }
 
-    private void putData() {
-        RequestOptions requestOptions = new RequestOptions();
-        switch (option){
-            case 0:
-                textViewTitle.setText(sportSlimming.getName());
-                textViewDescription.setText(sportSlimming.getDescription());
-                requestOptions.placeholder(R.drawable.icon_gallery);
-                Glide.with(this).load(sportSlimming.getPhoto()).into(imageViewSport);
-                break;
-            case 1:
-                textViewTitle.setText(sportToning.getName());
-                textViewDescription.setText(sportToning.getDescription());
-                requestOptions.placeholder(R.drawable.icon_gallery);
-                Glide.with(this).load(sportToning.getPhoto()).into(imageViewSport);
-                break;
-            case 2:
-                textViewTitle.setText(sportGainVolume.getName());
-                textViewDescription.setText(sportGainVolume.getDescription());
-                requestOptions.placeholder(R.drawable.icon_gallery);
-                Glide.with(this).load(sportGainVolume.getPhoto()).into(imageViewSport);
-            break;
-        }
-    }
+    /******************************** ABRE EL VIDEO EN LA ACTIVITY DE YOUTUBE *************************************+/
+     *
+     */
 
     private void onClickButtonOpenYoutube() {
         if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
@@ -212,6 +293,10 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
         }
     }
 
+    /******************************** AGREGAR A FAVORITOS *************************************+/
+     *
+     */
+
     private void onClickButtonOpenInsertFavorite() {
         if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
             buttonInsert.setOnClickListener(v -> {
@@ -234,6 +319,10 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
 
     }
 
+    /******************************** BORRAR DE FAVORITOS *************************************+/
+     *
+     */
+
     private void onClickButtonOpenDeleteFavorite(){
         if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
             buttonDelete.setOnClickListener(v -> {
@@ -255,6 +344,10 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
         }
 
     }
+
+    /******************************** CALLBACK DE FIREBASE *************************************+/
+     *
+     */
 
     @Override
     public void inserSportFavoriteFirebase(boolean end) {
@@ -334,43 +427,6 @@ public class SportDetailsDialogFragment extends DialogFragment implements Fireba
             }
 
         }
-    }
-
-    private ProgressDialog progressDialog;
-
-    public void showLoading() {
-        if (progressDialog != null && progressDialog.isShowing()) {
-            return;
-        }
-        progressDialog = new ProgressDialog(getContext(), R.style.TransparentProgressDialog);
-        progressDialog.show();
-        progressDialog.setContentView(R.layout.progress_dialog);
-        progressDialog.setCancelable(false);
-        RotateAnimation rotate = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        rotate.setInterpolator(new LinearInterpolator());
-        rotate.setDuration(1000);
-        rotate.setRepeatCount(Animation.INFINITE);
-        ImageView ivLoading = ButterKnife.findById(progressDialog, R.id.image_cards_animation);
-        ivLoading.startAnimation(rotate);
-        progressDialog.show();
-    }
-
-    public void hideLoading() {
-        if (progressDialog != null) {
-            progressDialog.dismiss();
-        }
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        hideLoading();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        hideLoading();
     }
 
     @Override

@@ -26,6 +26,11 @@ import com.utad.david.planfit.Utils.Constants;
 
 public class WebViewActivity extends AppCompatActivity {
 
+
+    /******************************** VARIABLES *************************************+/
+     *
+     */
+
     public static String EXTRA_TITLE = Constants.ConfigurateWebView.EXTRA_TITLE;
     public static String EXTRA_URL = Constants.ConfigurateWebView.EXTRA_URL;
     public static String EXTRA_MODE = Constants.ModeWebView.EXTRA_MODE;
@@ -54,11 +59,127 @@ public class WebViewActivity extends AppCompatActivity {
         setUI();
     }
 
+    /******************************** CONFIGURA LA VISTA *************************************+/
+     *
+     */
+
     private void setUI() {
         setSupportActionBar(toolbar);
         setTitle(title);
         configureWebView(url);
     }
+
+
+    /******************************** CONFIGURA EL WEBVIEW *************************************+/
+     *
+     */
+
+    private void configureWebView(String url){
+        webView.setVerticalScrollBarEnabled(false);
+        WebSettings webSettings = webView.getSettings();
+        webSettings.setJavaScriptEnabled(true);
+        webView.setWebChromeClient(new WebChromeClient());
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                super.onPageStarted(view, url, favicon);
+                showLoading();
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                hideLoading();
+            }
+        });
+        webView.loadUrl(url);
+    }
+
+    /******************************** SI LE DAS ATRAS DENTRO DEL WEBVIEW *************************************+/
+     *
+     */
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            switch (keyCode) {
+                case KeyEvent.KEYCODE_BACK:
+                    if (webView.canGoBack()) {
+                        webView.goBack();
+                    } else {
+                        finish();
+                    }
+                    return true;
+            }
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    /******************************** BOTON ATRAS DEL TELEFONO *************************************+/
+     *
+     */
+
+    @Override
+    public void onBackPressed() {
+        if (webView.canGoBack()) {
+            webView.goBack();
+        } else {
+            finish();
+        }
+    }
+
+
+    /******************************** CREA MENU DE LA IZQUIERDA *************************************+/
+     *
+     */
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_option_web, menu);
+        switch (mode){
+            case Constants.ModeWebView.MODE_RECIPE:
+                menu.getItem(0).setTitle(getString(R.string.mode_recipe));
+                break;
+            case Constants.ModeWebView.MODE_LINKEDIN:
+                menu.getItem(0).setTitle(getString(R.string.mode_linkedin));
+                break;
+            case Constants.ModeWebView.MODE_PRIVACITY:
+                menu.getItem(0).setTitle(getString(R.string.abrir_politica));
+                break;
+        }
+        return true;
+    }
+
+    /******************************** AL PINCHAR EN EL ITEM DEL MENU *************************************+/
+     *
+     */
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.nav_open_web:
+                openBrowser(url);
+                break;
+        }
+
+        return true;
+    }
+
+    /******************************** ABRE EL NAVEGADOR *************************************+/
+     *
+     */
+
+    private void openBrowser(String url) {
+        Intent i = new Intent(Intent.ACTION_VIEW);
+        i.setData(Uri.parse(url));
+        startActivity(i);
+    }
+
+    /******************************** PROGRESS DIALOG Y METODOS *************************************+/
+     *
+     */
 
     private ProgressDialog progressDialog;
 
@@ -85,87 +206,16 @@ public class WebViewActivity extends AppCompatActivity {
         }
     }
 
-
-    private void configureWebView(String url){
-        webView.setVerticalScrollBarEnabled(false);
-        WebSettings webSettings = webView.getSettings();
-        webSettings.setJavaScriptEnabled(true);
-        webView.setWebChromeClient(new WebChromeClient());
-        webView.setWebViewClient(new WebViewClient() {
-            @Override
-            public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                super.onPageStarted(view, url, favicon);
-                showLoading();
-            }
-
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view, url);
-                hideLoading();
-            }
-        });
-        webView.loadUrl(url);
+    @Override
+    public void onStop() {
+        super.onStop();
+        hideLoading();
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (event.getAction() == KeyEvent.ACTION_DOWN) {
-            switch (keyCode) {
-                case KeyEvent.KEYCODE_BACK:
-                    if (webView.canGoBack()) {
-                        webView.goBack();
-                    } else {
-                        finish();
-                    }
-                    return true;
-            }
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (webView.canGoBack()) {
-            webView.goBack();
-        } else {
-            finish();
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_option_web, menu);
-        switch (mode){
-            case Constants.ModeWebView.MODE_RECIPE:
-                menu.getItem(0).setTitle(getString(R.string.mode_recipe));
-                break;
-            case Constants.ModeWebView.MODE_LINKEDIN:
-                menu.getItem(0).setTitle(getString(R.string.mode_linkedin));
-                break;
-            case Constants.ModeWebView.MODE_PRIVACITY:
-                menu.getItem(0).setTitle(getString(R.string.abrir_politica));
-                break;
-        }
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()){
-            case R.id.nav_open_web:
-                openBrowser(url);
-                break;
-        }
-
-        return true;
-    }
-
-    private void openBrowser(String url) {
-        Intent i = new Intent(Intent.ACTION_VIEW);
-        i.setData(Uri.parse(url));
-        startActivity(i);
+    public void onPause() {
+        super.onPause();
+        hideLoading();
     }
 
 }

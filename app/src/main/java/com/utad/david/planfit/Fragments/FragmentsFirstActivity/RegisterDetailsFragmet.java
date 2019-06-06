@@ -46,11 +46,55 @@ import static android.app.Activity.RESULT_OK;
 import static com.utad.david.planfit.Utils.Constants.RequestPermisos.REQUEST_GALLERY;
 import static com.utad.david.planfit.Utils.Constants.RequestPermisos.REQUEST_IMAGE_PERMISSIONS;
 
-public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.FirebaseAdminLoginAndRegisterListener,FirebaseAdmin.FirebaseAdminInsertAndDownloandListener, EasyPermissions.PermissionCallbacks {
+public class RegisterDetailsFragmet extends Fragment
+        implements FirebaseAdmin.FirebaseAdminLoginAndRegisterListener,
+        FirebaseAdmin.FirebaseAdminInsertAndDownloandListener,
+        EasyPermissions.PermissionCallbacks {
 
-    private OnFragmentInteractionListener mListener;
+    /******************************** VARIABLES *************************************+/
+     *
+     */
 
-    public RegisterDetailsFragmet() {}
+    private Callback mListener;
+    private EditText fullName;
+    private EditText nickName;
+    private ImageView imageViewUser;
+    private Button buttonOk;
+    private Button buttonBackDetails;
+    private Uri imageUri;
+    private ProgressDialog mProgress;
+    private String photoPath;
+    private boolean endRegister=false;
+
+    /******************************** INTERFAZ *************************************+/
+     *
+     */
+
+    public interface Callback {
+        void clickButtonOk();
+        void clickButtonBackDetails();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof Callback) {
+            mListener = (Callback) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement Callback");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+    /******************************** SET CALLBACK FIREBASE *************************************+/
+     *
+     */
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -65,91 +109,24 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
         }
     }
 
-    private EditText fullName;
-    private EditText nickName;
-    private ImageView imageViewUser;
-    private Button buttonOk;
-    private Button buttonBackDetails;
-    private Uri imageUri;
-    private ProgressDialog mProgress;
-    private String photoPath;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_register_details, container, false);
+
         findViewById(view);
         onClickButtonOk();
         onClickButtonBackDetails();
         onClickImage();
         configView();
         showDialog();
+
         return view;
     }
 
-    private void onClickImage() {
-        imageViewUser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.CAMERA};
-
-                if (EasyPermissions.hasPermissions(getContext(), perms)) {
-                    showTakePictureDialog();
-                } else {
-                    // Do not have permissions, request them now
-                    EasyPermissions.requestPermissions(getActivity(), getString(R.string.permissions_picture_rationale), REQUEST_IMAGE_PERMISSIONS, perms);
-                }
-            }
-        });
-    }
-
-    private void configView(){
-        fullName.setText("");
-        nickName.setText("");
-        imageViewUser.setImageResource(R.drawable.icon_gallery);
-        fullName.addTextChangedListener(textWatcherRegistreDetailsFragment);
-        nickName.addTextChangedListener(textWatcherRegistreDetailsFragment);
-    }
-
-    private void showDialog(){
-        mProgress = new ProgressDialog(getContext());
-        mProgress.setTitle(getString(R.string.title_register));
-        mProgress.setMessage(getString(R.string.message_register));
-        mProgress.setCancelable(false);
-        mProgress.setIndeterminate(true);
-    }
-
-    private TextWatcher textWatcherRegistreDetailsFragment = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {}
-
-        @Override
-        public void afterTextChanged(Editable s) {
-            buttonOk.setEnabled(enableButton());
-        }
-    };
-
-    private boolean enableButton(){
-        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
-            if(!checkEditText()){
-                return true;
-            }else {
-                return false;
-            }
-        }else{
-            return false;
-        }
-    }
-
-    private boolean checkEditText(){
-        if(nickName.getText().toString().isEmpty() || fullName.getText().toString().isEmpty()){
-            return true;
-        }else{
-            return false;
-        }
-    }
+    /******************************** CONFIGURA VISTA *************************************+/
+     *
+     */
 
     private void findViewById(View view){
         fullName = view.findViewById(R.id.fullName);
@@ -159,42 +136,52 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
         buttonBackDetails = view.findViewById(R.id.buttonBackDetails);
     }
 
-    private void onClickButtonOk(){
-        buttonOk.setOnClickListener(v -> {
-            if (mListener!=null){
-                setDataUser();
-                mProgress.show();
-                mListener.clickButtonOk();
-            }else{
-                mProgress.dismiss();
+    private void configView(){
+        fullName.setText("");
+        nickName.setText("");
+        imageViewUser.setImageResource(Utils.PLACEHOLDER_GALLERY);
+        fullName.addTextChangedListener(textWatcherRegistreDetailsFragment);
+        nickName.addTextChangedListener(textWatcherRegistreDetailsFragment);
+    }
+
+    /******************************** CONFIGURA EL DIALOGO *************************************+/
+     *
+     */
+
+    private void showDialog(){
+        mProgress = new ProgressDialog(getContext());
+        mProgress.setTitle(getString(R.string.title_register));
+        mProgress.setMessage(getString(R.string.message_register));
+        mProgress.setCancelable(false);
+        mProgress.setIndeterminate(true);
+    }
+
+    /******************************** ONCLICK IMAGEN *************************************+/
+     *
+     */
+
+    private void onClickImage() {
+        imageViewUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.CAMERA};
+                if (EasyPermissions.hasPermissions(getContext(), perms)) {
+                    showTakePictureDialog();
+                } else {
+                    EasyPermissions.requestPermissions(getActivity(), getString(R.string.permissions_picture_rationale), REQUEST_IMAGE_PERMISSIONS, perms);
+                }
             }
         });
     }
 
-    private void onClickButtonBackDetails(){
-        buttonBackDetails.setOnClickListener(v -> {
-            if(mListener!=null){
-                mListener.clickButtonBackDetails();
-            }
-        });
-    }
-
-    private void openGallery(){
-        Intent intent = new Intent();
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-            intent.setAction(Intent.ACTION_GET_CONTENT);
-        } else {
-            intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
-            intent.addCategory(Intent.CATEGORY_OPENABLE);
-        }
-        intent.setType("image/*");
-        startActivityForResult(Intent.createChooser(intent, getString(R.string.menuopengalery)),REQUEST_GALLERY);
-    }
+    /******************************** DIALOGO DE IMAGEN *************************************+/
+     *
+     */
 
     private void showTakePictureDialog() {
-        final CharSequence[] items = {"Galeria","Camara", "Cancelar"};
+        final CharSequence[] items = {getString(R.string.galeria),getString(R.string.camara), getString(R.string.action_cancel)};
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Escoja una foto");
+        builder.setTitle(R.string.menuopengalery);
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int item) {
@@ -213,6 +200,26 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
         });
         builder.show();
     }
+
+    /******************************** ABRIR GALERIA *************************************+/
+     *
+     */
+
+    private void openGallery(){
+        Intent intent = new Intent();
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+        } else {
+            intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+        }
+        intent.setType("image/*");
+        startActivityForResult(Intent.createChooser(intent, getString(R.string.menuopengalery)),REQUEST_GALLERY);
+    }
+
+    /******************************** ABRIR CAMARA *************************************+/
+     *
+     */
 
     private void openCamera() {
         File photoFile = null;
@@ -233,6 +240,10 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
             startActivityForResult(intentCamera, Constants.RequestPermisos.REQUEST_CAMERA);
         }
     }
+
+    /******************************** CALLBACK GALERIA Y CAMARA *************************************+/
+     *
+     */
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -270,6 +281,59 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
         }
     }
 
+    /******************************** CONFIGURA EDITTEXT DE LOS DETALLES DEL REGISTRO *************************************+/
+     *
+     */
+
+    private TextWatcher textWatcherRegistreDetailsFragment = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            buttonOk.setEnabled(enableButton());
+        }
+    };
+
+    private boolean enableButton(){
+        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
+            if(!checkEditText()){
+                return true;
+            }else {
+                return false;
+            }
+        }else{
+            return false;
+        }
+    }
+
+    private boolean checkEditText(){
+        if(nickName.getText().toString().isEmpty() || fullName.getText().toString().isEmpty()){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    /******************************** ONCLICK OK *************************************+/
+     *
+     */
+
+    private void onClickButtonOk(){
+        buttonOk.setOnClickListener(v -> {
+            if (mListener!=null){
+                setDataUser();
+                mProgress.show();
+                mListener.clickButtonOk();
+            }else{
+                mProgress.dismiss();
+            }
+        });
+    }
+
     private void setDataUser(){
         SessionUser.getInstance().user.setFullName(fullName.getText().toString());
         SessionUser.getInstance().user.setNickName(nickName.getText().toString());
@@ -280,18 +344,39 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
         }
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
+    /******************************** ONCLICK BACK *************************************+/
+     *
+     */
+
+    private void onClickButtonBackDetails(){
+        buttonBackDetails.setOnClickListener(v -> {
+            if(mListener!=null){
+                mListener.clickButtonBackDetails();
+            }
+        });
     }
 
-    private boolean endRegister=false;
+    /******************************** ERROR AL REGISTRAR *************************************+/
+     *
+     */
+
+    private void errorSingInRegister(String title) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(),R.style.AlertDialogTheme);
+        builder.setMessage(title)
+                .setPositiveButton(R.string.info_dialog_err, (dialog, id) -> {
+                    RegisterFragment registerFragment = new RegisterFragment();
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                    transaction.replace(R.id.frameLayout_FirstActivity, registerFragment);
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+                });
+        builder.create();
+        builder.show();
+    }
+
+    /******************************** CALLBACK DE FIREBASE *************************************+/
+     *
+     */
 
     @Override
     public void registerWithEmailAndPassword(boolean end) {
@@ -326,39 +411,16 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
         }
     }
 
-    private void errorSingInRegister(String title) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(),R.style.AlertDialogTheme);
-        builder.setMessage(title)
-                .setPositiveButton(R.string.info_dialog_err, (dialog, id) -> {
-                    RegisterFragment registerFragment = new RegisterFragment();
-                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                    transaction.replace(R.id.frameLayout_FirstActivity, registerFragment);
-                    transaction.addToBackStack(null);
-                    transaction.commit();
-                });
-        builder.create();
-        builder.show();
-    }
-
     @Override
     public void singInWithEmailAndPassword(boolean end) {}
-
     @Override
     public void downloadUserDataInFirebase(boolean end) {}
-
     @Override
     public void downloadInfotDeveloper(boolean end) {}
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    public interface OnFragmentInteractionListener {
-        void clickButtonOk();
-        void clickButtonBackDetails();
-    }
+    /******************************** EasyPermissions.PermissionCallbacks *************************************+/
+     *
+     */
 
     @Override
     public void onPermissionsGranted(int requestCode, List<String> perms) {
@@ -381,8 +443,6 @@ public class RegisterDetailsFragmet extends Fragment implements FirebaseAdmin.Fi
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        // Forward results to EasyPermissions
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
     }
 

@@ -24,9 +24,47 @@ import java.util.regex.Pattern;
 
 public class RegisterFragment extends Fragment {
 
-    private OnFragmentInteractionListener mListener;
+    /******************************** VARIABLES *************************************+/
+     *
+     */
 
-    public RegisterFragment() {}
+    private EditText emailRegister;
+    private EditText passwordRegister;
+    private Button buttonContinue;
+    private Button buttonBack;
+    private String emailUser;
+    private String passwordUser;
+    private Callback mListener;
+
+    /******************************** INTERFAZ *************************************+/
+     *
+     */
+
+    public interface Callback {
+        void clickButtonContinue();
+        void clickButtonBack();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof Callback) {
+            mListener = (Callback) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement Callback");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+    /******************************** CONFIGURE UI *************************************+/
+     *
+     */
 
     @Override
     public void onStart() {
@@ -39,27 +77,25 @@ public class RegisterFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         Fabric.with(getContext(), new Crashlytics());
-
     }
-
-    private EditText emailRegister;
-    private EditText passwordRegister;
-    private Button buttonContinue;
-    private Button buttonBack;
-    private String emailUser;
-    private String passwordUser;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         View view =  inflater.inflate(R.layout.fragment_register, container, false);
+
         findViewById(view);
         onClickButtonBack();
         onClickButtonContinue();
         configView();
+
         return view;
     }
+
+    /******************************** CONFIGURA VISTA *************************************+/
+     *
+     */
 
     private void configView(){
         emailRegister.setText("");
@@ -74,6 +110,10 @@ public class RegisterFragment extends Fragment {
         buttonContinue = view.findViewById(R.id.buttonContinue);
         buttonBack = view.findViewById(R.id.buttonBack);
     }
+
+    /******************************** ONCLICK CONTINUE *************************************+/
+     *
+     */
 
     private void onClickButtonContinue(){
         buttonContinue.setOnClickListener(v -> {
@@ -91,6 +131,10 @@ public class RegisterFragment extends Fragment {
         });
     }
 
+    /******************************** ONCLICK BACK *************************************+/
+     *
+     */
+
     private void onClickButtonBack(){
         buttonBack.setOnClickListener(v -> {
             if(mListener!=null){
@@ -98,6 +142,10 @@ public class RegisterFragment extends Fragment {
             }
         });
     }
+
+    /******************************** CONFIGURA EDITTEXT DEL REGISTRO *************************************+/
+     *
+     */
 
     private TextWatcher textWatcherRegisterFragment = new TextWatcher() {
         @Override
@@ -150,27 +198,5 @@ public class RegisterFragment extends Fragment {
         } else {
             return false;
         }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    public interface OnFragmentInteractionListener {
-        void clickButtonContinue();
-        void clickButtonBack();
     }
 }

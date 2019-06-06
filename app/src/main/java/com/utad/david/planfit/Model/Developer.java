@@ -3,32 +3,24 @@ package com.utad.david.planfit.Model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Developer implements Parcelable {
+public class Developer
+        implements Parcelable {
+
+    /******************************** VARIABLES *************************************+/
+     *
+     */
 
     private String fullNameDeveloper;
     private String urlLinkedinDeveloper;
     private String emailDeveloper;
 
     public Developer() {
+
     }
 
-    protected Developer(Parcel in) {
-        fullNameDeveloper = in.readString();
-        urlLinkedinDeveloper = in.readString();
-        emailDeveloper = in.readString();
-    }
-
-    public static final Creator<Developer> CREATOR = new Creator<Developer>() {
-        @Override
-        public Developer createFromParcel(Parcel in) {
-            return new Developer(in);
-        }
-
-        @Override
-        public Developer[] newArray(int size) {
-            return new Developer[size];
-        }
-    };
+    /******************************** GETTERS Y SETTERS *************************************+/
+     *
+     */
 
     public String getFullNameDeveloper() {
         return fullNameDeveloper;
@@ -53,6 +45,29 @@ public class Developer implements Parcelable {
     public void setEmailDeveloper(String emailDeveloper) {
         this.emailDeveloper = emailDeveloper;
     }
+
+
+    /******************************** Parcelable *************************************+/
+     *
+     */
+
+    protected Developer(Parcel in) {
+        fullNameDeveloper = in.readString();
+        urlLinkedinDeveloper = in.readString();
+        emailDeveloper = in.readString();
+    }
+
+    public static final Creator<Developer> CREATOR = new Creator<Developer>() {
+        @Override
+        public Developer createFromParcel(Parcel in) {
+            return new Developer(in);
+        }
+
+        @Override
+        public Developer[] newArray(int size) {
+            return new Developer[size];
+        }
+    };
 
     @Override
     public int describeContents() {

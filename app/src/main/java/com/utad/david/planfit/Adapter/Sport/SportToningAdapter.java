@@ -10,19 +10,20 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.utad.david.planfit.Model.Sport.SportToning;
 import com.utad.david.planfit.R;
+import com.utad.david.planfit.Utils.Utils;
 
 import java.util.List;
 
 public class SportToningAdapter extends RecyclerView.Adapter<SportToningAdapter.ToningViewHolder>  {
 
     private List<SportToning> sportToningList;
-    private OnItemClickListener listener;
+    private Callback listener;
 
-    public interface OnItemClickListener {
+    public interface Callback {
         void onItemClick(SportToning item);
     }
 
-    public SportToningAdapter(List<SportToning> sportToningList, OnItemClickListener listener) {
+    public SportToningAdapter(List<SportToning> sportToningList, Callback listener) {
         this.sportToningList = sportToningList;
         this.listener = listener;
     }
@@ -60,9 +61,8 @@ public class SportToningAdapter extends RecyclerView.Adapter<SportToningAdapter.
 
         public void setData(SportToning sportToning){
             nameSlimming.setText(sportToning.getName());
-            RequestOptions requestOptions = new RequestOptions();
-            requestOptions.placeholder(R.drawable.icon_gallery);
-            Glide.with(itemView).setDefaultRequestOptions(requestOptions).load(sportToning.getPhoto()).into(photoSlimming);
+            Utils.loadImage(sportToning.getPhoto(),photoSlimming,Utils.PLACEHOLDER_GALLERY);
+
         }
     }
 

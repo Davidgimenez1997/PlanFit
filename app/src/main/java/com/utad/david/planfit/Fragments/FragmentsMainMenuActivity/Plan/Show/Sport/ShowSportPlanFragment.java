@@ -37,18 +37,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class ShowSportPlanFragment extends Fragment implements FirebaseAdmin.FirebaseAdminCreateShowPlanSport{
+public class ShowSportPlanFragment extends Fragment
+        implements FirebaseAdmin.FirebaseAdminCreateShowPlanSport{
 
-    public ShowSportPlanFragment() {
-        // Required empty public constructor
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Fabric.with(getContext(), new Crashlytics());
-
-    }
+    /******************************** VARIABLES *************************************+/
+     *
+     */
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -58,9 +52,70 @@ public class ShowSportPlanFragment extends Fragment implements FirebaseAdmin.Fir
     private ArrayList<ArrayList<PlanSport>> listToListPlan;
     private Runnable toolbarRunnable;
 
+
+    /******************************** PROGRESS DIALOG Y METODOS *************************************+/
+     *
+     */
+
+    private ProgressDialog progressDialog;
+
+    public void showLoading() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            return;
+        }
+        progressDialog = new ProgressDialog(getContext(), R.style.TransparentProgressDialog);
+        progressDialog.show();
+        progressDialog.setContentView(R.layout.progress_dialog);
+        progressDialog.setCancelable(false);
+        RotateAnimation rotate = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        rotate.setInterpolator(new LinearInterpolator());
+        rotate.setDuration(1000);
+        rotate.setRepeatCount(Animation.INFINITE);
+        ImageView ivLoading = ButterKnife.findById(progressDialog, R.id.image_cards_animation);
+        ivLoading.startAnimation(rotate);
+        progressDialog.show();
+    }
+
+    public void hideLoading() {
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        hideLoading();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        hideLoading();
+    }
+
+    /******************************** SET Runnable *************************************+/
+     *
+     */
+
     public void setToolbarRunnable(Runnable toolbarRunnable) {
         this.toolbarRunnable = toolbarRunnable;
     }
+
+
+    /******************************** SET Context *************************************+/
+     *
+     */
+
+    @Override
+    public void onAttach(Activity activity) {
+        myContext=(FragmentActivity) activity;
+        super.onAttach(activity);
+    }
+
+    /******************************** SET CALLBACK FIREBASE *************************************+/
+     *
+     */
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -89,6 +144,16 @@ public class ShowSportPlanFragment extends Fragment implements FirebaseAdmin.Fir
 
         return view;
     }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Fabric.with(getContext(), new Crashlytics());
+    }
+
+    /******************************** CALLBACK FIREBASE *************************************+/
+     *
+     */
 
     @Override
     public void downloadSportPlanFirebase(boolean end) {
@@ -198,52 +263,8 @@ public class ShowSportPlanFragment extends Fragment implements FirebaseAdmin.Fir
         }
     }
 
-    private ProgressDialog progressDialog;
-
-    public void showLoading() {
-        if (progressDialog != null && progressDialog.isShowing()) {
-            return;
-        }
-        progressDialog = new ProgressDialog(getContext(), R.style.TransparentProgressDialog);
-        progressDialog.show();
-        progressDialog.setContentView(R.layout.progress_dialog);
-        progressDialog.setCancelable(false);
-        RotateAnimation rotate = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        rotate.setInterpolator(new LinearInterpolator());
-        rotate.setDuration(1000);
-        rotate.setRepeatCount(Animation.INFINITE);
-        ImageView ivLoading = ButterKnife.findById(progressDialog, R.id.image_cards_animation);
-        ivLoading.startAnimation(rotate);
-        progressDialog.show();
-    }
-
-    public void hideLoading() {
-        if (progressDialog != null) {
-            progressDialog.dismiss();
-        }
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        hideLoading();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        hideLoading();
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        myContext=(FragmentActivity) activity;
-        super.onAttach(activity);
-    }
-
     @Override
     public void insertSportPlanFirebase(boolean end) {}
-
     @Override
     public void deleteSportPlanFirebase(boolean end) {}
 

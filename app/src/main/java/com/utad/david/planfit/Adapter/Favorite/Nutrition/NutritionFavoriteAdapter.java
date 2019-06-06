@@ -10,19 +10,20 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.utad.david.planfit.Model.Nutrition.DefaultNutrition;
 import com.utad.david.planfit.R;
+import com.utad.david.planfit.Utils.Utils;
 
 import java.util.List;
 
 public class NutritionFavoriteAdapter extends RecyclerView.Adapter<NutritionFavoriteAdapter.NutritionFavoriteViewHolder> {
 
     private List<DefaultNutrition> defaultNutritions;
-    private OnItemClickListener listener;
+    private Callback listener;
 
-    public interface OnItemClickListener {
+    public interface Callback {
         void onItemClick(DefaultNutrition item);
     }
 
-    public NutritionFavoriteAdapter(List<DefaultNutrition> defaultNutritions,OnItemClickListener listener) {
+    public NutritionFavoriteAdapter(List<DefaultNutrition> defaultNutritions, Callback listener) {
         this.defaultNutritions = defaultNutritions;
         this.listener = listener;
     }
@@ -67,9 +68,7 @@ public class NutritionFavoriteAdapter extends RecyclerView.Adapter<NutritionFavo
 
         public void setData(DefaultNutrition defaultNutrition){
             nameSlimming.setText(defaultNutrition.getName());
-            RequestOptions requestOptions = new RequestOptions();
-            requestOptions.placeholder(R.drawable.icon_gallery);
-            Glide.with(itemView).setDefaultRequestOptions(requestOptions).load(defaultNutrition.getPhoto()).into(photoSlimming);
+            Utils.loadImage(defaultNutrition.getPhoto(),photoSlimming,Utils.PLACEHOLDER_GALLERY);
         }
     }
 }

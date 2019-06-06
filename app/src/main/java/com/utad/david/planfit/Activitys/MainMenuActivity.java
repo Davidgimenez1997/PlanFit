@@ -5,16 +5,12 @@ import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.Toast;
 import butterknife.ButterKnife;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
-import com.utad.david.planfit.Base.BaseActivity;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.DialogFragment.EditPersonalDataUser;
@@ -50,17 +46,23 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Utils.Constants;
-import com.utad.david.planfit.Utils.UtilsEncryptDecryptAES;
+import com.utad.david.planfit.Utils.Utils;
 import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 
 
-public class MainMenuActivity extends BaseActivity
+public class MainMenuActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         FirebaseAdmin.FirebaseAdminInsertAndDownloandListener,
-        RootFragment.OnFragmentInteractionListener,
-        EditPersonalDataUser.OnFragmentInteractionListener,
-        FragmentCreatePlan.Callback,FragmentShowPlan.Callback{
+        RootFragment.Callback,
+        EditPersonalDataUser.Callback,
+        FragmentCreatePlan.Callback,
+        FragmentShowPlan.Callback{
+
+
+    /******************************** VARIABLES *************************************+/
+     *
+     */
 
     private ImageView imagemenu;
     private TextView nickname;
@@ -74,37 +76,10 @@ public class MainMenuActivity extends BaseActivity
     private FragmentTransaction fragmentTransaction;
     private View navigationHeaderView;
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminInsertAndDownloandListener(this);
-        SessionUser.getInstance().firebaseAdmin.dowloandDataUserFirebase();
-    }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_menu);
-
-        Fabric.with(this, new Crashlytics());
-
-        findById();
-        showLoading();
-        setSupportActionBar(toolbar);
-
-        fragmentManager = getSupportFragmentManager();
-
-        setUi();
-
-        LayoutInflater.from(getBaseContext()).inflate(R.layout.activity_main_menu_navheader, navigationView);
-        navigationView.setNavigationItemSelectedListener(this);
-
-        findByIdNavigetionView();
-
-        setTitle(R.string.titulo_deportes);
-        navigateFragmentSport();
-        onClickNavigetionHeaderView();
-    }
+    /******************************** PROGRESS DIALOG Y METODOS *************************************+/
+     *
+     */
 
     private ProgressDialog progressDialog;
 
@@ -143,12 +118,51 @@ public class MainMenuActivity extends BaseActivity
         hideLoading();
     }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main_menu);
+
+        Fabric.with(this, new Crashlytics());
+
+        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminInsertAndDownloandListener(this);
+        SessionUser.getInstance().firebaseAdmin.dowloandDataUserFirebase();
+
+        findById();
+
+        showLoading();
+        setSupportActionBar(toolbar);
+
+        fragmentManager = getSupportFragmentManager();
+
+        setUi();
+
+        LayoutInflater.from(getBaseContext()).inflate(R.layout.activity_main_menu_navheader, navigationView);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        findByIdNavigetionView();
+
+        setTitle(R.string.titulo_deportes);
+        navigateFragmentSport();
+        onClickNavigetionHeaderView();
+    }
+
+
+    /******************************** CREA EL ICONO DEL MENU LATERAL *************************************+/
+     *
+     */
+
+
     public void setUi(){
         toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
     }
+
+    /******************************** ONCLICK DE LA CABEZERA DEL MENU *************************************+/
+     *
+     */
 
     public void onClickNavigetionHeaderView(){
         navigationHeaderView = navigationView.getHeaderView(0);
@@ -163,20 +177,9 @@ public class MainMenuActivity extends BaseActivity
         });
     }
 
-    @Override
-    public void downloadUserDataInFirebase(boolean end) {
-        if(end==true){
-            hideLoading();
-            putInfoUserInHeaderMenu(SessionUser.getInstance().firebaseAdmin.userDataFirebase);
-            checkPhotoUserNull(SessionUser.getInstance().firebaseAdmin.userDataFirebase);
-        }else{
-            if(SessionUser.getInstance().firebaseAdmin.userDataFirebase.getImgUser()!=null){
-                hideLoading();
-                putInfoUserInHeaderMenu(SessionUser.getInstance().firebaseAdmin.userDataFirebase);
-                checkPhotoUserNull(SessionUser.getInstance().firebaseAdmin.userDataFirebase);
-            }
-        }
-    }
+    /******************************** CONFIGURACIONES DE LA VISTA *************************************+/
+     *
+     */
 
     public void findById() {
         toolbar = findViewById(R.id.toolbar);
@@ -190,24 +193,38 @@ public class MainMenuActivity extends BaseActivity
         email = navigationView.findViewById(R.id.emailUserMenu);
     }
 
+    /******************************** PONE LA INFORMACION DEL USUARIO EN LA CABEZERA DEL MENU *************************************+/
+     *
+     */
+
     public void putInfoUserInHeaderMenu(User user) {
         nickname.setText(user.getNickName());
         email.setText(user.getEmail());
     }
 
+    /******************************** COMPRUEBA LA FOTO DEL USUARIO, SINO PONE UNA POR DEFECTO *************************************+/
+     *
+     */
+
     public void checkPhotoUserNull(User user) {
         if(user.getImgUser()!=null){
             putPhotoUser(user.getImgUser());
         }else{
-            imagemenu.setImageResource(R.drawable.icon_user);
+            imagemenu.setImageResource(Utils.PLACEHOLDER_USER);
         }
     }
 
+    /******************************** USA LA LIBRERIA GLIDE PARA PONER UNA FOTO *************************************+/
+     *
+     */
+
     private void putPhotoUser(String imgUser) {
-        RequestOptions requestOptions = new RequestOptions();
-        requestOptions.placeholder(R.drawable.icon_user);
-        Glide.with(this).setDefaultRequestOptions(requestOptions).load(imgUser).into(imagemenu);
+        Utils.loadImage(imgUser,imagemenu,Utils.PLACEHOLDER_USER);
     }
+
+    /******************************** BOTON ATRAS DEL TELEFONO *************************************+/
+     *
+     */
 
     @Override
     public void onBackPressed() {
@@ -219,6 +236,9 @@ public class MainMenuActivity extends BaseActivity
         }
     }
 
+    /******************************** CREA EL MENU DE LA IZQUIERDA *************************************+/
+     *
+     */
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -226,10 +246,15 @@ public class MainMenuActivity extends BaseActivity
         return true;
     }
 
+    /******************************** ONCLICK DEL MENU DE LA IZQUIERDA *************************************+/
+     *
+     */
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()){
+
             case R.id.action_logout:
                 if(UtilsNetwork.checkConnectionInternetDevice(this)){
                     logout();
@@ -237,6 +262,7 @@ public class MainMenuActivity extends BaseActivity
                     Toast.makeText(this,getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
                 }
                 break;
+
             case R.id.action_edit_user:
                 if(UtilsNetwork.checkConnectionInternetDevice(this)){
                     editUser();
@@ -244,6 +270,7 @@ public class MainMenuActivity extends BaseActivity
                     Toast.makeText(this,getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
                 }
                 break;
+
             case R.id.action_about_app:
                 if(UtilsNetwork.checkConnectionInternetDevice(this)){
                     aboutApp();
@@ -251,6 +278,7 @@ public class MainMenuActivity extends BaseActivity
                     Toast.makeText(this,getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
                 }
                 break;
+
             case R.id.polity:
                 if(UtilsNetwork.checkConnectionInternetDevice(this)){
                     openPolity();
@@ -262,6 +290,10 @@ public class MainMenuActivity extends BaseActivity
 
         return true;
     }
+
+    /******************************** METODOS DEL MENU LATERAL *************************************+/
+     *
+     */
 
     private void openPolity() {
         Intent intent = new Intent(this, WebViewActivity.class);
@@ -295,11 +327,15 @@ public class MainMenuActivity extends BaseActivity
     private void logout() {
         SessionUser.getInstance().firebaseAdmin.mAuth.getInstance().signOut();
         SessionUser.getInstance().removeUser();
-        Intent intent =new Intent(MainMenuActivity.this,FirstActivity.class);
+        Intent intent =new Intent(MainMenuActivity.this, FirstActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();
     }
+
+    /******************************** ONCLICK DEL MENU DE LA DERECHA *************************************+/
+     *
+     */
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -307,6 +343,9 @@ public class MainMenuActivity extends BaseActivity
         return true;
     }
 
+    /******************************** METODO QUE GESTIONA EL ONCLICK *************************************+/
+     *
+     */
 
     private void displaySelectedScreen(int itemId) {
 
@@ -315,21 +354,25 @@ public class MainMenuActivity extends BaseActivity
         int seleted = 0;
 
         switch (itemId) {
+
             case R.id.nav_deportes:
                 navigationView.getMenu().findItem(R.id.nav_deportes).setChecked(true);
                 seleted = Constants.ModeRootFragment.MODE_SPORT;
                 fragment = RootFragment.newInstance(seleted);
                 break;
+
             case R.id.nav_nutricion:
                 navigationView.getMenu().findItem(R.id.nav_nutricion).setChecked(true);
                 seleted = Constants.ModeRootFragment.MODE_NUTRITION;
                 fragment = RootFragment.newInstance(seleted);
                 break;
+
             case R.id.nav_favorite:
                 navigationView.getMenu().findItem(R.id.nav_favorite).setChecked(true);
                 seleted = Constants.ModeRootFragment.MODE_FAVORITE;
                 fragment = RootFragment.newInstance(seleted);
                 break;
+
             case R.id.nav_crear_tu_plan:
                 navigationView.getMenu().findItem(R.id.nav_crear_tu_plan).setChecked(true);
                 seleted = Constants.ModeRootFragment.MODE_PLAN;
@@ -365,7 +408,32 @@ public class MainMenuActivity extends BaseActivity
         drawer.closeDrawer(GravityCompat.START);
     }
 
-    /********************************CARGA LA PRIMERA PANTALLA*************************************+/
+    /******************************** CALLBACK DE FIREBASE *************************************+/
+     *
+     */
+
+    @Override
+    public void downloadUserDataInFirebase(boolean end) {
+        if(end==true){
+            hideLoading();
+            putInfoUserInHeaderMenu(SessionUser.getInstance().firebaseAdmin.userDataFirebase);
+            checkPhotoUserNull(SessionUser.getInstance().firebaseAdmin.userDataFirebase);
+        }else{
+            if(SessionUser.getInstance().firebaseAdmin.userDataFirebase.getImgUser()!=null){
+                hideLoading();
+                putInfoUserInHeaderMenu(SessionUser.getInstance().firebaseAdmin.userDataFirebase);
+                checkPhotoUserNull(SessionUser.getInstance().firebaseAdmin.userDataFirebase);
+            }
+        }
+    }
+
+    @Override
+    public void insertUserDataInFirebase(boolean end) {}
+
+    @Override
+    public void downloadInfotDeveloper(boolean end) {}
+
+    /******************************** CARGA LA PRIMERA PANTALLA *************************************+/
      *
      */
 
@@ -378,7 +446,7 @@ public class MainMenuActivity extends BaseActivity
         fragmentTransaction.commit();
     }
 
-    /********************************CALLBACK EDITAR PERFIL*************************************+/
+    /******************************** CALLBACK EDITAR PERFIL *************************************+/
      *
      */
 
@@ -388,7 +456,7 @@ public class MainMenuActivity extends BaseActivity
         checkPhotoUserNull(user);
     }
 
-    /********************************CALLBACK DEPORTE*************************************+/
+    /******************************** CALLBACK DEPORTE *************************************+/
      *
      */
 
@@ -425,7 +493,7 @@ public class MainMenuActivity extends BaseActivity
         fragmentTransaction.commit();
     }
 
-    /********************************CALLBACK NUTRICIÓN*************************************+/
+    /******************************** CALLBACK NUTRICIÓN *************************************+/
      *
      */
 
@@ -462,7 +530,7 @@ public class MainMenuActivity extends BaseActivity
         fragmentTransaction.commit();
     }
 
-    /********************************CALLBACK FAVORITOS*************************************+/
+    /******************************** CALLBACK FAVORITOS *************************************+/
      *
      */
 
@@ -488,7 +556,7 @@ public class MainMenuActivity extends BaseActivity
         fragmentTransaction.commit();
     }
 
-    /********************************CALLBACK PLAN*************************************+/
+    /******************************** CALLBACK PLAN *************************************+/
      *
      */
 
@@ -513,7 +581,7 @@ public class MainMenuActivity extends BaseActivity
         fragmentTransaction.commit();
     }
 
-    /********************************CALLBACK CREAR PLAN DEPORTE Y NUTRICIÓN*************************************+/
+    /******************************** CALLBACK CREAR PLAN DEPORTE Y NUTRICIÓN *************************************+/
      *
      */
 
@@ -548,7 +616,7 @@ public class MainMenuActivity extends BaseActivity
         fragmentTransaction.commit();
     }
 
-    /********************************CALLBACK VER PLAN DEPORTE Y NUTRICIÓN*************************************+/
+    /******************************** CALLBACK VER PLAN DEPORTE Y NUTRICIÓN *************************************+/
      *
      */
 
@@ -580,11 +648,5 @@ public class MainMenuActivity extends BaseActivity
         fragmentTransaction.replace(R.id.content_frame, fragment);
         fragmentTransaction.commit();
     }
-
-    @Override
-    public void insertUserDataInFirebase(boolean end) {}
-
-    @Override
-    public void downloadInfotDeveloper(boolean end) {}
 
 }

@@ -4,7 +4,13 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import com.utad.david.planfit.Model.Sport.DefaultSport;
 
-public class PlanSport implements Comparable<PlanSport>,Parcelable{
+public class PlanSport
+        implements Comparable<PlanSport>,
+        Parcelable{
+
+    /******************************** VARIABLES *************************************+/
+     *
+     */
 
     private String name;
     private String photo;
@@ -14,6 +20,7 @@ public class PlanSport implements Comparable<PlanSport>,Parcelable{
     private String isOk;
 
     public PlanSport() {
+
     }
 
     public PlanSport(String name, String photo, double timeStart, double timeEnd, String id, String isOk) {
@@ -24,6 +31,10 @@ public class PlanSport implements Comparable<PlanSport>,Parcelable{
         this.id = id;
         this.isOk = isOk;
     }
+
+    /******************************** COMPARA POR TIEMPO DE EMPIECE *************************************+/
+     *
+     */
 
     @Override
     public int compareTo(PlanSport o) {
@@ -36,43 +47,9 @@ public class PlanSport implements Comparable<PlanSport>,Parcelable{
         return 0;
     }
 
-
-    protected PlanSport(Parcel in) {
-        name = in.readString();
-        photo = in.readString();
-        timeStart = in.readInt();
-        timeEnd = in.readInt();
-        id = in.readString();
-        isOk = in.readString();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(name);
-        dest.writeString(photo);
-        dest.writeDouble(timeStart);
-        dest.writeDouble(timeEnd);
-        dest.writeString(id);
-        dest.writeString(isOk);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<PlanSport> CREATOR = new Creator<PlanSport>() {
-        @Override
-        public PlanSport createFromParcel(Parcel in) {
-            return new PlanSport(in);
-        }
-
-        @Override
-        public PlanSport[] newArray(int size) {
-            return new PlanSport[size];
-        }
-    };
-
+    /******************************** GETTERS Y SETTERS *************************************+/
+     *
+     */
 
     public String getName() {
         return name;
@@ -122,11 +99,44 @@ public class PlanSport implements Comparable<PlanSport>,Parcelable{
         this.isOk = isOk;
     }
 
-    @Override
-    public String toString() {
-        return "PlanSport{" +
-                ", timeStart=" + timeStart +
-                ", timeEnd=" + timeEnd +
-                '}';
+    /******************************** Parcelable *************************************+/
+     *
+     */
+
+    protected PlanSport(Parcel in) {
+        name = in.readString();
+        photo = in.readString();
+        timeStart = in.readInt();
+        timeEnd = in.readInt();
+        id = in.readString();
+        isOk = in.readString();
     }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeString(photo);
+        dest.writeDouble(timeStart);
+        dest.writeDouble(timeEnd);
+        dest.writeString(id);
+        dest.writeString(isOk);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<PlanSport> CREATOR = new Creator<PlanSport>() {
+        @Override
+        public PlanSport createFromParcel(Parcel in) {
+            return new PlanSport(in);
+        }
+
+        @Override
+        public PlanSport[] newArray(int size) {
+            return new PlanSport[size];
+        }
+    };
+
 }

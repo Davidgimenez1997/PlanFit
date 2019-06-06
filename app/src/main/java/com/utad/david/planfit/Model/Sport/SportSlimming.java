@@ -3,7 +3,13 @@ package com.utad.david.planfit.Model.Sport;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class SportSlimming implements Parcelable,Comparable<SportSlimming>{
+public class SportSlimming
+        implements Parcelable,
+        Comparable<SportSlimming>{
+
+    /******************************** VARIABLES *************************************+/
+     *
+     */
 
     private String name;
     private String photo;
@@ -12,31 +18,21 @@ public class SportSlimming implements Parcelable,Comparable<SportSlimming>{
     private String type;
 
     public SportSlimming() {
+
     }
 
-    protected SportSlimming(Parcel in) {
-        name = in.readString();
-        photo = in.readString();
-        video = in.readString();
-        description = in.readString();
-    }
-
-    public static final Creator<SportSlimming> CREATOR = new Creator<SportSlimming>() {
-        @Override
-        public SportSlimming createFromParcel(Parcel in) {
-            return new SportSlimming(in);
-        }
-
-        @Override
-        public SportSlimming[] newArray(int size) {
-            return new SportSlimming[size];
-        }
-    };
+    /******************************** COMPARA POR NOMBRE ALFABETICAMENTE *************************************+/
+     *
+     */
 
     @Override
     public int compareTo(SportSlimming o) {
         return this.getName().compareTo(o.getName());
     }
+
+    /******************************** GETTERS Y SETTERS *************************************+/
+     *
+     */
 
     public String getName() {
         return name;
@@ -70,6 +66,37 @@ public class SportSlimming implements Parcelable,Comparable<SportSlimming>{
         this.description = description;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    /******************************** Parcelable *************************************+/
+     *
+     */
+
+    protected SportSlimming(Parcel in) {
+        name = in.readString();
+        photo = in.readString();
+        video = in.readString();
+        description = in.readString();
+    }
+
+    public static final Creator<SportSlimming> CREATOR = new Creator<SportSlimming>() {
+        @Override
+        public SportSlimming createFromParcel(Parcel in) {
+            return new SportSlimming(in);
+        }
+
+        @Override
+        public SportSlimming[] newArray(int size) {
+            return new SportSlimming[size];
+        }
+    };
+
     @Override
     public int describeContents() {
         return 0;
@@ -81,13 +108,5 @@ public class SportSlimming implements Parcelable,Comparable<SportSlimming>{
         dest.writeString(photo);
         dest.writeString(video);
         dest.writeString(description);
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 }

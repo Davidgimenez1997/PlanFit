@@ -3,7 +3,13 @@ package com.utad.david.planfit.Model.Sport;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class SportToning implements Parcelable,Comparable<SportToning> {
+public class SportToning
+        implements Parcelable,
+        Comparable<SportToning> {
+
+    /******************************** VARIABLES *************************************+/
+     *
+     */
 
     private String name;
     private String photo;
@@ -12,31 +18,22 @@ public class SportToning implements Parcelable,Comparable<SportToning> {
     private String type;
 
     public SportToning() {
+
     }
 
-    protected SportToning(Parcel in) {
-        name = in.readString();
-        photo = in.readString();
-        video = in.readString();
-        description = in.readString();
-    }
-
-    public static final Creator<SportToning> CREATOR = new Creator<SportToning>() {
-        @Override
-        public SportToning createFromParcel(Parcel in) {
-            return new SportToning(in);
-        }
-
-        @Override
-        public SportToning[] newArray(int size) {
-            return new SportToning[size];
-        }
-    };
+    /******************************** COMPARA POR NOMBRE ALFABETICAMENTE *************************************+/
+     *
+     */
 
     @Override
     public int compareTo(SportToning o) {
         return this.getName().compareTo(o.getName());
     }
+
+
+    /******************************** GETTERS Y SETTERS *************************************+/
+     *
+     */
 
     public String getType() {
         return type;
@@ -77,6 +74,30 @@ public class SportToning implements Parcelable,Comparable<SportToning> {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    /******************************** Parcelable *************************************+/
+     *
+     */
+
+
+    protected SportToning(Parcel in) {
+        name = in.readString();
+        photo = in.readString();
+        video = in.readString();
+        description = in.readString();
+    }
+
+    public static final Creator<SportToning> CREATOR = new Creator<SportToning>() {
+        @Override
+        public SportToning createFromParcel(Parcel in) {
+            return new SportToning(in);
+        }
+
+        @Override
+        public SportToning[] newArray(int size) {
+            return new SportToning[size];
+        }
+    };
 
     @Override
     public int describeContents() {

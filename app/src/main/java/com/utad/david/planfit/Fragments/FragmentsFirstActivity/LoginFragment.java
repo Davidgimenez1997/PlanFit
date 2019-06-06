@@ -3,10 +3,8 @@ package com.utad.david.planfit.Fragments.FragmentsFirstActivity;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
@@ -30,19 +28,14 @@ import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 import java.util.regex.Pattern;
 
-public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdminLoginAndRegisterListener {
+public class LoginFragment extends Fragment
+        implements FirebaseAdmin.FirebaseAdminLoginAndRegisterListener {
 
-    private OnFragmentInteractionListener mListener;
+    /******************************** VARIABLES *************************************+/
+     *
+     */
 
-    public LoginFragment() {}
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        Fabric.with(getContext(), new Crashlytics());
-    }
-
+    private Callback mListener;
     private EditText emailLogin;
     private EditText passwordLogin;
     private Button buttonLogin;
@@ -52,16 +45,87 @@ public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
     private ProgressDialog mProgress;
     public Context context;
 
+    /******************************** INTERFAZ *************************************+/
+     *
+     */
+
+    public interface Callback {
+        void clickButtonLogin();
+        void clickButtonRegister();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof Callback) {
+            mListener = (Callback) context;
+            this.context = context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement Callback");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Fabric.with(getContext(), new Crashlytics());
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
        View view = inflater.inflate(R.layout.fragment_login, container, false);
+
        findViewById(view);
        onClickButtonLogin();
        onClickButtonRegister();
        configView();
        checkStatusUserFirebase();
        showDialog();
+
        return view;
+    }
+
+    /******************************** CONFIGURA VISTA *************************************+/
+     *
+     */
+
+    private void configView(){
+        emailLogin.setText("");
+        passwordLogin.setText("");
+        emailLogin.addTextChangedListener(textWatcherLoginFragment);
+        passwordLogin.addTextChangedListener(textWatcherLoginFragment);
+    }
+
+    private void findViewById(View view){
+        emailLogin = view.findViewById(R.id.emailLogin);
+        passwordLogin = view.findViewById(R.id.passwordLogin);
+        buttonLogin = view.findViewById(R.id.buttonLogin);
+        buttonRegister = view.findViewById(R.id.buttonRegister);
+    }
+
+    /******************************** CONFIGURA EL ESTADO DEL USUARIO *************************************+/
+     *
+     */
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
+            SessionUser.getInstance().firebaseAdmin.mAuth.addAuthStateListener(SessionUser.getInstance().firebaseAdmin.authStateListener);
+            SessionUser.getInstance().firebaseAdmin.setFirebaseAdminLoginAndRegisterListener(this);
+            SessionUser.getInstance().firebaseAdmin.mAuth = FirebaseAuth.getInstance();
+        }else{
+            Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
+        }
     }
 
     private void checkStatusUserFirebase(){
@@ -79,6 +143,10 @@ public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
         };
     }
 
+    /******************************** CONFIGURA EL DIALOGO *************************************+/
+     *
+     */
+
     private void showDialog(){
         mProgress = new ProgressDialog(getContext());
         mProgress.setTitle(getString(R.string.title_login));
@@ -87,31 +155,9 @@ public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
         mProgress.setIndeterminate(true);
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
-            SessionUser.getInstance().firebaseAdmin.mAuth.addAuthStateListener(SessionUser.getInstance().firebaseAdmin.authStateListener);
-            SessionUser.getInstance().firebaseAdmin.setFirebaseAdminLoginAndRegisterListener(this);
-            SessionUser.getInstance().firebaseAdmin.mAuth = FirebaseAuth.getInstance();
-        }else{
-            Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
-        }
-    }
-
-    private void configView(){
-        emailLogin.setText("");
-        passwordLogin.setText("");
-        emailLogin.addTextChangedListener(textWatcherLoginFragment);
-        passwordLogin.addTextChangedListener(textWatcherLoginFragment);
-    }
-
-    private void findViewById(View view){
-        emailLogin = view.findViewById(R.id.emailLogin);
-        passwordLogin = view.findViewById(R.id.passwordLogin);
-        buttonLogin = view.findViewById(R.id.buttonLogin);
-        buttonRegister = view.findViewById(R.id.buttonRegister);
-    }
+    /******************************** ONCLICK LOGIN *************************************+/
+     *
+     */
 
     private void onClickButtonLogin(){
             buttonLogin.setOnClickListener(v -> {
@@ -131,6 +177,10 @@ public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
             });
     }
 
+    /******************************** ONCLICK REGISTER *************************************+/
+     *
+     */
+
     private void onClickButtonRegister(){
         buttonRegister.setOnClickListener(v -> {
             if(mListener!=null){
@@ -138,6 +188,10 @@ public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
             }
         });
     }
+
+    /******************************** CONFIGURA EDITTEXT DEL LOGIN *************************************+/
+     *
+     */
 
     private TextWatcher textWatcherLoginFragment = new TextWatcher() {
         @Override
@@ -191,38 +245,9 @@ public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
         }
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-            this.context = context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    @Override
-    public void singInWithEmailAndPassword(boolean end) {
-        if (end == true) {
-            Toast.makeText(getContext(), getString(R.string.info_login_ok), Toast.LENGTH_LONG).show();
-            mProgress.dismiss();
-            Intent intent = new Intent(getContext(),MainMenuActivity.class);
-            startActivity(intent);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            getActivity().finish();
-        } else {
-            mProgress.dismiss();
-            errorSingInRegister(getString(R.string.err_login_fail));
-        }
-    }
+    /******************************** ERROR AL INICIAR SESION *************************************+/
+     *
+     */
 
     private void errorSingInRegister(String title){
         if(mListener!=null){
@@ -240,11 +265,27 @@ public class LoginFragment extends Fragment implements FirebaseAdmin.FirebaseAdm
         }
     }
 
+    /******************************** CALLBACK DE FIREBASE *************************************+/
+     *
+     */
+
+    @Override
+    public void singInWithEmailAndPassword(boolean end) {
+        if (end == true) {
+            Toast.makeText(getContext(), getString(R.string.info_login_ok), Toast.LENGTH_LONG).show();
+            mProgress.dismiss();
+            Intent intent = new Intent(getContext(),MainMenuActivity.class);
+            startActivity(intent);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            getActivity().finish();
+        } else {
+            mProgress.dismiss();
+            errorSingInRegister(getString(R.string.err_login_fail));
+        }
+    }
+
     @Override
     public void registerWithEmailAndPassword(boolean end) {}
 
-    public interface OnFragmentInteractionListener {
-        void clickButtonLogin();
-        void clickButtonRegister();
-    }
+
 }

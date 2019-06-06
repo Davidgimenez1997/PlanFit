@@ -3,7 +3,13 @@ package com.utad.david.planfit.Model.Nutrition;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class NutritionGainVolume implements Parcelable, Comparable<NutritionGainVolume>{
+public class NutritionGainVolume
+        implements Parcelable,
+        Comparable<NutritionGainVolume>{
+
+    /******************************** VARIABLES *************************************+/
+     *
+     */
 
     private String name;
     private String photo;
@@ -12,31 +18,21 @@ public class NutritionGainVolume implements Parcelable, Comparable<NutritionGain
     private String type;
 
     public NutritionGainVolume() {
+
     }
 
-    protected NutritionGainVolume(Parcel in) {
-        name = in.readString();
-        photo = in.readString();
-        url = in.readString();
-        description = in.readString();
-    }
-
-    public static final Creator<NutritionGainVolume> CREATOR = new Creator<NutritionGainVolume>() {
-        @Override
-        public NutritionGainVolume createFromParcel(Parcel in) {
-            return new NutritionGainVolume(in);
-        }
-
-        @Override
-        public NutritionGainVolume[] newArray(int size) {
-            return new NutritionGainVolume[size];
-        }
-    };
+    /******************************** COMPARA POR NOMBRE ALFABETICAMENTE *************************************+/
+     *
+     */
 
     @Override
     public int compareTo(NutritionGainVolume o) {
         return this.getName().compareTo(o.getName());
     }
+
+    /******************************** GETTERS Y SETTERS *************************************+/
+     *
+     */
 
     public String getType() {
         return type;
@@ -77,6 +73,29 @@ public class NutritionGainVolume implements Parcelable, Comparable<NutritionGain
     public void setDescription(String description) {
         this.description = description;
     }
+
+    /******************************** Parcelable *************************************+/
+     *
+     */
+
+    protected NutritionGainVolume(Parcel in) {
+        name = in.readString();
+        photo = in.readString();
+        url = in.readString();
+        description = in.readString();
+    }
+
+    public static final Creator<NutritionGainVolume> CREATOR = new Creator<NutritionGainVolume>() {
+        @Override
+        public NutritionGainVolume createFromParcel(Parcel in) {
+            return new NutritionGainVolume(in);
+        }
+
+        @Override
+        public NutritionGainVolume[] newArray(int size) {
+            return new NutritionGainVolume[size];
+        }
+    };
 
     @Override
     public int describeContents() {

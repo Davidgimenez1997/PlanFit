@@ -12,7 +12,14 @@ import com.utad.david.planfit.Data.SessionUser;
 import com.crashlytics.android.Crashlytics;
 import io.fabric.sdk.android.Fabric;
 
-public class FirstActivity extends AppCompatActivity implements LoginFragment.OnFragmentInteractionListener, RegisterFragment.OnFragmentInteractionListener, RegisterDetailsFragmet.OnFragmentInteractionListener {
+public class FirstActivity extends AppCompatActivity
+        implements LoginFragment.Callback,
+        RegisterFragment.Callback,
+        RegisterDetailsFragmet.Callback {
+
+    /******************************** VARIABLES *************************************+/
+     *
+     */
 
     private LoginFragment loginFragment;
     private RegisterFragment registerFragment;
@@ -30,11 +37,18 @@ public class FirstActivity extends AppCompatActivity implements LoginFragment.On
                 return;
             }
             loginFragment = new LoginFragment();
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.frameLayout_FirstActivity, loginFragment).commit();
+
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.frameLayout_FirstActivity, loginFragment)
+                    .commit();
         }
 
     }
+
+    /******************************** LoginFragment.Callback *************************************+/
+     *
+     */
 
     @Override
     public void clickButtonLogin() {
@@ -46,14 +60,10 @@ public class FirstActivity extends AppCompatActivity implements LoginFragment.On
         new RegisterAsyncTask().execute();
     }
 
-    @Override
-    public void clickButtonRegister() {
-        registerFragment = new RegisterFragment();
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.frameLayout_FirstActivity, registerFragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
-    }
+
+    /******************************** RegisterFragment.Callback *************************************+/
+     *
+     */
 
     @Override
     public void clickButtonContinue() {
@@ -73,6 +83,20 @@ public class FirstActivity extends AppCompatActivity implements LoginFragment.On
         transaction.commit();
     }
 
+    /******************************** RegisterDetailsFragmet.Callback *************************************+/
+     *
+     */
+
+    @Override
+    public void clickButtonRegister() {
+        registerFragment = new RegisterFragment();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.frameLayout_FirstActivity, registerFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+
     @Override
     public void clickButtonBackDetails() {
         registerFragment = new RegisterFragment();
@@ -82,6 +106,9 @@ public class FirstActivity extends AppCompatActivity implements LoginFragment.On
         transaction.commit();
     }
 
+    /******************************** ASYNCTASK PARA LOGEAR Y REGISTRAR *************************************+/
+     *
+     */
 
     private class LoginAsyncTask extends AsyncTask<Void, Void, Void> {
 

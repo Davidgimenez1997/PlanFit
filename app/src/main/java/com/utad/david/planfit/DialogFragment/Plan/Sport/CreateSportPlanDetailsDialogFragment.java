@@ -24,6 +24,7 @@ import com.utad.david.planfit.Model.Plan.PlanSport;
 import com.utad.david.planfit.Model.Sport.DefaultSport;
 import com.utad.david.planfit.R;
 import com.utad.david.planfit.Utils.Constants;
+import com.utad.david.planfit.Utils.Utils;
 import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 
@@ -32,10 +33,86 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class CreateSportPlanDetailsDialogFragment extends DialogFragment implements FirebaseAdmin.FirebaseAdminCreateShowPlanSport{
+public class CreateSportPlanDetailsDialogFragment extends DialogFragment
+        implements FirebaseAdmin.FirebaseAdminCreateShowPlanSport{
+
+    /******************************** VARIABLES *************************************+/
+     *
+     */
 
     private static String SPORT = Constants.DeportesPlanDetails.EXTRA_SPORT;
     private DefaultSport defaultSport;
+
+    private TextView textViewTitle;
+    private ImageView imageViewSport;
+    private Spinner spinnerStart;
+    private Spinner spinnerEnd;
+    private Button buttonSave;
+    private Button buttonClose;
+    private Button buttonDelete;
+    private Callback listener;
+    private String timeStart;
+    private String timeEnd;
+    private PlanSport current;
+
+    private List<PlanSport> planSports;
+
+    /******************************** PROGRESS DIALOG Y METODOS *************************************+/
+     *
+     */
+
+    private ProgressDialog progressDialog;
+
+    public void showLoading() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            return;
+        }
+        progressDialog = new ProgressDialog(getContext(), R.style.TransparentProgressDialog);
+        progressDialog.show();
+        progressDialog.setContentView(R.layout.progress_dialog);
+        progressDialog.setCancelable(false);
+        RotateAnimation rotate = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        rotate.setInterpolator(new LinearInterpolator());
+        rotate.setDuration(1000);
+        rotate.setRepeatCount(Animation.INFINITE);
+        ImageView ivLoading = ButterKnife.findById(progressDialog, R.id.image_cards_animation);
+        ivLoading.startAnimation(rotate);
+        progressDialog.show();
+    }
+
+    public void hideLoading() {
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        hideLoading();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        hideLoading();
+    }
+
+    /******************************** INTERFAZ *************************************+/
+     *
+     */
+
+    public interface Callback {
+        void onClickClose();
+    }
+
+    public void setListener(Callback listener) {
+        this.listener = listener;
+    }
+
+    /******************************** NEW INSTANCE *************************************+/
+     *
+     */
 
     public static CreateSportPlanDetailsDialogFragment newInstance(DefaultSport defaultSport) {
         CreateSportPlanDetailsDialogFragment fragment = new CreateSportPlanDetailsDialogFragment();
@@ -45,25 +122,9 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment impleme
         return fragment;
     }
 
-    public interface CallbackCreateSport{
-        void onClickClose();
-    }
-
-    private TextView textViewTitle;
-    private ImageView imageViewSport;
-    private Spinner spinnerStart;
-    private Spinner spinnerEnd;
-    private Button buttonSave;
-    private Button buttonClose;
-    private Button buttonDelete;
-    private CallbackCreateSport listener;
-    private String timeStart;
-    private String timeEnd;
-    private PlanSport current;
-
-    public void setListener(CallbackCreateSport listener) {
-        this.listener = listener;
-    }
+    /******************************** GET ARGUMENTS *************************************+/
+     *
+     */
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -84,6 +145,7 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment impleme
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.create_sport_plan_details_dialog_fragment, container, false);
         view.setBackgroundResource(R.drawable.corner_dialog_fragment);
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -109,6 +171,20 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment impleme
         return view;
     }
 
+    /******************************** CONFIGURA VISTA *************************************+/
+     *
+     */
+
+    private void findById(View view) {
+        textViewTitle = view.findViewById(R.id.textTitleCreateSport);
+        imageViewSport = view.findViewById(R.id.imageViewCreateSport);
+        spinnerStart = view.findViewById(R.id.spinner_comienzo);
+        spinnerEnd = view.findViewById(R.id.spinner_fin);
+        buttonSave = view.findViewById(R.id.save_create_sport);
+        buttonDelete = view.findViewById(R.id.close_create_sport);
+        buttonClose = view.findViewById(R.id.close_create_sport2);
+    }
+
     private void configureSpinnerDiseng() {
         ArrayAdapter spinnerArrayAdapter = ArrayAdapter.createFromResource(getContext(), R.array.timePlan, R.layout.spinner_item);
         spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_item);
@@ -118,6 +194,15 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment impleme
         spinnerArrayAdapter1.setDropDownViewResource(R.layout.spinner_item);
         spinnerStart.setAdapter(spinnerArrayAdapter1);
     }
+
+    private void putData() {
+        textViewTitle.setText(defaultSport.getName());
+        Utils.loadImage(defaultSport.getPhoto(),imageViewSport,Utils.PLACEHOLDER_GALLERY);
+    }
+
+    /******************************** ONCLICK SPINNER *************************************+/
+     *
+     */
 
     private void configureSpinnerStart() {
         spinnerStart.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -141,6 +226,10 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment impleme
         });
     }
 
+    /******************************** CIERRA LA PANTALLA *************************************+/
+     *
+     */
+
     private void onClickButtonClose() {
         buttonClose.setOnClickListener(v -> {
             if(listener!=null){
@@ -148,6 +237,10 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment impleme
             }
         });
     }
+
+    /******************************** GUARDAR PLAN *************************************+/
+     *
+     */
 
     private void onClickButtonSave() {
         buttonSave.setOnClickListener(v -> {
@@ -175,8 +268,12 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment impleme
         });
     }
 
-    private double convertStringToInt(String timeStart){
-        String [] parts = timeStart.split(":");
+    /******************************** CONVIERTE STRING A INT *************************************+/
+     *
+     */
+
+    private double convertStringToInt(String message){
+        String [] parts = message.split(":");
         String first = parts[0];
         String second = parts[1];
         StringBuilder stringBuilder = new StringBuilder();
@@ -186,6 +283,10 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment impleme
         return Double.parseDouble(stringBuilder.toString());
     }
 
+    /******************************** BORRAR PLAN *************************************+/
+     *
+     */
+
     private void onClickButtonDelete(){
         buttonDelete.setOnClickListener(v -> {
             showLoading();
@@ -193,24 +294,9 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment impleme
         });
     }
 
-    private void findById(View view) {
-        textViewTitle = view.findViewById(R.id.textTitleCreateSport);
-        imageViewSport = view.findViewById(R.id.imageViewCreateSport);
-        spinnerStart = view.findViewById(R.id.spinner_comienzo);
-        spinnerEnd = view.findViewById(R.id.spinner_fin);
-        buttonSave = view.findViewById(R.id.save_create_sport);
-        buttonDelete = view.findViewById(R.id.close_create_sport);
-        buttonClose = view.findViewById(R.id.close_create_sport2);
-    }
-
-    private void putData() {
-        RequestOptions requestOptions = new RequestOptions();
-        textViewTitle.setText(defaultSport.getName());
-        requestOptions.placeholder(R.drawable.icon_gallery);
-        Glide.with(this).load(defaultSport.getPhoto()).into(imageViewSport);
-    }
-
-    private List<PlanSport> planSports;
+    /******************************** CALLBACK DE FIREBASE *************************************+/
+     *
+     */
 
     @Override
     public void downloadSportPlanFirebase(boolean end) {
@@ -289,46 +375,8 @@ public class CreateSportPlanDetailsDialogFragment extends DialogFragment impleme
         }
     }
 
-    private ProgressDialog progressDialog;
-
-    public void showLoading() {
-        if (progressDialog != null && progressDialog.isShowing()) {
-            return;
-        }
-        progressDialog = new ProgressDialog(getContext(), R.style.TransparentProgressDialog);
-        progressDialog.show();
-        progressDialog.setContentView(R.layout.progress_dialog);
-        progressDialog.setCancelable(false);
-        RotateAnimation rotate = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        rotate.setInterpolator(new LinearInterpolator());
-        rotate.setDuration(1000);
-        rotate.setRepeatCount(Animation.INFINITE);
-        ImageView ivLoading = ButterKnife.findById(progressDialog, R.id.image_cards_animation);
-        ivLoading.startAnimation(rotate);
-        progressDialog.show();
-    }
-
-    public void hideLoading() {
-        if (progressDialog != null) {
-            progressDialog.dismiss();
-        }
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        hideLoading();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        hideLoading();
-    }
-
     @Override
     public void updateSportPlanFirebase(boolean end) {}
-
     @Override
     public void emptySportPlanFirebase(boolean end) {}
 

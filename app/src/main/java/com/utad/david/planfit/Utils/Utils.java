@@ -6,7 +6,11 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.widget.ImageView;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.utad.david.planfit.PlanFitApplication;
+import com.utad.david.planfit.R;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -17,15 +21,26 @@ import java.util.Locale;
 
 public class Utils {
 
+    public static final int PLACEHOLDER_USER = R.drawable.icon_user;
+    public static final int PLACEHOLDER_GALLERY = R.drawable.icon_gallery;
+
+    public static void loadImage(String imageUri, final ImageView imageView, final int placeholder) {
+        RequestOptions requestOptions = new RequestOptions();
+
+        Glide.with(PlanFitApplication.getAppContext())
+                .setDefaultRequestOptions(requestOptions.placeholder(placeholder))
+                .load(imageUri)
+                .into(imageView);
+    }
+
     public static File createImageFile() throws IOException {
-        // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
         String imageFileName = "TW_" + timeStamp + "_";
         File storageDir = PlanFitApplication.getAppContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
+                imageFileName,
+                ".jpg",
+                storageDir
         );
         return image;
     }
@@ -38,25 +53,11 @@ public class Utils {
     }
 
     public static Bitmap getBitmapFromPath(String photoPath) {
-        // Get the dimensions of the View
-//        int targetW = mImageView.getWidth();
-//        int targetH = mImageView.getHeight();
-
-        // Get the dimensions of the bitmap
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
         bmOptions.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(photoPath, bmOptions);
-        int photoW = bmOptions.outWidth;
-        int photoH = bmOptions.outHeight;
-
-        // Determine how much to scale down the image
-//        int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
-
-        // Decode the image file into a Bitmap sized to fill the View
         bmOptions.inJustDecodeBounds = false;
-//        bmOptions.inSampleSize = scaleFactor;
         bmOptions.inPurgeable = true;
-
         return BitmapFactory.decodeFile(photoPath, bmOptions);
     }
 }

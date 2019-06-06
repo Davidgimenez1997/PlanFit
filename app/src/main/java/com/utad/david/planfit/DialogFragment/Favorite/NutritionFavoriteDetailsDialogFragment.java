@@ -23,12 +23,43 @@ import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Model.Nutrition.DefaultNutrition;
 import com.utad.david.planfit.R;
 import com.utad.david.planfit.Utils.Constants;
+import com.utad.david.planfit.Utils.Utils;
 import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 
-public class NutritionFavoriteDetailsDialogFragment extends DialogFragment implements FirebaseAdmin.FirebaseAdminFavoriteNutrition{
+public class NutritionFavoriteDetailsDialogFragment extends DialogFragment
+        implements FirebaseAdmin.FirebaseAdminFavoriteNutrition{
+
+    /******************************** VARIABLES *************************************+/
+     *
+     */
 
     private DefaultNutrition defaultNutrition;
+
+    private TextView textViewTitle;
+    private Button buttonOpenRecipe;
+    private TextView textViewDescription;
+    private ImageView imageViewSport;
+    private Button buttonClose;
+    private Button buttonDelete;
+    private Callback listener;
+
+    /******************************** INTERFAZ *************************************+/
+     *
+     */
+
+    public interface Callback {
+        void onClickClose();
+        void setDataChange();
+    }
+
+    public void setListener(Callback listener) {
+        this.listener = listener;
+    }
+
+    /******************************** NEW INSTANCE *************************************+/
+     *
+     */
 
     public static NutritionFavoriteDetailsDialogFragment newInstance(DefaultNutrition defaultNutrition) {
         NutritionFavoriteDetailsDialogFragment fragment = new NutritionFavoriteDetailsDialogFragment();
@@ -38,10 +69,9 @@ public class NutritionFavoriteDetailsDialogFragment extends DialogFragment imple
         return fragment;
     }
 
-    public interface CallbackNutritionFavorite{
-        void onClickClose();
-        void setDataChange();
-    }
+    /******************************** GET ARGUMENTS *************************************+/
+     *
+     */
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -57,30 +87,25 @@ public class NutritionFavoriteDetailsDialogFragment extends DialogFragment imple
         defaultNutrition = getArguments().getParcelable(Constants.NutricionFavoriteDetails.EXTRA_NUTRICION);
     }
 
-    private TextView textViewTitle;
-    private Button buttonOpenRecipe;
-    private TextView textViewDescription;
-    private ImageView imageViewSport;
-    private Button buttonClose;
-    private Button buttonDelete;
-    private CallbackNutritionFavorite listener;
-
-    public void setListener(CallbackNutritionFavorite listener) {
-        this.listener = listener;
-    }
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.nutrition_favorite_dialog_fragment, container, false);
         view.setBackgroundResource(R.drawable.corner_dialog_fragment);
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
         findById(view);
         putData();
         onClickButtonOpenRecipe();
         onClickCloseButton();
         onClickDeleteButton();
+
         return view;
     }
+
+    /******************************** CONFIGURA VISTA *************************************+/
+     *
+     */
 
     public void findById(View v) {
         textViewTitle = v.findViewById(R.id.textTitleNutrition);
@@ -92,12 +117,14 @@ public class NutritionFavoriteDetailsDialogFragment extends DialogFragment imple
     }
 
     private void putData() {
-        RequestOptions requestOptions = new RequestOptions();
         textViewTitle.setText(defaultNutrition.getName());
         textViewDescription.setText(defaultNutrition.getDescription());
-        requestOptions.placeholder(R.drawable.icon_gallery);
-        Glide.with(this).load(defaultNutrition.getPhoto()).into(imageViewSport);
+        Utils.loadImage(defaultNutrition.getPhoto(),imageViewSport,Utils.PLACEHOLDER_GALLERY);
     }
+
+    /******************************** ABRE LA RECETA EN UN WEBVIEW *************************************+/
+     *
+     */
 
     private void onClickButtonOpenRecipe() {
         if(!UtilsNetwork.checkConnectionInternetDevice(getContext())){
@@ -114,6 +141,10 @@ public class NutritionFavoriteDetailsDialogFragment extends DialogFragment imple
         }
     }
 
+    /******************************** CIERRA LA PANTALLA *************************************+/
+     *
+     */
+
     private void onClickCloseButton(){
         buttonClose.setOnClickListener(v -> {
             if(listener!=null){
@@ -121,6 +152,10 @@ public class NutritionFavoriteDetailsDialogFragment extends DialogFragment imple
             }
         });
     }
+
+    /******************************** BORRAR DE FAVORITOS *************************************+/
+     *
+     */
 
     private void onClickDeleteButton(){
         if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
@@ -135,6 +170,10 @@ public class NutritionFavoriteDetailsDialogFragment extends DialogFragment imple
         }
     }
 
+    /******************************** CALLBACK DE FIREBASE *************************************+/
+     *
+     */
+
     @Override
     public void deleteFavoriteNutrition(boolean end) {
         if(end==true){
@@ -146,11 +185,8 @@ public class NutritionFavoriteDetailsDialogFragment extends DialogFragment imple
 
     @Override
     public void inserNutritionFavoriteFirebase(boolean end) {}
-
-
     @Override
     public void downloandCollectionNutritionFavorite(boolean end) {}
-
     @Override
     public void emptyCollectionNutritionFavorite(boolean end) {}
 

@@ -31,72 +31,25 @@ import io.fabric.sdk.android.Fabric;
 import java.util.Collections;
 import java.util.List;
 
-public class SportToningFragment extends Fragment implements FirebaseAdmin.FirebaseAdminDownloandFragmentData, SportDetailsDialogFragment.CallbackSport{
+public class SportToningFragment extends Fragment
+        implements FirebaseAdmin.FirebaseAdminDownloandFragmentData,
+        SportDetailsDialogFragment.Callback {
 
-    public SportToningFragment(){
-        // Required empty public constructor
-    }
+    /******************************** VARIABLES *************************************+/
+     *
+     */
 
     private SportToningFragment fragment;
     private Runnable toolbarRunnable;
-
-    public SportToningFragment newInstanceSlimming() {
-        this.fragment = this;
-        return this.fragment;
-    }
-
-    public void setToolbarRunnable(Runnable toolbarRunnable) {
-        this.toolbarRunnable = toolbarRunnable;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
-            showLoading();
-            SessionUser.getInstance().firebaseAdmin.setFirebaseAdminDownloandFragmentData(this);
-            SessionUser.getInstance().firebaseAdmin.downloadTiningSport();
-            Fabric.with(getContext(), new Crashlytics());
-        }else{
-            hideLoading();
-            Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
-        }
-
-    }
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private SportDetailsDialogFragment newFragment;
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_sport_recycleview, container, false);
-
-        if(toolbarRunnable != null) {
-            toolbarRunnable.run();
-        }
-
-        mRecyclerView = view.findViewById(R.id.recycler_view_sport);
-        mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new GridLayoutManager(getContext(), 2);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-
-        return view;
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-    }
+    /******************************** PROGRESS DIALOG Y METODOS *************************************+/
+     *
+     */
 
     private ProgressDialog progressDialog;
 
@@ -135,6 +88,75 @@ public class SportToningFragment extends Fragment implements FirebaseAdmin.Fireb
         hideLoading();
     }
 
+    /******************************** NEW INSTANCE *************************************+/
+     *
+     */
+
+    public SportToningFragment newInstanceSlimming() {
+        this.fragment = this;
+        return this.fragment;
+    }
+
+    /******************************** SET Runnable *************************************+/
+     *
+     */
+
+    public void setToolbarRunnable(Runnable toolbarRunnable) {
+        this.toolbarRunnable = toolbarRunnable;
+    }
+
+
+    /******************************** SET CALLBACK FIREBASE *************************************+/
+     *
+     */
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
+            showLoading();
+            SessionUser.getInstance().firebaseAdmin.setFirebaseAdminDownloandFragmentData(this);
+            SessionUser.getInstance().firebaseAdmin.downloadTiningSport();
+            Fabric.with(getContext(), new Crashlytics());
+        }else{
+            hideLoading();
+            Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
+        }
+
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_sport_recycleview, container, false);
+
+        if(toolbarRunnable != null) {
+            toolbarRunnable.run();
+        }
+
+        mRecyclerView = view.findViewById(R.id.recycler_view_sport);
+        mRecyclerView.setHasFixedSize(true);
+        mLayoutManager = new GridLayoutManager(getContext(), 2);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        return view;
+    }
+
+
+    /******************************** CALLBACK DE SportDetailsDialogFragment.Callback *************************************+/
+     *
+     */
+
+    @Override
+    public void onClickClose() {
+        newFragment.dismiss();
+    }
+
+    /******************************** CALLBACK DE FIREBASE *************************************+/
+     *
+     */
 
     @Override
     public void downloandCollectionSportToning(boolean end) {
@@ -160,22 +182,13 @@ public class SportToningFragment extends Fragment implements FirebaseAdmin.Fireb
     }
 
     @Override
-    public void onClickClose() {
-        newFragment.dismiss();
-    }
-
-    @Override
     public void downloandCollectionSportSlimming(boolean end) {}
-
     @Override
     public void downloandCollectionSportGainVolume(boolean end) {}
-
     @Override
     public void downloandCollectionNutritionSlimming(boolean end) {}
-
     @Override
     public void downloandCollectionNutritionToning(boolean end) {}
-
     @Override
     public void downloandCollectionNutritionGainVolume(boolean end) {}
 }

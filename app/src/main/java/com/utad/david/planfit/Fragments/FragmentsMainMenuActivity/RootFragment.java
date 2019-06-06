@@ -24,9 +24,100 @@ import io.fabric.sdk.android.Fabric;
 
 public class RootFragment extends Fragment{
 
+    /******************************** VARIABLES *************************************+/
+     *
+     */
+
     private static String SELECTED = "SELECTED";
     private int selected;
     private Runnable toolbarRunnable;
+    private Callback mListener;
+
+
+    private TextView textViewInfo;
+    private Button first_button;
+    private Button second_button;
+    private Button three_button;
+    private boolean isDeviceNetwork;
+
+    /******************************** INTERFAZ *************************************+/
+     *
+     */
+
+    public interface Callback {
+        void clickOnAdelgazarSport();
+        void clickOnTonificarSport();
+        void clickOnGanarVolumenSport();
+        void clickOnAdelgazarNutrition();
+        void clickOnTonificarNutrition();
+        void clickOnGanarVolumenNutrition();
+        void clickOnCreatePlan();
+        void clickOnShowPlan();
+        void clickSportFavorite();
+        void clickNutritionFavorite();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof Callback) {
+            mListener = (Callback) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement Callback");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+    /******************************** PROGRESS DIALOG Y METODOS *************************************+/
+     *
+     */
+
+    private ProgressDialog progressDialog;
+
+    public void showLoading() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            return;
+        }
+        progressDialog = new ProgressDialog(getContext(), R.style.TransparentProgressDialog);
+        progressDialog.show();
+        progressDialog.setContentView(R.layout.progress_dialog);
+        progressDialog.setCancelable(false);
+        RotateAnimation rotate = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        rotate.setInterpolator(new LinearInterpolator());
+        rotate.setDuration(1000);
+        rotate.setRepeatCount(Animation.INFINITE);
+        ImageView ivLoading = ButterKnife.findById(progressDialog, R.id.image_cards_animation);
+        ivLoading.startAnimation(rotate);
+        progressDialog.show();
+    }
+
+    public void hideLoading() {
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        hideLoading();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        hideLoading();
+    }
+
+    /******************************** NEW INSTANCE *************************************+/
+     *
+     */
 
     public static RootFragment newInstance(int selected) {
         RootFragment fragment = new RootFragment();
@@ -36,15 +127,18 @@ public class RootFragment extends Fragment{
         return fragment;
     }
 
-    private OnFragmentInteractionListener mListener;
+    /******************************** SET Runnable *************************************+/
+     *
+     */
 
     public void setToolbarRunnable(Runnable toolbarRunnable) {
         this.toolbarRunnable = toolbarRunnable;
     }
 
-    public RootFragment() {
-        // Required empty public constructor
-    }
+
+    /******************************** GET ARGUMENTS *************************************+/
+     *
+     */
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,11 +149,6 @@ public class RootFragment extends Fragment{
 
     }
 
-    private TextView textViewInfo;
-    private Button first_button;
-    private Button second_button;
-    private Button three_button;
-    private boolean isDeviceNetwork;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -100,6 +189,21 @@ public class RootFragment extends Fragment{
         return view;
     }
 
+    /******************************** CONFIGURA VISTA *************************************+/
+     *
+     */
+
+    private void findViewById(View view){
+        textViewInfo = view.findViewById(R.id.textViewInfo);
+        first_button = view.findViewById(R.id.first_button);
+        second_button = view.findViewById(R.id.second_button);
+        three_button = view.findViewById(R.id.three_button);
+    }
+
+    /******************************** CONFIGURA FAVORITOS *************************************+/
+     *
+     */
+
     private void configFavorite() {
         textViewInfo.setText(R.string.itemfavoritos);
         first_button.setText(R.string.first_nav_name);
@@ -132,6 +236,10 @@ public class RootFragment extends Fragment{
             }
         });
     }
+
+    /******************************** CONFIGURA DEPORTES *************************************+/
+     *
+     */
 
     private void configViewSport(){
         textViewInfo.setText(getString(R.string.first_nav_name));
@@ -176,6 +284,10 @@ public class RootFragment extends Fragment{
         });
     }
 
+    /******************************** CONFIGURA NUTRICION *************************************+/
+     *
+     */
+
     private void configViewNutrition(){
         textViewInfo.setText(getString(R.string.two_nav_name));
         first_button.setText(getString(R.string.adelgazar));
@@ -218,6 +330,10 @@ public class RootFragment extends Fragment{
         });
     }
 
+    /******************************** CONFIGURA PLAN *************************************+/
+     *
+     */
+
     private void configViewPlan(){
         textViewInfo.setText(getString(R.string.estas_preparado));
         first_button.setText(getString(R.string.crear_plan));
@@ -249,80 +365,6 @@ public class RootFragment extends Fragment{
                 mListener.clickOnShowPlan();
             }
         });
-    }
-
-    private void findViewById(View view){
-        textViewInfo = view.findViewById(R.id.textViewInfo);
-        first_button = view.findViewById(R.id.first_button);
-        second_button = view.findViewById(R.id.second_button);
-        three_button = view.findViewById(R.id.three_button);
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    private ProgressDialog progressDialog;
-
-    public void showLoading() {
-        if (progressDialog != null && progressDialog.isShowing()) {
-            return;
-        }
-        progressDialog = new ProgressDialog(getContext(), R.style.TransparentProgressDialog);
-        progressDialog.show();
-        progressDialog.setContentView(R.layout.progress_dialog);
-        progressDialog.setCancelable(false);
-        RotateAnimation rotate = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        rotate.setInterpolator(new LinearInterpolator());
-        rotate.setDuration(1000);
-        rotate.setRepeatCount(Animation.INFINITE);
-        ImageView ivLoading = ButterKnife.findById(progressDialog, R.id.image_cards_animation);
-        ivLoading.startAnimation(rotate);
-        progressDialog.show();
-    }
-
-    public void hideLoading() {
-        if (progressDialog != null) {
-            progressDialog.dismiss();
-        }
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        hideLoading();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        hideLoading();
-    }
-
-    public interface OnFragmentInteractionListener {
-        void clickOnAdelgazarSport();
-        void clickOnTonificarSport();
-        void clickOnGanarVolumenSport();
-        void clickOnAdelgazarNutrition();
-        void clickOnTonificarNutrition();
-        void clickOnGanarVolumenNutrition();
-        void clickOnCreatePlan();
-        void clickOnShowPlan();
-        void clickSportFavorite();
-        void clickNutritionFavorite();
     }
 }
 

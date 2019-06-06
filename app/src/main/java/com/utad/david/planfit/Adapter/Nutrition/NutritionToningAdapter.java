@@ -10,19 +10,20 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.utad.david.planfit.Model.Nutrition.NutritionToning;
 import com.utad.david.planfit.R;
+import com.utad.david.planfit.Utils.Utils;
 
 import java.util.List;
 
 public class NutritionToningAdapter extends RecyclerView.Adapter<NutritionToningAdapter.ToningViewHolder>  {
 
     private List<NutritionToning> nutritionTonings;
-    private OnItemClickListener listener;
+    private Callback listener;
 
-    public interface OnItemClickListener {
+    public interface Callback {
         void onItemClick(NutritionToning item);
     }
 
-    public NutritionToningAdapter(List<NutritionToning> nutritionTonings, OnItemClickListener listener) {
+    public NutritionToningAdapter(List<NutritionToning> nutritionTonings, Callback listener) {
         this.nutritionTonings = nutritionTonings;
         this.listener = listener;
     }
@@ -60,9 +61,7 @@ public class NutritionToningAdapter extends RecyclerView.Adapter<NutritionToning
 
         public void setData(NutritionToning nutritionToning){
             nameSlimming.setText(nutritionToning.getName());
-            RequestOptions requestOptions = new RequestOptions();
-            requestOptions.placeholder(R.drawable.icon_gallery);
-            Glide.with(itemView).setDefaultRequestOptions(requestOptions).load(nutritionToning.getPhoto()).into(photoSlimming);
+            Utils.loadImage(nutritionToning.getPhoto(),photoSlimming,Utils.PLACEHOLDER_GALLERY);
         }
     }
 

@@ -24,6 +24,7 @@ import com.utad.david.planfit.Model.Nutrition.DefaultNutrition;
 import com.utad.david.planfit.Model.Plan.PlanNutrition;
 import com.utad.david.planfit.R;
 import com.utad.david.planfit.Utils.Constants;
+import com.utad.david.planfit.Utils.Utils;
 import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 
@@ -31,7 +32,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class CreateNutritionPlanDetailsDialogFragment extends DialogFragment implements FirebaseAdmin.FirebaseAdminCreateShowPlanNutrition {
+public class CreateNutritionPlanDetailsDialogFragment extends DialogFragment
+        implements FirebaseAdmin.FirebaseAdminCreateShowPlanNutrition {
+
+    /******************************** VARIABLES *************************************+/
+     *
+     */
 
     private static String NUTRITION = Constants.NutricionPlanDetails.EXTRA_NUTRITION;
     private DefaultNutrition defaultNutrition;
@@ -41,6 +47,73 @@ public class CreateNutritionPlanDetailsDialogFragment extends DialogFragment imp
     private static String MERIENDA = Constants.TiposPlanNutricion.MERIENDA;
     private static String CENA = Constants.TiposPlanNutricion.CENA;
 
+    private TextView textViewTitle;
+    private ImageView imageViewNutrtion;
+    private Spinner spinnerType;
+    private Button buttonSave;
+    private Button buttonClose;
+    private Button buttonDelete;
+    private Callback listener;
+
+    private int type;
+    private List<PlanNutrition> planNutritions;
+
+    /******************************** PROGRESS DIALOG Y METODOS *************************************+/
+     *
+     */
+
+    private ProgressDialog progressDialog;
+
+    public void showLoading() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            return;
+        }
+        progressDialog = new ProgressDialog(getContext(), R.style.TransparentProgressDialog);
+        progressDialog.show();
+        progressDialog.setContentView(R.layout.progress_dialog);
+        progressDialog.setCancelable(false);
+        RotateAnimation rotate = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        rotate.setInterpolator(new LinearInterpolator());
+        rotate.setDuration(1000);
+        rotate.setRepeatCount(Animation.INFINITE);
+        ImageView ivLoading = ButterKnife.findById(progressDialog, R.id.image_cards_animation);
+        ivLoading.startAnimation(rotate);
+        progressDialog.show();
+    }
+
+    public void hideLoading() {
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        hideLoading();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        hideLoading();
+    }
+
+    /******************************** INTERFAZ *************************************+/
+     *
+     */
+
+    public interface Callback {
+        void onClickClose();
+    }
+
+    public void setListener(Callback listener) {
+        this.listener = listener;
+    }
+
+    /******************************** NEW INSTANCE *************************************+/
+     *
+     */
 
     public static CreateNutritionPlanDetailsDialogFragment newInstance(DefaultNutrition defaultNutrition) {
         CreateNutritionPlanDetailsDialogFragment fragment = new CreateNutritionPlanDetailsDialogFragment();
@@ -50,21 +123,9 @@ public class CreateNutritionPlanDetailsDialogFragment extends DialogFragment imp
         return fragment;
     }
 
-    public interface CallbackCreateNutrtion{
-        void onClickClose();
-    }
-
-    public void setListener(CallbackCreateNutrtion listener) {
-        this.listener = listener;
-    }
-
-    private TextView textViewTitle;
-    private ImageView imageViewNutrtion;
-    private Spinner spinnerType;
-    private Button buttonSave;
-    private Button buttonClose;
-    private Button buttonDelete;
-    private CallbackCreateNutrtion listener;
+    /******************************** GET ARGUMENTS *************************************+/
+     *
+     */
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -85,6 +146,7 @@ public class CreateNutritionPlanDetailsDialogFragment extends DialogFragment imp
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.create_nutrition_plan_details_dialog_fragment, container, false);
         view.setBackgroundResource(R.drawable.corner_dialog_fragment);
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -109,13 +171,33 @@ public class CreateNutritionPlanDetailsDialogFragment extends DialogFragment imp
         return view;
     }
 
+    /******************************** CONFIGURA VISTA *************************************+/
+     *
+     */
+
+    private void findById(View view) {
+        textViewTitle = view.findViewById(R.id.textTitleCreateSport);
+        imageViewNutrtion = view.findViewById(R.id.imageViewCreateSport);
+        spinnerType = view.findViewById(R.id.spinner_comienzo);
+        buttonSave = view.findViewById(R.id.save_create_sport);
+        buttonDelete = view.findViewById(R.id.close_create_sport);
+        buttonClose = view.findViewById(R.id.close_create_sport2);
+    }
+
     private void configureSpinnerDiseng() {
         ArrayAdapter spinnerArrayAdapter = ArrayAdapter.createFromResource(getContext(), R.array.nutrition, R.layout.spinner_item);
         spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_item);
         spinnerType.setAdapter(spinnerArrayAdapter);
     }
 
-    private int type;
+    private void putData() {
+        textViewTitle.setText(defaultNutrition.getName());
+        Utils.loadImage(defaultNutrition.getPhoto(),imageViewNutrtion,Utils.PLACEHOLDER_GALLERY);
+    }
+
+    /******************************** ONCLICK SPINNER *************************************+/
+     *
+     */
 
     private void configureSpinnerType() {
         spinnerType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -141,6 +223,10 @@ public class CreateNutritionPlanDetailsDialogFragment extends DialogFragment imp
         });
     }
 
+    /******************************** CIERRA LA PANTALLA *************************************+/
+     *
+     */
+
     private void onClickButtonClose() {
         buttonClose.setOnClickListener(v -> {
             if(listener!=null){
@@ -148,6 +234,10 @@ public class CreateNutritionPlanDetailsDialogFragment extends DialogFragment imp
             }
         });
     }
+
+    /******************************** GUARDAR PLAN *************************************+/
+     *
+     */
 
     private void onClickButtonSave() {
         buttonSave.setOnClickListener(v -> {
@@ -161,6 +251,10 @@ public class CreateNutritionPlanDetailsDialogFragment extends DialogFragment imp
         });
     }
 
+    /******************************** BORRAR PLAN *************************************+/
+     *
+     */
+
     private void onClickButtonDelete(){
         buttonDelete.setOnClickListener(v -> {
             showLoading();
@@ -168,23 +262,6 @@ public class CreateNutritionPlanDetailsDialogFragment extends DialogFragment imp
         });
     }
 
-    private void findById(View view) {
-        textViewTitle = view.findViewById(R.id.textTitleCreateSport);
-        imageViewNutrtion = view.findViewById(R.id.imageViewCreateSport);
-        spinnerType = view.findViewById(R.id.spinner_comienzo);
-        buttonSave = view.findViewById(R.id.save_create_sport);
-        buttonDelete = view.findViewById(R.id.close_create_sport);
-        buttonClose = view.findViewById(R.id.close_create_sport2);
-    }
-
-    private void putData() {
-        RequestOptions requestOptions = new RequestOptions();
-        textViewTitle.setText(defaultNutrition.getName());
-        requestOptions.placeholder(R.drawable.icon_gallery);
-        Glide.with(this).load(defaultNutrition.getPhoto()).into(imageViewNutrtion);
-    }
-
-    private List<PlanNutrition> planNutritions;
 
     @Override
     public void downloadNutritionPlanFirebase(boolean end) {
@@ -227,6 +304,10 @@ public class CreateNutritionPlanDetailsDialogFragment extends DialogFragment imp
         }
     }
 
+    /******************************** CALLBACK DE FIREBASE *************************************+/
+     *
+     */
+
     @Override
     public void insertNutritionPlanFirebase(boolean end) {
         if(end){
@@ -247,46 +328,8 @@ public class CreateNutritionPlanDetailsDialogFragment extends DialogFragment imp
         }
     }
 
-    private ProgressDialog progressDialog;
-
-    public void showLoading() {
-        if (progressDialog != null && progressDialog.isShowing()) {
-            return;
-        }
-        progressDialog = new ProgressDialog(getContext(), R.style.TransparentProgressDialog);
-        progressDialog.show();
-        progressDialog.setContentView(R.layout.progress_dialog);
-        progressDialog.setCancelable(false);
-        RotateAnimation rotate = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        rotate.setInterpolator(new LinearInterpolator());
-        rotate.setDuration(1000);
-        rotate.setRepeatCount(Animation.INFINITE);
-        ImageView ivLoading = ButterKnife.findById(progressDialog, R.id.image_cards_animation);
-        ivLoading.startAnimation(rotate);
-        progressDialog.show();
-    }
-
-    public void hideLoading() {
-        if (progressDialog != null) {
-            progressDialog.dismiss();
-        }
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        hideLoading();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        hideLoading();
-    }
-
     @Override
     public void updateNutritionPlanFirebase(boolean end) {}
-
     @Override
     public void emptyNutritionPlanFirebase(boolean end) {}
 }

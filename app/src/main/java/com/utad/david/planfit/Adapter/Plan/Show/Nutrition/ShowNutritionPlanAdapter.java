@@ -11,18 +11,16 @@ import com.utad.david.planfit.Utils.Constants;
 
 import java.util.ArrayList;
 
-import static com.utad.david.planfit.Utils.Constants.TiposPlanNutricion.COMIDA;
-
 public class ShowNutritionPlanAdapter extends RecyclerView.Adapter<ShowNutritionPlanAdapter.ShowPlanNutritionViewHolder> {
 
     private ArrayList<ArrayList<PlanNutrition>> planNutritions;
-    private OnItemClickListener listener;
+    private Callback listener;
 
-    public interface OnItemClickListener {
+    public interface Callback {
         void onItemClick(ArrayList<PlanNutrition> item);
     }
 
-    public ShowNutritionPlanAdapter(ArrayList<ArrayList<PlanNutrition>> planNutritions, OnItemClickListener listener) {
+    public ShowNutritionPlanAdapter(ArrayList<ArrayList<PlanNutrition>> planNutritions, Callback listener) {
         this.planNutritions = planNutritions;
         this.listener = listener;
     }
@@ -59,17 +57,23 @@ public class ShowNutritionPlanAdapter extends RecyclerView.Adapter<ShowNutrition
         }
 
         public void setData(ArrayList<PlanNutrition> planNutrition){
+
             for(int i=0;i<planNutrition.size();i++){
+
                 switch (planNutrition.get(i).getType()){
+
                     case Constants.TiposPlanNutricion.MODE_DESAYUNO:
                         timeStart.setText(Constants.TiposPlanNutricion.DESAYUNO);
                         break;
+
                     case Constants.TiposPlanNutricion.MODE_COMIDA:
                         timeStart.setText(Constants.TiposPlanNutricion.COMIDA);
                         break;
+
                     case Constants.TiposPlanNutricion.MODE_MERIENDA:
                         timeStart.setText(Constants.TiposPlanNutricion.MERIENDA);
                         break;
+
                     case Constants.TiposPlanNutricion.MODE_CENA:
                         timeStart.setText(Constants.TiposPlanNutricion.CENA);
                         break;

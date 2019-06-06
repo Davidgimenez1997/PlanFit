@@ -31,33 +31,15 @@ import io.fabric.sdk.android.Fabric;
 import java.util.Collections;
 import java.util.List;
 
-public class NutritionCreatePlanFragment extends Fragment implements FirebaseAdmin.FirebaseAdminFavoriteNutrition,CreateNutritionPlanDetailsDialogFragment.CallbackCreateNutrtion{
+public class NutritionCreatePlanFragment extends Fragment
+        implements FirebaseAdmin.FirebaseAdminFavoriteNutrition,
+        CreateNutritionPlanDetailsDialogFragment.Callback {
 
-    public NutritionCreatePlanFragment() {
-    }
+    /******************************** VARIABLES *************************************+/
+     *
+     */
 
     private NutritionCreatePlanFragment fragment;
-
-    public NutritionCreatePlanFragment newInstanceSlimming() {
-        this.fragment = this;
-        return this.fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
-            showLoading();
-            Fabric.with(getContext(), new Crashlytics());
-            SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteNutrition(this);
-            SessionUser.getInstance().firebaseAdmin.downloadAllNutritionFavorite();
-        }else{
-            hideLoading();
-            Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
-        }
-    }
-
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -65,68 +47,9 @@ public class NutritionCreatePlanFragment extends Fragment implements FirebaseAdm
     private CreateNutritionPlanDetailsDialogFragment newFragment;
     private Runnable toolbarRunnable;
 
-    public void setToolbarRunnable(Runnable toolbarRunnable) {
-        this.toolbarRunnable = toolbarRunnable;
-    }
-
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View  view =  inflater.inflate(R.layout.fragment_nutrition_create_plan, container, false);
-
-
-        if(toolbarRunnable != null) {
-            toolbarRunnable.run();
-        }
-
-        mRecyclerView = view.findViewById(R.id.recycler_view_nutrition);
-        linearLayout = view.findViewById(R.id.linear_empty_favorites);
-        mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new GridLayoutManager(getContext(), 2);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-
-        return view;
-    }
-
-    @Override
-    public void onClickClose() {
-        newFragment.dismiss();
-    }
-
-    @Override
-    public void downloandCollectionNutritionFavorite(boolean end) {
-        if(end==true){
-            hideLoading();
-            linearLayout.setVisibility(View.GONE);
-            mRecyclerView.setVisibility(View.VISIBLE);
-
-            List<DefaultNutrition> allFavoriteFavorite = SessionUser.getInstance().firebaseAdmin.allNutritionFavorite;
-
-            Collections.sort(allFavoriteFavorite);
-
-            mAdapter = new CreateNutritionPlanAdapter(allFavoriteFavorite, item -> {
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                Fragment prev = getFragmentManager().findFragmentByTag(Constants.TagDialogFragment.TAG);
-                if (prev != null) {
-                    transaction.remove(prev);
-                }
-                transaction.addToBackStack(null);
-                newFragment = CreateNutritionPlanDetailsDialogFragment.newInstance(item);
-                newFragment.setListener(fragment);
-                newFragment.show(transaction, Constants.TagDialogFragment.TAG);
-            });
-            mRecyclerView.setAdapter(mAdapter);
-        }
-    }
-
-    @Override
-    public void emptyCollectionNutritionFavorite(boolean end) {
-        if(end==true){
-            hideLoading();
-            linearLayout.setVisibility(View.VISIBLE);
-            mRecyclerView.setVisibility(View.GONE);
-        }
-    }
+    /******************************** PROGRESS DIALOG Y METODOS *************************************+/
+     *
+     */
 
     private ProgressDialog progressDialog;
 
@@ -165,9 +88,111 @@ public class NutritionCreatePlanFragment extends Fragment implements FirebaseAdm
         hideLoading();
     }
 
+    /******************************** NEW INSTANCE *************************************+/
+     *
+     */
+
+    public NutritionCreatePlanFragment newInstanceSlimming() {
+        this.fragment = this;
+        return this.fragment;
+    }
+
+    /******************************** SET Runnable *************************************+/
+     *
+     */
+
+    public void setToolbarRunnable(Runnable toolbarRunnable) {
+        this.toolbarRunnable = toolbarRunnable;
+    }
+
+
+    /******************************** SET CALLBACK FIREBASE *************************************+/
+     *
+     */
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
+            showLoading();
+            Fabric.with(getContext(), new Crashlytics());
+            SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteNutrition(this);
+            SessionUser.getInstance().firebaseAdmin.downloadAllNutritionFavorite();
+        }else{
+            hideLoading();
+            Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View  view =  inflater.inflate(R.layout.fragment_nutrition_create_plan, container, false);
+
+
+        if(toolbarRunnable != null) {
+            toolbarRunnable.run();
+        }
+
+        mRecyclerView = view.findViewById(R.id.recycler_view_nutrition);
+        linearLayout = view.findViewById(R.id.linear_empty_favorites);
+        mRecyclerView.setHasFixedSize(true);
+        mLayoutManager = new GridLayoutManager(getContext(), 2);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        return view;
+    }
+
+    /******************************** CreateNutritionPlanDetailsDialogFragment.Callback *************************************+/
+     *
+     */
+
+    @Override
+    public void onClickClose() {
+        newFragment.dismiss();
+    }
+
+    /******************************** CALLBACK FIREBASE *************************************+/
+     *
+     */
+
+    @Override
+    public void downloandCollectionNutritionFavorite(boolean end) {
+        if(end==true){
+            hideLoading();
+            linearLayout.setVisibility(View.GONE);
+            mRecyclerView.setVisibility(View.VISIBLE);
+
+            List<DefaultNutrition> allFavoriteFavorite = SessionUser.getInstance().firebaseAdmin.allNutritionFavorite;
+
+            Collections.sort(allFavoriteFavorite);
+
+            mAdapter = new CreateNutritionPlanAdapter(allFavoriteFavorite, item -> {
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                Fragment prev = getFragmentManager().findFragmentByTag(Constants.TagDialogFragment.TAG);
+                if (prev != null) {
+                    transaction.remove(prev);
+                }
+                transaction.addToBackStack(null);
+                newFragment = CreateNutritionPlanDetailsDialogFragment.newInstance(item);
+                newFragment.setListener(fragment);
+                newFragment.show(transaction, Constants.TagDialogFragment.TAG);
+            });
+            mRecyclerView.setAdapter(mAdapter);
+        }
+    }
+
+    @Override
+    public void emptyCollectionNutritionFavorite(boolean end) {
+        if(end==true){
+            hideLoading();
+            linearLayout.setVisibility(View.VISIBLE);
+            mRecyclerView.setVisibility(View.GONE);
+        }
+    }
+
     @Override
     public void inserNutritionFavoriteFirebase(boolean end) {}
-
     @Override
     public void deleteFavoriteNutrition(boolean end) {}
 }

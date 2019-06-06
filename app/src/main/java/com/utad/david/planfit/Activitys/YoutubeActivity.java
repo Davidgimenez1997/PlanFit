@@ -14,6 +14,11 @@ import io.fabric.sdk.android.Fabric;
 
 public class YoutubeActivity extends YouTubeBaseActivity {
 
+
+    /******************************** VARIABLES *************************************+/
+     *
+     */
+
     private YouTubePlayerView youTubePlayerView;
     private YouTubePlayer.OnInitializedListener onInitializedListener;
     private String urlData;
@@ -30,6 +35,10 @@ public class YoutubeActivity extends YouTubeBaseActivity {
         urlData = getIntent().getStringExtra(URL);
         onInitializedListener();
     }
+
+    /******************************** CONFIGURA LA REPRODUCION DEL VIDEO *************************************+/
+     *
+     */
 
     private void onInitializedListener(){
         onInitializedListener = new YouTubePlayer.OnInitializedListener(){

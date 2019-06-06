@@ -16,14 +16,50 @@ import io.fabric.sdk.android.Fabric;
 
 public class FragmentCreatePlan extends Fragment {
 
-    public FragmentCreatePlan() {
-        // Required empty public constructor
-    }
+    /******************************** VARIABLES *************************************+/
+     *
+     */
+
+    private Button buttonSelectSport;
+    private Button buttonSelectNutrition;
+    private Button buttonSaveAndExit;
+    private Callback mlistener;
+    private Runnable toolbarRunnable;
+
+    /******************************** INTERFAZ *************************************+/
+     *
+     */
 
     public interface Callback {
         void onClickSportPlan();
         void onClickNutritionPlan();
         void onClickSaveAndExit();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof Callback) {
+            mlistener = (Callback) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement Callback");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mlistener = null;
+
+    }
+
+    /******************************** SET Runnable *************************************+/
+     *
+     */
+
+    public void setToolbarRunnable(Runnable toolbarRunnable) {
+        this.toolbarRunnable = toolbarRunnable;
     }
 
     @Override
@@ -37,18 +73,6 @@ public class FragmentCreatePlan extends Fragment {
         }
 
     }
-
-    private Button buttonSelectSport;
-    private Button buttonSelectNutrition;
-    private Button buttonSaveAndExit;
-    private Callback mlistener;
-    private Runnable toolbarRunnable;
-
-    public void setToolbarRunnable(Runnable toolbarRunnable) {
-        this.toolbarRunnable = toolbarRunnable;
-    }
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -67,6 +91,11 @@ public class FragmentCreatePlan extends Fragment {
         return view;
     }
 
+
+    /******************************** CONFIGURA VISTA *************************************+/
+     *
+     */
+
     private void findById(View view){
         buttonSelectSport = view.findViewById(R.id.button_select_sport);
         buttonSelectNutrition = view.findViewById(R.id.button_Select_nutrition);
@@ -74,17 +103,22 @@ public class FragmentCreatePlan extends Fragment {
 
     }
 
-    private void onClickOpenNutrition() {
-        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
-            buttonSelectNutrition.setOnClickListener(v -> {
-                if(mlistener!=null){
-                    mlistener.onClickNutritionPlan();
-                }
-            });
-        }else{
-            buttonSelectNutrition.setEnabled(false);
-        }
+    /******************************** CIERRA LA PANTALLA *************************************+/
+     *
+     */
+
+    private void onClickSaveAndClose(){
+        buttonSaveAndExit.setOnClickListener(v -> {
+            if (mlistener != null) {
+                getActivity().getSupportFragmentManager().popBackStack();
+                mlistener.onClickSaveAndExit();
+            }
+        });
     }
+
+    /******************************** ONCLICK DEPORTES *************************************+/
+     *
+     */
 
     private void onClickOpenSport() {
         if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
@@ -98,31 +132,20 @@ public class FragmentCreatePlan extends Fragment {
         }
     }
 
-    private void onClickSaveAndClose(){
-        buttonSaveAndExit.setOnClickListener(v -> {
-            if (mlistener != null) {
-                getActivity().getSupportFragmentManager().popBackStack();
-                mlistener.onClickSaveAndExit();
-            }
-        });
-    }
+    /******************************** ONCLICK NUTRICION *************************************+/
+     *
+     */
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof Callback) {
-            mlistener = (Callback) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+    private void onClickOpenNutrition() {
+        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
+            buttonSelectNutrition.setOnClickListener(v -> {
+                if(mlistener!=null){
+                    mlistener.onClickNutritionPlan();
+                }
+            });
+        }else{
+            buttonSelectNutrition.setEnabled(false);
         }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mlistener = null;
-
     }
 
 }

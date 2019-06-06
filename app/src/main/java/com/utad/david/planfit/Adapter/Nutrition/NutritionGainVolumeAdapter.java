@@ -10,19 +10,20 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.utad.david.planfit.Model.Nutrition.NutritionGainVolume;
 import com.utad.david.planfit.R;
+import com.utad.david.planfit.Utils.Utils;
 
 import java.util.List;
 
 public class NutritionGainVolumeAdapter extends RecyclerView.Adapter<NutritionGainVolumeAdapter.GainVolumeViewHolder>{
 
     private List<NutritionGainVolume> nutritionGainVolumeList;
-    private OnItemClickListener listener;
+    private Callback listener;
 
-    public interface OnItemClickListener {
+    public interface Callback {
         void onItemClick(NutritionGainVolume item);
     }
 
-    public NutritionGainVolumeAdapter(List<NutritionGainVolume> nutritionGainVolumes, OnItemClickListener listener) {
+    public NutritionGainVolumeAdapter(List<NutritionGainVolume> nutritionGainVolumes, Callback listener) {
         this.nutritionGainVolumeList = nutritionGainVolumes;
         this.listener = listener;
     }
@@ -60,9 +61,7 @@ public class NutritionGainVolumeAdapter extends RecyclerView.Adapter<NutritionGa
 
         public void setData(NutritionGainVolume nutritionGainVolume){
             nameSlimming.setText(nutritionGainVolume.getName());
-            RequestOptions requestOptions = new RequestOptions();
-            requestOptions.placeholder(R.drawable.icon_gallery);
-            Glide.with(itemView).setDefaultRequestOptions(requestOptions).load(nutritionGainVolume.getPhoto()).into(photoSlimming);
+            Utils.loadImage(nutritionGainVolume.getPhoto(),photoSlimming,Utils.PLACEHOLDER_GALLERY);
         }
     }
 
