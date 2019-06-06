@@ -1,6 +1,7 @@
 package com.utad.david.planfit.Activitys;
 
 import android.os.AsyncTask;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,6 +26,9 @@ public class FirstActivity extends AppCompatActivity
     private RegisterFragment registerFragment;
     private RegisterDetailsFragmet registerDetailsFragmet;
 
+    private FragmentManager fragmentManager;
+    private FragmentTransaction fragmentTransaction;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,10 +42,9 @@ public class FirstActivity extends AppCompatActivity
             }
             loginFragment = new LoginFragment();
 
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .add(R.id.frameLayout_FirstActivity, loginFragment)
-                    .commit();
+            fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.add(R.id.frameLayout_FirstActivity, loginFragment);
+            fragmentTransaction.commit();
         }
 
     }
