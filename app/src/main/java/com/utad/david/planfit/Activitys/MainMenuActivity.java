@@ -382,8 +382,14 @@ public class MainMenuActivity extends AppCompatActivity
 
             case R.id.nav_user:
                 navigationView.getMenu().findItem(R.id.nav_user).setChecked(true);
+                /*
                 seleted = Constants.ModeRootFragment.MODE_USER;
                 fragment = RootFragment.newInstance(seleted);
+                */
+                Intent intent = new Intent(this, ChatActivity.class);
+                intent.putExtra(Constants.ConfigureChat.EXTRA_NAME, SessionUser.getInstance().firebaseAdmin.userDataFirebase.getNickName());
+                intent.putExtra(Constants.ConfigureChat.EXTRA_UID, SessionUser.getInstance().firebaseAdmin.userDataFirebase.getUid());
+                startActivity(intent);
                 break;
         }
 
@@ -404,7 +410,7 @@ public class MainMenuActivity extends AppCompatActivity
                         setTitle(R.string.titulo_plan);
                         break;
                     case Constants.ModeRootFragment.MODE_USER:
-                        setTitle(R.string.usuarios);
+                        //setTitle(R.string.usuarios);
                         break;
                 }
             });

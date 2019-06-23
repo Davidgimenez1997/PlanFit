@@ -4,37 +4,44 @@ import java.util.Date;
 
 public class ChatMessage {
 
-    private String name;
-    private String destino;
-    private String id;
-    private String message;
+    private String messageText;
+    private String messageUser;
+    private String messageUserId;
     private long messageTime;
 
-    public ChatMessage() {
+    public ChatMessage(String messageText, String messageUser, String messageUserId) {
+        this.messageText = messageText;
+        this.messageUser = messageUser;
+        messageTime = new Date().getTime();
+        this.messageUserId = messageUserId;
     }
 
-    public String getName() {
-        return name;
+    public ChatMessage(){
+
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getMessageUserId() {
+        return messageUserId;
     }
 
-    public String getId() {
-        return id;
+    public void setMessageUserId(String messageUserId) {
+        this.messageUserId = messageUserId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public String getMessageText() {
+        return messageText;
     }
 
-    public String getMessage() {
-        return message;
+    public void setMessageText(String messageText) {
+        this.messageText = messageText;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public String getMessageUser() {
+        return messageUser;
+    }
+
+    public void setMessageUser(String messageUser) {
+        this.messageUser = messageUser;
     }
 
     public long getMessageTime() {
@@ -43,23 +50,5 @@ public class ChatMessage {
 
     public void setMessageTime(long messageTime) {
         this.messageTime = messageTime;
-    }
-
-    public String getDestino() {
-        return destino;
-    }
-
-    public void setDestino(String destino) {
-        this.destino = destino;
-    }
-
-    @Override
-    public String toString() {
-        return "ChatMessage{" +
-                "name='" + name + '\'' +
-                ", id='" + id + '\'' +
-                ", message='" + message + '\'' +
-                ", messageTime=" + messageTime +
-                '}';
     }
 }

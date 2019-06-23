@@ -11,10 +11,13 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import com.firebase.ui.database.FirebaseListAdapter;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.*;
 import com.utad.david.planfit.Adapter.Chat.ChatAdapter;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
@@ -37,8 +40,9 @@ public class ChatActivity extends AppCompatActivity{
     public static final String EXTRA_NAME_USER = Constants.ConfigureChat.EXTRA_NAME;
     public static final String EXTRA_UID_USER = Constants.ConfigureChat.EXTRA_UID;
 
+    /*
+
     private DatabaseReference mReference;
-    private Toolbar toolbar;
 
     private ChatAdapter adapter;
 
@@ -48,6 +52,14 @@ public class ChatActivity extends AppCompatActivity{
     EditText etMessage;
 
     /** Class variables **/
+    private Toolbar toolbar;
+
+    @BindView(R.id.edit_chat_message)
+    EditText etMessage;
+
+    private FirebaseListAdapter<ChatMessage> adapter;
+    private ListView listView;
+    private String loggedInUserName = "";
 
     private String nameUser;
     private String uidUser;
@@ -63,6 +75,7 @@ public class ChatActivity extends AppCompatActivity{
         //SessionUser.getInstance().firebaseAdmin.downloadMessage();
 
         ButterKnife.bind(this);
+        listView = (ListView) findViewById(R.id.recycler_messages);
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -73,7 +86,7 @@ public class ChatActivity extends AppCompatActivity{
         toolbar = findViewById(R.id.toolbar);
 
         setUI();
-        setupConnection();
+        //setupConnection();
     }
 
     /******************************** CONFIGURA LA VISTA *************************************+/
@@ -82,13 +95,48 @@ public class ChatActivity extends AppCompatActivity{
 
     private void setUI() {
         setSupportActionBar(toolbar);
-        setTitle(nameUser);
+        setTitle("Chat Grupal: "+nameUser);
 
-        rvMessages.setLayoutManager(new LinearLayoutManager(this));
+        if(SessionUser.getInstance().firebaseAdmin.mAuth.getCurrentUser()!=null){
+            showAllOldMessages();
+        }
 
-        adapter = new ChatAdapter();
-        rvMessages.setAdapter(adapter);
+        //rvMessages.setLayoutManager(new LinearLayoutManager(this));
+
+        //adapter = new ChatAdapter();
+        //rvMessages.setAdapter(adapter);
     }
+
+    private void showAllOldMessages() {
+        loggedInUserName = SessionUser.getInstance().firebaseAdmin.currentUser.getUid();
+        Log.d("Main", "user id: " + loggedInUserName);
+
+        adapter = new ChatAdapter(this, ChatMessage.class, R.layout.item_in_message,
+                FirebaseDatabase.getInstance().getReference());
+        listView.setAdapter(adapter);
+    }
+
+    @OnClick(R.id.button_chat_send)
+    protected void onClickSend(){
+        if (etMessage.getText().toString().trim().equals("")) {
+            Toast.makeText(this, "Please enter some texts!", Toast.LENGTH_SHORT).show();
+        } else {
+            FirebaseDatabase.getInstance()
+                    .getReference()
+                    .push()
+                    .setValue(new ChatMessage(etMessage.getText().toString(),
+                            SessionUser.getInstance().firebaseAdmin.userDataFirebase.getNickName(),
+                            FirebaseAuth.getInstance().getCurrentUser().getUid())
+                    );
+            etMessage.setText("");
+        }
+    }
+
+    public String getLoggedInUserName() {
+        return loggedInUserName;
+    }
+
+    /*
 
     private void setupConnection() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -158,4 +206,6 @@ public class ChatActivity extends AppCompatActivity{
         Utils.closeKeyboard(this, etMessage);
         etMessage.setText("");
     }
+
+    */
 }
