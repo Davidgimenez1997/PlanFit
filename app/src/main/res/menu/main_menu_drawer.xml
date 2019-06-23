@@ -20,5 +20,9 @@
         <item
                 android:id="@+id/nav_crear_tu_plan"
                 android:title="@string/three_nav_name"/>
+
+        <item
+                android:id="@+id/nav_user"
+                android:title="@string/usuarios"/>
     </group>
 </menu>

@@ -60,4 +60,8 @@ public class Utils {
         bmOptions.inPurgeable = true;
         return BitmapFactory.decodeFile(photoPath, bmOptions);
     }
+
+    public static boolean isEmpty(String string) {
+        return string == null || string.length() == 0;
+    }
 }

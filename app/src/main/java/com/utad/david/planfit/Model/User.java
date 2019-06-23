@@ -4,7 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class User
-        implements Parcelable {
+        implements Parcelable,
+        Comparable<User>{
 
     /******************************** VARIABLES *************************************+/
      *
@@ -18,6 +19,14 @@ public class User
 
     public User() {
 
+    }
+    /******************************** COMPARA POR NOMBRE ALFABETICAMENTE *************************************+/
+     *
+     */
+
+    @Override
+    public int compareTo(User o) {
+        return this.getNickName().compareTo(o.getNickName());
     }
 
     /******************************** GETTERS Y SETTERS *************************************+/
@@ -63,7 +72,6 @@ public class User
     public void setImgUser(String imgUser) {
         this.imgUser = imgUser;
     }
-
 
     /******************************** Parcelable *************************************+/
      *

@@ -18,6 +18,7 @@ import android.widget.Toast;
 import butterknife.ButterKnife;
 import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.R;
+import com.utad.david.planfit.Utils.Constants;
 import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 
@@ -48,13 +49,18 @@ public class RootFragment extends Fragment{
         void clickOnAdelgazarSport();
         void clickOnTonificarSport();
         void clickOnGanarVolumenSport();
+
         void clickOnAdelgazarNutrition();
         void clickOnTonificarNutrition();
         void clickOnGanarVolumenNutrition();
+
         void clickOnCreatePlan();
         void clickOnShowPlan();
+
         void clickSportFavorite();
         void clickNutritionFavorite();
+
+        void navigateToUsers();
     }
 
     @Override
@@ -172,22 +178,27 @@ public class RootFragment extends Fragment{
         findViewById(view);
 
         switch (selected){
-            case 0:
+            case Constants.ModeRootFragment.MODE_SPORT:
                 configViewSport();
                 break;
-            case 1:
+            case Constants.ModeRootFragment.MODE_NUTRITION:
                 configViewNutrition();
                 break;
-            case 2:
+            case Constants.ModeRootFragment.MODE_FAVORITE:
                 configFavorite();
                 break;
-            case 3:
+            case Constants.ModeRootFragment.MODE_PLAN:
                 configViewPlan();
                 break;
+            case Constants.ModeRootFragment.MODE_USER:
+                configUsers();
+                break;
+
         }
 
         return view;
     }
+
 
     /******************************** CONFIGURA VISTA *************************************+/
      *
@@ -198,6 +209,17 @@ public class RootFragment extends Fragment{
         first_button = view.findViewById(R.id.first_button);
         second_button = view.findViewById(R.id.second_button);
         three_button = view.findViewById(R.id.three_button);
+    }
+
+    /******************************** CONFIGURA USUARIOS *************************************+/
+     *
+     */
+
+    private void configUsers() {
+        if(mListener!=null){
+            getActivity().getSupportFragmentManager().popBackStack();
+            mListener.navigateToUsers();
+        }
     }
 
     /******************************** CONFIGURA FAVORITOS *************************************+/

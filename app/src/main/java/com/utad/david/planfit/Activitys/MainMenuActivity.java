@@ -30,6 +30,7 @@ import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Plan.Show.Spor
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Sport.SportGainVolumeFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Sport.SportSlimmingFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Sport.SportToningFragment;
+import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Users.UsersFragment;
 import com.utad.david.planfit.Model.User;
 import com.utad.david.planfit.R;
 import android.support.design.widget.NavigationView;
@@ -378,6 +379,12 @@ public class MainMenuActivity extends AppCompatActivity
                 seleted = Constants.ModeRootFragment.MODE_PLAN;
                 fragment = RootFragment.newInstance(seleted);
                 break;
+
+            case R.id.nav_user:
+                navigationView.getMenu().findItem(R.id.nav_user).setChecked(true);
+                seleted = Constants.ModeRootFragment.MODE_USER;
+                fragment = RootFragment.newInstance(seleted);
+                break;
         }
 
         if (fragment != null) {
@@ -395,6 +402,9 @@ public class MainMenuActivity extends AppCompatActivity
                         break;
                     case Constants.ModeRootFragment.MODE_PLAN:
                         setTitle(R.string.titulo_plan);
+                        break;
+                    case Constants.ModeRootFragment.MODE_USER:
+                        setTitle(R.string.usuarios);
                         break;
                 }
             });
@@ -649,4 +659,17 @@ public class MainMenuActivity extends AppCompatActivity
         fragmentTransaction.commit();
     }
 
+    /******************************** CALLBACK USUARIOS *************************************+/
+     *
+     */
+
+    @Override
+    public void navigateToUsers() {
+        UsersFragment usersFragment = new UsersFragment();
+        usersFragment.setToolbarRunnable(() -> setTitle(R.string.usuarios));
+        fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.content_frame, usersFragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
 }
