@@ -1,5 +1,7 @@
 package com.utad.david.planfit.Activitys;
 
+import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -7,10 +9,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.EditText;
+import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import com.google.firebase.database.*;
 import com.utad.david.planfit.Adapter.Chat.ChatAdapter;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
@@ -18,20 +23,22 @@ import com.utad.david.planfit.Model.ChatMessage;
 import com.utad.david.planfit.R;
 import com.utad.david.planfit.Utils.Constants;
 import com.utad.david.planfit.Utils.Utils;
+import com.utad.david.planfit.Utils.UtilsNetwork;
 
 import java.util.ArrayList;
+import java.util.Date;
 
-public class ChatActivity extends AppCompatActivity implements FirebaseAdmin.FirebaseAdminChatListener {
+public class ChatActivity extends AppCompatActivity{
 
     /******************************** VARIABLES *************************************+/
      *
      */
 
     public static final String EXTRA_NAME_USER = Constants.ConfigureChat.EXTRA_NAME;
+    public static final String EXTRA_UID_USER = Constants.ConfigureChat.EXTRA_UID;
 
+    private DatabaseReference mReference;
     private Toolbar toolbar;
-    private String nameUser;
-    private String message;
 
     private ChatAdapter adapter;
 
@@ -40,25 +47,33 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAdmin.Fir
     @BindView(R.id.edit_chat_message)
     EditText etMessage;
 
+    /** Class variables **/
+
+    private String nameUser;
+    private String uidUser;
+    private String message;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
-        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminChatListener(this);
-        SessionUser.getInstance().firebaseAdmin.downloadMessage();
+        //SessionUser.getInstance().firebaseAdmin.setFirebaseAdminChatListener(this);
+        //SessionUser.getInstance().firebaseAdmin.downloadMessage();
 
         ButterKnife.bind(this);
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             nameUser = extras.getString(EXTRA_NAME_USER);
+            uidUser = extras.getString(EXTRA_UID_USER);
         }
 
         toolbar = findViewById(R.id.toolbar);
 
         setUI();
+        setupConnection();
     }
 
     /******************************** CONFIGURA LA VISTA *************************************+/
@@ -69,11 +84,53 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAdmin.Fir
         setSupportActionBar(toolbar);
         setTitle(nameUser);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        layoutManager.setStackFromEnd(true);
-        rvMessages.setLayoutManager(layoutManager);
-        rvMessages.setItemAnimator(new DefaultItemAnimator());
-        rvMessages.getItemAnimator().setChangeDuration(0);
+        rvMessages.setLayoutManager(new LinearLayoutManager(this));
+
+        adapter = new ChatAdapter();
+        rvMessages.setAdapter(adapter);
+    }
+
+    private void setupConnection() {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        mReference = database.getReference(Constants.DATABASE.DATABASE_NAME);
+
+        mReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                handleReturn(dataSnapshot);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(getBaseContext(), getString(R.string.chat_init_error), Toast.LENGTH_SHORT).show();
+                if(UtilsNetwork.checkConnectionInternetDevice(getBaseContext())){
+                    logout();
+                }else{
+                    Toast.makeText(getBaseContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+    }
+
+    private void logout() {
+        SessionUser.getInstance().firebaseAdmin.mAuth.getInstance().signOut();
+        SessionUser.getInstance().removeUser();
+        Intent intent =new Intent(this, FirstActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
+    }
+
+    private void handleReturn(DataSnapshot dataSnapshot) {
+        adapter.clearData();
+        for(DataSnapshot item : dataSnapshot.getChildren()) {
+            ChatMessage data = item.getValue(ChatMessage.class);
+            adapter.addData(data);
+
+        }
+
+        adapter.notifyDataSetChanged();
     }
 
     @OnClick(R.id.button_chat_send)
@@ -81,50 +138,24 @@ public class ChatActivity extends AppCompatActivity implements FirebaseAdmin.Fir
         message = etMessage.getText().toString();
         if (!TextUtils.isEmpty(message)) {
             if (!Utils.isEmpty(message.trim())) {
-                SessionUser.getInstance().firebaseAdmin.addMessageUser(message);
+                ChatMessage data = new ChatMessage();
+                data.setMessage(message.trim());
+                data.setId(SessionUser.getInstance().firebaseAdmin.currentUser.getUid());
+                data.setName(SessionUser.getInstance().firebaseAdmin.userDataFirebase.getNickName());
+                data.setMessageTime(new Date().getTime());
+                data.setDestino(uidUser);
+
+                //mReference.child(uidUser).setValue(data);
+                mReference.child(String.valueOf(new Date().getTime())).setValue(data);
+
+                closeAndClean();
             }
             etMessage.getText().clear();
         }
     }
 
-    @Override
-    public void sendMessage(boolean end) {
-        if(end){
-            ArrayList<ChatMessage> messages = new ArrayList<>();
-            ChatMessage chatMessage = new ChatMessage(message,SessionUser.getInstance().firebaseAdmin.mAuth.getCurrentUser().getDisplayName());
-            messages.add(chatMessage);
-            if (adapter == null) {
-                adapter = new ChatAdapter(messages);
-                rvMessages.setAdapter(adapter);
-
-            } else {
-                adapter.addNewMessages(messages);
-            }
-            rvMessages.scrollToPosition(adapter.getItemCount() - 1);
-        }
+    private void closeAndClean() {
+        Utils.closeKeyboard(this, etMessage);
+        etMessage.setText("");
     }
-
-    @Override
-    public void donwloadAllChat(boolean end) {
-        if(end){
-            if (adapter == null) {
-                adapter = new ChatAdapter(SessionUser.getInstance().firebaseAdmin.messagesList);
-                rvMessages.setAdapter(adapter);
-            }
-
-            rvMessages.scrollToPosition(adapter.getItemCount() - 1);
-        }
-    }
-
-    @Override
-    public void emptyAllChat(boolean end) {
-
-    }
-
-    @Override
-    public void donwloadAllUsers(boolean end) {}
-
-    @Override
-    public void emptyAllUsers(boolean end) {}
-
 }

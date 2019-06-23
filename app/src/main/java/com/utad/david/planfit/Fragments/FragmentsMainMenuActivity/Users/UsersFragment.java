@@ -153,33 +153,21 @@ public class UsersFragment extends Fragment
             Collections.sort(allUsers);
 
             mAdapter = new UsersAdapters(allUsers, user -> {
-
-                final CharSequence[] items = {getString(R.string.chat), getString(R.string.action_cancel)};
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle(R.string.chat);
-                builder.setItems(items, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int item) {
-                        switch (item) {
-                            case 0:
-                                openChat(user.getNickName());
-                                break;
-                            case 1:
-                                dialog.dismiss();
-                                break;
-                        }
-                    }
-                });
-                builder.show();
+                openChat(user.getNickName(),user.getUid());
             });
             mRecyclerView.setAdapter(mAdapter);
         }
     }
 
-    private void openChat(String name){
-        Intent intent = new Intent(getContext(), ChatActivity.class);
-        intent.putExtra(Constants.ConfigureChat.EXTRA_NAME, name);
-        startActivity(intent);
+    private void openChat(String name,String uid){
+        if(name.equals(SessionUser.getInstance().firebaseAdmin.userDataFirebase.getNickName())){
+            Toast.makeText(getContext(),"No puedes chatear contigo mismo",Toast.LENGTH_LONG).show();
+        }else{
+            Intent intent = new Intent(getContext(), ChatActivity.class);
+            intent.putExtra(Constants.ConfigureChat.EXTRA_NAME, name);
+            intent.putExtra(Constants.ConfigureChat.EXTRA_UID, uid);
+            startActivity(intent);
+        }
     }
 
     @Override

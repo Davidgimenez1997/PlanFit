@@ -337,6 +337,8 @@ public class FirebaseAdmin {
             } else {
                 user.put("imgUser", "");
             }
+            SessionUser.getInstance().user.setUid(mAuth.getUid());
+            user.put("uid",mAuth.getUid());
             insertDataUserIntoFirebase(user);
         }
     }
@@ -417,12 +419,14 @@ public class FirebaseAdmin {
 
     public void addMessageUser(String message) {
         if (firebaseAdminChatListener != null) {
+            /*
             Map<String, Object> map = new HashMap<>();
             ChatMessage chatMessage = new ChatMessage(message,mAuth.getCurrentUser().getUid());
             map.put("messageText", chatMessage.getMessageText());
             map.put("messageUser", chatMessage.getMessageUser());
             map.put("messageTime", chatMessage.getMessageTime());
             sendMessageChat(map);
+            */
         }
     }
 

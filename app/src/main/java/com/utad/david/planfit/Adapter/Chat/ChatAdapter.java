@@ -1,14 +1,11 @@
 package com.utad.david.planfit.Adapter.Chat;
 
 import android.support.v7.widget.RecyclerView;
-import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import com.utad.david.planfit.Adapter.Users.UsersAdapters;
 import com.utad.david.planfit.Model.ChatMessage;
-import com.utad.david.planfit.Model.User;
 import com.utad.david.planfit.R;
 
 import java.util.ArrayList;
@@ -16,18 +13,14 @@ import java.util.List;
 
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder> {
 
-    private List<ChatMessage> chatMessages;
+    private List<ChatMessage> mContent = new ArrayList<>();
 
-
-    public ChatAdapter(List<ChatMessage> chatMessages) {
-        this.chatMessages = chatMessages;
+    public void addData(ChatMessage data) {
+        mContent.add(data);
     }
 
-
-    public void addNewMessages(List<ChatMessage> newMessages) {
-        int startPosition = chatMessages.size();
-        chatMessages.addAll(newMessages);
-        notifyItemRangeInserted(startPosition, newMessages.size() - 1);
+    public void clearData() {
+        mContent.clear();
     }
 
     @Override
@@ -38,33 +31,29 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
 
     @Override
     public void onBindViewHolder(ChatAdapter.ChatViewHolder holder, int position) {
-        final ChatMessage current = chatMessages.get(position);
+        final ChatMessage current = mContent.get(position);
         holder.setData(current);
     }
 
     @Override
     public int getItemCount() {
-        return chatMessages.size();
+        return mContent.size();
     }
 
     public static class ChatViewHolder extends RecyclerView.ViewHolder {
 
+        public TextView name;
         public TextView message;
-        public TextView date;
-        //private ImageView photoSlimming;
 
         public ChatViewHolder(View v) {
             super(v);
-            message= v.findViewById(R.id.text_incoming_message_body);
-            date = v.findViewById(R.id.text_incoming_message_date);
-            //photoSlimming = v.findViewById(R.id.imageSlimming);
+            message= v.findViewById(R.id.item_message);
+            name = v.findViewById(R.id.item_username);
         }
 
         public void setData(ChatMessage chatMessage) {
-            message.setText(chatMessage.getMessageText());
-            date.setText((DateFormat.format("dd-MM-yyyy (HH:mm:ss)",
-                    chatMessage.getMessageTime())));
-            //Utils.loadImage(defaultNutrition.getPhoto(),photoSlimming,Utils.PLACEHOLDER_GALLERY);
+           message.setText(chatMessage.getMessage());
+           name.setText(chatMessage.getName());
         }
     }
 }

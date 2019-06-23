@@ -4,38 +4,37 @@ import java.util.Date;
 
 public class ChatMessage {
 
-    private String messageText;
-    private String messageUser;
+    private String name;
+    private String destino;
+    private String id;
+    private String message;
     private long messageTime;
 
-    public ChatMessage(String messageText, String messageUser) {
-        this.messageText = messageText;
-        this.messageUser = messageUser;
-
-        // Initialize to current time
-        if(messageTime==0){
-            messageTime = new Date().getTime();
-        }
+    public ChatMessage() {
     }
 
-    public ChatMessage(){
-
+    public String getName() {
+        return name;
     }
 
-    public String getMessageText() {
-        return messageText;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setMessageText(String messageText) {
-        this.messageText = messageText;
+    public String getId() {
+        return id;
     }
 
-    public String getMessageUser() {
-        return messageUser;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public void setMessageUser(String messageUser) {
-        this.messageUser = messageUser;
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public long getMessageTime() {
@@ -44,5 +43,23 @@ public class ChatMessage {
 
     public void setMessageTime(long messageTime) {
         this.messageTime = messageTime;
+    }
+
+    public String getDestino() {
+        return destino;
+    }
+
+    public void setDestino(String destino) {
+        this.destino = destino;
+    }
+
+    @Override
+    public String toString() {
+        return "ChatMessage{" +
+                "name='" + name + '\'' +
+                ", id='" + id + '\'' +
+                ", message='" + message + '\'' +
+                ", messageTime=" + messageTime +
+                '}';
     }
 }

@@ -4,6 +4,10 @@ import com.utad.david.planfit.R;
 
 public class Constants {
 
+    public interface DATABASE{
+        String DATABASE_NAME = "chat";
+    }
+
     public interface ModeRootFragment{
         int MODE_SPORT = 0;
         int MODE_NUTRITION = 1;
@@ -48,6 +52,7 @@ public class Constants {
 
     public interface ConfigureChat{
         String EXTRA_NAME = "NAME";
+        String EXTRA_UID = "UID";
     }
 
     public interface RequestPermisos{
