@@ -10,6 +10,7 @@
     <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
+            android:textAlignment="center"
             android:layout_height="?attr/actionBarSize"
             android:backgroundTint="@color/black"
             app:theme="@style/ToolbarTheme"
@@ -21,6 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
+            android:background="@drawable/bg_welcome"
             android:orientation="vertical"
             android:clipToPadding="false"
             android:paddingTop="24dp"

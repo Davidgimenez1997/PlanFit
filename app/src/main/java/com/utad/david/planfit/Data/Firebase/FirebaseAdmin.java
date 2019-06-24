@@ -59,9 +59,6 @@ public class FirebaseAdmin {
     public FirebaseAdminCreateShowPlanSport firebaseAdminCreateShowPlanSport;
     public FirebaseAdminCreateShowPlanNutrition firebaseAdminCreateShowPlanNutrition;
 
-    public FirebaseAdminChatListener firebaseAdminChatListener;
-
-
     public User userDataFirebase;
     public Developer developerInfo;
 
@@ -97,11 +94,6 @@ public class FirebaseAdmin {
 
     public List<PlanSport> allPlanSport;
     public List<PlanNutrition> allPlanNutrition;
-
-    /********LISTAS DE USUARIOS********/
-
-    public List<User> userList;
-    public List<ChatMessage> messagesList;
 
     /********COLECCIONES DE FIREBASE********/
 
@@ -139,21 +131,6 @@ public class FirebaseAdmin {
         void singInWithEmailAndPassword(boolean end);
 
         void registerWithEmailAndPassword(boolean end);
-    }
-
-    //Donwload all users
-
-    public interface FirebaseAdminChatListener{
-
-        void donwloadAllUsers(boolean end);
-
-        void emptyAllUsers(boolean end);
-
-        void donwloadAllChat(boolean end);
-
-        void emptyAllChat(boolean end);
-
-        void sendMessage(boolean end);
     }
 
     //Insert and download user info and developed info
@@ -283,10 +260,6 @@ public class FirebaseAdmin {
         this.firebaseAdminFavoriteNutrition = firebaseAdminFavoriteNutrition;
     }
 
-    public void setFirebaseAdminChatListener(FirebaseAdminChatListener firebaseAdminChatListener){
-        this.firebaseAdminChatListener = firebaseAdminChatListener;
-    }
-
     //Login y registro
 
     public void registerWithEmailAndPassword(String email, String password) {
@@ -390,82 +363,6 @@ public class FirebaseAdmin {
             firebaseAdminInsertAndDownloandListener.downloadUserDataInFirebase(true);
         }).addOnFailureListener(exception -> firebaseAdminInsertAndDownloandListener.downloadUserDataInFirebase(false));
     }
-
-    //Download All Users
-
-    public void donwloadAllUsers(){
-        if (firebaseAdminChatListener != null) {
-            CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_USER_FIREBASE);
-            collectionReference.addSnapshotListener((queryDocumentSnapshots, e) -> {
-                if (e != null) {
-                    firebaseAdminChatListener.donwloadAllUsers(false);
-                }
-                List<User> users = new ArrayList<>();
-                for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                    users.add(doc.toObject(User.class));
-                }
-                userList = users;
-
-                if(userList.size()==0){
-                    firebaseAdminChatListener.emptyAllUsers(true);
-                }else if(userList.size()!=0){
-                    firebaseAdminChatListener.donwloadAllUsers(true);
-                }
-            });
-        }
-    }
-
-    //Send message Chat
-
-    public void addMessageUser(String message) {
-        if (firebaseAdminChatListener != null) {
-            /*
-            Map<String, Object> map = new HashMap<>();
-            ChatMessage chatMessage = new ChatMessage(message,mAuth.getCurrentUser().getUid());
-            map.put("messageText", chatMessage.getMessageText());
-            map.put("messageUser", chatMessage.getMessageUser());
-            map.put("messageTime", chatMessage.getMessageTime());
-            sendMessageChat(map);
-            */
-        }
-    }
-
-    public void sendMessageChat(Map<String, Object> message){
-        if (firebaseAdminChatListener != null) {
-            firebaseFirestore.collection(COLLECTION_MESSAGES_FIREBASE).document()
-                    .set(message)
-                    .addOnSuccessListener(aVoid -> firebaseAdminChatListener.sendMessage(true))
-                    .addOnFailureListener(e -> firebaseAdminChatListener.sendMessage(false));
-        }
-    }
-
-    //Download message chat
-
-    public void downloadMessage(){
-        if (firebaseAdminChatListener != null) {
-            CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_MESSAGES_FIREBASE);
-            collectionReference.whereEqualTo("messageUser", mAuth.getUid())
-                    .addSnapshotListener((queryDocumentSnapshots, e) -> {
-                        if (e != null) {
-                            firebaseAdminChatListener.donwloadAllChat(false);
-                        }
-                        List<ChatMessage> messages = new ArrayList<>();
-                        for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                            if (doc.get("messageUser") != null) {
-                                messages.add(doc.toObject(ChatMessage.class));
-                            }
-                        }
-                        messagesList = messages;
-
-                        if(messagesList.size()==0){
-                            firebaseAdminChatListener.emptyAllChat(true);
-                        }else if ((messagesList.size()!=0)){
-                            firebaseAdminChatListener.donwloadAllChat(true);
-                        }
-                    });
-        }
-    }
-
 
     //Update info user
 

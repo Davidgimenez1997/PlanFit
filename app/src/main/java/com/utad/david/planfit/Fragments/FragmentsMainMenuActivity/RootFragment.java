@@ -59,8 +59,6 @@ public class RootFragment extends Fragment{
 
         void clickSportFavorite();
         void clickNutritionFavorite();
-
-        void navigateToUsers();
     }
 
     @Override
@@ -190,9 +188,6 @@ public class RootFragment extends Fragment{
             case Constants.ModeRootFragment.MODE_PLAN:
                 configViewPlan();
                 break;
-            case Constants.ModeRootFragment.MODE_USER:
-                configUsers();
-                break;
 
         }
 
@@ -209,17 +204,6 @@ public class RootFragment extends Fragment{
         first_button = view.findViewById(R.id.first_button);
         second_button = view.findViewById(R.id.second_button);
         three_button = view.findViewById(R.id.three_button);
-    }
-
-    /******************************** CONFIGURA USUARIOS *************************************+/
-     *
-     */
-
-    private void configUsers() {
-        if(mListener!=null){
-            getActivity().getSupportFragmentManager().popBackStack();
-            mListener.navigateToUsers();
-        }
     }
 
     /******************************** CONFIGURA FAVORITOS *************************************+/

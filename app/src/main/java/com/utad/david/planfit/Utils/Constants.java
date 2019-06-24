@@ -52,7 +52,6 @@ public class Constants {
 
     public interface ConfigureChat{
         String EXTRA_NAME = "NAME";
-        String EXTRA_UID = "UID";
     }
 
     public interface RequestPermisos{

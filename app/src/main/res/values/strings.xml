@@ -329,5 +329,7 @@
     <string name="chat">Abrir Chat</string>
 
     <string name="chat_init_error">Failed to connect to database!</string>
+    <string name="chat_grupal">Chat Grupal: </string>
+    <string name="ecriba_algo">Porfavor, escriba algo.</string>
 
 </resources>
