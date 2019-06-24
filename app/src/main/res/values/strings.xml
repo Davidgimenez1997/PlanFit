@@ -293,7 +293,8 @@
     <string name="permissions_denied_body">La aplicación no será capaz de realizar esta funcionalidad sin los permisos
         solicitados. Acceda a la pantalla de configuración de la app para modificar sus permisos.
     </string>
-    <string name="permissions_picture_rationale">La aplicación necesita acceder al almacenamiento y a la camara del dispositivo para utilizar esta funcionalidad.
+    <string name="permissions_picture_rationale">La aplicación necesita acceder al almacenamiento y a la camara del
+        dispositivo para utilizar esta funcionalidad.
     </string>
     <string name="title_activity_web_view">WebViewActivity</string>
     <string name="mode_recipe">Abrir receta en el navegador</string>
@@ -322,6 +323,13 @@
     <string name="camara">Camara</string>
     <string name="cancelar">Cancelar</string>
     <string name="escoja_una_foto">Escoja una foto</string>
+    <string name="usuarios">Chat Grupal</string>
+    <string name="registra_alg_n_usuario">Registra algún usuario</string>
+    <string name="sin_usuarios">Sin usuarios?</string>
+    <string name="chat">Abrir Chat</string>
 
+    <string name="chat_init_error">Failed to connect to database!</string>
+    <string name="chat_grupal">Chat Grupal: </string>
+    <string name="ecriba_algo">Porfavor, escriba algo.</string>
 
 </resources>

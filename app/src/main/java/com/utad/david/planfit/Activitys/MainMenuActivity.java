@@ -378,6 +378,13 @@ public class MainMenuActivity extends AppCompatActivity
                 seleted = Constants.ModeRootFragment.MODE_PLAN;
                 fragment = RootFragment.newInstance(seleted);
                 break;
+
+            case R.id.nav_user:
+                navigationView.getMenu().findItem(R.id.nav_user).setChecked(true);
+                Intent intent = new Intent(this, ChatActivity.class);
+                intent.putExtra(Constants.ConfigureChat.EXTRA_NAME, SessionUser.getInstance().firebaseAdmin.userDataFirebase.getNickName());
+                startActivityForResult(intent,22);
+                break;
         }
 
         if (fragment != null) {
@@ -648,5 +655,4 @@ public class MainMenuActivity extends AppCompatActivity
         fragmentTransaction.replace(R.id.content_frame, fragment);
         fragmentTransaction.commit();
     }
-
 }

@@ -6,6 +6,8 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -23,6 +25,19 @@ public class Utils {
 
     public static final int PLACEHOLDER_USER = R.drawable.icon_user;
     public static final int PLACEHOLDER_GALLERY = R.drawable.icon_gallery;
+
+    public static void closeKeyboard(Context context, View view) {
+        InputMethodManager manager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        manager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    public static void showSoftKeyboard(Context context,View view) {
+        if (view.requestFocus()) {
+            InputMethodManager imm = (InputMethodManager)
+                    context.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
+        }
+    }
 
     public static void loadImage(String imageUri, final ImageView imageView, final int placeholder) {
         RequestOptions requestOptions = new RequestOptions();
@@ -59,5 +74,9 @@ public class Utils {
         bmOptions.inJustDecodeBounds = false;
         bmOptions.inPurgeable = true;
         return BitmapFactory.decodeFile(photoPath, bmOptions);
+    }
+
+    public static boolean isEmpty(String string) {
+        return string == null || string.length() == 0;
     }
 }

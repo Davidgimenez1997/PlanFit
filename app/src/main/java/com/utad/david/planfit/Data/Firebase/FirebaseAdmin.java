@@ -8,6 +8,8 @@ import com.google.firebase.firestore.*;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.utad.david.planfit.Activitys.ChatActivity;
+import com.utad.david.planfit.Model.ChatMessage;
 import com.utad.david.planfit.Utils.UtilsEncryptDecryptAES;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Model.Developer;
@@ -57,7 +59,6 @@ public class FirebaseAdmin {
     public FirebaseAdminCreateShowPlanSport firebaseAdminCreateShowPlanSport;
     public FirebaseAdminCreateShowPlanNutrition firebaseAdminCreateShowPlanNutrition;
 
-
     public User userDataFirebase;
     public Developer developerInfo;
 
@@ -97,6 +98,7 @@ public class FirebaseAdmin {
     /********COLECCIONES DE FIREBASE********/
 
     private static String COLLECTION_USER_FIREBASE = "users";
+    private static String COLLECTION_MESSAGES_FIREBASE = "messages";
     private static String DOCUMENT_DEVELOPER_INFO_FIREBASE = "david";
     private static String COLLECTION_DEVELOPER_INFO_FIREBASE = "developer_info";
     private static String COLLECTION_SPORT_SLIMMING = "deportes/adelgazar/detalles";
@@ -308,6 +310,8 @@ public class FirebaseAdmin {
             } else {
                 user.put("imgUser", "");
             }
+            SessionUser.getInstance().user.setUid(mAuth.getUid());
+            user.put("uid",mAuth.getUid());
             insertDataUserIntoFirebase(user);
         }
     }

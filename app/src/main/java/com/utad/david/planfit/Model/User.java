@@ -4,7 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class User
-        implements Parcelable {
+        implements Parcelable,
+        Comparable<User>{
 
     /******************************** VARIABLES *************************************+/
      *
@@ -15,9 +16,18 @@ public class User
     private String fullName;
     private String nickName;
     private String imgUser;
+    private String uid;
 
     public User() {
 
+    }
+    /******************************** COMPARA POR NOMBRE ALFABETICAMENTE *************************************+/
+     *
+     */
+
+    @Override
+    public int compareTo(User o) {
+        return this.getNickName().compareTo(o.getNickName());
     }
 
     /******************************** GETTERS Y SETTERS *************************************+/
@@ -64,6 +74,13 @@ public class User
         this.imgUser = imgUser;
     }
 
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
 
     /******************************** Parcelable *************************************+/
      *
@@ -75,6 +92,7 @@ public class User
         fullName = in.readString();
         nickName = in.readString();
         imgUser = in.readString();
+        uid = in.readString();
     }
 
     public static final Creator<User> CREATOR = new Creator<User>() {
@@ -101,5 +119,6 @@ public class User
         dest.writeString(fullName);
         dest.writeString(nickName);
         dest.writeString(imgUser);
+        dest.writeString(uid);
     }
 }
