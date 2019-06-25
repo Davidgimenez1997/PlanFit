@@ -19,8 +19,7 @@
             android:theme="@style/AppTheme"
             android:usesCleartextTraffic="true"
             tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".Activitys.ChatActivity">
-        </activity>
+
         <activity
                 android:name=".Activitys.FirstActivity"
                 android:screenOrientation="portrait">
@@ -30,14 +29,22 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
         <activity
                 android:name=".Activitys.MainMenuActivity"
                 android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".Activitys.YoutubeActivity">
+
+        <activity
+                android:name=".Activitys.YoutubeActivity">
         </activity>
+
         <activity
                 android:name=".Activitys.WebViewActivity"
+                android:screenOrientation="portrait">
+        </activity>
+        <activity
+                android:name=".Activitys.ChatActivity"
                 android:screenOrientation="portrait">
         </activity>
 

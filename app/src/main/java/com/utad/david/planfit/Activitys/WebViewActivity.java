@@ -138,15 +138,18 @@ public class WebViewActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_option_web, menu);
         switch (mode){
-            case Constants.ModeWebView.MODE_RECIPE:
-                menu.getItem(0).setTitle(getString(R.string.mode_recipe));
-                break;
-            case Constants.ModeWebView.MODE_LINKEDIN:
-                menu.getItem(0).setTitle(getString(R.string.mode_linkedin));
-                break;
-            case Constants.ModeWebView.MODE_PRIVACITY:
-                menu.getItem(0).setTitle(getString(R.string.abrir_politica));
-                break;
+                case Constants.ModeWebView.MODE_RECIPE:
+                    menu.getItem(0).setTitle(getString(R.string.mode_recipe));
+                    break;
+                case Constants.ModeWebView.MODE_LINKEDIN:
+                    menu.getItem(0).setTitle(getString(R.string.mode_linkedin));
+                    break;
+                case Constants.ModeWebView.MODE_PRIVACITY:
+                    menu.getItem(0).setTitle(getString(R.string.abrir_politica));
+                    break;
+                case Constants.ModeWebView.MODE_CHAT:
+                    menu.getItem(0).setTitle(getString(R.string.abrir_enlace));
+                    break;
         }
         return true;
     }

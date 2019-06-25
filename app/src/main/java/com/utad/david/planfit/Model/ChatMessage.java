@@ -51,4 +51,14 @@ public class ChatMessage {
     public void setMessageTime(long messageTime) {
         this.messageTime = messageTime;
     }
+
+    @Override
+    public String toString() {
+        return "ChatMessage{" +
+                "messageText='" + messageText + '\'' +
+                ", messageUser='" + messageUser + '\'' +
+                ", messageUserId='" + messageUserId + '\'' +
+                ", messageTime=" + messageTime +
+                '}';
+    }
 }

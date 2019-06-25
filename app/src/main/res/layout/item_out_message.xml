@@ -22,6 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/message_user"
             android:textColor="@android:color/white"
+            android:autoLink="web"
             android:layout_marginTop="5dp"
             android:text="dsfsdfds"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"

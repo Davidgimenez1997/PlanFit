@@ -329,7 +329,12 @@
     <string name="chat">Abrir Chat</string>
 
     <string name="chat_init_error">Failed to connect to database!</string>
-    <string name="chat_grupal">Chat Grupal: </string>
+    <string name="chat_grupal">Chat Grupal:</string>
     <string name="ecriba_algo">Porfavor, escriba algo.</string>
+    <string name="borrar_mensaje">Borrar Mensaje</string>
+    <string name="opciones_chat">Opciones</string>
+    <string name="perfil">Ver perfil</string>
+    <string name="detalles_De">Detalles de</string>
+    <string name="abrir_enlace">Abrir enlace en el navegador</string>
 
 </resources>
