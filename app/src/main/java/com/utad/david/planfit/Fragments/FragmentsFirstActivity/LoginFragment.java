@@ -1,11 +1,9 @@
 package com.utad.david.planfit.Fragments.FragmentsFirstActivity;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
@@ -19,6 +17,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 import com.google.firebase.auth.*;
 import com.utad.david.planfit.Activitys.MainMenuActivity;
+import com.utad.david.planfit.Base.BaseFragment;
 import com.utad.david.planfit.Utils.UtilsEncryptDecryptAES;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
@@ -28,7 +27,7 @@ import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 import java.util.regex.Pattern;
 
-public class LoginFragment extends Fragment
+public class LoginFragment extends BaseFragment
         implements FirebaseAdmin.FirebaseAdminLoginAndRegisterListener {
 
     /******************************** VARIABLES *************************************+/
@@ -42,7 +41,6 @@ public class LoginFragment extends Fragment
     private Button buttonRegister;
     private String emailUser;
     private String passwordUser;
-    private ProgressDialog mProgress;
     public Context context;
 
     /******************************** INTERFAZ *************************************+/
@@ -89,7 +87,7 @@ public class LoginFragment extends Fragment
        onClickButtonRegister();
        configView();
        checkStatusUserFirebase();
-       showDialog();
+       createLoginDialog();
 
        return view;
     }
@@ -143,18 +141,6 @@ public class LoginFragment extends Fragment
         };
     }
 
-    /******************************** CONFIGURA EL DIALOGO *************************************+/
-     *
-     */
-
-    private void showDialog(){
-        mProgress = new ProgressDialog(getContext());
-        mProgress.setTitle(getString(R.string.title_login));
-        mProgress.setMessage(getString(R.string.message_login));
-        mProgress.setCancelable(false);
-        mProgress.setIndeterminate(true);
-    }
-
     /******************************** ONCLICK LOGIN *************************************+/
      *
      */
@@ -162,7 +148,7 @@ public class LoginFragment extends Fragment
     private void onClickButtonLogin(){
             buttonLogin.setOnClickListener(v -> {
                 if (mListener!=null){
-                    mProgress.show();
+                    showLoginDialog();
                     SessionUser.getInstance().user.setEmail(emailLogin.getText().toString().trim());
                     try {
                         String password = UtilsEncryptDecryptAES.encrypt(passwordLogin.getText().toString().trim());
@@ -172,7 +158,7 @@ public class LoginFragment extends Fragment
                         e.printStackTrace();
                     }
                 }else{
-                    mProgress.dismiss();
+                    dismissLoginDialog();
                 }
             });
     }
@@ -271,15 +257,15 @@ public class LoginFragment extends Fragment
 
     @Override
     public void singInWithEmailAndPassword(boolean end) {
-        if (end == true) {
+        if (end) {
             Toast.makeText(getContext(), getString(R.string.info_login_ok), Toast.LENGTH_LONG).show();
-            mProgress.dismiss();
+            dismissLoginDialog();
             Intent intent = new Intent(getContext(),MainMenuActivity.class);
             startActivity(intent);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             getActivity().finish();
         } else {
-            mProgress.dismiss();
+            dismissLoginDialog();
             errorSingInRegister(getString(R.string.err_login_fail));
         }
     }

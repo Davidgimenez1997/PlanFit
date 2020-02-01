@@ -7,7 +7,7 @@ public class PlanFitApplication extends MultiDexApplication{
 
     private static Context context;
 
-    /******************************** DAMOS VALOR A CONTEXT *************************************+/
+    /******************************** SET CONTEXT *************************************+/
      *
      */
 

@@ -10,7 +10,6 @@ import com.utad.david.planfit.Activitys.ChatActivity;
 import com.utad.david.planfit.Model.ChatMessage;
 import com.utad.david.planfit.R;
 
-
 public class ChatAdapter extends FirebaseListAdapter<ChatMessage> {
 
     private ChatActivity activity;

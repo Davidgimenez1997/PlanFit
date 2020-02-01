@@ -4,17 +4,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.utad.david.planfit.Model.Nutrition.DefaultNutrition;
 import com.utad.david.planfit.R;
-import com.utad.david.planfit.Utils.Utils;
-
+import com.utad.david.planfit.ViewHolder.Favorite.NutritionFavoriteViewHolder;
 import java.util.List;
 
-public class NutritionFavoriteAdapter extends RecyclerView.Adapter<NutritionFavoriteAdapter.NutritionFavoriteViewHolder> {
+public class NutritionFavoriteAdapter extends RecyclerView.Adapter<NutritionFavoriteViewHolder> {
 
     private List<DefaultNutrition> defaultNutritions;
     private Callback listener;
@@ -54,22 +49,6 @@ public class NutritionFavoriteAdapter extends RecyclerView.Adapter<NutritionFavo
     @Override
     public int getItemCount() {
         return defaultNutritions.size();
-    }
-
-    public static class NutritionFavoriteViewHolder extends RecyclerView.ViewHolder {
-        public TextView nameSlimming;
-        private ImageView photoSlimming;
-
-        public NutritionFavoriteViewHolder(View v) {
-            super(v);
-            nameSlimming = v.findViewById(R.id.nameSlimming);
-            photoSlimming = v.findViewById(R.id.imageSlimming);
-        }
-
-        public void setData(DefaultNutrition defaultNutrition){
-            nameSlimming.setText(defaultNutrition.getName());
-            Utils.loadImage(defaultNutrition.getPhoto(),photoSlimming,Utils.PLACEHOLDER_GALLERY);
-        }
     }
 }
 

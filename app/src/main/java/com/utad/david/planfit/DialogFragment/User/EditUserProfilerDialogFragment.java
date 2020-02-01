@@ -1,4 +1,4 @@
-package com.utad.david.planfit.DialogFragment;
+package com.utad.david.planfit.DialogFragment.User;
 
 import android.Manifest;
 import android.app.ProgressDialog;
@@ -12,12 +12,10 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,10 +23,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Activitys.FirstActivity;
+import com.utad.david.planfit.Base.BaseDialogFragment;
 import com.utad.david.planfit.Utils.Constants;
 import com.utad.david.planfit.Utils.Utils;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
@@ -39,17 +36,14 @@ import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.regex.Pattern;
-
 import static android.app.Activity.RESULT_OK;
 import static com.utad.david.planfit.Utils.Constants.RequestPermisos.REQUEST_GALLERY;
 import static com.utad.david.planfit.Utils.Constants.RequestPermisos.REQUEST_IMAGE_PERMISSIONS;
 
-public class EditPersonalDataUser extends DialogFragment
+public class EditUserProfilerDialogFragment extends BaseDialogFragment
         implements FirebaseAdmin.FirebaseAdminUpdateAndDeleteUserListener,
         EasyPermissions.PermissionCallbacks {
 
@@ -72,11 +66,6 @@ public class EditPersonalDataUser extends DialogFragment
     private Callback mListener;
     private ProgressDialog mProgress;
     private String photoPath;
-
-    //private EditText editTextEmail;
-    //private EditText editTextPassword;
-    //private Button buttonUpdateEmail;
-    //private Button buttonUpdatePassword;
 
     /******************************** INTERFAZ *************************************+/
      *
@@ -140,10 +129,6 @@ public class EditPersonalDataUser extends DialogFragment
             onClickButtonDeleteAccount();
             onClickClose();
             configView();
-
-
-            //onClickButtonUpdateEmail();
-            //onClickButtonUpdatePassword();
         }
         return v;
     }
@@ -157,10 +142,6 @@ public class EditPersonalDataUser extends DialogFragment
         buttonUpdatePhoto.setEnabled(false);
         editTextFullName.addTextChangedListener(textWatcherEditPesonalDataFullName);
         editTextNickName.addTextChangedListener(textWatcherEditPesonalDataNickName);
-
-
-        //editTextEmail.addTextChangedListener(textWatcherEditPesonalDataEmail);
-        //editTextPassword.addTextChangedListener(textWatcherEditPesonalDataPassword);
     }
 
     private void findById(View v){
@@ -173,12 +154,6 @@ public class EditPersonalDataUser extends DialogFragment
         buttonUpdatePhoto = v.findViewById(R.id.button_update_photo);
         buttonDeleteAccount = v.findViewById(R.id.button_delete_account);
         buttonClose = v.findViewById(R.id.button_close_info);
-
-        //editTextEmail = v.findViewById(R.id.nickEmailEditUser);
-        //editTextPassword  = v.findViewById(R.id.passwordEditUser);
-        //buttonUpdateEmail = v.findViewById(R.id.update_emial_button);
-        //buttonUpdatePassword = v.findViewById(R.id.button_password_update);
-
     }
 
     private void putData(){
@@ -187,9 +162,6 @@ public class EditPersonalDataUser extends DialogFragment
             editTextNickName.setText(user.getNickName());
             editTextFullName.setText(user.getFullName());
             checkAndPhotoUser(user);
-
-            //editTextEmail.setText(user.getEmail());
-            //editTextPassword.setText(user.getPassword());
         }
     }
 
@@ -675,144 +647,4 @@ public class EditPersonalDataUser extends DialogFragment
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
     }
-
-    /******************************** METODOS COMENTADOS PARA EDITAR EMAIL Y PASSWORD *************************************+/
-     *
-     */
-
-    /*
-
-    private TextWatcher textWatcherEditPesonalDataEmail = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {}
-
-        @Override
-        public void afterTextChanged(Editable s) {
-            String email = editTextEmail.getText().toString().trim();
-            if (emailValidate(email)) {
-                buttonUpdateEmail.setEnabled(true);
-                userUpdate.setEmail(email);
-            }else{
-                editTextEmail.setError(getString(R.string.err_email));
-            }
-        }
-    };
-
-    private TextWatcher textWatcherEditPesonalDataPassword = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {}
-
-        @Override
-        public void afterTextChanged(Editable s) {
-            String password = editTextPassword.getText().toString().trim();
-            if (passwordValidate(password)) {
-                buttonUpdatePassword.setEnabled(true);
-                userUpdate.setPassword(password);
-            }else{
-                editTextPassword.setError(getString(R.string.err_password));
-            }
-        }
-    };
-
-    private boolean emailValidate(String email) {
-        Pattern pattern = Patterns.EMAIL_ADDRESS;
-        if (pattern.matcher(email).matches()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public boolean passwordValidate(String password) {
-        if (password.length() >= 6) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    private void onClickButtonUpdatePassword(){
-        buttonUpdatePassword.setOnClickListener(v -> {
-            if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
-                showDialog(getString(R.string.title_update_pass),getString(R.string.message_update_pass));
-                mProgress.show();
-                try {
-                    String pass = UtilsEncryptDecryptAES.encrypt(userUpdate.getPassword());
-                    userUpdate.setPassword(pass);
-                    SessionUser.getInstance().firebaseAdmin.userDataFirebase = userUpdate;
-                    SessionUser.getInstance().firebaseAdmin.updatePasswordUserInFirebase(oldPassword);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }else{
-                Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
-            }
-
-        });
-    }
-
-    private void onClickButtonUpdateEmail(){
-        buttonUpdateEmail.setOnClickListener(v -> {
-            if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
-                showDialog(getString(R.string.title_update_email),getString(R.string.message_update_email));
-                mProgress.show();
-                SessionUser.getInstance().firebaseAdmin.userDataFirebase = userUpdate;
-                SessionUser.getInstance().firebaseAdmin.updateEmailUserInFirebase();
-            }else{
-                Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
-            }
-        });
-    }
-
-    @Override
-    public void updateEmailInFirebase(boolean end) {
-        if(end){
-            if(mListener!=null){
-                buttonUpdateEmail.setEnabled(false);
-                mProgress.dismiss();
-                mListener.updateData(userUpdate);
-                Toast.makeText(getContext(),getString(R.string.info_update_email),Toast.LENGTH_LONG).show();
-            }
-        }else{
-            mProgress.dismiss();
-            errorUpdateEmail(getString(R.string.error_email));
-
-        }
-    }
-
-    private void errorUpdateEmail(String message) {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
-        builder.setMessage(message)
-                .setPositiveButton(R.string.info_dialog_err, (dialog, id) -> dialog.dismiss());
-        builder.create();
-        builder.show();
-    }
-
-    @Override
-    public void updatePasswordInFirebase(boolean end) {
-        if(end){
-            buttonUpdatePassword.setEnabled(false);
-            mProgress.dismiss();
-            Toast.makeText(getContext(),getString(R.string.info_update_password),Toast.LENGTH_LONG).show();
-        }else{
-            mProgress.dismiss();
-            errorUpdatePassword(getString(R.string.error_password));
-        }
-    }
-
-    private void errorUpdatePassword(String message) {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
-        builder.setMessage(message)
-                .setPositiveButton(R.string.info_dialog_err, (dialog, id) -> dialog.dismiss());
-        builder.create();
-        builder.show();
-    }
-
-    */
 }

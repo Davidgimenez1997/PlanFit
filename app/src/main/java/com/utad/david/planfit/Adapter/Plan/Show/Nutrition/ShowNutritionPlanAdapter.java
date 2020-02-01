@@ -4,14 +4,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import com.utad.david.planfit.Model.Plan.PlanNutrition;
 import com.utad.david.planfit.R;
-import com.utad.david.planfit.Utils.Constants;
+import com.utad.david.planfit.ViewHolder.Plan.Show.Nutrition.ShowPlanNutritionViewHolder;
 
 import java.util.ArrayList;
 
-public class ShowNutritionPlanAdapter extends RecyclerView.Adapter<ShowNutritionPlanAdapter.ShowPlanNutritionViewHolder> {
+public class ShowNutritionPlanAdapter extends RecyclerView.Adapter<ShowPlanNutritionViewHolder> {
 
     private ArrayList<ArrayList<PlanNutrition>> planNutritions;
     private Callback listener;
@@ -45,40 +44,5 @@ public class ShowNutritionPlanAdapter extends RecyclerView.Adapter<ShowNutrition
     @Override
     public int getItemCount() {
         return planNutritions.size();
-    }
-
-    public static class ShowPlanNutritionViewHolder extends RecyclerView.ViewHolder {
-
-        private TextView timeStart;
-
-        public ShowPlanNutritionViewHolder(View v) {
-            super(v);
-            timeStart = v.findViewById(R.id.timeStart);
-        }
-
-        public void setData(ArrayList<PlanNutrition> planNutrition){
-
-            for(int i=0;i<planNutrition.size();i++){
-
-                switch (planNutrition.get(i).getType()){
-
-                    case Constants.TiposPlanNutricion.MODE_DESAYUNO:
-                        timeStart.setText(Constants.TiposPlanNutricion.DESAYUNO);
-                        break;
-
-                    case Constants.TiposPlanNutricion.MODE_COMIDA:
-                        timeStart.setText(Constants.TiposPlanNutricion.COMIDA);
-                        break;
-
-                    case Constants.TiposPlanNutricion.MODE_MERIENDA:
-                        timeStart.setText(Constants.TiposPlanNutricion.MERIENDA);
-                        break;
-
-                    case Constants.TiposPlanNutricion.MODE_CENA:
-                        timeStart.setText(Constants.TiposPlanNutricion.CENA);
-                        break;
-                }
-            }
-        }
     }
 }

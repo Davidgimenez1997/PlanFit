@@ -1,20 +1,13 @@
 package com.utad.david.planfit.Activitys;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.animation.Animation;
-import android.view.animation.LinearInterpolator;
-import android.view.animation.RotateAnimation;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 import butterknife.BindView;
@@ -24,6 +17,7 @@ import com.firebase.ui.database.FirebaseListAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.*;
 import com.utad.david.planfit.Adapter.Chat.ChatAdapter;
+import com.utad.david.planfit.Base.BaseActivity;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.DialogFragment.User.UserDetailDialogFragments;
@@ -35,7 +29,7 @@ import com.utad.david.planfit.Utils.Utils;
 import android.support.v4.app.Fragment;
 import com.utad.david.planfit.Utils.UtilsNetwork;
 
-public class ChatActivity extends AppCompatActivity
+public class ChatActivity extends BaseActivity
         implements FirebaseAdmin.FirebaseAdimChatLisetener{
 
     /******************************** VARIABLES *************************************+/
@@ -57,47 +51,6 @@ public class ChatActivity extends AppCompatActivity
 
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
-
-    /******************************** PROGRESS DIALOG Y METODOS *************************************+/
-     *
-     */
-
-    private ProgressDialog progressDialog;
-
-    public void showLoading() {
-        if (progressDialog != null && progressDialog.isShowing()) {
-            return;
-        }
-        progressDialog = new ProgressDialog(this, R.style.TransparentProgressDialog);
-        progressDialog.show();
-        progressDialog.setContentView(R.layout.progress_dialog);
-        progressDialog.setCancelable(false);
-        RotateAnimation rotate = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        rotate.setInterpolator(new LinearInterpolator());
-        rotate.setDuration(1000);
-        rotate.setRepeatCount(Animation.INFINITE);
-        ImageView ivLoading = ButterKnife.findById(progressDialog, R.id.image_cards_animation);
-        ivLoading.startAnimation(rotate);
-        progressDialog.show();
-    }
-
-    public void hideLoading() {
-        if (progressDialog != null) {
-            progressDialog.dismiss();
-        }
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        hideLoading();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        hideLoading();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

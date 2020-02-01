@@ -11,7 +11,6 @@ import com.utad.david.planfit.R;
 import com.crashlytics.android.Crashlytics;
 import io.fabric.sdk.android.Fabric;
 
-
 public class YoutubeActivity extends YouTubeBaseActivity {
 
 

@@ -3,8 +3,8 @@ package com.utad.david.planfit.Activitys;
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import com.utad.david.planfit.Base.BaseActivity;
 import com.utad.david.planfit.Fragments.FragmentsFirstActivity.LoginFragment;
 import com.utad.david.planfit.Fragments.FragmentsFirstActivity.RegisterDetailsFragmet;
 import com.utad.david.planfit.Fragments.FragmentsFirstActivity.RegisterFragment;
@@ -13,7 +13,7 @@ import com.utad.david.planfit.Data.SessionUser;
 import com.crashlytics.android.Crashlytics;
 import io.fabric.sdk.android.Fabric;
 
-public class FirstActivity extends AppCompatActivity
+    public class FirstActivity extends BaseActivity
         implements LoginFragment.Callback,
         RegisterFragment.Callback,
         RegisterDetailsFragmet.Callback {

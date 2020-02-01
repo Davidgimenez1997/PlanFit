@@ -1,7 +1,6 @@
 package com.utad.david.planfit.Fragments.FragmentsFirstActivity;
 
 import android.Manifest;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,7 +10,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
@@ -26,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Activitys.MainMenuActivity;
+import com.utad.david.planfit.Base.BaseFragment;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.R;
@@ -35,18 +34,16 @@ import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-
 import static android.app.Activity.RESULT_OK;
 import static com.utad.david.planfit.Utils.Constants.RequestPermisos.REQUEST_GALLERY;
 import static com.utad.david.planfit.Utils.Constants.RequestPermisos.REQUEST_IMAGE_PERMISSIONS;
 
-public class RegisterDetailsFragmet extends Fragment
+public class RegisterDetailsFragmet extends BaseFragment
         implements FirebaseAdmin.FirebaseAdminLoginAndRegisterListener,
         FirebaseAdmin.FirebaseAdminInsertAndDownloandListener,
         EasyPermissions.PermissionCallbacks {
@@ -62,7 +59,6 @@ public class RegisterDetailsFragmet extends Fragment
     private Button buttonOk;
     private Button buttonBackDetails;
     private Uri imageUri;
-    private ProgressDialog mProgress;
     private String photoPath;
     private boolean endRegister=false;
 
@@ -119,7 +115,7 @@ public class RegisterDetailsFragmet extends Fragment
         onClickButtonBackDetails();
         onClickImage();
         configView();
-        showDialog();
+        createRegisterDetailsDialog();
 
         return view;
     }
@@ -144,17 +140,6 @@ public class RegisterDetailsFragmet extends Fragment
         nickName.addTextChangedListener(textWatcherRegistreDetailsFragment);
     }
 
-    /******************************** CONFIGURA EL DIALOGO *************************************+/
-     *
-     */
-
-    private void showDialog(){
-        mProgress = new ProgressDialog(getContext());
-        mProgress.setTitle(getString(R.string.title_register));
-        mProgress.setMessage(getString(R.string.message_register));
-        mProgress.setCancelable(false);
-        mProgress.setIndeterminate(true);
-    }
 
     /******************************** ONCLICK IMAGEN *************************************+/
      *
@@ -326,10 +311,10 @@ public class RegisterDetailsFragmet extends Fragment
         buttonOk.setOnClickListener(v -> {
             if (mListener!=null){
                 setDataUser();
-                mProgress.show();
+                showRegisterDetailsDialog();
                 mListener.clickButtonOk();
             }else{
-                mProgress.dismiss();
+                dismissRegisterDetailsDialog();
             }
         });
     }
@@ -380,12 +365,12 @@ public class RegisterDetailsFragmet extends Fragment
 
     @Override
     public void registerWithEmailAndPassword(boolean end) {
-        if (end == true) {
+        if (end) {
             endRegister=true;
             Toast.makeText(getContext(), getString(R.string.info_register)+" "+SessionUser.getInstance().user.getFullName().trim(), Toast.LENGTH_LONG).show();
             SessionUser.getInstance().firebaseAdmin.addDataUserCouldFirestore();
         } else {
-            mProgress.dismiss();
+            dismissRegisterDetailsDialog();
             Toast.makeText(getContext(), getString(R.string.err_register), Toast.LENGTH_LONG).show();
             errorSingInRegister(getString(R.string.err_register_fail));
             endRegister=false;
@@ -394,20 +379,20 @@ public class RegisterDetailsFragmet extends Fragment
 
     @Override
     public void insertUserDataInFirebase(boolean end) {
-        if(endRegister==true){
-            if(end==true){
-                mProgress.dismiss();
+        if(endRegister){
+            if(end){
+                dismissRegisterDetailsDialog();
                 Intent intent = new Intent(getContext(), MainMenuActivity.class);
                 startActivity(intent);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 getActivity().finish();
             }else{
-                mProgress.dismiss();
+                dismissRegisterDetailsDialog();
                 Toast.makeText(getContext(), getString(R.string.err_register), Toast.LENGTH_LONG).show();
                 errorSingInRegister(getString(R.string.err_register_fail));
             }
         }else{
-            mProgress.dismiss();
+            dismissRegisterDetailsDialog();
         }
     }
 

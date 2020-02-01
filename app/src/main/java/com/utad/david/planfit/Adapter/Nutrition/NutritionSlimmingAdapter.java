@@ -4,17 +4,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.utad.david.planfit.Model.Nutrition.NutritionSlimming;
 import com.utad.david.planfit.R;
-import com.utad.david.planfit.Utils.Utils;
+import com.utad.david.planfit.ViewHolder.Nutrition.NutritionSlimmingViewHolder;
 
 import java.util.List;
 
-public class NutritionSlimmingAdapter extends RecyclerView.Adapter<NutritionSlimmingAdapter.SlimmingViewHolder>  {
+public class NutritionSlimmingAdapter extends RecyclerView.Adapter<NutritionSlimmingViewHolder>  {
 
     private List<NutritionSlimming> nutritionSlimmingList;
     private Callback listener;
@@ -29,13 +25,13 @@ public class NutritionSlimmingAdapter extends RecyclerView.Adapter<NutritionSlim
     }
 
     @Override
-    public SlimmingViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public NutritionSlimmingViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View rootView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recycleview, parent, false);
-        return new SlimmingViewHolder(rootView);
+        return new NutritionSlimmingViewHolder(rootView);
     }
 
     @Override
-    public void onBindViewHolder(SlimmingViewHolder holder, int position) {
+    public void onBindViewHolder(NutritionSlimmingViewHolder holder, int position) {
         final NutritionSlimming current = nutritionSlimmingList.get(position);
         holder.setData(current);
         holder.itemView.setOnClickListener(v -> {
@@ -47,22 +43,6 @@ public class NutritionSlimmingAdapter extends RecyclerView.Adapter<NutritionSlim
     @Override
     public int getItemCount() {
         return nutritionSlimmingList.size();
-    }
-
-    public static class SlimmingViewHolder extends RecyclerView.ViewHolder {
-        public TextView nameSlimming;
-        private ImageView photoSlimming;
-
-        public SlimmingViewHolder(View v) {
-            super(v);
-            nameSlimming = v.findViewById(R.id.nameSlimming);
-            photoSlimming = v.findViewById(R.id.imageSlimming);
-        }
-
-        public void setData(NutritionSlimming nutritionSlimming){
-            nameSlimming.setText(nutritionSlimming.getName());
-            Utils.loadImage(nutritionSlimming.getPhoto(),photoSlimming,Utils.PLACEHOLDER_GALLERY);
-        }
     }
 
 }

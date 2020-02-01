@@ -6,7 +6,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +17,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Activitys.WebViewActivity;
+import com.utad.david.planfit.Base.BaseDialogFragment;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Model.Nutrition.DefaultNutrition;
@@ -27,7 +27,7 @@ import com.utad.david.planfit.Utils.Utils;
 import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 
-public class NutritionFavoriteDetailsDialogFragment extends DialogFragment
+public class NutritionFavoriteDetailsDialogFragment extends BaseDialogFragment
         implements FirebaseAdmin.FirebaseAdminFavoriteNutrition{
 
     /******************************** VARIABLES *************************************+/

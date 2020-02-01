@@ -3,7 +3,6 @@ package com.utad.david.planfit.Fragments.FragmentsFirstActivity;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Patterns;
@@ -14,15 +13,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
+import com.utad.david.planfit.Base.BaseFragment;
 import com.utad.david.planfit.Utils.UtilsEncryptDecryptAES;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.R;
 import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
-
 import java.util.regex.Pattern;
 
-public class RegisterFragment extends Fragment {
+public class RegisterFragment extends BaseFragment {
 
     /******************************** VARIABLES *************************************+/
      *
