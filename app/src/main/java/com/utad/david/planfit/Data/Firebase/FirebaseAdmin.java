@@ -440,7 +440,10 @@ public class FirebaseAdmin {
         storageReference.child("images/" + uid).getDownloadUrl().addOnSuccessListener(uri -> {
             userDetails.setImgUser(uri.toString());
             firebaseAdimChatLisetener.donwloadUserDetails(true,userDetails);
-        }).addOnFailureListener(exception -> firebaseAdimChatLisetener.donwloadUserDetails(false,null));
+        }).addOnFailureListener(exception -> {
+            userDetails.setImgUser("");
+            firebaseAdimChatLisetener.donwloadUserDetails(true,userDetails);
+        });
     }
 
     //Update info user

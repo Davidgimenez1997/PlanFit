@@ -9,6 +9,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
@@ -267,11 +268,6 @@ public class ChatActivity extends AppCompatActivity
     public void donwloadUserDetails(boolean end, User userDetails) {
         if(end){
             if(userDetails!=null){
-                /*
-                Intent intent = new Intent(this, UserDetailDialogFragments.class);
-                intent.putExtra(Constants.ConfigureChat.EXTRA_USER, userDetails);
-                startActivity(intent);
-                */
                 fragmentTransaction = fragmentManager.beginTransaction();
                 Fragment fragment = getSupportFragmentManager().findFragmentByTag(Constants.TagDialogFragment.TAG);
                 if (fragment != null) {
