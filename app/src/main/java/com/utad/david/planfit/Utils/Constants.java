@@ -98,10 +98,15 @@ public class Constants {
     public interface CollectionsNames {
 
         String SPORTS = "deportes/";
+        String NUTRITION = "nutricion/";
         String DETAILS = "/detalles";
 
         String SPORT_SLIMMING = SPORTS + "adelgazar" + DETAILS;
         String SPORT_TONING = SPORTS + "tonificar" + DETAILS;
         String SPORT_GAIN_VOLUME = SPORTS + "ganarVolumen" + DETAILS;
+
+        String NUTRITION_SLIMMING = NUTRITION + "adelgazar" + DETAILS;
+        String NUTRITION_TONING = NUTRITION + "tonificar" + DETAILS;
+        String NUTRITION_GAIN_VOLUME = NUTRITION + "ganarVolumen" + DETAILS;
     }
 }

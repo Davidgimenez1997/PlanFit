@@ -12,10 +12,12 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Adapter.Nutrition.NutritionGainVolumeAdapter;
 import com.utad.david.planfit.Base.BaseFragment;
-import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
-import com.utad.david.planfit.Data.SessionUser;
+import com.utad.david.planfit.Data.Nutrition.GetNutritionData;
+import com.utad.david.planfit.Data.Nutrition.NutritionRepository;
 import com.utad.david.planfit.DialogFragment.Nutrition.NutritionDetailsDialogFragment;
 import com.utad.david.planfit.Model.Nutrition.NutritionGainVolume;
+import com.utad.david.planfit.Model.Nutrition.NutritionSlimming;
+import com.utad.david.planfit.Model.Nutrition.NutritionToning;
 import com.utad.david.planfit.R;
 import com.utad.david.planfit.Utils.Constants;
 import com.utad.david.planfit.Utils.UtilsNetwork;
@@ -24,7 +26,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class NutritionGainVolumeFragment extends BaseFragment
-        implements FirebaseAdmin.FirebaseAdminDownloandFragmentData,
+        implements GetNutritionData,
         NutritionDetailsDialogFragment.Callback {
 
     /******************************** VARIABLES *************************************+/
@@ -67,8 +69,8 @@ public class NutritionGainVolumeFragment extends BaseFragment
 
         if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
             showLoading();
-            SessionUser.getInstance().firebaseAdmin.setFirebaseAdminDownloandFragmentData(this);
-            SessionUser.getInstance().firebaseAdmin.downloadGainVolumeNutrition();
+            NutritionRepository.getInstance().setGetNutritionData(this);
+            NutritionRepository.getInstance().getGainVolumeNutrition();
             Fabric.with(getContext(), new Crashlytics());
         }else{
             hideLoading();
@@ -108,15 +110,11 @@ public class NutritionGainVolumeFragment extends BaseFragment
      */
 
     @Override
-    public void downloandCollectionNutritionGainVolume(boolean end) {
-        if(end){
+    public void getGainVolumeNutritions(boolean status, List<NutritionGainVolume> data) {
+        if(status){
             hideLoading();
-
-            List<NutritionGainVolume> nutritionGainVolumes = SessionUser.getInstance().firebaseAdmin.nutritionGainVolumeListNutrition;
-
-            Collections.sort(nutritionGainVolumes);
-
-            mAdapter = new NutritionGainVolumeAdapter(nutritionGainVolumes, item -> {
+            Collections.sort(data);
+            mAdapter = new NutritionGainVolumeAdapter(data, item -> {
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 Fragment prev = getFragmentManager().findFragmentByTag(Constants.TagDialogFragment.TAG);
                 if (prev != null) {
@@ -132,7 +130,8 @@ public class NutritionGainVolumeFragment extends BaseFragment
     }
 
     @Override
-    public void downloandCollectionNutritionSlimming(boolean end) {}
+    public void getSlimmingNutritions(boolean status, List<NutritionSlimming> data) {}
+
     @Override
-    public void downloandCollectionNutritionToning(boolean end) {}
+    public void getToningNutritions(boolean status, List<NutritionToning> data) {}
 }

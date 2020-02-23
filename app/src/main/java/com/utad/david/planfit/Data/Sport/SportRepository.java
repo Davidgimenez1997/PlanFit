@@ -37,7 +37,7 @@ public class SportRepository {
         this.getSportData = getSportData;
     }
 
-    //Get Sport Data Firebase
+    // Get Sport Data
 
     public void getSlimmingSport() {
         if (this.getSportData != null) {

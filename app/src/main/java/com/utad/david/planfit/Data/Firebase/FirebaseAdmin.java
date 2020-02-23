@@ -67,13 +67,6 @@ public class FirebaseAdmin {
     public Developer developerInfo;
 
     public List<DefaultSport> allSportFavorite;
-
-    /********LISTAS DE ALIMENTOS********/
-
-    public List<NutritionSlimming> nutritionSlimmingListNutrition;
-    public List<NutritionToning> nutritionToningsListNutrition;
-    public List<NutritionGainVolume> nutritionGainVolumeListNutrition;
-
     public List<DefaultNutrition> allNutritionFavorite;
 
     /********LISTAS DE DEPORTES FAVORITOS********/
@@ -99,9 +92,7 @@ public class FirebaseAdmin {
     private static String COLLECTION_MESSAGES_FIREBASE = "messages";
     private static String DOCUMENT_DEVELOPER_INFO_FIREBASE = "david";
     private static String COLLECTION_DEVELOPER_INFO_FIREBASE = "developer_info";
-    private static String COLLECTION_NUTRITION_SLIMMING = "nutricion/adelgazar/detalles";
-    private static String COLLECTION_NUTRITION_TONING = "nutricion/tonificar/detalles";
-    private static String COLLECTION_NUTRITION_GAIN_VOLUME = "nutricion/ganarVolumen/detalles";
+
 
     private String COLLECTION_FAVORITE_SPORT;
     private String COLLECTION_FAVORITE_NUTRITION;
@@ -603,59 +594,6 @@ public class FirebaseAdmin {
                 } else {
                     firebaseAdminInsertAndDownloandListener.downloadInfotDeveloper(false);
                 }
-            });
-        }
-    }
-
-    //Download nutrition data
-
-    public void downloadSlimmingNutrition() {
-        if (firebaseAdminDownloandFragmentData != null) {
-            CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_NUTRITION_SLIMMING);
-            collectionReference.addSnapshotListener((queryDocumentSnapshots, e) -> {
-                if (e != null) {
-                    firebaseAdminDownloandFragmentData.downloandCollectionNutritionSlimming(false);
-                }
-                List<NutritionSlimming> nutritionSlimmingList = new ArrayList<>();
-                for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                    nutritionSlimmingList.add(doc.toObject(NutritionSlimming.class));
-                }
-                nutritionSlimmingListNutrition = nutritionSlimmingList;
-                firebaseAdminDownloandFragmentData.downloandCollectionNutritionSlimming(true);
-            });
-        }
-    }
-
-    public void downloadTiningNutrition() {
-        if (firebaseAdminDownloandFragmentData != null) {
-            CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_NUTRITION_TONING);
-            collectionReference.addSnapshotListener((queryDocumentSnapshots, e) -> {
-                if (e != null) {
-                    firebaseAdminDownloandFragmentData.downloandCollectionNutritionToning(false);
-                }
-                List<NutritionToning> nutritionTonings = new ArrayList<>();
-                for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                    nutritionTonings.add(doc.toObject(NutritionToning.class));
-                }
-                nutritionToningsListNutrition = nutritionTonings;
-                firebaseAdminDownloandFragmentData.downloandCollectionNutritionToning(true);
-            });
-        }
-    }
-
-    public void downloadGainVolumeNutrition() {
-        if (firebaseAdminDownloandFragmentData != null) {
-            CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_NUTRITION_GAIN_VOLUME);
-            collectionReference.addSnapshotListener((queryDocumentSnapshots, e) -> {
-                if (e != null) {
-                    firebaseAdminDownloandFragmentData.downloandCollectionNutritionGainVolume(false);
-                }
-                List<NutritionGainVolume> nutritionGainVolumes = new ArrayList<>();
-                for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                    nutritionGainVolumes.add(doc.toObject(NutritionGainVolume.class));
-                }
-                nutritionGainVolumeListNutrition = nutritionGainVolumes;
-                firebaseAdminDownloandFragmentData.downloandCollectionNutritionGainVolume(true);
             });
         }
     }
