@@ -133,12 +133,6 @@ public class NutritionSlimmingFragment extends BaseFragment
     }
 
     @Override
-    public void downloandCollectionSportSlimming(boolean end) {}
-    @Override
-    public void downloandCollectionSportToning(boolean end) {}
-    @Override
-    public void downloandCollectionSportGainVolume(boolean end) {}
-    @Override
     public void downloandCollectionNutritionToning(boolean end) {}
     @Override
     public void downloandCollectionNutritionGainVolume(boolean end) {}

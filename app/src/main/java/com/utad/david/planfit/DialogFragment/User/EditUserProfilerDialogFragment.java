@@ -40,8 +40,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import static android.app.Activity.RESULT_OK;
-import static com.utad.david.planfit.Utils.Constants.RequestPermisos.REQUEST_GALLERY;
-import static com.utad.david.planfit.Utils.Constants.RequestPermisos.REQUEST_IMAGE_PERMISSIONS;
+import static com.utad.david.planfit.Utils.Constants.RequestPermissions.REQUEST_GALLERY;
+import static com.utad.david.planfit.Utils.Constants.RequestPermissions.REQUEST_IMAGE_PERMISSIONS;
 
 public class EditUserProfilerDialogFragment extends BaseDialogFragment
         implements FirebaseAdmin.FirebaseAdminUpdateAndDeleteUserListener,
@@ -294,7 +294,7 @@ public class EditUserProfilerDialogFragment extends BaseDialogFragment
                     "com.utad.david.planfit.camera.fileprovider",
                     photoFile);
             intentCamera.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-            startActivityForResult(intentCamera, Constants.RequestPermisos.REQUEST_CAMERA);
+            startActivityForResult(intentCamera, Constants.RequestPermissions.REQUEST_CAMERA);
         }
     }
 
@@ -321,7 +321,7 @@ public class EditUserProfilerDialogFragment extends BaseDialogFragment
                     Toast.makeText(getActivity().getApplicationContext(), getString(R.string.error_gallery_1), Toast.LENGTH_LONG).show();
                 }
             }
-            if(requestCode ==  Constants.RequestPermisos.REQUEST_CAMERA){
+            if(requestCode ==  Constants.RequestPermissions.REQUEST_CAMERA){
                 Bitmap photo = Utils.getBitmapFromPath(photoPath);
                 if (photo != null) {
                     Uri tempUri = Utils.getImageUri(getContext(), photo);

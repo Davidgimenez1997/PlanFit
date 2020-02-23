@@ -31,13 +31,13 @@ public class CreateNutritionPlanDetailsDialogFragment extends BaseDialogFragment
      *
      */
 
-    private static String NUTRITION = Constants.NutricionPlanDetails.EXTRA_NUTRITION;
+    private static String NUTRITION = Constants.NutritionPlanDetails.EXTRA_NUTRITION;
     private DefaultNutrition defaultNutrition;
 
-    private static String DESAYUNO = Constants.TiposPlanNutricion.DESAYUNO;
-    private static String COMIDA = Constants.TiposPlanNutricion.COMIDA;
-    private static String MERIENDA = Constants.TiposPlanNutricion.MERIENDA;
-    private static String CENA = Constants.TiposPlanNutricion.CENA;
+    private static String DESAYUNO = Constants.TypesPlanNutrition.DESAYUNO;
+    private static String COMIDA = Constants.TypesPlanNutrition.COMIDA;
+    private static String MERIENDA = Constants.TypesPlanNutrition.MERIENDA;
+    private static String CENA = Constants.TypesPlanNutrition.CENA;
 
     private TextView textViewTitle;
     private ImageView imageViewNutrtion;
@@ -155,16 +155,16 @@ public class CreateNutritionPlanDetailsDialogFragment extends BaseDialogFragment
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 switch (spinnerType.getSelectedItem().toString()){
-                    case Constants.TiposPlanNutricion.DESAYUNO:
+                    case Constants.TypesPlanNutrition.DESAYUNO:
                         type=1;
                         break;
-                    case Constants.TiposPlanNutricion.COMIDA:
+                    case Constants.TypesPlanNutrition.COMIDA:
                         type=2;
                         break;
-                    case Constants.TiposPlanNutricion.MERIENDA:
+                    case Constants.TypesPlanNutrition.MERIENDA:
                         type=3;
                         break;
-                    case Constants.TiposPlanNutricion.CENA:
+                    case Constants.TypesPlanNutrition.CENA:
                         type=4;
                         break;
                 }

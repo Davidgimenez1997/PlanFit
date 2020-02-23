@@ -13,8 +13,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
+
 import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Activitys.WebViewActivity;
 import com.utad.david.planfit.Base.BaseDialogFragment;
@@ -64,7 +63,7 @@ public class NutritionFavoriteDetailsDialogFragment extends BaseDialogFragment
     public static NutritionFavoriteDetailsDialogFragment newInstance(DefaultNutrition defaultNutrition) {
         NutritionFavoriteDetailsDialogFragment fragment = new NutritionFavoriteDetailsDialogFragment();
         Bundle args = new Bundle();
-        args.putParcelable(Constants.NutricionFavoriteDetails.EXTRA_NUTRICION, defaultNutrition);
+        args.putParcelable(Constants.NutritionFavoriteDetails.EXTRA_NUTRICION, defaultNutrition);
         fragment.setArguments(args);
         return fragment;
     }
@@ -84,7 +83,7 @@ public class NutritionFavoriteDetailsDialogFragment extends BaseDialogFragment
             Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
         }
 
-        defaultNutrition = getArguments().getParcelable(Constants.NutricionFavoriteDetails.EXTRA_NUTRICION);
+        defaultNutrition = getArguments().getParcelable(Constants.NutritionFavoriteDetails.EXTRA_NUTRICION);
     }
 
     @Override

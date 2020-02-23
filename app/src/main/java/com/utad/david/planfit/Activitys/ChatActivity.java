@@ -36,7 +36,7 @@ public class ChatActivity extends BaseActivity
      *
      */
 
-    public static final String EXTRA_NAME_USER = Constants.ConfigureChat.EXTRA_NAME;
+    public static final String EXTRA_NAME_USER = Constants.ConfigChat.EXTRA_NAME;
 
     private Toolbar toolbar;
 

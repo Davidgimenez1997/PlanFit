@@ -1,7 +1,5 @@
 package com.utad.david.planfit.Utils;
 
-import com.utad.david.planfit.R;
-
 public class YoutubePlayerConfig {
 
     public YoutubePlayerConfig() {
@@ -12,7 +10,7 @@ public class YoutubePlayerConfig {
      *
      */
 
-    public static final String API_KEY = Constants.ConfigureYouTube.API_KEY;
+    public static final String API_KEY = Constants.ConfigYoutube.API_KEY;
 
     public static String getApiKey() {
         return API_KEY;

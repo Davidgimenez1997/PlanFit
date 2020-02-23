@@ -66,12 +66,6 @@ public class FirebaseAdmin {
     public User userDetails;
     public Developer developerInfo;
 
-    /********LISTAS DE DEPORTES********/
-
-    public List<SportSlimming> sportSlimmingListSport;
-    public List<SportToning> sportToningListSport;
-    public List<SportGainVolume> sportGainVolumeListSport;
-
     public List<DefaultSport> allSportFavorite;
 
     /********LISTAS DE ALIMENTOS********/
@@ -105,9 +99,6 @@ public class FirebaseAdmin {
     private static String COLLECTION_MESSAGES_FIREBASE = "messages";
     private static String DOCUMENT_DEVELOPER_INFO_FIREBASE = "david";
     private static String COLLECTION_DEVELOPER_INFO_FIREBASE = "developer_info";
-    private static String COLLECTION_SPORT_SLIMMING = "deportes/adelgazar/detalles";
-    private static String COLLECTION_SPORT_TONING = "deportes/tonificar/detalles";
-    private static String COLLECTION_SPORT_GAIN_VOLUME = "deportes/ganarVolumen/detalles";
     private static String COLLECTION_NUTRITION_SLIMMING = "nutricion/adelgazar/detalles";
     private static String COLLECTION_NUTRITION_TONING = "nutricion/tonificar/detalles";
     private static String COLLECTION_NUTRITION_GAIN_VOLUME = "nutricion/ganarVolumen/detalles";
@@ -178,11 +169,6 @@ public class FirebaseAdmin {
     //Download sport and nutrition data
 
     public interface FirebaseAdminDownloandFragmentData {
-        void downloandCollectionSportSlimming(boolean end);
-
-        void downloandCollectionSportToning(boolean end);
-
-        void downloandCollectionSportGainVolume(boolean end);
 
         void downloandCollectionNutritionSlimming(boolean end);
 
@@ -617,59 +603,6 @@ public class FirebaseAdmin {
                 } else {
                     firebaseAdminInsertAndDownloandListener.downloadInfotDeveloper(false);
                 }
-            });
-        }
-    }
-
-    //Download Sport data
-
-    public void downloadSlimmingSport() {
-        if (firebaseAdminDownloandFragmentData != null) {
-            CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_SPORT_SLIMMING);
-            collectionReference.addSnapshotListener((queryDocumentSnapshots, e) -> {
-                if (e != null) {
-                    firebaseAdminDownloandFragmentData.downloandCollectionSportSlimming(false);
-                }
-                List<SportSlimming> sportSlimmingList = new ArrayList<>();
-                for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                    sportSlimmingList.add(doc.toObject(SportSlimming.class));
-                }
-                sportSlimmingListSport = sportSlimmingList;
-                firebaseAdminDownloandFragmentData.downloandCollectionSportSlimming(true);
-            });
-        }
-    }
-
-    public void downloadTiningSport() {
-        if (firebaseAdminDownloandFragmentData != null) {
-            CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_SPORT_TONING);
-            collectionReference.addSnapshotListener((queryDocumentSnapshots, e) -> {
-                if (e != null) {
-                    firebaseAdminDownloandFragmentData.downloandCollectionSportToning(false);
-                }
-                List<SportToning> sportToningList = new ArrayList<>();
-                for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                    sportToningList.add(doc.toObject(SportToning.class));
-                }
-                sportToningListSport = sportToningList;
-                firebaseAdminDownloandFragmentData.downloandCollectionSportToning(true);
-            });
-        }
-    }
-
-    public void downloadGainVolumeSport() {
-        if (firebaseAdminDownloandFragmentData != null) {
-            CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_SPORT_GAIN_VOLUME);
-            collectionReference.addSnapshotListener((queryDocumentSnapshots, e) -> {
-                if (e != null) {
-                    firebaseAdminDownloandFragmentData.downloandCollectionSportGainVolume(false);
-                }
-                List<SportGainVolume> sportGainVolumes = new ArrayList<>();
-                for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                    sportGainVolumes.add(doc.toObject(SportGainVolume.class));
-                }
-                sportGainVolumeListSport = sportGainVolumes;
-                firebaseAdminDownloandFragmentData.downloandCollectionSportGainVolume(true);
             });
         }
     }

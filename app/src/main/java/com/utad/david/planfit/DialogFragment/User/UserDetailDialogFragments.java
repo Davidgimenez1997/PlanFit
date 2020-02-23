@@ -21,7 +21,7 @@ public class UserDetailDialogFragments extends BaseDialogFragment {
      *
      */
 
-    public static final String EXTRA_USER = Constants.ConfigureChat.EXTRA_USER;
+    public static final String EXTRA_USER = Constants.ConfigChat.EXTRA_USER;
 
     private User userDetail;
     private Toolbar toolbar;

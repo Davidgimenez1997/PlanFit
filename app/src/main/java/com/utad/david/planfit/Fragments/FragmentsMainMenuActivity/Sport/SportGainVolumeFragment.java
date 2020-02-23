@@ -12,10 +12,12 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Adapter.Sport.SportGainVolumeAdapter;
 import com.utad.david.planfit.Base.BaseFragment;
-import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
-import com.utad.david.planfit.Data.SessionUser;
+import com.utad.david.planfit.Data.Sport.GetSportData;
+import com.utad.david.planfit.Data.Sport.SportRepository;
 import com.utad.david.planfit.DialogFragment.Sport.SportDetailsDialogFragment;
 import com.utad.david.planfit.Model.Sport.SportGainVolume;
+import com.utad.david.planfit.Model.Sport.SportSlimming;
+import com.utad.david.planfit.Model.Sport.SportToning;
 import com.utad.david.planfit.R;
 import com.utad.david.planfit.Utils.Constants;
 import com.utad.david.planfit.Utils.UtilsNetwork;
@@ -24,7 +26,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class SportGainVolumeFragment extends BaseFragment
-        implements FirebaseAdmin.FirebaseAdminDownloandFragmentData,
+        implements GetSportData,
         SportDetailsDialogFragment.Callback {
 
     /******************************** VARIABLES *************************************+/
@@ -66,8 +68,8 @@ public class SportGainVolumeFragment extends BaseFragment
 
         if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
             showLoading();
-            SessionUser.getInstance().firebaseAdmin.setFirebaseAdminDownloandFragmentData(this);
-            SessionUser.getInstance().firebaseAdmin.downloadGainVolumeSport();
+            SportRepository.getInstance().setGetSportData(this);
+            SportRepository.getInstance().getGainVolumeSport();
             Fabric.with(getContext(), new Crashlytics());
         }else{
             hideLoading();
@@ -97,7 +99,6 @@ public class SportGainVolumeFragment extends BaseFragment
     /******************************** CALLBACK DE SportDetailsDialogFragment.Callback *************************************+/
      *
      */
-
     @Override
     public void onClickClose() {
         newFragment.dismiss();
@@ -108,14 +109,11 @@ public class SportGainVolumeFragment extends BaseFragment
      */
 
     @Override
-    public void downloandCollectionSportGainVolume(boolean end) {
-        if(end){
+    public void getGainVolumeSports(boolean status, List<SportGainVolume> data) {
+        if(status){
             hideLoading();
-            List<SportGainVolume> sportGainVolumes = SessionUser.getInstance().firebaseAdmin.sportGainVolumeListSport;
-
-            Collections.sort(sportGainVolumes);
-
-            mAdapter = new SportGainVolumeAdapter(sportGainVolumes, item -> {
+            Collections.sort(data);
+            mAdapter = new SportGainVolumeAdapter(data, item -> {
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 Fragment prev = getFragmentManager().findFragmentByTag(Constants.TagDialogFragment.TAG);
                 if (prev != null) {
@@ -130,14 +128,9 @@ public class SportGainVolumeFragment extends BaseFragment
         }
     }
 
+
     @Override
-    public void downloandCollectionSportSlimming(boolean end) {}
+    public void getSlimmingSports(boolean status, List<SportSlimming> data) {}
     @Override
-    public void downloandCollectionSportToning(boolean end) {}
-    @Override
-    public void downloandCollectionNutritionSlimming(boolean end) {}
-    @Override
-    public void downloandCollectionNutritionToning(boolean end) {}
-    @Override
-    public void downloandCollectionNutritionGainVolume(boolean end) {}
+    public void getToningSports(boolean status, List<SportToning> data) {}
 }

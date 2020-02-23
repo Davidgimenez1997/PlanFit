@@ -40,11 +40,11 @@ public class SportDetailsDialogFragment extends BaseDialogFragment
     public SportToning sportToning;
     public Callback listener;
     public int option;
-    private static String SLIMMING = Constants.DeportesDetails.EXTRA_SLIMMING;
-    private static String GAINVOLUME = Constants.DeportesDetails.EXTRA_GAINVOLUME;
-    private static String TONING = Constants.DeportesDetails.EXTRA_TONING;
-    private static String OPTION = Constants.DeportesDetails.EXTRA_OPTION;
-    private String URL = Constants.DeportesDetails.EXTRA_URL;
+    private static String SLIMMING = Constants.SportDetails.EXTRA_SLIMMING;
+    private static String GAINVOLUME = Constants.SportDetails.EXTRA_GAINVOLUME;
+    private static String TONING = Constants.SportDetails.EXTRA_TONING;
+    private static String OPTION = Constants.SportDetails.EXTRA_OPTION;
+    private String URL = Constants.SportDetails.EXTRA_URL;
 
     private TextView textViewTitle;
     private Button buttonOpenYoutube;

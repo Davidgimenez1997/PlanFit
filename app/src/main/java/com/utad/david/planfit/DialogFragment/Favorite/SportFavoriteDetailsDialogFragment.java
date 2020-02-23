@@ -31,8 +31,8 @@ public class SportFavoriteDetailsDialogFragment extends BaseDialogFragment imple
      *
      */
 
-    private static String SPORT = Constants.DeportesFavoriteDetails.EXTRA_SPORT;
-    private static String URL = Constants.DeportesFavoriteDetails.EXTRA_URL;
+    private static String SPORT = Constants.SportFavoriteDetails.EXTRA_SPORT;
+    private static String URL = Constants.SportFavoriteDetails.EXTRA_URL;
     private DefaultSport defaultSport;
 
     private TextView textViewTitle;

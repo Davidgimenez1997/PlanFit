@@ -21,7 +21,7 @@ public class YoutubeActivity extends YouTubeBaseActivity {
     private YouTubePlayerView youTubePlayerView;
     private YouTubePlayer.OnInitializedListener onInitializedListener;
     private String urlData;
-    private String URL = Constants.ConfigureYouTube.EXTRA_URL;
+    private String URL = Constants.ConfigYoutube.EXTRA_URL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

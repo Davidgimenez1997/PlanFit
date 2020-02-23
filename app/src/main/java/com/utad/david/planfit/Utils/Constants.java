@@ -4,7 +4,7 @@ import com.utad.david.planfit.R;
 
 public class Constants {
 
-    public interface ModeRootFragment{
+    public interface ModeRootFragment {
         int MODE_SPORT = 0;
         int MODE_NUTRITION = 1;
         int MODE_FAVORITE = 2;
@@ -12,7 +12,7 @@ public class Constants {
         int MODE_USER = 4;
     }
 
-    public interface ModeWebView{
+    public interface ModeWebView {
         String EXTRA_MODE = "MODE";
         int MODE_LINKEDIN = 1;
         int MODE_RECIPE = 0;
@@ -20,66 +20,16 @@ public class Constants {
         int MODE_CHAT = 3;
     }
 
-    public interface ConfigureYouTube{
-        String EXTRA_URL = "URL";
-        String API_KEY = String.valueOf(R.string.API_KEY);
-    }
-
-    public interface ConfigurateWebView{
-        String EXTRA_TITLE = "EXTRA_TITLE";
-        String EXTRA_URL = "EXTRA_URL";
-        String TITLE_PRIVACITY = "Politica de Privacidad";
-        String URL_PRIVACITY = "https://politicayprivacidadplanfit.000webhostapp.com/planfit.html";
-    }
-
-    public interface NutritionDetails{
-        String EXTRA_SLIMMING = "SLIMMING";
-        String EXTRA_GAINVOLUME = "GAINVOLUME";
-        String EXTRA_TONING = "TONING";
-        String EXTRA_OPTION = "OPTION";
-    }
-
-    public interface DeportesDetails{
-        String EXTRA_SLIMMING = "SLIMMING";
-        String EXTRA_GAINVOLUME = "GAINVOLUME";
-        String EXTRA_TONING = "TONING";
-        String EXTRA_OPTION = "OPTION";
-        String EXTRA_URL = "URL";
-    }
-
-    public interface ConfigureChat{
-        String EXTRA_NAME = "NAME";
-        String EXTRA_USER = "USER";
-    }
-
-    public interface RequestPermisos{
-        int REQUEST_CAMERA = 0;
-        int REQUEST_GALLERY = 1;
-        int REQUEST_IMAGE_PERMISSIONS = 1;
-    }
-
-    public interface NutricionFavoriteDetails {
-        String EXTRA_NUTRICION = "NUTRITION";
-    }
-
-    public interface DeportesFavoriteDetails {
-        String EXTRA_SPORT = "SPORT";
-        String EXTRA_URL = "URL";
-    }
-
-    public interface DeportesPlanDetails{
-        String EXTRA_SPORT = "SPORT";
-    }
-
-    public interface NutricionPlanDetails{
-        String EXTRA_NUTRITION = "NUTRITION";
+    public interface ModePlan{
+        String YES = "yes";
+        String NO = "no";
     }
 
     public interface TagDialogFragment{
         String TAG = "DIALOG";
     }
 
-    public interface TiposPlanNutricion{
+    public interface TypesPlanNutrition {
         String DESAYUNO = "Desayuno";
         String COMIDA = "Comida";
         String MERIENDA = "Merienda";
@@ -90,8 +40,68 @@ public class Constants {
         int MODE_CENA = 4;
     }
 
-    public interface ModePlan{
-        String YES = "yes";
-        String NO = "no";
+    public interface ConfigYoutube {
+        String EXTRA_URL = "URL";
+        String API_KEY = String.valueOf(R.string.API_KEY);
+    }
+
+    public interface ConfigChat {
+        String EXTRA_NAME = "NAME";
+        String EXTRA_USER = "USER";
+    }
+
+    public interface ConfigWebView {
+        String EXTRA_TITLE = "EXTRA_TITLE";
+        String EXTRA_URL = "EXTRA_URL";
+        String TITLE_PRIVACITY = "Politica de Privacidad";
+        String URL_PRIVACITY = "https://politicayprivacidadplanfit.000webhostapp.com/planfit.html";
+    }
+
+    public interface RequestPermissions {
+        int REQUEST_CAMERA = 0;
+        int REQUEST_GALLERY = 1;
+        int REQUEST_IMAGE_PERMISSIONS = 1;
+    }
+
+    public interface NutritionDetails {
+        String EXTRA_SLIMMING = "SLIMMING";
+        String EXTRA_GAINVOLUME = "GAINVOLUME";
+        String EXTRA_TONING = "TONING";
+        String EXTRA_OPTION = "OPTION";
+    }
+
+    public interface SportDetails {
+        String EXTRA_SLIMMING = "SLIMMING";
+        String EXTRA_GAINVOLUME = "GAINVOLUME";
+        String EXTRA_TONING = "TONING";
+        String EXTRA_OPTION = "OPTION";
+        String EXTRA_URL = "URL";
+    }
+
+    public interface NutritionFavoriteDetails {
+        String EXTRA_NUTRICION = "NUTRITION";
+    }
+
+    public interface SportFavoriteDetails {
+        String EXTRA_SPORT = "SPORT";
+        String EXTRA_URL = "URL";
+    }
+
+    public interface SportPlanDetails {
+        String EXTRA_SPORT = "SPORT";
+    }
+
+    public interface NutritionPlanDetails {
+        String EXTRA_NUTRITION = "NUTRITION";
+    }
+    
+    public interface CollectionsNames {
+
+        String SPORTS = "deportes/";
+        String DETAILS = "/detalles";
+
+        String SPORT_SLIMMING = SPORTS + "adelgazar" + DETAILS;
+        String SPORT_TONING = SPORTS + "tonificar" + DETAILS;
+        String SPORT_GAIN_VOLUME = SPORTS + "ganarVolumen" + DETAILS;
     }
 }

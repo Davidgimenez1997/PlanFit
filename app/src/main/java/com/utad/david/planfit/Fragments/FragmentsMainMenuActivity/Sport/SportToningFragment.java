@@ -12,9 +12,11 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Adapter.Sport.SportToningAdapter;
 import com.utad.david.planfit.Base.BaseFragment;
-import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
-import com.utad.david.planfit.Data.SessionUser;
+import com.utad.david.planfit.Data.Sport.GetSportData;
+import com.utad.david.planfit.Data.Sport.SportRepository;
 import com.utad.david.planfit.DialogFragment.Sport.SportDetailsDialogFragment;
+import com.utad.david.planfit.Model.Sport.SportGainVolume;
+import com.utad.david.planfit.Model.Sport.SportSlimming;
 import com.utad.david.planfit.Model.Sport.SportToning;
 import com.utad.david.planfit.R;
 import com.utad.david.planfit.Utils.Constants;
@@ -24,7 +26,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class SportToningFragment extends BaseFragment
-        implements FirebaseAdmin.FirebaseAdminDownloandFragmentData,
+        implements GetSportData,
         SportDetailsDialogFragment.Callback {
 
     /******************************** VARIABLES *************************************+/
@@ -67,8 +69,8 @@ public class SportToningFragment extends BaseFragment
 
         if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
             showLoading();
-            SessionUser.getInstance().firebaseAdmin.setFirebaseAdminDownloandFragmentData(this);
-            SessionUser.getInstance().firebaseAdmin.downloadTiningSport();
+            SportRepository.getInstance().setGetSportData(this);
+            SportRepository.getInstance().getToningSport();
             Fabric.with(getContext(), new Crashlytics());
         }else{
             hideLoading();
@@ -110,14 +112,11 @@ public class SportToningFragment extends BaseFragment
      */
 
     @Override
-    public void downloandCollectionSportToning(boolean end) {
-        if(end){
+    public void getToningSports(boolean status, List<SportToning> data) {
+        if(status){
             hideLoading();
-            List<SportToning> sportTonings = SessionUser.getInstance().firebaseAdmin.sportToningListSport;
-
-            Collections.sort(sportTonings);
-
-            mAdapter = new SportToningAdapter(sportTonings, item -> {
+            Collections.sort(data);
+            mAdapter = new SportToningAdapter(data, item -> {
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 Fragment prev = getFragmentManager().findFragmentByTag(Constants.TagDialogFragment.TAG);
                 if (prev != null) {
@@ -132,14 +131,9 @@ public class SportToningFragment extends BaseFragment
         }
     }
 
+
     @Override
-    public void downloandCollectionSportSlimming(boolean end) {}
+    public void getSlimmingSports(boolean status, List<SportSlimming> data) {}
     @Override
-    public void downloandCollectionSportGainVolume(boolean end) {}
-    @Override
-    public void downloandCollectionNutritionSlimming(boolean end) {}
-    @Override
-    public void downloandCollectionNutritionToning(boolean end) {}
-    @Override
-    public void downloandCollectionNutritionGainVolume(boolean end) {}
+    public void getGainVolumeSports(boolean status, List<SportGainVolume> data) {}
 }

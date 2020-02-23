@@ -250,8 +250,8 @@ public class MainMenuActivity extends BaseActivity
 
     private void openPolity() {
         Intent intent = new Intent(this, WebViewActivity.class);
-        intent.putExtra(WebViewActivity.EXTRA_TITLE, Constants.ConfigurateWebView.TITLE_PRIVACITY);
-        intent.putExtra(WebViewActivity.EXTRA_URL, Constants.ConfigurateWebView.URL_PRIVACITY);
+        intent.putExtra(WebViewActivity.EXTRA_TITLE, Constants.ConfigWebView.TITLE_PRIVACITY);
+        intent.putExtra(WebViewActivity.EXTRA_URL, Constants.ConfigWebView.URL_PRIVACITY);
         intent.putExtra(WebViewActivity.EXTRA_MODE, Constants.ModeWebView.MODE_PRIVACITY);
         overridePendingTransition(R.anim.slide_in_bottom, R.anim.stay);
         startActivity(intent);
@@ -335,7 +335,7 @@ public class MainMenuActivity extends BaseActivity
             case R.id.nav_user:
                 navigationView.getMenu().findItem(R.id.nav_user).setChecked(true);
                 Intent intent = new Intent(this, ChatActivity.class);
-                intent.putExtra(Constants.ConfigureChat.EXTRA_NAME, SessionUser.getInstance().firebaseAdmin.userDataFirebase.getNickName());
+                intent.putExtra(Constants.ConfigChat.EXTRA_NAME, SessionUser.getInstance().firebaseAdmin.userDataFirebase.getNickName());
                 startActivityForResult(intent,22);
                 break;
         }

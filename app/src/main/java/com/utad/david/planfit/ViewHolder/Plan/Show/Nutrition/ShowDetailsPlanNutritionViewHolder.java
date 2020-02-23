@@ -35,17 +35,17 @@ public class ShowDetailsPlanNutritionViewHolder extends BaseViewHolder {
 
 
         switch (planNutrition.getType()) {
-            case Constants.TiposPlanNutricion.MODE_DESAYUNO:
-                timeStart.setText(Constants.TiposPlanNutricion.DESAYUNO);
+            case Constants.TypesPlanNutrition.MODE_DESAYUNO:
+                timeStart.setText(Constants.TypesPlanNutrition.DESAYUNO);
                 break;
-            case Constants.TiposPlanNutricion.MODE_COMIDA:
-                timeStart.setText(Constants.TiposPlanNutricion.COMIDA);
+            case Constants.TypesPlanNutrition.MODE_COMIDA:
+                timeStart.setText(Constants.TypesPlanNutrition.COMIDA);
                 break;
-            case Constants.TiposPlanNutricion.MODE_MERIENDA:
-                timeStart.setText(Constants.TiposPlanNutricion.MERIENDA);
+            case Constants.TypesPlanNutrition.MODE_MERIENDA:
+                timeStart.setText(Constants.TypesPlanNutrition.MERIENDA);
                 break;
-            case Constants.TiposPlanNutricion.MODE_CENA:
-                timeStart.setText(Constants.TiposPlanNutricion.CENA);
+            case Constants.TypesPlanNutrition.MODE_CENA:
+                timeStart.setText(Constants.TypesPlanNutrition.CENA);
                 break;
 
         }

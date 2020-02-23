@@ -32,7 +32,7 @@ public class CreateSportPlanDetailsDialogFragment extends BaseDialogFragment
      *
      */
 
-    private static String SPORT = Constants.DeportesPlanDetails.EXTRA_SPORT;
+    private static String SPORT = Constants.SportPlanDetails.EXTRA_SPORT;
     private DefaultSport defaultSport;
 
     private TextView textViewTitle;
