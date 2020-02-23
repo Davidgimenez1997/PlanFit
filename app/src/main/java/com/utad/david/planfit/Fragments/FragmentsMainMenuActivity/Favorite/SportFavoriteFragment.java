@@ -13,10 +13,15 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Adapter.Favorite.Sport.SportFavoriteAdapter;
 import com.utad.david.planfit.Base.BaseFragment;
+import com.utad.david.planfit.Data.Favorite.GetSportFavorite;
+import com.utad.david.planfit.Data.Favorite.SportFavoriteRepository;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.DialogFragment.Favorite.SportFavoriteDetailsDialogFragment;
 import com.utad.david.planfit.Model.Sport.DefaultSport;
+import com.utad.david.planfit.Model.Sport.SportGainVolume;
+import com.utad.david.planfit.Model.Sport.SportSlimming;
+import com.utad.david.planfit.Model.Sport.SportToning;
 import com.utad.david.planfit.R;
 import com.utad.david.planfit.Utils.Constants;
 import com.utad.david.planfit.Utils.UtilsNetwork;
@@ -25,7 +30,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class SportFavoriteFragment extends BaseFragment
-        implements FirebaseAdmin.FirebaseAdminFavoriteSport,
+        implements GetSportFavorite,
         SportFavoriteDetailsDialogFragment.Callback {
 
     /******************************** VARIABLES *************************************+/
@@ -69,8 +74,8 @@ public class SportFavoriteFragment extends BaseFragment
 
         if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
             showLoading();
-            SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteSport(this);
-            SessionUser.getInstance().firebaseAdmin.downloadAllSportFavorite();
+            SportFavoriteRepository.getInstance().setGetSportFavorite(this);
+            SportFavoriteRepository.getInstance().getAllSportFavorite();
             Fabric.with(getContext(), new Crashlytics());
         }else{
             hideLoading();
@@ -126,18 +131,13 @@ public class SportFavoriteFragment extends BaseFragment
      */
 
     @Override
-    public void downloandCollectionSportFavorite(boolean end) {
-        if(end==true){
+    public void getSportAllFavorite(boolean status, List<DefaultSport> defaultSports) {
+        if(status){
             hideLoading();
-
             linearLayout.setVisibility(View.GONE);
             mRecyclerView.setVisibility(View.VISIBLE);
-
-            List<DefaultSport> allSportFavorite = SessionUser.getInstance().firebaseAdmin.allSportFavorite;
-
-            Collections.sort(allSportFavorite);
-
-            mAdapter = new SportFavoriteAdapter(allSportFavorite, item -> {
+            Collections.sort(defaultSports);
+            mAdapter = new SportFavoriteAdapter(defaultSports, item -> {
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 Fragment prev = getFragmentManager().findFragmentByTag(Constants.TagDialogFragment.TAG);
                 if (prev != null) {
@@ -148,15 +148,13 @@ public class SportFavoriteFragment extends BaseFragment
                 newFragment.setListener(fragment);
                 newFragment.show(transaction, Constants.TagDialogFragment.TAG);
             });
-
             mRecyclerView.setAdapter(mAdapter);
-
         }
     }
 
     @Override
-    public void emptyCollectionSportFavorite(boolean end) {
-        if(end==true){
+    public void emptySportFavorite(boolean status) {
+        if(status){
             hideLoading();
             linearLayout.setVisibility(View.VISIBLE);
             mRecyclerView.setVisibility(View.GONE);
@@ -164,7 +162,13 @@ public class SportFavoriteFragment extends BaseFragment
     }
 
     @Override
-    public void inserSportFavoriteFirebase(boolean end) {}
+    public void addSportFavorite(boolean status) {}
     @Override
-    public void deleteFavoriteSport(boolean end) {}
+    public void deleteSportFavorite(boolean status) {}
+    @Override
+    public void getSportSlimmingFavorite(boolean status, List<SportSlimming> sportSlimmings) {}
+    @Override
+    public void getSportToningFavorite(boolean status, List<SportToning> sportTonings) {}
+    @Override
+    public void getSportGainVolumeFavorite(boolean status, List<SportGainVolume> sportGainVolumes) {}
 }

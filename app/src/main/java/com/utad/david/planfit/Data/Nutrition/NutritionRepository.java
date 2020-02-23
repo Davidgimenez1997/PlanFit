@@ -16,7 +16,7 @@ public class NutritionRepository {
     private static NutritionRepository instance = new NutritionRepository();
 
     private FirebaseFirestore firebaseFirestore;
-    private GetNutritionData getNutritionData;
+    private GetNutrition getNutrition;
 
     private NutritionRepository () {
         this.firebaseFirestore = FirebaseFirestore.getInstance();
@@ -33,59 +33,59 @@ public class NutritionRepository {
         return instance;
     }
 
-    public void setGetNutritionData(GetNutritionData getNutritionData) {
-        this.getNutritionData = getNutritionData;
+    public void setGetNutrition(GetNutrition getNutrition) {
+        this.getNutrition = getNutrition;
     }
 
     // Get Nutrition data
 
     public void getSlimmingNutrition() {
-        if (this.getNutritionData != null) {
+        if (this.getNutrition != null) {
             String COLLECTION_NUTRITION_SLIMMING = Constants.CollectionsNames.NUTRITION_SLIMMING;
             CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_NUTRITION_SLIMMING);
             collectionReference.addSnapshotListener((queryDocumentSnapshots, e) -> {
                 if (e != null) {
-                    this.getNutritionData.getSlimmingNutritions(false, null);
+                    this.getNutrition.getSlimmingNutritions(false, null);
                 }
                 List<NutritionSlimming> nutritionSlimmingList = new ArrayList<>();
                 for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                     nutritionSlimmingList.add(doc.toObject(NutritionSlimming.class));
                 }
-                this.getNutritionData.getSlimmingNutritions(true, nutritionSlimmingList);
+                this.getNutrition.getSlimmingNutritions(true, nutritionSlimmingList);
             });
         }
     }
 
     public void getToningNutrition() {
-        if (this.getNutritionData != null) {
+        if (this.getNutrition != null) {
             String COLLECTION_NUTRITION_TONING = Constants.CollectionsNames.NUTRITION_TONING;
             CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_NUTRITION_TONING);
             collectionReference.addSnapshotListener((queryDocumentSnapshots, e) -> {
                 if (e != null) {
-                    this.getNutritionData.getToningNutritions(false, null);
+                    this.getNutrition.getToningNutritions(false, null);
                 }
                 List<NutritionToning> nutritionTonings = new ArrayList<>();
                 for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                     nutritionTonings.add(doc.toObject(NutritionToning.class));
                 }
-                this.getNutritionData.getToningNutritions(true, nutritionTonings);
+                this.getNutrition.getToningNutritions(true, nutritionTonings);
             });
         }
     }
 
     public void getGainVolumeNutrition() {
-        if (this.getNutritionData != null) {
+        if (this.getNutrition != null) {
             String COLLECTION_NUTRITION_GAIN_VOLUME = Constants.CollectionsNames.NUTRITION_GAIN_VOLUME;
             CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_NUTRITION_GAIN_VOLUME);
             collectionReference.addSnapshotListener((queryDocumentSnapshots, e) -> {
                 if (e != null) {
-                    this.getNutritionData.getGainVolumeNutritions(false, null);
+                    this.getNutrition.getGainVolumeNutritions(false, null);
                 }
                 List<NutritionGainVolume> nutritionGainVolumes = new ArrayList<>();
                 for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                     nutritionGainVolumes.add(doc.toObject(NutritionGainVolume.class));
                 }
-                this.getNutritionData.getGainVolumeNutritions(true, nutritionGainVolumes);
+                this.getNutrition.getGainVolumeNutritions(true, nutritionGainVolumes);
             });
         }
     }

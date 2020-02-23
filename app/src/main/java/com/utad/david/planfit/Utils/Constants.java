@@ -97,7 +97,9 @@ public class Constants {
     
     public interface CollectionsNames {
 
+        String USERS = "users/";
         String SPORTS = "deportes/";
+        String SPORTS_FAVORITE = "/deporteFavorito";
         String NUTRITION = "nutricion/";
         String DETAILS = "/detalles";
 
@@ -109,4 +111,16 @@ public class Constants {
         String NUTRITION_TONING = NUTRITION + "tonificar" + DETAILS;
         String NUTRITION_GAIN_VOLUME = NUTRITION + "ganarVolumen" + DETAILS;
     }
+
+    public interface ModelSportFavorite {
+        String NAME = "name";
+        String PHOTO = "photo";
+        String VIDEO = "video";
+        String DESCRIPTION = "description";
+        String TYPE = "type";
+        String ADELGAZAR = "adelgazar";
+        String TONIFICAR = "tonificar";
+        String GANAR_VOLUMEN = "ganarVolumen";
+    }
+
 }

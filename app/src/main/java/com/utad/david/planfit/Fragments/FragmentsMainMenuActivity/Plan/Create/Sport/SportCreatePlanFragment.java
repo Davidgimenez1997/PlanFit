@@ -13,10 +13,13 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Adapter.Plan.Create.Sport.CreateSportPlanAdapter;
 import com.utad.david.planfit.Base.BaseFragment;
-import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
-import com.utad.david.planfit.Data.SessionUser;
+import com.utad.david.planfit.Data.Favorite.GetSportFavorite;
+import com.utad.david.planfit.Data.Favorite.SportFavoriteRepository;
 import com.utad.david.planfit.DialogFragment.Plan.Sport.CreateSportPlanDetailsDialogFragment;
 import com.utad.david.planfit.Model.Sport.DefaultSport;
+import com.utad.david.planfit.Model.Sport.SportGainVolume;
+import com.utad.david.planfit.Model.Sport.SportSlimming;
+import com.utad.david.planfit.Model.Sport.SportToning;
 import com.utad.david.planfit.R;
 import com.utad.david.planfit.Utils.Constants;
 import com.utad.david.planfit.Utils.UtilsNetwork;
@@ -25,7 +28,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class SportCreatePlanFragment extends BaseFragment
-        implements FirebaseAdmin.FirebaseAdminFavoriteSport,
+        implements GetSportFavorite,
         CreateSportPlanDetailsDialogFragment.Callback {
 
     /******************************** VARIABLES *************************************+/
@@ -68,8 +71,8 @@ public class SportCreatePlanFragment extends BaseFragment
         if (UtilsNetwork.checkConnectionInternetDevice(getContext())) {
             showLoading();
             Fabric.with(getContext(), new Crashlytics());
-            SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteSport(this);
-            SessionUser.getInstance().firebaseAdmin.downloadAllSportFavorite();
+            SportFavoriteRepository.getInstance().setGetSportFavorite(this);
+            SportFavoriteRepository.getInstance().getAllSportFavorite();
         } else {
             hideLoading();
             Toast.makeText(getContext(), getString(R.string.info_network_device), Toast.LENGTH_LONG).show();
@@ -109,18 +112,13 @@ public class SportCreatePlanFragment extends BaseFragment
      */
 
     @Override
-    public void downloandCollectionSportFavorite(boolean end) {
-        if(end==true){
+    public void getSportAllFavorite(boolean status, List<DefaultSport> defaultSports) {
+        if(status){
             hideLoading();
-
             linearLayout.setVisibility(View.GONE);
             mRecyclerView.setVisibility(View.VISIBLE);
-
-            List<DefaultSport> allSportFavorite = SessionUser.getInstance().firebaseAdmin.allSportFavorite;
-
-            Collections.sort(allSportFavorite);
-
-            mAdapter = new CreateSportPlanAdapter(allSportFavorite, item -> {
+            Collections.sort(defaultSports);
+            mAdapter = new CreateSportPlanAdapter(defaultSports, item -> {
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 Fragment prev = getFragmentManager().findFragmentByTag(Constants.TagDialogFragment.TAG);
                 if (prev != null) {
@@ -137,8 +135,8 @@ public class SportCreatePlanFragment extends BaseFragment
     }
 
     @Override
-    public void emptyCollectionSportFavorite(boolean end) {
-        if(end==true){
+    public void emptySportFavorite(boolean status) {
+        if(status){
             hideLoading();
             linearLayout.setVisibility(View.VISIBLE);
             mRecyclerView.setVisibility(View.GONE);
@@ -146,7 +144,13 @@ public class SportCreatePlanFragment extends BaseFragment
     }
 
     @Override
-    public void inserSportFavoriteFirebase(boolean end) {}
+    public void addSportFavorite(boolean status) {}
     @Override
-    public void deleteFavoriteSport(boolean end) {}
+    public void deleteSportFavorite(boolean status) {}
+    @Override
+    public void getSportSlimmingFavorite(boolean status, List<SportSlimming> sportSlimmings) {}
+    @Override
+    public void getSportToningFavorite(boolean status, List<SportToning> sportTonings) {}
+    @Override
+    public void getSportGainVolumeFavorite(boolean status, List<SportGainVolume> sportGainVolumes) {}
 }

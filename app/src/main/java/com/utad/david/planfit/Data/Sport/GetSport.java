@@ -6,7 +6,7 @@ import com.utad.david.planfit.Model.Sport.SportToning;
 
 import java.util.List;
 
-public interface GetSportData {
+public interface GetSport {
     void getSlimmingSports(boolean status, List<SportSlimming> data);
     void getToningSports (boolean status, List<SportToning> data);
     void getGainVolumeSports(boolean status, List <SportGainVolume> data);

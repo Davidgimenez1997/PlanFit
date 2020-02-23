@@ -12,7 +12,7 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Adapter.Nutrition.NutritionSlimmingAdapter;
 import com.utad.david.planfit.Base.BaseFragment;
-import com.utad.david.planfit.Data.Nutrition.GetNutritionData;
+import com.utad.david.planfit.Data.Nutrition.GetNutrition;
 import com.utad.david.planfit.Data.Nutrition.NutritionRepository;
 import com.utad.david.planfit.DialogFragment.Nutrition.NutritionDetailsDialogFragment;
 import com.utad.david.planfit.Model.Nutrition.NutritionGainVolume;
@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class NutritionSlimmingFragment extends BaseFragment
-        implements GetNutritionData,
+        implements GetNutrition,
         NutritionDetailsDialogFragment.Callback {
 
     /******************************** VARIABLES *************************************+/
@@ -68,7 +68,7 @@ public class NutritionSlimmingFragment extends BaseFragment
 
         if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
             showLoading();
-            NutritionRepository.getInstance().setGetNutritionData(this);
+            NutritionRepository.getInstance().setGetNutrition(this);
             NutritionRepository.getInstance().getSlimmingNutrition();
             Fabric.with(getContext(), new Crashlytics());
         }else{

@@ -12,7 +12,7 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Adapter.Sport.SportSlimmingAdapter;
 import com.utad.david.planfit.Base.BaseFragment;
-import com.utad.david.planfit.Data.Sport.GetSportData;
+import com.utad.david.planfit.Data.Sport.GetSport;
 import com.utad.david.planfit.Data.Sport.SportRepository;
 import com.utad.david.planfit.DialogFragment.Sport.SportDetailsDialogFragment;
 import com.utad.david.planfit.Model.Sport.SportGainVolume;
@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class SportSlimmingFragment extends BaseFragment
-        implements GetSportData,
+        implements GetSport,
         SportDetailsDialogFragment.Callback {
 
     /******************************** VARIABLES *************************************+/
@@ -71,7 +71,7 @@ public class SportSlimmingFragment extends BaseFragment
 
         if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
             showLoading();
-            SportRepository.getInstance().setGetSportData(this);
+            SportRepository.getInstance().setGetSport(this);
             SportRepository.getInstance().getSlimmingSport();
             Fabric.with(getContext(), new Crashlytics());
         }else{

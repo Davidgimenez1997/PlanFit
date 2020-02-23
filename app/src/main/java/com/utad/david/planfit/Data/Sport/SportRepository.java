@@ -16,7 +16,7 @@ public class SportRepository {
     private static SportRepository instance = new SportRepository();
 
     private FirebaseFirestore firebaseFirestore;
-    private GetSportData getSportData;
+    private GetSport getSport;
 
     private SportRepository () {
         this.firebaseFirestore = FirebaseFirestore.getInstance();
@@ -33,59 +33,59 @@ public class SportRepository {
         return instance;
     }
 
-    public void setGetSportData(GetSportData getSportData) {
-        this.getSportData = getSportData;
+    public void setGetSport(GetSport getSport) {
+        this.getSport = getSport;
     }
 
     // Get Sport Data
 
     public void getSlimmingSport() {
-        if (this.getSportData != null) {
+        if (this.getSport != null) {
             String COLLECTION_SPORT_SLIMMING = Constants.CollectionsNames.SPORT_SLIMMING;
             CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_SPORT_SLIMMING);
             collectionReference.addSnapshotListener((queryDocumentSnapshots, e) -> {
                 if (e != null) {
-                    this.getSportData.getSlimmingSports(false, null);
+                    this.getSport.getSlimmingSports(false, null);
                 }
                 List<SportSlimming> sportSlimmingList = new ArrayList<>();
                 for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                     sportSlimmingList.add(doc.toObject(SportSlimming.class));
                 }
-                this.getSportData.getSlimmingSports(true, sportSlimmingList);
+                this.getSport.getSlimmingSports(true, sportSlimmingList);
             });
         }
     }
 
     public void getToningSport() {
-        if (this.getSportData != null) {
+        if (this.getSport != null) {
             String COLLECTION_SPORT_TONING = Constants.CollectionsNames.SPORT_TONING;
             CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_SPORT_TONING);
             collectionReference.addSnapshotListener((queryDocumentSnapshots, e) -> {
                 if (e != null) {
-                    this.getSportData.getToningSports(false, null);
+                    this.getSport.getToningSports(false, null);
                 }
                 List<SportToning> sportToningList = new ArrayList<>();
                 for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                     sportToningList.add(doc.toObject(SportToning.class));
                 }
-                this.getSportData.getToningSports(true, sportToningList);
+                this.getSport.getToningSports(true, sportToningList);
             });
         }
     }
 
     public void getGainVolumeSport() {
-        if (this.getSportData != null) {
+        if (this.getSport != null) {
             String COLLECTION_SPORT_GAIN_VOLUME = Constants.CollectionsNames.SPORT_GAIN_VOLUME;
             CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_SPORT_GAIN_VOLUME);
             collectionReference.addSnapshotListener((queryDocumentSnapshots, e) -> {
                 if (e != null) {
-                    this.getSportData.getGainVolumeSports(false, null);
+                    this.getSport.getGainVolumeSports(false, null);
                 }
                 List<SportGainVolume> sportGainVolumes = new ArrayList<>();
                 for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                     sportGainVolumes.add(doc.toObject(SportGainVolume.class));
                 }
-                this.getSportData.getGainVolumeSports(true, sportGainVolumes);
+                this.getSport.getGainVolumeSports(true, sportGainVolumes);
             });
         }
     }
