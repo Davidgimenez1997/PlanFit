@@ -18,6 +18,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.*;
 import com.utad.david.planfit.Adapter.Chat.ChatAdapter;
 import com.utad.david.planfit.Base.BaseActivity;
+import com.utad.david.planfit.Data.Chat.ChatRepository;
+import com.utad.david.planfit.Data.Chat.GetChat;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.DialogFragment.User.UserDetailDialogFragments;
@@ -29,8 +31,9 @@ import com.utad.david.planfit.Utils.Utils;
 import android.support.v4.app.Fragment;
 import com.utad.david.planfit.Utils.UtilsNetwork;
 
-public class ChatActivity extends BaseActivity
-        implements FirebaseAdmin.FirebaseAdimChatLisetener{
+public class ChatActivity
+        extends BaseActivity
+        implements GetChat {
 
     /******************************** VARIABLES *************************************+/
      *
@@ -95,7 +98,7 @@ public class ChatActivity extends BaseActivity
 
         if(UtilsNetwork.checkConnectionInternetDevice(this)){
             Utils.showSoftKeyboard(this,etMessage);
-            SessionUser.getInstance().firebaseAdmin.setFirebaseAdimChatLisetener(this);
+            ChatRepository.getInstance().setGetChat(this);
 
             if(SessionUser.getInstance().firebaseAdmin.mAuth.getCurrentUser()!=null){
                 showLoading();
@@ -168,11 +171,11 @@ public class ChatActivity extends BaseActivity
     }
 
     private void navigateToProfile(ChatMessage message) {
-        SessionUser.getInstance().firebaseAdmin.dowloandDetailsUserFirebase(message);
+        ChatRepository.getInstance().getUserDetailsByMessage(message);
     }
 
     private void deleteMessage(ChatMessage message) {
-        SessionUser.getInstance().firebaseAdmin.deleteMessageInChat(message);
+        ChatRepository.getInstance().deleteMessageInChat(message);
     }
 
     @Override
@@ -211,15 +214,15 @@ public class ChatActivity extends BaseActivity
     }
 
     @Override
-    public void deleteMessageChat(boolean end) {
-        if(end){
+    public void deleteMessage(boolean status) {
+        if(status){
             adapter.notifyDataSetChanged();
         }
     }
 
     @Override
-    public void donwloadUserDetails(boolean end, User userDetails) {
-        if(end){
+    public void getUserDetails(boolean status, User userDetails) {
+        if(status){
             if(userDetails!=null){
                 fragmentTransaction = fragmentManager.beginTransaction();
                 Fragment fragment = getSupportFragmentManager().findFragmentByTag(Constants.TagDialogFragment.TAG);

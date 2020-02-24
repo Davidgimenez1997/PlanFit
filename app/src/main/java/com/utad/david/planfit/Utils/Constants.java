@@ -96,7 +96,7 @@ public class Constants {
     }
     
     public interface CollectionsNames {
-
+        String USER = "users";
         String USERS = "users/";
         String SPORTS = "deportes/";
         String SPORTS_FAVORITE = "/deporteFavorito";

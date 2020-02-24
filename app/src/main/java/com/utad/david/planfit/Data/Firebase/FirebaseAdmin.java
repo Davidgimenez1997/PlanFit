@@ -55,9 +55,6 @@ public class FirebaseAdmin {
     
     public FirebaseAdminCreateShowPlanSport firebaseAdminCreateShowPlanSport;
     public FirebaseAdminCreateShowPlanNutrition firebaseAdminCreateShowPlanNutrition;
-
-    public FirebaseAdimChatLisetener firebaseAdimChatLisetener;
-
     public User userDataFirebase;
     public User userDetails;
     public Developer developerInfo;
@@ -144,15 +141,6 @@ public class FirebaseAdmin {
 
     }
 
-    //Chat
-
-    public interface FirebaseAdimChatLisetener{
-
-        void deleteMessageChat(boolean end);
-
-        void donwloadUserDetails(boolean end,User userDetails);
-    }
-
     public interface FirebaseAdminCreateShowPlanSport{
         void insertSportPlanFirebase(boolean end);
 
@@ -197,10 +185,6 @@ public class FirebaseAdmin {
 
     public void setFirebaseAdminCreateShowPlanNutrition(FirebaseAdminCreateShowPlanNutrition firebaseAdminCreateShowPlanNutrition) {
         this.firebaseAdminCreateShowPlanNutrition = firebaseAdminCreateShowPlanNutrition;
-    }
-
-    public void setFirebaseAdimChatLisetener(FirebaseAdimChatLisetener firebaseAdimChatLisetener) {
-        this.firebaseAdimChatLisetener = firebaseAdimChatLisetener;
     }
 
     //Login y registro
@@ -305,71 +289,6 @@ public class FirebaseAdmin {
             userDataFirebase.setImgUser(uri.toString());
             firebaseAdminInsertAndDownloandListener.downloadUserDataInFirebase(true);
         }).addOnFailureListener(exception -> firebaseAdminInsertAndDownloandListener.downloadUserDataInFirebase(false));
-    }
-
-    //Delete chat message
-
-    public void deleteMessageInChat(ChatMessage message) {
-        if (firebaseAdimChatLisetener != null) {
-            DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-
-            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-
-            Query query = reference.child("").orderByChild("messageTime").equalTo(message.getMessageTime());
-            query.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.exists()) {
-                        for (DataSnapshot chat : dataSnapshot.getChildren()) {
-                            DatabaseReference refDelete = ref.child(chat.getKey());
-                            refDelete.removeValue();
-                            firebaseAdimChatLisetener.deleteMessageChat(true);
-                        }
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    firebaseAdimChatLisetener.deleteMessageChat(false);
-                }
-            });
-
-        }
-    }
-
-    //Download details user
-
-    public void dowloandDetailsUserFirebase(ChatMessage message) {
-        DocumentReference myUserRef = firebaseFirestore.collection(COLLECTION_USER_FIREBASE).document(message.getMessageUserId());
-        if (firebaseAdimChatLisetener != null) {
-            myUserRef.addSnapshotListener((snapshot, e) -> {
-                if (e != null) {
-                    firebaseAdimChatLisetener.donwloadUserDetails(false,null);
-                }
-                if (snapshot != null && snapshot.exists()) {
-                    User user = snapshot.toObject(User.class);
-                    userDetails = user;
-                    try {
-                        userDetails.setPassword(UtilsEncryptDecryptAES.decrypt(user.getPassword()));
-                        downloadUserPhoto(message.getMessageUserId());
-                    } catch (Exception e1) {
-                        e1.printStackTrace();
-                    }
-                } else {
-                    firebaseAdimChatLisetener.donwloadUserDetails(false,null);
-                }
-            });
-        }
-    }
-
-    public void downloadUserPhoto(String uid) {
-        storageReference.child("images/" + uid).getDownloadUrl().addOnSuccessListener(uri -> {
-            userDetails.setImgUser(uri.toString());
-            firebaseAdimChatLisetener.donwloadUserDetails(true,userDetails);
-        }).addOnFailureListener(exception -> {
-            userDetails.setImgUser("");
-            firebaseAdimChatLisetener.donwloadUserDetails(true,userDetails);
-        });
     }
 
     //Update info user
