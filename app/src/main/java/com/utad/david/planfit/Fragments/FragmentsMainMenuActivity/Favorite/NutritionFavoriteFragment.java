@@ -13,10 +13,15 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Adapter.Favorite.Nutrition.NutritionFavoriteAdapter;
 import com.utad.david.planfit.Base.BaseFragment;
+import com.utad.david.planfit.Data.Favorite.Nutrition.GetNutritionFavorite;
+import com.utad.david.planfit.Data.Favorite.Nutrition.NutritionFavoriteRepository;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.DialogFragment.Favorite.NutritionFavoriteDetailsDialogFragment;
 import com.utad.david.planfit.Model.Nutrition.DefaultNutrition;
+import com.utad.david.planfit.Model.Nutrition.NutritionGainVolume;
+import com.utad.david.planfit.Model.Nutrition.NutritionSlimming;
+import com.utad.david.planfit.Model.Nutrition.NutritionToning;
 import com.utad.david.planfit.R;
 import com.utad.david.planfit.Utils.Constants;
 import com.utad.david.planfit.Utils.UtilsNetwork;
@@ -25,7 +30,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class NutritionFavoriteFragment extends BaseFragment
-        implements FirebaseAdmin.FirebaseAdminFavoriteNutrition,
+        implements GetNutritionFavorite,
         NutritionFavoriteDetailsDialogFragment.Callback {
 
     /******************************** VARIABLES *************************************+/
@@ -70,8 +75,8 @@ public class NutritionFavoriteFragment extends BaseFragment
 
         if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
             showLoading();
-            SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteNutrition(this);
-            SessionUser.getInstance().firebaseAdmin.downloadAllNutritionFavorite();
+            NutritionFavoriteRepository.getInstance().setGetNutritionFavorite(this);
+            NutritionFavoriteRepository.getInstance().getAllNutritionFavorite();
             Fabric.with(getContext(), new Crashlytics());
         }else{
             hideLoading();
@@ -127,17 +132,13 @@ public class NutritionFavoriteFragment extends BaseFragment
      */
 
     @Override
-    public void downloandCollectionNutritionFavorite(boolean end) {
-        if(end==true){
+    public void getNutritionAllFavorite(boolean status, List<DefaultNutrition> defaultNutritions) {
+        if(status){
             hideLoading();
             linearLayout.setVisibility(View.GONE);
             mRecyclerView.setVisibility(View.VISIBLE);
-
-            List<DefaultNutrition> allFavoriteFavorite = SessionUser.getInstance().firebaseAdmin.allNutritionFavorite;
-
-            Collections.sort(allFavoriteFavorite);
-
-            mAdapter = new NutritionFavoriteAdapter(allFavoriteFavorite, item -> {
+            Collections.sort(defaultNutritions);
+            mAdapter = new NutritionFavoriteAdapter(defaultNutritions, item -> {
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 Fragment prev = getFragmentManager().findFragmentByTag(Constants.TagDialogFragment.TAG);
                 if (prev != null) {
@@ -153,8 +154,8 @@ public class NutritionFavoriteFragment extends BaseFragment
     }
 
     @Override
-    public void emptyCollectionNutritionFavorite(boolean end) {
-        if(end==true){
+    public void emptyNutritionFavorite(boolean status) {
+        if(status){
             hideLoading();
             linearLayout.setVisibility(View.VISIBLE);
             mRecyclerView.setVisibility(View.GONE);
@@ -162,7 +163,13 @@ public class NutritionFavoriteFragment extends BaseFragment
     }
 
     @Override
-    public void inserNutritionFavoriteFirebase(boolean end) {}
+    public void addNutritionFavorite(boolean status) {}
     @Override
-    public void deleteFavoriteNutrition(boolean end) {}
+    public void deleteNutritionFavorite(boolean status) {}
+    @Override
+    public void getNutritionSlimmingFavorite(boolean status, List<NutritionSlimming> nutritionSlimmings) {}
+    @Override
+    public void getNutritionToningFavorite(boolean status, List<NutritionToning> nutritionTonings) {}
+    @Override
+    public void getNutritionGainVolumeFavorite(boolean status, List<NutritionGainVolume> nutritionGainVolumes) {}
 }

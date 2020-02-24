@@ -1,4 +1,4 @@
-package com.utad.david.planfit.Data.Favorite;
+package com.utad.david.planfit.Data.Favorite.Sport;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -22,9 +22,7 @@ public class SportFavoriteRepository {
 
     private FirebaseFirestore firebaseFirestore;
     private GetSportFavorite getSportFavorite;
-
     private FirebaseUser currentUser;
-
 
     private SportFavoriteRepository () {
         this.firebaseFirestore = FirebaseFirestore.getInstance();
@@ -123,11 +121,11 @@ public class SportFavoriteRepository {
                     defaultSports.add(doc.toObject(DefaultSport.class));
                 }
 
-                if(defaultSports.size()==0){
+                if(defaultSports.size() == 0){
                     this.getSportFavorite.emptySportFavorite(true);
                 }
 
-                if(defaultSports.size()!=0){
+                if(defaultSports.size() != 0){
                     this.getSportFavorite.getSportAllFavorite(true, defaultSports);
                 }
             });

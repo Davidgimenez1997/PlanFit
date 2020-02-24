@@ -1,4 +1,4 @@
-package com.utad.david.planfit.Data.Favorite;
+package com.utad.david.planfit.Data.Favorite.Sport;
 
 import com.utad.david.planfit.Model.Sport.DefaultSport;
 import com.utad.david.planfit.Model.Sport.SportGainVolume;

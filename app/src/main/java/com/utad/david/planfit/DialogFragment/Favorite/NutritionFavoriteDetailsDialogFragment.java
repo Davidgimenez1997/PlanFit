@@ -17,17 +17,26 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Activitys.WebViewActivity;
 import com.utad.david.planfit.Base.BaseDialogFragment;
+import com.utad.david.planfit.Data.Favorite.Nutrition.GetNutritionFavorite;
+import com.utad.david.planfit.Data.Favorite.Nutrition.NutritionFavoriteRepository;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Model.Nutrition.DefaultNutrition;
+import com.utad.david.planfit.Model.Nutrition.NutritionGainVolume;
+import com.utad.david.planfit.Model.Nutrition.NutritionSlimming;
+import com.utad.david.planfit.Model.Nutrition.NutritionToning;
 import com.utad.david.planfit.R;
 import com.utad.david.planfit.Utils.Constants;
 import com.utad.david.planfit.Utils.Utils;
 import com.utad.david.planfit.Utils.UtilsNetwork;
+
+import java.util.List;
+
 import io.fabric.sdk.android.Fabric;
 
-public class NutritionFavoriteDetailsDialogFragment extends BaseDialogFragment
-        implements FirebaseAdmin.FirebaseAdminFavoriteNutrition{
+public class NutritionFavoriteDetailsDialogFragment
+        extends BaseDialogFragment
+        implements GetNutritionFavorite {
 
     /******************************** VARIABLES *************************************+/
      *
@@ -78,7 +87,7 @@ public class NutritionFavoriteDetailsDialogFragment extends BaseDialogFragment
 
         if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
             Fabric.with(getContext(),new Crashlytics());
-            SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteNutrition(this);
+            NutritionFavoriteRepository.getInstance().setGetNutritionFavorite(this);
         }else{
             Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
         }
@@ -160,7 +169,7 @@ public class NutritionFavoriteDetailsDialogFragment extends BaseDialogFragment
         if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
             buttonDelete.setOnClickListener(v -> {
                 if(listener!=null){
-                    SessionUser.getInstance().firebaseAdmin.deleteDefaultNutritionFavorite(defaultNutrition);
+                    NutritionFavoriteRepository.getInstance().deleteDefaultNutritionFavorite(defaultNutrition);
                     dismiss();
                 }
             });
@@ -174,8 +183,8 @@ public class NutritionFavoriteDetailsDialogFragment extends BaseDialogFragment
      */
 
     @Override
-    public void deleteFavoriteNutrition(boolean end) {
-        if(end==true){
+    public void deleteNutritionFavorite(boolean status) {
+        if(status){
             if(listener!=null){
                 listener.setDataChange();
             }
@@ -183,10 +192,16 @@ public class NutritionFavoriteDetailsDialogFragment extends BaseDialogFragment
     }
 
     @Override
-    public void inserNutritionFavoriteFirebase(boolean end) {}
+    public void addNutritionFavorite(boolean status) {}
     @Override
-    public void downloandCollectionNutritionFavorite(boolean end) {}
+    public void getNutritionSlimmingFavorite(boolean status, List<NutritionSlimming> nutritionSlimmings) {}
     @Override
-    public void emptyCollectionNutritionFavorite(boolean end) {}
+    public void getNutritionToningFavorite(boolean status, List<NutritionToning> nutritionTonings) {}
+    @Override
+    public void getNutritionGainVolumeFavorite(boolean status, List<NutritionGainVolume> nutritionGainVolumes) {}
+    @Override
+    public void getNutritionAllFavorite(boolean status, List<DefaultNutrition> defaultNutritions) {}
+    @Override
+    public void emptyNutritionFavorite(boolean status) {}
 
 }
