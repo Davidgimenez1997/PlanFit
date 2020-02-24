@@ -23,6 +23,7 @@ public class NutritionFavoriteRepository {
     private FirebaseFirestore firebaseFirestore;
     private GetNutritionFavorite getNutritionFavorite;
     private FirebaseUser currentUser;
+    private List<DefaultNutrition> allFavoriteNutritions;
 
     private NutritionFavoriteRepository() {
         this.firebaseFirestore = FirebaseFirestore.getInstance();
@@ -127,6 +128,7 @@ public class NutritionFavoriteRepository {
                 }
 
                 if(defaultNutritions.size() != 0){
+                    this.allFavoriteNutritions =  defaultNutritions;
                     this.getNutritionFavorite.getNutritionAllFavorite(true, defaultNutritions);
                 }
             });
@@ -265,5 +267,9 @@ public class NutritionFavoriteRepository {
                         }
                     });
         }
+    }
+
+    public List<DefaultNutrition> getAllFavoriteNutritions() {
+        return allFavoriteNutritions;
     }
 }

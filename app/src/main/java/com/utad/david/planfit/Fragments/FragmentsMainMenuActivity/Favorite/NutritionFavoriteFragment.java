@@ -15,6 +15,7 @@ import com.utad.david.planfit.Adapter.Favorite.Nutrition.NutritionFavoriteAdapte
 import com.utad.david.planfit.Base.BaseFragment;
 import com.utad.david.planfit.Data.Favorite.Nutrition.GetNutritionFavorite;
 import com.utad.david.planfit.Data.Favorite.Nutrition.NutritionFavoriteRepository;
+import com.utad.david.planfit.Data.Favorite.Sport.SportFavoriteRepository;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.DialogFragment.Favorite.NutritionFavoriteDetailsDialogFragment;
@@ -117,8 +118,8 @@ public class NutritionFavoriteFragment extends BaseFragment
     public void setDataChange() {
         if(mAdapter!=null){
             showLoading();
-            mAdapter.dataChangedDeleteSport(SessionUser.getInstance().firebaseAdmin.allNutritionFavorite);
-            if(SessionUser.getInstance().firebaseAdmin.allNutritionFavorite.size()==0){
+            mAdapter.dataChangedDeleteSport(NutritionFavoriteRepository.getInstance().getAllFavoriteNutritions());
+            if(NutritionFavoriteRepository.getInstance().getAllFavoriteNutritions().size() == 0){
                 linearLayout.setVisibility(View.VISIBLE);
                 mRecyclerView.setVisibility(View.GONE);
             }

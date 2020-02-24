@@ -23,6 +23,7 @@ public class SportFavoriteRepository {
     private FirebaseFirestore firebaseFirestore;
     private GetSportFavorite getSportFavorite;
     private FirebaseUser currentUser;
+    private List<DefaultSport> allFavoriteSports;
 
     private SportFavoriteRepository () {
         this.firebaseFirestore = FirebaseFirestore.getInstance();
@@ -126,6 +127,7 @@ public class SportFavoriteRepository {
                 }
 
                 if(defaultSports.size() != 0){
+                    this.allFavoriteSports = defaultSports;
                     this.getSportFavorite.getSportAllFavorite(true, defaultSports);
                 }
             });
@@ -266,4 +268,7 @@ public class SportFavoriteRepository {
         }
     }
 
+    public List<DefaultSport> getAllFavoriteSports() {
+        return allFavoriteSports;
+    }
 }

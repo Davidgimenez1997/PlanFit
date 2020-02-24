@@ -59,21 +59,6 @@ public class FirebaseAdmin {
     public User userDetails;
     public Developer developerInfo;
 
-    public List<DefaultSport> allSportFavorite;
-    public List<DefaultNutrition> allNutritionFavorite;
-
-    /********LISTAS DE DEPORTES FAVORITOS********/
-
-    public List<SportSlimming> sportSlimmingListSportFavorite;
-    public List<SportToning> sportToningListSportFavorite;
-    public List<SportGainVolume> sportGainVolumeListSportFavorite;
-
-    /********LISTAS DE ALIMENTOS FAVORITOS********/
-
-    public List<NutritionSlimming> nutritionSlimmingListNutritionFavorite;
-    public List<NutritionToning> nutritionToningListNutritionFavorite;
-    public List<NutritionGainVolume> nutritionGainVolumeListNutritionFavorite;
-
     /********LISTAS DE PLANES********/
 
     public List<PlanSport> allPlanSport;

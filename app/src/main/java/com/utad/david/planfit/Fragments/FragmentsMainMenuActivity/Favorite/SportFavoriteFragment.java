@@ -115,8 +115,8 @@ public class SportFavoriteFragment extends BaseFragment
     public void setDataChange() {
         if(mAdapter!=null){
             showLoading();
-            mAdapter.dataChangedDeleteSport(SessionUser.getInstance().firebaseAdmin.allSportFavorite);
-            if(SessionUser.getInstance().firebaseAdmin.allSportFavorite.size()==0){
+            mAdapter.dataChangedDeleteSport(SportFavoriteRepository.getInstance().getAllFavoriteSports());
+            if(SportFavoriteRepository.getInstance().getAllFavoriteSports().size() == 0){
                 linearLayout.setVisibility(View.VISIBLE);
                 mRecyclerView.setVisibility(View.GONE);
             }
