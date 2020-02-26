@@ -400,8 +400,6 @@ public class RegisterDetailsFragmet extends BaseFragment
     public void singInWithEmailAndPassword(boolean end) {}
     @Override
     public void downloadUserDataInFirebase(boolean end) {}
-    @Override
-    public void downloadInfotDeveloper(boolean end) {}
 
     /******************************** EasyPermissions.PermissionCallbacks *************************************+/
      *

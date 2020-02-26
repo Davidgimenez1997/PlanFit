@@ -104,6 +104,9 @@ public class Constants {
         String NUTRITION = "nutricion/";
         String DETAILS = "/detalles";
 
+        String DEVELOPER = "developer_info";
+        String DOCUMENT_DEVELOPER = "david";
+
         String SPORT_SLIMMING = SPORTS + "adelgazar" + DETAILS;
         String SPORT_TONING = SPORTS + "tonificar" + DETAILS;
         String SPORT_GAIN_VOLUME = SPORTS + "ganarVolumen" + DETAILS;

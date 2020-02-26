@@ -57,7 +57,6 @@ public class FirebaseAdmin {
     public FirebaseAdminCreateShowPlanNutrition firebaseAdminCreateShowPlanNutrition;
     public User userDataFirebase;
     public User userDetails;
-    public Developer developerInfo;
 
     /********LISTAS DE PLANES********/
 
@@ -67,10 +66,6 @@ public class FirebaseAdmin {
     /********COLECCIONES DE FIREBASE********/
 
     private static String COLLECTION_USER_FIREBASE = "users";
-    private static String COLLECTION_MESSAGES_FIREBASE = "messages";
-    private static String DOCUMENT_DEVELOPER_INFO_FIREBASE = "david";
-    private static String COLLECTION_DEVELOPER_INFO_FIREBASE = "developer_info";
-
 
     private String COLLECTION_FAVORITE_SPORT;
     private String COLLECTION_FAVORITE_NUTRITION;
@@ -103,8 +98,6 @@ public class FirebaseAdmin {
         void insertUserDataInFirebase(boolean end);
 
         void downloadUserDataInFirebase(boolean end);
-
-        void downloadInfotDeveloper(boolean end);
     }
 
     //Update user info and delete
@@ -429,26 +422,6 @@ public class FirebaseAdmin {
                                 firebaseAdminUpdateAndDeleteUserListener.deleteUserInFirebase(true);
                             }
                         }));
-    }
-
-    //Download developer data
-
-    public void dowloandDataDeveloperFirebase() {
-        DocumentReference myDeveloperRef = firebaseFirestore.collection(COLLECTION_DEVELOPER_INFO_FIREBASE).document(DOCUMENT_DEVELOPER_INFO_FIREBASE);
-        if (firebaseAdminInsertAndDownloandListener != null) {
-            myDeveloperRef.addSnapshotListener((snapshot, e) -> {
-                if (e != null) {
-                    firebaseAdminInsertAndDownloandListener.downloadInfotDeveloper(false);
-                }
-                if (snapshot != null && snapshot.exists()) {
-                    Developer developerData = snapshot.toObject(Developer.class);
-                    developerInfo = developerData;
-                    firebaseAdminInsertAndDownloandListener.downloadInfotDeveloper(true);
-                } else {
-                    firebaseAdminInsertAndDownloandListener.downloadInfotDeveloper(false);
-                }
-            });
-        }
     }
 
     //Create sport and nutrtion plan

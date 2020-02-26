@@ -390,9 +390,6 @@ public class MainMenuActivity extends BaseActivity
     @Override
     public void insertUserDataInFirebase(boolean end) {}
 
-    @Override
-    public void downloadInfotDeveloper(boolean end) {}
-
     /******************************** CARGA LA PRIMERA PANTALLA *************************************+/
      *
      */

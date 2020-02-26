@@ -15,6 +15,8 @@ import com.utad.david.planfit.Activitys.WebViewActivity;
 import com.utad.david.planfit.Base.BaseDialogFragment;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
+import com.utad.david.planfit.Data.User.DeveloperRepository;
+import com.utad.david.planfit.Data.User.GetDeveloper;
 import com.utad.david.planfit.Model.Developer;
 import com.utad.david.planfit.R;
 import com.utad.david.planfit.Utils.Constants;
@@ -22,7 +24,7 @@ import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 
 public class InfoAboutAppDialogFragment extends BaseDialogFragment
-        implements FirebaseAdmin.FirebaseAdminInsertAndDownloandListener {
+        implements GetDeveloper {
 
     /******************************** VARIABLES *************************************+/
      *
@@ -32,8 +34,6 @@ public class InfoAboutAppDialogFragment extends BaseDialogFragment
     private TextView textViewName;
     private Button buttonEmail;
     private Button buttonLinkedin;
-    private Developer developer;
-
 
     /******************************** SET CALLBACK FIREBASE *************************************+/
      *
@@ -45,8 +45,8 @@ public class InfoAboutAppDialogFragment extends BaseDialogFragment
 
         if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
             showLoading();
-            SessionUser.getInstance().firebaseAdmin.setFirebaseAdminInsertAndDownloandListener(this);
-            SessionUser.getInstance().firebaseAdmin.dowloandDataDeveloperFirebase();
+            DeveloperRepository.getInstance().setGetDeveloper(this);
+            DeveloperRepository.getInstance().getDeveloperInfo();
             Fabric.with(getContext(), new Crashlytics());
         }else{
             hideLoading();
@@ -82,15 +82,15 @@ public class InfoAboutAppDialogFragment extends BaseDialogFragment
      *
      */
 
-    private void clickEmailDeveloperButton(){
+    private void clickEmailDeveloperButton(String email, String name){
         if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
             buttonEmail.setOnClickListener(v -> {
                 Intent intent = new Intent(Intent.ACTION_SEND);
                 intent.setType("message/rfc822");
-                String recipientList = developer.getEmailDeveloper() ;
+                String recipientList = email ;
                 String[] recipients = recipientList.split(",");
                 intent.putExtra(Intent.EXTRA_EMAIL, recipients);
-                intent.putExtra(Intent.EXTRA_SUBJECT,getString(R.string.message_email_developer)+" "+developer.getFullNameDeveloper());
+                intent.putExtra(Intent.EXTRA_SUBJECT,getString(R.string.message_email_developer)+" "+name);
                 startActivity(Intent.createChooser(intent,"Elije un cliente de email"));
             });
         }else{
@@ -103,12 +103,12 @@ public class InfoAboutAppDialogFragment extends BaseDialogFragment
      *
      */
 
-    private void clickLinkedinDeveloperButton(){
+    private void clickLinkedinDeveloperButton(String name, String url){
         if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
             buttonLinkedin.setOnClickListener(v -> {
                 Intent intent = new Intent(getContext(), WebViewActivity.class);
-                intent.putExtra(WebViewActivity.EXTRA_TITLE, developer.getFullNameDeveloper());
-                intent.putExtra(WebViewActivity.EXTRA_URL, developer.getUrlLinkedinDeveloper());
+                intent.putExtra(WebViewActivity.EXTRA_TITLE, name);
+                intent.putExtra(WebViewActivity.EXTRA_URL, url);
                 intent.putExtra(WebViewActivity.EXTRA_MODE, Constants.ModeWebView.MODE_LINKEDIN);
                 getActivity().overridePendingTransition(R.anim.slide_in_bottom, R.anim.stay);
                 startActivity(intent);
@@ -133,19 +133,12 @@ public class InfoAboutAppDialogFragment extends BaseDialogFragment
      */
 
     @Override
-    public void downloadInfotDeveloper(boolean end) {
-        if(end){
+    public void getDeveloperInfo(boolean status, Developer developer) {
+        if(status){
             hideLoading();
-            developer = SessionUser.getInstance().firebaseAdmin.developerInfo;
             textViewName.setText(developer.getFullNameDeveloper());
-            clickEmailDeveloperButton();
-            clickLinkedinDeveloperButton();
+            clickEmailDeveloperButton(developer.getEmailDeveloper(), developer.getFullNameDeveloper());
+            clickLinkedinDeveloperButton(developer.getFullNameDeveloper(), developer.getUrlLinkedinDeveloper());
         }
     }
-
-    @Override
-    public void insertUserDataInFirebase(boolean end) {}
-    @Override
-    public void downloadUserDataInFirebase(boolean end) {}
-
 }
