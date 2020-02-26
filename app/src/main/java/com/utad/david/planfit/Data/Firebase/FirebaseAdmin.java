@@ -50,7 +50,6 @@ public class FirebaseAdmin {
     /********INTERFAZES********/
 
     public FirebaseAdminInsertAndDownloandListener firebaseAdminInsertAndDownloandListener;
-    public FirebaseAdminLoginAndRegisterListener firebaseAdminLoginAndRegisterListener;
     public FirebaseAdminUpdateAndDeleteUserListener firebaseAdminUpdateAndDeleteUserListener;
 
     public User userDataFirebase;
@@ -71,16 +70,6 @@ public class FirebaseAdmin {
         firebaseFirestore = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
-    }
-
-    /*
-    INTERFACES
-     */
-
-    //Login y registro
-
-    public interface FirebaseAdminLoginAndRegisterListener {
-        void registerWithEmailAndPassword(boolean end);
     }
 
     //Insert and download user info and developed info
@@ -116,37 +105,14 @@ public class FirebaseAdmin {
         this.firebaseAdminInsertAndDownloandListener = firebaseAdminInsertAndDownloandListener;
     }
 
-    public void setFirebaseAdminLoginAndRegisterListener(FirebaseAdminLoginAndRegisterListener firebaseAdminLoginAndRegisterListener) {
-        this.firebaseAdminLoginAndRegisterListener = firebaseAdminLoginAndRegisterListener;
-    }
-
     public void setFirebaseAdminUpdateUserListener(FirebaseAdminUpdateAndDeleteUserListener firebaseAdminUpdateAndDeleteUserListener) {
         this.firebaseAdminUpdateAndDeleteUserListener = firebaseAdminUpdateAndDeleteUserListener;
     }
 
-    //Login y registro
-
-    public void registerWithEmailAndPassword(String email, String password) {
-        if (firebaseAdminLoginAndRegisterListener != null) {
-            mAuth.createUserWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            currentUser = mAuth.getCurrentUser();
-                            COLLECTION_FAVORITE_SPORT = "users/" + currentUser.getUid() + "/deporteFavorito";
-                            COLLECTION_FAVORITE_NUTRITION = "users/" + currentUser.getUid() + "/nutricionFavorita";
-                            firebaseAdminLoginAndRegisterListener.registerWithEmailAndPassword(true);
-                        } else {
-                            firebaseAdminLoginAndRegisterListener.registerWithEmailAndPassword(false);
-                        }
-                    });
-        }
-
-    }
-
-
     //Insert user info
 
     public void addDataUserCouldFirestore() {
+        this.currentUser = this.mAuth.getCurrentUser();
         if (firebaseAdminInsertAndDownloandListener != null) {
             Map<String, Object> user = new HashMap<>();
             uploadImage(SessionUser.getInstance().user.getImgUser());
@@ -166,6 +132,7 @@ public class FirebaseAdmin {
     }
 
     public void insertDataUserIntoFirebase(Map<String, Object> user) {
+        this.currentUser = this.mAuth.getCurrentUser();
         firebaseFirestore.collection(COLLECTION_USER_FIREBASE).document(currentUser.getUid())
                 .set(user)
                 .addOnSuccessListener(aVoid -> firebaseAdminInsertAndDownloandListener.insertUserDataInFirebase(true))
@@ -173,6 +140,7 @@ public class FirebaseAdmin {
     }
 
     public void uploadImage(final String image) {
+        this.currentUser = this.mAuth.getCurrentUser();
         if(image!=null){
             Uri uri = Uri.parse(image);
                 StorageReference ref = storageReference.child("images/" + currentUser.getUid());
@@ -184,6 +152,7 @@ public class FirebaseAdmin {
     //Download user info
 
     public void dowloandDataUserFirebase() {
+        this.currentUser = this.mAuth.getCurrentUser();
         DocumentReference myUserRef = firebaseFirestore.collection(COLLECTION_USER_FIREBASE).document(currentUser.getUid());
         if (firebaseAdminInsertAndDownloandListener != null) {
             myUserRef.addSnapshotListener((snapshot, e) -> {
@@ -207,6 +176,7 @@ public class FirebaseAdmin {
     }
 
     public void downloadPhoto() {
+        this.currentUser = this.mAuth.getCurrentUser();
         storageReference.child("images/" + currentUser.getUid()).getDownloadUrl().addOnSuccessListener(uri -> {
             userDataFirebase.setImgUser(uri.toString());
             firebaseAdminInsertAndDownloandListener.downloadUserDataInFirebase(true);
@@ -216,6 +186,7 @@ public class FirebaseAdmin {
     //Update info user
 
     public void deletePhoto() {
+        this.currentUser = this.mAuth.getCurrentUser();
         if (firebaseAdminUpdateAndDeleteUserListener != null) {
             StorageReference desertRef = storageReference.child("images/" + currentUser.getUid());
             desertRef.delete().addOnSuccessListener(aVoid -> {
@@ -230,6 +201,7 @@ public class FirebaseAdmin {
     }
 
     public void updatePhotoUserInFirebase() {
+        this.currentUser = this.mAuth.getCurrentUser();
         if (firebaseAdminUpdateAndDeleteUserListener != null) {
             StorageReference desertRef = storageReference.child("images/" + currentUser.getUid());
             desertRef.delete().addOnSuccessListener(aVoid -> {
@@ -249,6 +221,7 @@ public class FirebaseAdmin {
     }
 
     public void updateFullNameUserInFirebase() {
+        this.currentUser = this.mAuth.getCurrentUser();
         if (firebaseAdminUpdateAndDeleteUserListener != null) {
             DocumentReference myUserRef = firebaseFirestore.collection(COLLECTION_USER_FIREBASE).document(currentUser.getUid());
             Map<String, Object> user = new HashMap<>();
@@ -260,6 +233,7 @@ public class FirebaseAdmin {
     }
 
     public void updateNickNameUserInFirebase() {
+        this.currentUser = this.mAuth.getCurrentUser();
         if (firebaseAdminUpdateAndDeleteUserListener != null) {
             DocumentReference myUserRef = firebaseFirestore.collection(COLLECTION_USER_FIREBASE).document(currentUser.getUid());
             Map<String, Object> user = new HashMap<>();
@@ -337,6 +311,7 @@ public class FirebaseAdmin {
 
     public void deleteAccountInFirebase() {
         if (firebaseAdminUpdateAndDeleteUserListener != null) {
+            this.currentUser = this.mAuth.getCurrentUser();
             firebaseFirestore.collection(COLLECTION_USER_FIREBASE).document(currentUser.getUid())
                     .delete()
                     .addOnSuccessListener(aVoid -> {
@@ -356,6 +331,7 @@ public class FirebaseAdmin {
     //Reauthenticate User delete account
 
     private void reauthenticateUserDeleteAccount(){
+        this.currentUser = this.mAuth.getCurrentUser();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         credential = EmailAuthProvider
                 .getCredential(userDataFirebase.getEmail(), userDataFirebase.getPassword());

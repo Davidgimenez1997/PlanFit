@@ -27,6 +27,8 @@ import com.utad.david.planfit.Activitys.MainMenuActivity;
 import com.utad.david.planfit.Base.BaseFragment;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
+import com.utad.david.planfit.Data.User.Register.GetRegister;
+import com.utad.david.planfit.Data.User.Register.RegisterRepository;
 import com.utad.david.planfit.R;
 import com.utad.david.planfit.Utils.Constants;
 import com.utad.david.planfit.Utils.Utils;
@@ -44,7 +46,7 @@ import static com.utad.david.planfit.Utils.Constants.RequestPermissions.REQUEST_
 import static com.utad.david.planfit.Utils.Constants.RequestPermissions.REQUEST_IMAGE_PERMISSIONS;
 
 public class RegisterDetailsFragmet extends BaseFragment
-        implements FirebaseAdmin.FirebaseAdminLoginAndRegisterListener,
+        implements GetRegister,
         FirebaseAdmin.FirebaseAdminInsertAndDownloandListener,
         EasyPermissions.PermissionCallbacks {
 
@@ -98,7 +100,7 @@ public class RegisterDetailsFragmet extends BaseFragment
 
         if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
             Fabric.with(getContext(), new Crashlytics());
-            SessionUser.getInstance().firebaseAdmin.setFirebaseAdminLoginAndRegisterListener(this);
+            RegisterRepository.getInstance().setGetRegister(this);
             SessionUser.getInstance().firebaseAdmin.setFirebaseAdminInsertAndDownloandListener(this);
         }else{
             Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
@@ -364,8 +366,8 @@ public class RegisterDetailsFragmet extends BaseFragment
      */
 
     @Override
-    public void registerWithEmailAndPassword(boolean end) {
-        if (end) {
+    public void registerWithEmailAndPassword(boolean status) {
+        if (status) {
             endRegister=true;
             Toast.makeText(getContext(), getString(R.string.info_register)+" "+SessionUser.getInstance().user.getFullName().trim(), Toast.LENGTH_LONG).show();
             SessionUser.getInstance().firebaseAdmin.addDataUserCouldFirestore();

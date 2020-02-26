@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
 import com.utad.david.planfit.Base.BaseActivity;
 import com.utad.david.planfit.Data.User.Login.LoginRepository;
+import com.utad.david.planfit.Data.User.Register.RegisterRepository;
 import com.utad.david.planfit.Fragments.FragmentsFirstActivity.LoginFragment;
 import com.utad.david.planfit.Fragments.FragmentsFirstActivity.RegisterDetailsFragmet;
 import com.utad.david.planfit.Fragments.FragmentsFirstActivity.RegisterFragment;
@@ -130,8 +131,10 @@ import io.fabric.sdk.android.Fabric;
 
         @Override
         protected Void doInBackground(Void... voids) {
-            SessionUser.getInstance().firebaseAdmin.registerWithEmailAndPassword(SessionUser.getInstance().user.getEmail(),
-                    SessionUser.getInstance().user.getPassword());
+            RegisterRepository.getInstance().registerWithEmailAndPassword(
+                    SessionUser.getInstance().user.getEmail(),
+                    SessionUser.getInstance().user.getPassword()
+            );
             return null;
         }
     }
