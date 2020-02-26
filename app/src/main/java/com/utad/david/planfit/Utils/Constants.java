@@ -98,22 +98,25 @@ public class Constants {
     public interface CollectionsNames {
         String USER = "users";
         String USERS = "users/";
-        String SPORTS = "deportes/";
-        String SPORTS_FAVORITE = "/deporteFavorito";
-        String NUTRITION_FAVORITE = "/nutricionFavorita";
-        String NUTRITION = "nutricion/";
+
         String DETAILS = "/detalles";
 
-        String DEVELOPER = "developer_info";
-        String DOCUMENT_DEVELOPER = "david";
-
+        String SPORTS = "deportes/";
+        String SPORTS_FAVORITE = "/deporteFavorito";
+        String SPORTS_PLAN = "/planesDeporte";
         String SPORT_SLIMMING = SPORTS + "adelgazar" + DETAILS;
         String SPORT_TONING = SPORTS + "tonificar" + DETAILS;
         String SPORT_GAIN_VOLUME = SPORTS + "ganarVolumen" + DETAILS;
 
+        String NUTRITION = "nutricion/";
+        String NUTRITION_FAVORITE = "/nutricionFavorita";
+        String NUTRITION_PLAN = "/planesNutricion";
         String NUTRITION_SLIMMING = NUTRITION + "adelgazar" + DETAILS;
         String NUTRITION_TONING = NUTRITION + "tonificar" + DETAILS;
         String NUTRITION_GAIN_VOLUME = NUTRITION + "ganarVolumen" + DETAILS;
+
+        String DEVELOPER = "developer_info";
+        String DOCUMENT_DEVELOPER = "david";
     }
 
     public interface ModelSportFavorite {
@@ -136,6 +139,23 @@ public class Constants {
         String ADELGAZAR = "adelgazar";
         String TONIFICAR = "tonificar";
         String GANAR_VOLUMEN = "ganarVolumen";
+    }
+
+    public interface ModelSportPlan {
+        String NAME = "name";
+        String PHOTO = "photo";
+        String TIME_START = "timeStart";
+        String TIME_END = "timeEnd";
+        String IS_OK = "isOk";
+        String ID = "id";
+    }
+
+    public interface ModelNutritionPlan {
+        String NAME = "name";
+        String PHOTO = "photo";
+        String TYPE = "type";
+        String IS_OK = "isOk";
+        String ID = "id";
     }
 
 }

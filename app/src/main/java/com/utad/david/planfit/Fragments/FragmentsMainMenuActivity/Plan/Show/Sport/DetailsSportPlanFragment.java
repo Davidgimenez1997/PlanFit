@@ -12,6 +12,8 @@ import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Adapter.Plan.Show.Sport.ShowDetailsSportPlanAdapter;
 import com.utad.david.planfit.Base.BaseFragment;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
+import com.utad.david.planfit.Data.Plan.Sport.GetSportPlan;
+import com.utad.david.planfit.Data.Plan.Sport.SportPlanRepository;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Model.Plan.PlanSport;
 import com.utad.david.planfit.R;
@@ -19,9 +21,10 @@ import com.utad.david.planfit.Utils.Constants;
 import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 import java.util.ArrayList;
+import java.util.List;
 
 public class DetailsSportPlanFragment extends BaseFragment
-        implements FirebaseAdmin.FirebaseAdminCreateShowPlanSport{
+        implements GetSportPlan {
 
     /******************************** VARIABLES *************************************+/
      *
@@ -66,8 +69,8 @@ public class DetailsSportPlanFragment extends BaseFragment
 
         if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
             showLoading();
-            SessionUser.getInstance().firebaseAdmin.setFirebaseAdminCreateShowPlanSport(this);
-            SessionUser.getInstance().firebaseAdmin.downloadAllSportPlanFavorite();
+            SportPlanRepository.getInstance().setGetSportPlan(this);
+            SportPlanRepository.getInstance().getSportPlan();
             Fabric.with(getContext(), new Crashlytics());
         }
 
@@ -118,7 +121,7 @@ public class DetailsSportPlanFragment extends BaseFragment
                             case 0:
                                 showLoading();
                                 item.setIsOk(Constants.ModePlan.NO);
-                                SessionUser.getInstance().firebaseAdmin.updatePlanSportFirebase(item);
+                                SportPlanRepository.getInstance().updatePlanSport(item);
                                 mAdapter.notifyDataSetChanged();
                                 hideLoading();
                                 break;
@@ -139,7 +142,7 @@ public class DetailsSportPlanFragment extends BaseFragment
                             case 0:
                                 showLoading();
                                 item.setIsOk(Constants.ModePlan.YES);
-                                SessionUser.getInstance().firebaseAdmin.updatePlanSportFirebase(item);
+                                SportPlanRepository.getInstance().updatePlanSport(item);
                                 mAdapter.notifyDataSetChanged();
                                 hideLoading();
                                 break;
@@ -164,17 +167,16 @@ public class DetailsSportPlanFragment extends BaseFragment
      */
 
     @Override
-    public void downloadSportPlanFirebase(boolean end) {hideLoading();}
+    public void getSportPlan(boolean status, List<PlanSport> planSports) {
+        hideLoading();
+    }
 
     @Override
-    public void updateSportPlanFirebase(boolean end) {}
-
+    public void updateSportPlan(boolean status, List<PlanSport> updateList) {}
     @Override
-    public void insertSportPlanFirebase(boolean end) {}
-
+    public void emptySportPlan(boolean status) {}
     @Override
-    public void emptySportPlanFirebase(boolean end) {}
-
+    public void addSportPlan(boolean status) {}
     @Override
-    public void deleteSportPlanFirebase(boolean end) {}
+    public void deleteSportPlan(boolean status) {}
 }

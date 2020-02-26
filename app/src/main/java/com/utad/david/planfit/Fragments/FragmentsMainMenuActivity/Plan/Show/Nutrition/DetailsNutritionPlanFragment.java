@@ -11,7 +11,8 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Adapter.Plan.Show.Nutrition.ShowDetailsNutritionPlanAdapter;
 import com.utad.david.planfit.Base.BaseFragment;
-import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
+import com.utad.david.planfit.Data.Plan.Nutrition.GetNutritionPlan;
+import com.utad.david.planfit.Data.Plan.Nutrition.NutritionPlanRepository;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Model.Plan.PlanNutrition;
 import com.utad.david.planfit.R;
@@ -19,9 +20,10 @@ import com.utad.david.planfit.Utils.Constants;
 import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 import java.util.ArrayList;
+import java.util.List;
 
 public class DetailsNutritionPlanFragment extends BaseFragment
-        implements FirebaseAdmin.FirebaseAdminCreateShowPlanNutrition {
+        implements GetNutritionPlan {
 
     /******************************** VARIABLES *************************************+/
      *
@@ -66,8 +68,8 @@ public class DetailsNutritionPlanFragment extends BaseFragment
 
         if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
             showLoading();
-            SessionUser.getInstance().firebaseAdmin.setFirebaseAdminCreateShowPlanNutrition(this);
-            SessionUser.getInstance().firebaseAdmin.downloadAllNutrtionPlanFavorite();
+            NutritionPlanRepository.getInstance().setGetNutritionPlan(this);
+            NutritionPlanRepository.getInstance().getNutrtionPlan();
             Fabric.with(getContext(), new Crashlytics());
         }
 
@@ -124,7 +126,7 @@ public class DetailsNutritionPlanFragment extends BaseFragment
                             case 0:
                                 showLoading();
                                 item.setIsOk(Constants.ModePlan.NO);
-                                SessionUser.getInstance().firebaseAdmin.updatePlanNutrtionFirebase(item);
+                                NutritionPlanRepository.getInstance().updatePlanNutrtion(item);
                                 mAdapter.notifyDataSetChanged();
                                 hideLoading();
                                 break;
@@ -145,7 +147,7 @@ public class DetailsNutritionPlanFragment extends BaseFragment
                             case 0:
                                 showLoading();
                                 item.setIsOk(Constants.ModePlan.YES);
-                                SessionUser.getInstance().firebaseAdmin.updatePlanNutrtionFirebase(item);
+                                NutritionPlanRepository.getInstance().updatePlanNutrtion(item);
                                 mAdapter.notifyDataSetChanged();
                                 hideLoading();
                                 break;
@@ -167,17 +169,16 @@ public class DetailsNutritionPlanFragment extends BaseFragment
      */
 
     @Override
-    public void downloadNutritionPlanFirebase(boolean end) {hideLoading();}
+    public void getNutritiontPlan(boolean status, List<PlanNutrition> planNutritions) {
+        hideLoading();
+    }
 
     @Override
-    public void insertNutritionPlanFirebase(boolean end) {}
-
+    public void addNutritionPlan(boolean status) {}
     @Override
-    public void emptyNutritionPlanFirebase(boolean end) {}
-
+    public void emptyNutritionPlan(boolean status) {}
     @Override
-    public void deleteNutritionPlanFirebase(boolean end) {}
-
+    public void deleteNutritionPlan(boolean status) {}
     @Override
-    public void updateNutritionPlanFirebase(boolean end) {}
+    public void updateNutritionPlan(boolean status, List<PlanNutrition> updateList) {}
 }

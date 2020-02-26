@@ -3,6 +3,8 @@ package com.utad.david.planfit.Model.Plan;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.UUID;
+
 public class PlanNutrition
         implements Comparable<PlanNutrition>,
         Parcelable {
@@ -21,11 +23,11 @@ public class PlanNutrition
 
     }
 
-    public PlanNutrition(String name, String photo, int type, String id, String isOk) {
+    public PlanNutrition(String name, String photo, int type, String isOk) {
         this.name = name;
         this.photo = photo;
         this.type = type;
-        this.id = id;
+        this.id = UUID.randomUUID().toString();
         this.isOk = isOk;
     }
 

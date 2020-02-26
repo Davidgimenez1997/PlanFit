@@ -52,16 +52,9 @@ public class FirebaseAdmin {
     public FirebaseAdminInsertAndDownloandListener firebaseAdminInsertAndDownloandListener;
     public FirebaseAdminLoginAndRegisterListener firebaseAdminLoginAndRegisterListener;
     public FirebaseAdminUpdateAndDeleteUserListener firebaseAdminUpdateAndDeleteUserListener;
-    
-    public FirebaseAdminCreateShowPlanSport firebaseAdminCreateShowPlanSport;
-    public FirebaseAdminCreateShowPlanNutrition firebaseAdminCreateShowPlanNutrition;
+
     public User userDataFirebase;
     public User userDetails;
-
-    /********LISTAS DE PLANES********/
-
-    public List<PlanSport> allPlanSport;
-    public List<PlanNutrition> allPlanNutrition;
 
     /********COLECCIONES DE FIREBASE********/
 
@@ -119,30 +112,6 @@ public class FirebaseAdmin {
 
     }
 
-    public interface FirebaseAdminCreateShowPlanSport{
-        void insertSportPlanFirebase(boolean end);
-
-        void downloadSportPlanFirebase(boolean end);
-
-        void emptySportPlanFirebase(boolean end);
-
-        void deleteSportPlanFirebase(boolean end);
-
-        void updateSportPlanFirebase(boolean end);
-    }
-
-    public interface FirebaseAdminCreateShowPlanNutrition{
-        void insertNutritionPlanFirebase(boolean end);
-
-        void downloadNutritionPlanFirebase(boolean end);
-
-        void emptyNutritionPlanFirebase(boolean end);
-
-        void deleteNutritionPlanFirebase(boolean end);
-
-        void updateNutritionPlanFirebase(boolean end);
-    }
-
     //Setters
 
     public void setFirebaseAdminInsertAndDownloandListener(FirebaseAdminInsertAndDownloandListener firebaseAdminInsertAndDownloandListener) {
@@ -155,14 +124,6 @@ public class FirebaseAdmin {
 
     public void setFirebaseAdminUpdateUserListener(FirebaseAdminUpdateAndDeleteUserListener firebaseAdminUpdateAndDeleteUserListener) {
         this.firebaseAdminUpdateAndDeleteUserListener = firebaseAdminUpdateAndDeleteUserListener;
-    }
-
-    public void setFirebaseAdminCreateShowPlanSport(FirebaseAdminCreateShowPlanSport firebaseAdminCreateShowPlanSport) {
-        this.firebaseAdminCreateShowPlanSport = firebaseAdminCreateShowPlanSport;
-    }
-
-    public void setFirebaseAdminCreateShowPlanNutrition(FirebaseAdminCreateShowPlanNutrition firebaseAdminCreateShowPlanNutrition) {
-        this.firebaseAdminCreateShowPlanNutrition = firebaseAdminCreateShowPlanNutrition;
     }
 
     //Login y registro
@@ -423,162 +384,4 @@ public class FirebaseAdmin {
                             }
                         }));
     }
-
-    //Create sport and nutrtion plan
-
-    public void dataCreateSportPlan(){
-        Map<String, Object> planSport = new HashMap<>();
-        planSport.put("name", SessionUser.getInstance().planSport.getName());
-        planSport.put("photo", SessionUser.getInstance().planSport.getPhoto());
-        planSport.put("timeStart", SessionUser.getInstance().planSport.getTimeStart());
-        planSport.put("timeEnd", SessionUser.getInstance().planSport.getTimeEnd());
-        planSport.put("isOk", SessionUser.getInstance().planSport.getIsOk());
-        planSport.put("id",SessionUser.getInstance().planSport.getId());
-        insertSportPlan(planSport,SessionUser.getInstance().planSport.getId());
-    }
-
-    private void insertSportPlan(final Map<String, Object> planSport,String id) {
-        if(firebaseAdminCreateShowPlanSport!=null){
-            COLLECTION_PLAN_SPORT_USER = "users/" + currentUser.getUid() + "/planesDeporte";
-            firebaseFirestore.collection(COLLECTION_PLAN_SPORT_USER).document(id)
-                    .set(planSport)
-                    .addOnSuccessListener(aVoid -> firebaseAdminCreateShowPlanSport.insertSportPlanFirebase(true))
-                    .addOnFailureListener(e -> firebaseAdminCreateShowPlanSport.insertSportPlanFirebase(false));
-        }
-    }
-
-    public void dataCreateNutrtionPlan(){
-        Map<String, Object> planNutrition = new HashMap<>();
-        planNutrition.put("name", SessionUser.getInstance().planNutrition.getName());
-        planNutrition.put("photo", SessionUser.getInstance().planNutrition.getPhoto());
-        planNutrition.put("type", SessionUser.getInstance().planNutrition.getType());
-        planNutrition.put("isOk", SessionUser.getInstance().planNutrition.getIsOk());
-        planNutrition.put("id",SessionUser.getInstance().planNutrition.getId());
-        insertNutrtionPlan(planNutrition,SessionUser.getInstance().planNutrition.getId());
-    }
-
-    private void insertNutrtionPlan(final Map<String, Object> planNutrition,String id) {
-        if(firebaseAdminCreateShowPlanNutrition!=null){
-            COLLECTION_PLAN_NUTRITION_USER = "users/" + currentUser.getUid() + "/planesNutricion";
-            firebaseFirestore.collection(COLLECTION_PLAN_NUTRITION_USER).document(id)
-                    .set(planNutrition)
-                    .addOnSuccessListener(aVoid -> firebaseAdminCreateShowPlanNutrition.insertNutritionPlanFirebase(true))
-                    .addOnFailureListener(e -> firebaseAdminCreateShowPlanNutrition.insertNutritionPlanFirebase(false));
-        }
-    }
-
-    //Download sport and nutrtion plan
-
-    public void downloadAllSportPlanFavorite() {
-        if (firebaseAdminCreateShowPlanSport != null) {
-            COLLECTION_PLAN_SPORT_USER = "users/" + currentUser.getUid() + "/planesDeporte";
-            CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_PLAN_SPORT_USER);
-            collectionReference.addSnapshotListener((queryDocumentSnapshots, e) -> {
-                if (e != null) {
-                    firebaseAdminCreateShowPlanSport.downloadSportPlanFirebase(false);
-                }
-                List<PlanSport> planSports = new ArrayList<>();
-                for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                    planSports.add(doc.toObject(PlanSport.class));
-                }
-                allPlanSport = planSports;
-                if(allPlanSport.size()==0){
-                    firebaseAdminCreateShowPlanSport.emptySportPlanFirebase(true);
-                }else if(allPlanSport.size()!=0){
-                    firebaseAdminCreateShowPlanSport.downloadSportPlanFirebase(true);
-                }
-            });
-        }
-    }
-
-    public void downloadAllNutrtionPlanFavorite() {
-        if (firebaseAdminCreateShowPlanNutrition != null) {
-            COLLECTION_PLAN_NUTRITION_USER = "users/" + currentUser.getUid() + "/planesNutricion";
-            CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_PLAN_NUTRITION_USER);
-            collectionReference.addSnapshotListener((queryDocumentSnapshots, e) -> {
-                if (e != null) {
-                    firebaseAdminCreateShowPlanNutrition.downloadNutritionPlanFirebase(false);
-                }
-                List<PlanNutrition> planNutritions = new ArrayList<>();
-                for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                    planNutritions.add(doc.toObject(PlanNutrition.class));
-                }
-                allPlanNutrition = planNutritions;
-                if(allPlanNutrition.size()==0){
-                    firebaseAdminCreateShowPlanNutrition.emptyNutritionPlanFirebase(true);
-                }else if(allPlanNutrition.size()!=0){
-                    firebaseAdminCreateShowPlanNutrition.downloadNutritionPlanFirebase(true);
-                }
-            });
-        }
-    }
-
-    //Delete One sport and nutrtion Plan
-
-    public void deleteSportPlan(String namePlanSport){
-        if(firebaseAdminCreateShowPlanSport!=null){
-            COLLECTION_PLAN_SPORT_USER = "users/" + currentUser.getUid() + "/planesDeporte";
-                firebaseFirestore.collection(COLLECTION_PLAN_SPORT_USER)
-                        .whereEqualTo("name", namePlanSport)
-                        .get()
-                        .addOnCompleteListener(task -> {
-                            if (task.isSuccessful()) {
-                                for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
-                                    String id = documentSnapshot.getId();
-                                    firebaseFirestore.collection(COLLECTION_PLAN_SPORT_USER).document(id)
-                                            .delete()
-                                            .addOnSuccessListener(aVoid -> firebaseAdminCreateShowPlanSport.deleteSportPlanFirebase(true))
-                                            .addOnFailureListener(e -> firebaseAdminCreateShowPlanSport.deleteSportPlanFirebase(false));
-                                }
-                            }
-                        });
-        }
-    }
-
-    public void deleteNutritionPlan(String namePlanSport){
-        if(firebaseAdminCreateShowPlanNutrition!=null){
-            COLLECTION_PLAN_NUTRITION_USER = "users/" + currentUser.getUid() + "/planesNutricion";
-            firebaseFirestore.collection(COLLECTION_PLAN_NUTRITION_USER)
-                    .whereEqualTo("name", namePlanSport)
-                    .get()
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
-                                String id = documentSnapshot.getId();
-                                firebaseFirestore.collection(COLLECTION_PLAN_NUTRITION_USER).document(id)
-                                        .delete()
-                                        .addOnSuccessListener(aVoid -> firebaseAdminCreateShowPlanNutrition.deleteNutritionPlanFirebase(true))
-                                        .addOnFailureListener(e -> firebaseAdminCreateShowPlanNutrition.deleteNutritionPlanFirebase(false));
-                            }
-                        }
-                    });
-        }
-    }
-
-    //Update plan sport and nutrition
-
-    public void updatePlanSportFirebase(PlanSport planSport) {
-        if (firebaseAdminCreateShowPlanSport != null) {
-            COLLECTION_PLAN_SPORT_USER = "users/" + currentUser.getUid() + "/planesDeporte";
-            DocumentReference myUserRef = firebaseFirestore.collection(COLLECTION_PLAN_SPORT_USER).document(planSport.getId());
-            Map<String, Object> plan = new HashMap<>();
-            plan.put("isOk", planSport.getIsOk());
-            myUserRef.update(plan)
-                    .addOnSuccessListener(aVoid -> firebaseAdminCreateShowPlanSport.updateSportPlanFirebase(true))
-                    .addOnFailureListener(e -> firebaseAdminCreateShowPlanSport.updateSportPlanFirebase(false));
-        }
-    }
-
-    public void updatePlanNutrtionFirebase(PlanNutrition planNutrition) {
-        if (firebaseAdminCreateShowPlanNutrition != null) {
-            COLLECTION_PLAN_NUTRITION_USER = "users/" + currentUser.getUid() + "/planesNutricion";
-            DocumentReference myUserRef = firebaseFirestore.collection(COLLECTION_PLAN_NUTRITION_USER).document(planNutrition.getId());
-            Map<String, Object> plan = new HashMap<>();
-            plan.put("isOk", planNutrition.getIsOk());
-            myUserRef.update(plan)
-                    .addOnSuccessListener(aVoid -> firebaseAdminCreateShowPlanNutrition.updateNutritionPlanFirebase(true))
-                    .addOnFailureListener(e -> firebaseAdminCreateShowPlanNutrition.updateNutritionPlanFirebase(false));
-        }
-    }
-
 }

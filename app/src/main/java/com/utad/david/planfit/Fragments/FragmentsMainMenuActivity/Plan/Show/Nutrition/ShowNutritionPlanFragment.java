@@ -16,8 +16,8 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Adapter.Plan.Show.Nutrition.ShowNutritionPlanAdapter;
 import com.utad.david.planfit.Base.BaseFragment;
-import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
-import com.utad.david.planfit.Data.SessionUser;
+import com.utad.david.planfit.Data.Plan.Nutrition.GetNutritionPlan;
+import com.utad.david.planfit.Data.Plan.Nutrition.NutritionPlanRepository;
 import com.utad.david.planfit.Model.Plan.PlanNutrition;
 import com.utad.david.planfit.R;
 import com.utad.david.planfit.Utils.Constants;
@@ -28,7 +28,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class ShowNutritionPlanFragment extends BaseFragment
-        implements FirebaseAdmin.FirebaseAdminCreateShowPlanNutrition {
+        implements GetNutritionPlan {
 
     /******************************** VARIABLES *************************************+/
      *
@@ -72,8 +72,8 @@ public class ShowNutritionPlanFragment extends BaseFragment
 
         if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
             showLoading();
-            SessionUser.getInstance().firebaseAdmin.setFirebaseAdminCreateShowPlanNutrition(this);
-            SessionUser.getInstance().firebaseAdmin.downloadAllNutrtionPlanFavorite();
+            NutritionPlanRepository.getInstance().setGetNutritionPlan(this);
+            NutritionPlanRepository.getInstance().getNutrtionPlan();
             Fabric.with(getContext(), new Crashlytics());
         }else{
             Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
@@ -103,14 +103,11 @@ public class ShowNutritionPlanFragment extends BaseFragment
      */
 
     @Override
-    public void downloadNutritionPlanFirebase(boolean end) {
-        if (end == true) {
+    public void getNutritiontPlan(boolean status, List<PlanNutrition> planNutritions) {
+        if (status) {
             hideLoading();
-
             linearLayout.setVisibility(View.GONE);
             mRecyclerView.setVisibility(View.VISIBLE);
-
-            final List<PlanNutrition> planNutritions = SessionUser.getInstance().firebaseAdmin.allPlanNutrition;
             ArrayList<PlanNutrition> arrNutrition = new ArrayList<>();
             for (PlanNutrition item : planNutritions) {
                 arrNutrition.add(item);
@@ -147,30 +144,41 @@ public class ShowNutritionPlanFragment extends BaseFragment
             });
             mRecyclerView.setAdapter(mAdapter);
             if(arrNutrition.size()==0){
-                updateNutritionPlanFirebase(false);
+                updateNutritionPlan(false, null);
             }else{
-                updateNutritionPlanFirebase(true);
+                updateNutritionPlan(true, planNutritions);
             }
         }
     }
 
     @Override
-    public void updateNutritionPlanFirebase(boolean end) {
-        if(end==true){
+    public void emptyNutritionPlan(boolean status) {
+        if(status){
+            hideLoading();
+            linearLayout.setVisibility(View.VISIBLE);
+            mRecyclerView.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void updateNutritionPlan(boolean status, List<PlanNutrition> updateList) {
+        if(status){
             hideLoading();
             boolean endOk = true;
-            List<PlanNutrition> planNutritions = SessionUser.getInstance().firebaseAdmin.allPlanNutrition;
+
             final ArrayList<PlanNutrition> arrNutrition = new ArrayList<>();
-            for(PlanNutrition item:planNutritions ){
+            for(PlanNutrition item:updateList ){
                 arrNutrition.add(item);
             }
             Collections.sort(arrNutrition);
+
             for(int i=0;i<arrNutrition.size();i++){
                 if(arrNutrition.get(i).getIsOk().equals(Constants.ModePlan.NO)){
                     endOk = false;
                 }
             }
-            if(endOk==true){
+
+            if(endOk){
                 final CharSequence[] items = {getString(R.string.restablecer),getString(R.string.cancelar)};
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 builder.setTitle(getString(R.string.mensaje_complete_all_plan));
@@ -180,7 +188,7 @@ public class ShowNutritionPlanFragment extends BaseFragment
                             showLoading();
                             for (PlanNutrition planNutrition:arrNutrition){
                                 planNutrition.setIsOk(Constants.ModePlan.NO);
-                                SessionUser.getInstance().firebaseAdmin.updatePlanNutrtionFirebase(planNutrition);
+                                NutritionPlanRepository.getInstance().updatePlanNutrtion(planNutrition);
                             }
                             mAdapter.notifyDataSetChanged();
                             break;
@@ -190,23 +198,12 @@ public class ShowNutritionPlanFragment extends BaseFragment
                     }
                 });
                 builder.show();
-                return;
             }
         }
     }
 
     @Override
-    public void emptyNutritionPlanFirebase(boolean end) {
-        if(end==true){
-            hideLoading();
-            linearLayout.setVisibility(View.VISIBLE);
-            mRecyclerView.setVisibility(View.GONE);
-        }
-    }
-
+    public void addNutritionPlan(boolean status) {}
     @Override
-    public void insertNutritionPlanFirebase(boolean end) {}
-    @Override
-    public void deleteNutritionPlanFirebase(boolean end) {}
-
+    public void deleteNutritionPlan(boolean status) {}
 }

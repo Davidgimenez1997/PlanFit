@@ -11,14 +11,10 @@ public class SessionUser {
 
     public FirebaseAdmin firebaseAdmin;
     public User user;
-    public PlanSport planSport;
-    public PlanNutrition planNutrition;
 
     private SessionUser() {
         firebaseAdmin = new FirebaseAdmin();
         user = new User();
-        planSport = new PlanSport();
-        planNutrition = new PlanNutrition();
     }
 
     public static SessionUser getInstance() {
