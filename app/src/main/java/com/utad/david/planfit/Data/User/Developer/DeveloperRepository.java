@@ -1,4 +1,4 @@
-package com.utad.david.planfit.Data.User;
+package com.utad.david.planfit.Data.User.Developer;
 
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;

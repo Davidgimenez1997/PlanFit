@@ -80,8 +80,6 @@ public class FirebaseAdmin {
     //Login y registro
 
     public interface FirebaseAdminLoginAndRegisterListener {
-        void singInWithEmailAndPassword(boolean end);
-
         void registerWithEmailAndPassword(boolean end);
     }
 
@@ -145,21 +143,6 @@ public class FirebaseAdmin {
 
     }
 
-    public void singInWithEmailAndPassword(String email, String password) {
-        if (firebaseAdminLoginAndRegisterListener != null) {
-            mAuth.signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            currentUser = mAuth.getCurrentUser();
-                            COLLECTION_FAVORITE_SPORT = "users/" + currentUser.getUid() + "/deporteFavorito";
-                            COLLECTION_FAVORITE_NUTRITION = "users/" + currentUser.getUid() + "/nutricionFavorita";
-                            firebaseAdminLoginAndRegisterListener.singInWithEmailAndPassword(true);
-                        } else {
-                            firebaseAdminLoginAndRegisterListener.singInWithEmailAndPassword(false);
-                        }
-                    });
-        }
-    }
 
     //Insert user info
 

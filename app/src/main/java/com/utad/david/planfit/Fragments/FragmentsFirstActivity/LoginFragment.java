@@ -18,9 +18,10 @@ import android.widget.Toast;
 import com.google.firebase.auth.*;
 import com.utad.david.planfit.Activitys.MainMenuActivity;
 import com.utad.david.planfit.Base.BaseFragment;
-import com.utad.david.planfit.Utils.UtilsEncryptDecryptAES;
-import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
+import com.utad.david.planfit.Data.User.Login.GetLogin;
+import com.utad.david.planfit.Data.User.Login.LoginRepository;
+import com.utad.david.planfit.Utils.UtilsEncryptDecryptAES;
 import com.utad.david.planfit.R;
 import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Utils.UtilsNetwork;
@@ -28,7 +29,7 @@ import io.fabric.sdk.android.Fabric;
 import java.util.regex.Pattern;
 
 public class LoginFragment extends BaseFragment
-        implements FirebaseAdmin.FirebaseAdminLoginAndRegisterListener {
+        implements GetLogin {
 
     /******************************** VARIABLES *************************************+/
      *
@@ -118,18 +119,21 @@ public class LoginFragment extends BaseFragment
     public void onStart() {
         super.onStart();
         if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
-            SessionUser.getInstance().firebaseAdmin.mAuth.addAuthStateListener(SessionUser.getInstance().firebaseAdmin.authStateListener);
-            SessionUser.getInstance().firebaseAdmin.setFirebaseAdminLoginAndRegisterListener(this);
-            SessionUser.getInstance().firebaseAdmin.mAuth = FirebaseAuth.getInstance();
+            LoginRepository.getInstance().firebaseAuth.addAuthStateListener(LoginRepository.getInstance().authStateListener);
+            LoginRepository.getInstance().firebaseAuth.addAuthStateListener(
+                    LoginRepository.getInstance().authStateListener
+            );
+            LoginRepository.getInstance().setGetLogin(this);
+            LoginRepository.getInstance().firebaseAuth = FirebaseAuth.getInstance();
         }else{
             Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
         }
     }
 
     private void checkStatusUserFirebase(){
-        SessionUser.getInstance().firebaseAdmin.authStateListener = firebaseAuth -> {
-            SessionUser.getInstance().firebaseAdmin.currentUser = firebaseAuth.getCurrentUser();
-            if (SessionUser.getInstance().firebaseAdmin.currentUser != null) {
+        LoginRepository.getInstance().authStateListener = firebaseAuth -> {
+            LoginRepository.getInstance().currentUser = firebaseAuth.getCurrentUser();
+            if (LoginRepository.getInstance().currentUser != null) {
                 Activity activity = getActivity();
                 if(activity!=null){
                     Intent intent = new Intent(context, MainMenuActivity.class);
@@ -256,8 +260,8 @@ public class LoginFragment extends BaseFragment
      */
 
     @Override
-    public void singInWithEmailAndPassword(boolean end) {
-        if (end) {
+    public void loginWhitEmailAndPassword(boolean status) {
+        if (status) {
             Toast.makeText(getContext(), getString(R.string.info_login_ok), Toast.LENGTH_LONG).show();
             dismissLoginDialog();
             Intent intent = new Intent(getContext(),MainMenuActivity.class);
@@ -269,9 +273,6 @@ public class LoginFragment extends BaseFragment
             errorSingInRegister(getString(R.string.err_login_fail));
         }
     }
-
-    @Override
-    public void registerWithEmailAndPassword(boolean end) {}
 
 
 }

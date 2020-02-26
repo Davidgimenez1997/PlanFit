@@ -1,4 +1,4 @@
-package com.utad.david.planfit.Data.User;
+package com.utad.david.planfit.Data.User.Developer;
 
 import com.utad.david.planfit.Model.Developer;
 
