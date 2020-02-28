@@ -30,10 +30,13 @@ public class ShowDetailsPlanNutritionViewHolder extends BaseViewHolder {
     public void setData(PlanNutrition planNutrition) {
 
         nameNutrition.setText(planNutrition.getName());
-
         Utils.loadImage(planNutrition.getPhoto(),photoNutrition,Utils.PLACEHOLDER_GALLERY);
+        this.setType(planNutrition);
+        this.setImageView(planNutrition);
 
+    }
 
+    private void setType(PlanNutrition planNutrition) {
         switch (planNutrition.getType()) {
             case Constants.TypesPlanNutrition.MODE_DESAYUNO:
                 timeStart.setText(Constants.TypesPlanNutrition.DESAYUNO);
@@ -49,14 +52,15 @@ public class ShowDetailsPlanNutritionViewHolder extends BaseViewHolder {
                 break;
 
         }
+    }
 
+
+    private void setImageView(PlanNutrition planNutrition) {
         timeEnd.setVisibility(View.INVISIBLE);
-
         if (planNutrition.getIsOk().equals(Constants.ModePlan.YES)) {
             imageViewCheck.setVisibility(View.VISIBLE);
         } else if (planNutrition.getIsOk().equals(Constants.ModePlan.NO)) {
             imageViewCheck.setVisibility(View.INVISIBLE);
         }
-
     }
 }

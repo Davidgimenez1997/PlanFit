@@ -9,6 +9,7 @@ import com.utad.david.planfit.R;
 import com.utad.david.planfit.Utils.Constants;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ShowPlanNutritionViewHolder extends BaseViewHolder {
 
@@ -20,27 +21,25 @@ public class ShowPlanNutritionViewHolder extends BaseViewHolder {
     }
 
     public void setData(ArrayList<PlanNutrition> planNutrition){
-
         for(int i=0;i<planNutrition.size();i++){
+            this.setTypes(planNutrition.get(i));
+        }
+    }
 
-            switch (planNutrition.get(i).getType()){
-
-                case Constants.TypesPlanNutrition.MODE_DESAYUNO:
-                    timeStart.setText(Constants.TypesPlanNutrition.DESAYUNO);
-                    break;
-
-                case Constants.TypesPlanNutrition.MODE_COMIDA:
-                    timeStart.setText(Constants.TypesPlanNutrition.COMIDA);
-                    break;
-
-                case Constants.TypesPlanNutrition.MODE_MERIENDA:
-                    timeStart.setText(Constants.TypesPlanNutrition.MERIENDA);
-                    break;
-
-                case Constants.TypesPlanNutrition.MODE_CENA:
-                    timeStart.setText(Constants.TypesPlanNutrition.CENA);
-                    break;
-            }
+    private void setTypes(PlanNutrition planNutrition) {
+        switch (planNutrition.getType()){
+            case Constants.TypesPlanNutrition.MODE_DESAYUNO:
+                timeStart.setText(Constants.TypesPlanNutrition.DESAYUNO);
+                break;
+            case Constants.TypesPlanNutrition.MODE_COMIDA:
+                timeStart.setText(Constants.TypesPlanNutrition.COMIDA);
+                break;
+            case Constants.TypesPlanNutrition.MODE_MERIENDA:
+                timeStart.setText(Constants.TypesPlanNutrition.MERIENDA);
+                break;
+            case Constants.TypesPlanNutrition.MODE_CENA:
+                timeStart.setText(Constants.TypesPlanNutrition.CENA);
+                break;
         }
     }
 }

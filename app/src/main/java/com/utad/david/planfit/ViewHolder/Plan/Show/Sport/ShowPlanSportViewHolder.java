@@ -19,22 +19,22 @@ public class ShowPlanSportViewHolder extends BaseViewHolder {
     }
 
     public void setData(ArrayList<PlanSport> planSport){
-
         for(int i=0;i<planSport.size();i++){
-
             String str_timeStart = String.valueOf(planSport.get(i).getTimeStart());
             BigDecimal bigDecimal_start = new BigDecimal(str_timeStart);
             long first_start = bigDecimal_start.longValue();
             BigDecimal second_start = bigDecimal_start.remainder(BigDecimal.ONE);
             StringBuilder stringBuilder_start = new StringBuilder(second_start.toString());
             stringBuilder_start.delete(0,2);
-
-            if(stringBuilder_start.toString().length()==1){
-                timeStart.setText(Long.valueOf(first_start)+":"+stringBuilder_start.toString()+"0");
-            }else{
-                timeStart.setText(Long.valueOf(first_start)+":"+stringBuilder_start.toString());
-            }
+            this.setTimeStart(stringBuilder_start, first_start);
         }
+    }
 
+    private void setTimeStart(StringBuilder stringBuilder, long value) {
+        if(stringBuilder.toString().length()==1){
+            timeStart.setText(Long.valueOf(value)+":"+stringBuilder.toString()+"0");
+        }else{
+            timeStart.setText(Long.valueOf(value)+":"+stringBuilder.toString());
+        }
     }
 }
