@@ -107,7 +107,7 @@ public class EditUserRepository {
         if (this.getEditUser != null) {
             DocumentReference myUserRef = firebaseFirestore.collection(Constants.CollectionsNames.USER).document(currentUser.getUid());
             Map<String, Object> user = new HashMap<>();
-            user.put("fullName", UserRepository.getInstance().getUser().getFullName());
+            user.put(Constants.ModelUser.NAME, UserRepository.getInstance().getUser().getFullName());
             myUserRef.update(user)
                     .addOnSuccessListener(aVoid -> this.getEditUser.updateFullName(true))
                     .addOnFailureListener(e -> this.getEditUser.updateFullName(false));
@@ -121,7 +121,7 @@ public class EditUserRepository {
         if (this.getEditUser != null) {
             DocumentReference myUserRef = firebaseFirestore.collection(Constants.CollectionsNames.USER).document(currentUser.getUid());
             Map<String, Object> user = new HashMap<>();
-            user.put("nickName", UserRepository.getInstance().getUser().getNickName());
+            user.put(Constants.ModelUser.NICK, UserRepository.getInstance().getUser().getNickName());
             myUserRef.update(user)
                     .addOnSuccessListener(aVoid -> this.getEditUser.updateNickName(true))
                     .addOnFailureListener(e -> this.getEditUser.updateNickName(false));
@@ -139,7 +139,7 @@ public class EditUserRepository {
                         if(UserRepository.getInstance().getUser().getImgUser().equals("")){
                             reauthenticateUserDeleteAccount();
                         }else{
-                            StorageReference desertRef = storageReference.child("images/" + currentUser.getUid());
+                            StorageReference desertRef = storageReference.child(Constants.CollectionsNames.IMAGES + currentUser.getUid());
                             desertRef.delete()
                                     .addOnSuccessListener(aVoid1 -> reauthenticateUserDeleteAccount())
                                     .addOnFailureListener(exception -> this.getEditUser.deleteUser(false));

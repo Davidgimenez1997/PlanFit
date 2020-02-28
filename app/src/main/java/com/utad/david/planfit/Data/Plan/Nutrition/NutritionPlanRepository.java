@@ -117,7 +117,7 @@ public class NutritionPlanRepository {
             String COLLECTION_PLAN_NUTRITION_USER = Constants.CollectionsNames.USERS + currentUser.getUid() + Constants.CollectionsNames.NUTRITION_PLAN;
             DocumentReference myUserRef = firebaseFirestore.collection(COLLECTION_PLAN_NUTRITION_USER).document(planNutrition.getId());
             Map<String, Object> plan = new HashMap<>();
-            plan.put("isOk", planNutrition.getIsOk());
+            plan.put(Constants.ModelNutritionPlan.IS_OK, planNutrition.getIsOk());
             myUserRef.update(plan)
                     .addOnSuccessListener(aVoid -> this.getNutritionPlan.updateNutritionPlan(true, this.planNutrition))
                     .addOnFailureListener(e -> this.getNutritionPlan.updateNutritionPlan(false, null));
