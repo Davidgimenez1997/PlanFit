@@ -53,7 +53,7 @@ public class ChatRepository {
         if (this.getChat != null) {
             DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-            Query query = reference.child("").orderByChild("messageTime").equalTo(message.getMessageTime());
+            Query query = reference.child("").orderByChild(Constants.CollectionsNames.ORDER_MESSAGES).equalTo(message.getMessageTime());
             query.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -101,7 +101,7 @@ public class ChatRepository {
     }
 
     private void getUserPhoto(String uid) {
-        this.storageReference.child("images/" + uid).getDownloadUrl().addOnSuccessListener(uri -> {
+        this.storageReference.child(Constants.CollectionsNames.IMAGES + uid).getDownloadUrl().addOnSuccessListener(uri -> {
             this.userDetails.setImgUser(uri.toString());
             this.getChat.getUserDetails(true,this.userDetails);
         }).addOnFailureListener(exception -> {
