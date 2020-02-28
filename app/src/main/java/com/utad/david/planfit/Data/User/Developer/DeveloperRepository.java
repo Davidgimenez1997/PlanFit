@@ -2,7 +2,7 @@ package com.utad.david.planfit.Data.User.Developer;
 
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.utad.david.planfit.Model.Developer;
+import com.utad.david.planfit.Model.Developer.Developer;
 import com.utad.david.planfit.Utils.Constants;
 
 public class DeveloperRepository {

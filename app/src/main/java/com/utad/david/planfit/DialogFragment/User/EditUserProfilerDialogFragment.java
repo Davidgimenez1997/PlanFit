@@ -24,15 +24,14 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
-import com.utad.david.planfit.Activitys.FirstActivity;
+import com.utad.david.planfit.Activitys.AuthenticationActivity;
 import com.utad.david.planfit.Base.BaseDialogFragment;
 import com.utad.david.planfit.Data.User.User.EditUser.EditUserRepository;
 import com.utad.david.planfit.Data.User.User.EditUser.GetEditUser;
 import com.utad.david.planfit.Data.User.User.UserRepository;
 import com.utad.david.planfit.Utils.Constants;
 import com.utad.david.planfit.Utils.Utils;
-import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
-import com.utad.david.planfit.Data.SessionUser;
+import com.utad.david.planfit.Data.User.SessionUser;
 import com.utad.david.planfit.Model.User.User;
 import com.utad.david.planfit.R;
 import com.utad.david.planfit.Utils.UtilsNetwork;
@@ -208,7 +207,7 @@ public class EditUserProfilerDialogFragment
      */
 
     private void navigatedUserLoginRegister(){
-        Intent intent =new Intent(getContext(),FirstActivity.class);
+        Intent intent =new Intent(getContext(), AuthenticationActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         getActivity().finish();

@@ -8,7 +8,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.utad.david.planfit.Data.SessionUser;
+import com.utad.david.planfit.Data.User.SessionUser;
 import com.utad.david.planfit.Model.User.User;
 import com.utad.david.planfit.Utils.Constants;
 import com.utad.david.planfit.Utils.UtilsEncryptDecryptAES;
@@ -60,6 +60,16 @@ public class UserRepository {
 
     public FirebaseUser getCurrentUser() {
         return currentUser;
+    }
+
+    public FirebaseAuth getFirebaseAuth() {
+        return firebaseAuth;
+    }
+
+    // Logout
+
+    public void logout() {
+        FirebaseAuth.getInstance().signOut();
     }
 
     // Add User Info
@@ -130,5 +140,4 @@ public class UserRepository {
             this.getUser.getUserData(true);
         }).addOnFailureListener(exception -> this.getUser.getUserData(false));
     }
-
 }

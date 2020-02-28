@@ -11,11 +11,9 @@ import android.view.ViewGroup;
 import android.widget.*;
 import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Base.BaseDialogFragment;
-import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.Plan.SessionPlan;
 import com.utad.david.planfit.Data.Plan.Sport.GetSportPlan;
 import com.utad.david.planfit.Data.Plan.Sport.SportPlanRepository;
-import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Model.Plan.PlanSport;
 import com.utad.david.planfit.Model.Sport.DefaultSport;
 import com.utad.david.planfit.R;
@@ -24,9 +22,7 @@ import com.utad.david.planfit.Utils.Utils;
 import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class CreateSportPlanDetailsDialogFragment extends BaseDialogFragment
         implements GetSportPlan {

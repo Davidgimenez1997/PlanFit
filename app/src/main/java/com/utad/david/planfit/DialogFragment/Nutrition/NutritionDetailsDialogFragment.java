@@ -17,8 +17,6 @@ import com.utad.david.planfit.Activitys.WebViewActivity;
 import com.utad.david.planfit.Base.BaseDialogFragment;
 import com.utad.david.planfit.Data.Favorite.Nutrition.GetNutritionFavorite;
 import com.utad.david.planfit.Data.Favorite.Nutrition.NutritionFavoriteRepository;
-import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
-import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Model.Nutrition.DefaultNutrition;
 import com.utad.david.planfit.Model.Nutrition.NutritionGainVolume;
 import com.utad.david.planfit.Model.Nutrition.NutritionSlimming;
@@ -28,7 +26,6 @@ import com.utad.david.planfit.Utils.Constants;
 import com.utad.david.planfit.Utils.Utils;
 import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
-import java.util.ArrayList;
 import java.util.List;
 
 public class NutritionDetailsDialogFragment

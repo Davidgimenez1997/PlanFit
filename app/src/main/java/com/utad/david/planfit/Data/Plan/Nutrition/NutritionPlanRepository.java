@@ -6,9 +6,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.utad.david.planfit.Data.Nutrition.GetNutrition;
 import com.utad.david.planfit.Data.Plan.SessionPlan;
-import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Model.Plan.PlanNutrition;
 import com.utad.david.planfit.Utils.Constants;
 

@@ -11,11 +11,9 @@ import android.view.ViewGroup;
 import android.widget.*;
 import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Base.BaseDialogFragment;
-import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.Plan.Nutrition.GetNutritionPlan;
 import com.utad.david.planfit.Data.Plan.Nutrition.NutritionPlanRepository;
 import com.utad.david.planfit.Data.Plan.SessionPlan;
-import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Model.Nutrition.DefaultNutrition;
 import com.utad.david.planfit.Model.Plan.PlanNutrition;
 import com.utad.david.planfit.R;
@@ -23,9 +21,7 @@ import com.utad.david.planfit.Utils.Constants;
 import com.utad.david.planfit.Utils.Utils;
 import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class CreateNutritionPlanDetailsDialogFragment extends BaseDialogFragment
         implements GetNutritionPlan {

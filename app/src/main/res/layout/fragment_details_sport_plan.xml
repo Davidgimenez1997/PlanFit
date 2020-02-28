@@ -4,7 +4,7 @@
              android:background="@drawable/bg_welcome"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             tools:context=".Fragments.FragmentsMainMenuActivity.Plan.Show.Sport.DetailsSportPlanFragment">
+             tools:context=".Fragments.MainMenu.Plan.Show.Sport.DetailsSportPlanFragment">
 
     <android.support.constraint.ConstraintLayout
             xmlns:android="http://schemas.android.com/apk/res/android"

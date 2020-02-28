@@ -10,7 +10,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.utad.david.planfit.Data.SessionUser;
+import com.utad.david.planfit.Data.User.SessionUser;
 import com.utad.david.planfit.Data.User.User.UserRepository;
 import com.utad.david.planfit.Utils.Constants;
 

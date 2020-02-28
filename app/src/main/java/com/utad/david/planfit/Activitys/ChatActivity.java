@@ -14,13 +14,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.firebase.ui.database.FirebaseListAdapter;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.*;
 import com.utad.david.planfit.Adapter.Chat.ChatAdapter;
 import com.utad.david.planfit.Base.BaseActivity;
 import com.utad.david.planfit.Data.Chat.ChatRepository;
 import com.utad.david.planfit.Data.Chat.GetChat;
-import com.utad.david.planfit.Data.SessionUser;
+import com.utad.david.planfit.Data.User.SessionUser;
 import com.utad.david.planfit.Data.User.User.UserRepository;
 import com.utad.david.planfit.DialogFragment.User.UserDetailDialogFragments;
 import com.utad.david.planfit.Model.Chat.ChatMessage;
@@ -100,7 +99,7 @@ public class ChatActivity
             Utils.showSoftKeyboard(this,etMessage);
             ChatRepository.getInstance().setGetChat(this);
 
-            if(SessionUser.getInstance().firebaseAdmin.mAuth.getCurrentUser()!=null){
+            if(UserRepository.getInstance().getFirebaseAuth().getCurrentUser()!=null){
                 showLoading();
                 showAllOldMessages();
                 hideLoading();
@@ -111,7 +110,7 @@ public class ChatActivity
     }
 
     private void showAllOldMessages() {
-        loggedInUserName = SessionUser.getInstance().firebaseAdmin.currentUser.getUid();
+        loggedInUserName = UserRepository.getInstance().getCurrentUser().getUid();
 
         if(adapter==null){
             showLoading();
@@ -121,7 +120,7 @@ public class ChatActivity
                 public void onItemClick(ChatMessage message) {
 
                     if(UtilsNetwork.checkConnectionInternetDevice(ChatActivity.this)){
-                        if(message.getMessageUserId().equals(SessionUser.getInstance().firebaseAdmin.currentUser.getUid())){
+                        if(message.getMessageUserId().equals(UserRepository.getInstance().getCurrentUser().getUid())){
                             final CharSequence[] items = {getString(R.string.borrar_mensaje), getString(R.string.action_cancel)};
                             AlertDialog.Builder builder = new AlertDialog.Builder(ChatActivity.this);
                             builder.setTitle(R.string.opciones_chat);

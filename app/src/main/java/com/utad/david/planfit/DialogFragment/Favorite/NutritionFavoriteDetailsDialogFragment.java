@@ -13,14 +13,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Activitys.WebViewActivity;
 import com.utad.david.planfit.Base.BaseDialogFragment;
 import com.utad.david.planfit.Data.Favorite.Nutrition.GetNutritionFavorite;
 import com.utad.david.planfit.Data.Favorite.Nutrition.NutritionFavoriteRepository;
-import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
-import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Model.Nutrition.DefaultNutrition;
 import com.utad.david.planfit.Model.Nutrition.NutritionGainVolume;
 import com.utad.david.planfit.Model.Nutrition.NutritionSlimming;

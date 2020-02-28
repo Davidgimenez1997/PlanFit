@@ -15,7 +15,7 @@ import com.utad.david.planfit.Activitys.WebViewActivity;
 import com.utad.david.planfit.Base.BaseDialogFragment;
 import com.utad.david.planfit.Data.User.Developer.DeveloperRepository;
 import com.utad.david.planfit.Data.User.Developer.GetDeveloper;
-import com.utad.david.planfit.Model.Developer;
+import com.utad.david.planfit.Model.Developer.Developer;
 import com.utad.david.planfit.R;
 import com.utad.david.planfit.Utils.Constants;
 import com.utad.david.planfit.Utils.UtilsNetwork;
