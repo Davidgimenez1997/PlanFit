@@ -110,10 +110,10 @@ public class ChatActivity
     }
 
     private void showAllOldMessages() {
+        showLoading();
         loggedInUserName = UserRepository.getInstance().getCurrentUser().getUid();
 
         if(adapter==null){
-            showLoading();
             adapter = new ChatAdapter(this, ChatMessage.class, R.layout.item_in_message,
                     FirebaseDatabase.getInstance().getReference(), new ChatAdapter.Callback() {
                 @Override
