@@ -14,29 +14,31 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.firebase.ui.database.FirebaseListAdapter;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.*;
 import com.utad.david.planfit.Adapter.Chat.ChatAdapter;
 import com.utad.david.planfit.Base.BaseActivity;
-import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
-import com.utad.david.planfit.Data.SessionUser;
+import com.utad.david.planfit.Data.Chat.ChatRepository;
+import com.utad.david.planfit.Data.Chat.GetChat;
+import com.utad.david.planfit.Data.User.SessionUser;
+import com.utad.david.planfit.Data.User.User.UserRepository;
 import com.utad.david.planfit.DialogFragment.User.UserDetailDialogFragments;
-import com.utad.david.planfit.Model.ChatMessage;
-import com.utad.david.planfit.Model.User;
+import com.utad.david.planfit.Model.Chat.ChatMessage;
+import com.utad.david.planfit.Model.User.User;
 import com.utad.david.planfit.R;
 import com.utad.david.planfit.Utils.Constants;
 import com.utad.david.planfit.Utils.Utils;
 import android.support.v4.app.Fragment;
 import com.utad.david.planfit.Utils.UtilsNetwork;
 
-public class ChatActivity extends BaseActivity
-        implements FirebaseAdmin.FirebaseAdimChatLisetener{
+public class ChatActivity
+        extends BaseActivity
+        implements GetChat {
 
     /******************************** VARIABLES *************************************+/
      *
      */
 
-    public static final String EXTRA_NAME_USER = Constants.ConfigureChat.EXTRA_NAME;
+    public static final String EXTRA_NAME_USER = Constants.ConfigChat.EXTRA_NAME;
 
     private Toolbar toolbar;
 
@@ -95,9 +97,9 @@ public class ChatActivity extends BaseActivity
 
         if(UtilsNetwork.checkConnectionInternetDevice(this)){
             Utils.showSoftKeyboard(this,etMessage);
-            SessionUser.getInstance().firebaseAdmin.setFirebaseAdimChatLisetener(this);
+            ChatRepository.getInstance().setGetChat(this);
 
-            if(SessionUser.getInstance().firebaseAdmin.mAuth.getCurrentUser()!=null){
+            if(UserRepository.getInstance().getFirebaseAuth().getCurrentUser()!=null){
                 showLoading();
                 showAllOldMessages();
                 hideLoading();
@@ -108,7 +110,7 @@ public class ChatActivity extends BaseActivity
     }
 
     private void showAllOldMessages() {
-        loggedInUserName = SessionUser.getInstance().firebaseAdmin.currentUser.getUid();
+        loggedInUserName = UserRepository.getInstance().getCurrentUser().getUid();
 
         if(adapter==null){
             showLoading();
@@ -118,7 +120,7 @@ public class ChatActivity extends BaseActivity
                 public void onItemClick(ChatMessage message) {
 
                     if(UtilsNetwork.checkConnectionInternetDevice(ChatActivity.this)){
-                        if(message.getMessageUserId().equals(SessionUser.getInstance().firebaseAdmin.currentUser.getUid())){
+                        if(message.getMessageUserId().equals(UserRepository.getInstance().getCurrentUser().getUid())){
                             final CharSequence[] items = {getString(R.string.borrar_mensaje), getString(R.string.action_cancel)};
                             AlertDialog.Builder builder = new AlertDialog.Builder(ChatActivity.this);
                             builder.setTitle(R.string.opciones_chat);
@@ -168,11 +170,11 @@ public class ChatActivity extends BaseActivity
     }
 
     private void navigateToProfile(ChatMessage message) {
-        SessionUser.getInstance().firebaseAdmin.dowloandDetailsUserFirebase(message);
+        ChatRepository.getInstance().getUserDetailsByMessage(message);
     }
 
     private void deleteMessage(ChatMessage message) {
-        SessionUser.getInstance().firebaseAdmin.deleteMessageInChat(message);
+        ChatRepository.getInstance().deleteMessageInChat(message);
     }
 
     @Override
@@ -193,8 +195,8 @@ public class ChatActivity extends BaseActivity
                         .getReference()
                         .push()
                         .setValue(new ChatMessage(etMessage.getText().toString(),
-                                SessionUser.getInstance().firebaseAdmin.userDataFirebase.getNickName(),
-                                FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                UserRepository.getInstance().getUser().getNickName(),
+                                UserRepository.getInstance().getCurrentUser().getUid())
                         );
                 etMessage.setText("");
                 Utils.closeKeyboard(this,etMessage);
@@ -211,15 +213,15 @@ public class ChatActivity extends BaseActivity
     }
 
     @Override
-    public void deleteMessageChat(boolean end) {
-        if(end){
+    public void deleteMessage(boolean status) {
+        if(status){
             adapter.notifyDataSetChanged();
         }
     }
 
     @Override
-    public void donwloadUserDetails(boolean end, User userDetails) {
-        if(end){
+    public void getUserDetails(boolean status, User userDetails) {
+        if(status){
             if(userDetails!=null){
                 fragmentTransaction = fragmentManager.beginTransaction();
                 Fragment fragment = getSupportFragmentManager().findFragmentByTag(Constants.TagDialogFragment.TAG);

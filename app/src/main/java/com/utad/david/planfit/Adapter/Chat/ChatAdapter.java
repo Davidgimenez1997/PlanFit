@@ -7,7 +7,7 @@ import android.widget.TextView;
 import com.firebase.ui.database.FirebaseListAdapter;
 import com.google.firebase.database.DatabaseReference;
 import com.utad.david.planfit.Activitys.ChatActivity;
-import com.utad.david.planfit.Model.ChatMessage;
+import com.utad.david.planfit.Model.Chat.ChatMessage;
 import com.utad.david.planfit.R;
 
 public class ChatAdapter extends FirebaseListAdapter<ChatMessage> {

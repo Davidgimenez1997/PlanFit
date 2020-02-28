@@ -4,7 +4,7 @@
              android:layout_width="match_parent"
              android:background="@drawable/bg_welcome"
              android:layout_height="match_parent"
-             tools:context=".Fragments.FragmentsMainMenuActivity.Favorite.SportFavoriteFragment">
+             tools:context=".Fragments.MainMenu.Favorite.SportFavoriteFragment">
 
     <android.support.constraint.ConstraintLayout
             xmlns:android="http://schemas.android.com/apk/res/android"

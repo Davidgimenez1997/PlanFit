@@ -24,8 +24,8 @@ public class WebViewActivity extends BaseActivity {
      *
      */
 
-    public static String EXTRA_TITLE = Constants.ConfigurateWebView.EXTRA_TITLE;
-    public static String EXTRA_URL = Constants.ConfigurateWebView.EXTRA_URL;
+    public static String EXTRA_TITLE = Constants.ConfigWebView.EXTRA_TITLE;
+    public static String EXTRA_URL = Constants.ConfigWebView.EXTRA_URL;
     public static String EXTRA_MODE = Constants.ModeWebView.EXTRA_MODE;
 
     private WebView webView;

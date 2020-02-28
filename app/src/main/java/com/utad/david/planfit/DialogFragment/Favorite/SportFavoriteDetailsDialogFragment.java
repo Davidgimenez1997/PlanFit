@@ -16,23 +16,31 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Activitys.YoutubeActivity;
 import com.utad.david.planfit.Base.BaseDialogFragment;
-import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
-import com.utad.david.planfit.Data.SessionUser;
+import com.utad.david.planfit.Data.Favorite.Sport.GetSportFavorite;
+import com.utad.david.planfit.Data.Favorite.Sport.SportFavoriteRepository;
 import com.utad.david.planfit.Model.Sport.DefaultSport;
+import com.utad.david.planfit.Model.Sport.SportGainVolume;
+import com.utad.david.planfit.Model.Sport.SportSlimming;
+import com.utad.david.planfit.Model.Sport.SportToning;
 import com.utad.david.planfit.R;
 import com.utad.david.planfit.Utils.Constants;
 import com.utad.david.planfit.Utils.Utils;
 import com.utad.david.planfit.Utils.UtilsNetwork;
+
+import java.util.List;
+
 import io.fabric.sdk.android.Fabric;
 
-public class SportFavoriteDetailsDialogFragment extends BaseDialogFragment implements FirebaseAdmin.FirebaseAdminFavoriteSport {
+public class SportFavoriteDetailsDialogFragment
+        extends BaseDialogFragment
+        implements GetSportFavorite {
 
     /******************************** VARIABLES *************************************+/
      *
      */
 
-    private static String SPORT = Constants.DeportesFavoriteDetails.EXTRA_SPORT;
-    private static String URL = Constants.DeportesFavoriteDetails.EXTRA_URL;
+    private static String SPORT = Constants.SportFavoriteDetails.EXTRA_SPORT;
+    private static String URL = Constants.SportFavoriteDetails.EXTRA_URL;
     private DefaultSport defaultSport;
 
     private TextView textViewTitle;
@@ -79,7 +87,7 @@ public class SportFavoriteDetailsDialogFragment extends BaseDialogFragment imple
 
         if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
             Fabric.with(getContext(),new Crashlytics());
-            SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteSport(this);
+            SportFavoriteRepository.getInstance().setGetSportFavorite(this);
         }else{
             Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
         }
@@ -161,7 +169,8 @@ public class SportFavoriteDetailsDialogFragment extends BaseDialogFragment imple
         if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
             buttonDelete.setOnClickListener(v -> {
                 if(listener!=null){
-                    SessionUser.getInstance().firebaseAdmin.deleteDefaultSportFavorite(defaultSport);
+                    SportFavoriteRepository.getInstance().deleteDefaultSportFavorite(defaultSport);
+                    dismiss();
                     dismiss();
                 }
             });
@@ -176,8 +185,8 @@ public class SportFavoriteDetailsDialogFragment extends BaseDialogFragment imple
      */
 
     @Override
-    public void deleteFavoriteSport(boolean end) {
-        if(end==true){
+    public void deleteSportFavorite(boolean status) {
+        if(status){
             if(listener!=null){
                 listener.setDataChange();
             }
@@ -185,9 +194,16 @@ public class SportFavoriteDetailsDialogFragment extends BaseDialogFragment imple
     }
 
     @Override
-    public void downloandCollectionSportFavorite(boolean end) {}
+    public void addSportFavorite(boolean status) {}
     @Override
-    public void inserSportFavoriteFirebase(boolean end) {}
+    public void getSportSlimmingFavorite(boolean status, List<SportSlimming> sportSlimmings) {}
     @Override
-    public void emptyCollectionSportFavorite(boolean end) {}
+    public void getSportToningFavorite(boolean status, List<SportToning> sportTonings) {}
+    @Override
+    public void getSportGainVolumeFavorite(boolean status, List<SportGainVolume> sportGainVolumes) {}
+    @Override
+    public void getSportAllFavorite(boolean status, List<DefaultSport> defaultSports) {}
+    @Override
+    public void emptySportFavorite(boolean status) {}
+
 }

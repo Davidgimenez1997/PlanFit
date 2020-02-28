@@ -11,8 +11,9 @@ import android.view.ViewGroup;
 import android.widget.*;
 import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Base.BaseDialogFragment;
-import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
-import com.utad.david.planfit.Data.SessionUser;
+import com.utad.david.planfit.Data.Plan.Nutrition.GetNutritionPlan;
+import com.utad.david.planfit.Data.Plan.Nutrition.NutritionPlanRepository;
+import com.utad.david.planfit.Data.Plan.SessionPlan;
 import com.utad.david.planfit.Model.Nutrition.DefaultNutrition;
 import com.utad.david.planfit.Model.Plan.PlanNutrition;
 import com.utad.david.planfit.R;
@@ -20,24 +21,22 @@ import com.utad.david.planfit.Utils.Constants;
 import com.utad.david.planfit.Utils.Utils;
 import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class CreateNutritionPlanDetailsDialogFragment extends BaseDialogFragment
-        implements FirebaseAdmin.FirebaseAdminCreateShowPlanNutrition {
+        implements GetNutritionPlan {
 
     /******************************** VARIABLES *************************************+/
      *
      */
 
-    private static String NUTRITION = Constants.NutricionPlanDetails.EXTRA_NUTRITION;
+    private static String NUTRITION = Constants.NutritionPlanDetails.EXTRA_NUTRITION;
     private DefaultNutrition defaultNutrition;
 
-    private static String DESAYUNO = Constants.TiposPlanNutricion.DESAYUNO;
-    private static String COMIDA = Constants.TiposPlanNutricion.COMIDA;
-    private static String MERIENDA = Constants.TiposPlanNutricion.MERIENDA;
-    private static String CENA = Constants.TiposPlanNutricion.CENA;
+    private static String DESAYUNO = Constants.TypesPlanNutrition.DESAYUNO;
+    private static String COMIDA = Constants.TypesPlanNutrition.COMIDA;
+    private static String MERIENDA = Constants.TypesPlanNutrition.MERIENDA;
+    private static String CENA = Constants.TypesPlanNutrition.CENA;
 
     private TextView textViewTitle;
     private ImageView imageViewNutrtion;
@@ -46,9 +45,7 @@ public class CreateNutritionPlanDetailsDialogFragment extends BaseDialogFragment
     private Button buttonClose;
     private Button buttonDelete;
     private Callback listener;
-
     private int type;
-    private List<PlanNutrition> planNutritions;
 
     /******************************** INTERFAZ *************************************+/
      *
@@ -85,8 +82,8 @@ public class CreateNutritionPlanDetailsDialogFragment extends BaseDialogFragment
         if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
             showLoading();
             Fabric.with(getContext(),new Crashlytics());
-            SessionUser.getInstance().firebaseAdmin.setFirebaseAdminCreateShowPlanNutrition(this);
-            SessionUser.getInstance().firebaseAdmin.downloadAllNutrtionPlanFavorite();
+            NutritionPlanRepository.getInstance().setGetNutritionPlan(this);
+            NutritionPlanRepository.getInstance().getNutrtionPlan();
         }else{
             hideLoading();
             Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
@@ -155,16 +152,16 @@ public class CreateNutritionPlanDetailsDialogFragment extends BaseDialogFragment
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 switch (spinnerType.getSelectedItem().toString()){
-                    case Constants.TiposPlanNutricion.DESAYUNO:
+                    case Constants.TypesPlanNutrition.DESAYUNO:
                         type=1;
                         break;
-                    case Constants.TiposPlanNutricion.COMIDA:
+                    case Constants.TypesPlanNutrition.COMIDA:
                         type=2;
                         break;
-                    case Constants.TiposPlanNutricion.MERIENDA:
+                    case Constants.TypesPlanNutrition.MERIENDA:
                         type=3;
                         break;
-                    case Constants.TiposPlanNutricion.CENA:
+                    case Constants.TypesPlanNutrition.CENA:
                         type=4;
                         break;
                 }
@@ -192,13 +189,14 @@ public class CreateNutritionPlanDetailsDialogFragment extends BaseDialogFragment
 
     private void onClickButtonSave() {
         buttonSave.setOnClickListener(v -> {
-            SessionUser.getInstance().planNutrition.setName(defaultNutrition.getName());
-            SessionUser.getInstance().planNutrition.setPhoto(defaultNutrition.getPhoto());
-            SessionUser.getInstance().planNutrition.setType(type);
-            SessionUser.getInstance().planNutrition.setIsOk(Constants.ModePlan.NO);
-            UUID uuid = UUID.randomUUID();
-            SessionUser.getInstance().planNutrition.setId(uuid.toString());
-            SessionUser.getInstance().firebaseAdmin.dataCreateNutrtionPlan();
+            SessionPlan.getInstance().setPlanNutrition(
+                    new PlanNutrition(
+                            defaultNutrition.getName(),
+                            defaultNutrition.getPhoto(),
+                            type,
+                            Constants.ModePlan.NO
+                    ));
+            NutritionPlanRepository.getInstance().addNutritionPlan();
         });
     }
 
@@ -209,17 +207,28 @@ public class CreateNutritionPlanDetailsDialogFragment extends BaseDialogFragment
     private void onClickButtonDelete(){
         buttonDelete.setOnClickListener(v -> {
             showLoading();
-            SessionUser.getInstance().firebaseAdmin.deleteNutritionPlan(defaultNutrition.getName());
+            NutritionPlanRepository.getInstance().deleteNutritionPlan(defaultNutrition.getName());
         });
     }
 
+    /******************************** CALLBACK DE FIREBASE *************************************+/
+     *
+     */
 
     @Override
-    public void downloadNutritionPlanFirebase(boolean end) {
-        if(end==true){
+    public void addNutritionPlan(boolean status) {
+        if(status){
+            buttonSave.setEnabled(false);
+            buttonDelete.setEnabled(true);
             hideLoading();
-            planNutritions = new ArrayList<>();
-            planNutritions = SessionUser.getInstance().firebaseAdmin.allPlanNutrition;
+            Toast.makeText(getContext(),defaultNutrition.getName()+" "+getString(R.string.add_create_nutrition),Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public void getNutritiontPlan(boolean status, List<PlanNutrition> planNutritions) {
+        if(status){
+            hideLoading();
             for(PlanNutrition item : planNutritions){
                 if(item.getName().equals(defaultNutrition.getName())){
                     buttonSave.setEnabled(false);
@@ -255,23 +264,9 @@ public class CreateNutritionPlanDetailsDialogFragment extends BaseDialogFragment
         }
     }
 
-    /******************************** CALLBACK DE FIREBASE *************************************+/
-     *
-     */
-
     @Override
-    public void insertNutritionPlanFirebase(boolean end) {
-        if(end){
-            buttonSave.setEnabled(false);
-            buttonDelete.setEnabled(true);
-            hideLoading();
-            Toast.makeText(getContext(),defaultNutrition.getName()+" "+getString(R.string.add_create_nutrition),Toast.LENGTH_LONG).show();
-        }
-    }
-
-    @Override
-    public void deleteNutritionPlanFirebase(boolean end) {
-        if(end==true){
+    public void deleteNutritionPlan(boolean status) {
+        if(status){
             buttonSave.setEnabled(true);
             buttonDelete.setEnabled(false);
             hideLoading();
@@ -280,7 +275,7 @@ public class CreateNutritionPlanDetailsDialogFragment extends BaseDialogFragment
     }
 
     @Override
-    public void updateNutritionPlanFirebase(boolean end) {}
+    public void emptyNutritionPlan(boolean status) {}
     @Override
-    public void emptyNutritionPlanFirebase(boolean end) {}
+    public void updateNutritionPlan(boolean status, List<PlanNutrition> updateList) {}
 }

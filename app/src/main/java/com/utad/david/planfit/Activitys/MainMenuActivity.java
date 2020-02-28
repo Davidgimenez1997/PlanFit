@@ -6,26 +6,27 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 import com.utad.david.planfit.Base.BaseActivity;
-import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
-import com.utad.david.planfit.Data.SessionUser;
+import com.utad.david.planfit.Data.User.SessionUser;
+import com.utad.david.planfit.Data.User.User.GetUser;
+import com.utad.david.planfit.Data.User.User.UserRepository;
 import com.utad.david.planfit.DialogFragment.User.EditUserProfilerDialogFragment;
 import com.utad.david.planfit.DialogFragment.User.InfoAboutAppDialogFragment;
-import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Plan.FragmentCreatePlan;
-import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Plan.Create.Nutrition.NutritionCreatePlanFragment;
-import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Plan.Create.Sport.SportCreatePlanFragment;
-import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Favorite.NutritionFavoriteFragment;
-import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Favorite.SportFavoriteFragment;
-import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.RootFragment;
-import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Nutrition.NutritionGainVolumeFragment;
-import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Nutrition.NutritionSlimmingFragment;
-import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Nutrition.NutritionToningFragment;
-import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Plan.FragmentShowPlan;
-import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Plan.Show.Nutrition.ShowNutritionPlanFragment;
-import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Plan.Show.Sport.ShowSportPlanFragment;
-import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Sport.SportGainVolumeFragment;
-import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Sport.SportSlimmingFragment;
-import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Sport.SportToningFragment;
-import com.utad.david.planfit.Model.User;
+import com.utad.david.planfit.Fragments.MainMenu.Plan.FragmentCreatePlan;
+import com.utad.david.planfit.Fragments.MainMenu.Plan.Create.Nutrition.NutritionCreatePlanFragment;
+import com.utad.david.planfit.Fragments.MainMenu.Plan.Create.Sport.SportCreatePlanFragment;
+import com.utad.david.planfit.Fragments.MainMenu.Favorite.NutritionFavoriteFragment;
+import com.utad.david.planfit.Fragments.MainMenu.Favorite.SportFavoriteFragment;
+import com.utad.david.planfit.Fragments.MainMenu.RootFragment;
+import com.utad.david.planfit.Fragments.MainMenu.Nutrition.NutritionGainVolumeFragment;
+import com.utad.david.planfit.Fragments.MainMenu.Nutrition.NutritionSlimmingFragment;
+import com.utad.david.planfit.Fragments.MainMenu.Nutrition.NutritionToningFragment;
+import com.utad.david.planfit.Fragments.MainMenu.Plan.FragmentShowPlan;
+import com.utad.david.planfit.Fragments.MainMenu.Plan.Show.Nutrition.ShowNutritionPlanFragment;
+import com.utad.david.planfit.Fragments.MainMenu.Plan.Show.Sport.ShowSportPlanFragment;
+import com.utad.david.planfit.Fragments.MainMenu.Sport.SportGainVolumeFragment;
+import com.utad.david.planfit.Fragments.MainMenu.Sport.SportSlimmingFragment;
+import com.utad.david.planfit.Fragments.MainMenu.Sport.SportToningFragment;
+import com.utad.david.planfit.Model.User.User;
 import com.utad.david.planfit.R;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -47,7 +48,7 @@ import io.fabric.sdk.android.Fabric;
 
 public class MainMenuActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        FirebaseAdmin.FirebaseAdminInsertAndDownloandListener,
+        GetUser,
         RootFragment.Callback,
         EditUserProfilerDialogFragment.Callback,
         FragmentCreatePlan.Callback,
@@ -78,8 +79,8 @@ public class MainMenuActivity extends BaseActivity
 
         Fabric.with(this, new Crashlytics());
 
-        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminInsertAndDownloandListener(this);
-        SessionUser.getInstance().firebaseAdmin.dowloandDataUserFirebase();
+        UserRepository.getInstance().setGetUser(this);
+        UserRepository.getInstance().getUserData();
 
         findById();
 
@@ -250,8 +251,8 @@ public class MainMenuActivity extends BaseActivity
 
     private void openPolity() {
         Intent intent = new Intent(this, WebViewActivity.class);
-        intent.putExtra(WebViewActivity.EXTRA_TITLE, Constants.ConfigurateWebView.TITLE_PRIVACITY);
-        intent.putExtra(WebViewActivity.EXTRA_URL, Constants.ConfigurateWebView.URL_PRIVACITY);
+        intent.putExtra(WebViewActivity.EXTRA_TITLE, Constants.ConfigWebView.TITLE_PRIVACITY);
+        intent.putExtra(WebViewActivity.EXTRA_URL, Constants.ConfigWebView.URL_PRIVACITY);
         intent.putExtra(WebViewActivity.EXTRA_MODE, Constants.ModeWebView.MODE_PRIVACITY);
         overridePendingTransition(R.anim.slide_in_bottom, R.anim.stay);
         startActivity(intent);
@@ -278,9 +279,9 @@ public class MainMenuActivity extends BaseActivity
     }
 
     private void logout() {
-        SessionUser.getInstance().firebaseAdmin.mAuth.getInstance().signOut();
+        UserRepository.getInstance().logout();
         SessionUser.getInstance().removeUser();
-        Intent intent =new Intent(MainMenuActivity.this, FirstActivity.class);
+        Intent intent =new Intent(MainMenuActivity.this, AuthenticationActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();
@@ -335,7 +336,7 @@ public class MainMenuActivity extends BaseActivity
             case R.id.nav_user:
                 navigationView.getMenu().findItem(R.id.nav_user).setChecked(true);
                 Intent intent = new Intent(this, ChatActivity.class);
-                intent.putExtra(Constants.ConfigureChat.EXTRA_NAME, SessionUser.getInstance().firebaseAdmin.userDataFirebase.getNickName());
+                intent.putExtra(Constants.ConfigChat.EXTRA_NAME, UserRepository.getInstance().getUser().getNickName());
                 startActivityForResult(intent,22);
                 break;
         }
@@ -373,25 +374,22 @@ public class MainMenuActivity extends BaseActivity
      */
 
     @Override
-    public void downloadUserDataInFirebase(boolean end) {
-        if(end==true){
+    public void getUserData(boolean status) {
+        if(status){
             hideLoading();
-            putInfoUserInHeaderMenu(SessionUser.getInstance().firebaseAdmin.userDataFirebase);
-            checkPhotoUserNull(SessionUser.getInstance().firebaseAdmin.userDataFirebase);
+            putInfoUserInHeaderMenu(UserRepository.getInstance().getUser());
+            checkPhotoUserNull(UserRepository.getInstance().getUser());
         }else{
-            if(SessionUser.getInstance().firebaseAdmin.userDataFirebase.getImgUser()!=null){
+            if(UserRepository.getInstance().getUser().getImgUser()!=null){
                 hideLoading();
-                putInfoUserInHeaderMenu(SessionUser.getInstance().firebaseAdmin.userDataFirebase);
-                checkPhotoUserNull(SessionUser.getInstance().firebaseAdmin.userDataFirebase);
+                putInfoUserInHeaderMenu(UserRepository.getInstance().getUser());
+                checkPhotoUserNull(UserRepository.getInstance().getUser());
             }
         }
     }
 
     @Override
-    public void insertUserDataInFirebase(boolean end) {}
-
-    @Override
-    public void downloadInfotDeveloper(boolean end) {}
+    public void addUserData(boolean status) {}
 
     /******************************** CARGA LA PRIMERA PANTALLA *************************************+/
      *

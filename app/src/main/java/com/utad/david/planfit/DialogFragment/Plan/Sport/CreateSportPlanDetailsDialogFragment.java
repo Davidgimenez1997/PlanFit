@@ -11,8 +11,9 @@ import android.view.ViewGroup;
 import android.widget.*;
 import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Base.BaseDialogFragment;
-import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
-import com.utad.david.planfit.Data.SessionUser;
+import com.utad.david.planfit.Data.Plan.SessionPlan;
+import com.utad.david.planfit.Data.Plan.Sport.GetSportPlan;
+import com.utad.david.planfit.Data.Plan.Sport.SportPlanRepository;
 import com.utad.david.planfit.Model.Plan.PlanSport;
 import com.utad.david.planfit.Model.Sport.DefaultSport;
 import com.utad.david.planfit.R;
@@ -21,18 +22,16 @@ import com.utad.david.planfit.Utils.Utils;
 import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class CreateSportPlanDetailsDialogFragment extends BaseDialogFragment
-        implements FirebaseAdmin.FirebaseAdminCreateShowPlanSport{
+        implements GetSportPlan {
 
     /******************************** VARIABLES *************************************+/
      *
      */
 
-    private static String SPORT = Constants.DeportesPlanDetails.EXTRA_SPORT;
+    private static String SPORT = Constants.SportPlanDetails.EXTRA_SPORT;
     private DefaultSport defaultSport;
 
     private TextView textViewTitle;
@@ -46,8 +45,6 @@ public class CreateSportPlanDetailsDialogFragment extends BaseDialogFragment
     private String timeStart;
     private String timeEnd;
     private PlanSport current;
-
-    private List<PlanSport> planSports;
 
     /******************************** INTERFAZ *************************************+/
      *
@@ -84,8 +81,8 @@ public class CreateSportPlanDetailsDialogFragment extends BaseDialogFragment
         if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
             showLoading();
             Fabric.with(getContext(),new Crashlytics());
-            SessionUser.getInstance().firebaseAdmin.setFirebaseAdminCreateShowPlanSport(this);
-            SessionUser.getInstance().firebaseAdmin.downloadAllSportPlanFavorite();
+            SportPlanRepository.getInstance().setGetSportPlan(this);
+            SportPlanRepository.getInstance().getSportPlan();
         }else{
             hideLoading();
             Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
@@ -199,20 +196,20 @@ public class CreateSportPlanDetailsDialogFragment extends BaseDialogFragment
                 Toast.makeText(getContext(),getString(R.string.info_create_plan),Toast.LENGTH_LONG).show();
             }else{
                 if(listener!=null){
-                    double intStart = convertStringToInt(timeStart);
-                    double intEnd = convertStringToInt(timeEnd);
+                    double intStart = convertStringToDouble(timeStart);
+                    double intEnd = convertStringToDouble(timeEnd);
                     if(intStart>intEnd){
                         Toast.makeText(getContext(),"No puedes terminar antes de empezar",Toast.LENGTH_LONG).show();
                     }else{
                         showLoading();
-                        SessionUser.getInstance().planSport.setName(defaultSport.getName());
-                        SessionUser.getInstance().planSport.setPhoto(defaultSport.getPhoto());
-                        SessionUser.getInstance().planSport.setTimeStart(intStart);
-                        SessionUser.getInstance().planSport.setTimeEnd(intEnd);
-                        SessionUser.getInstance().planSport.setIsOk("no");
-                        UUID uuid = UUID.randomUUID();
-                        SessionUser.getInstance().planSport.setId(uuid.toString());
-                        SessionUser.getInstance().firebaseAdmin.dataCreateSportPlan();
+                        SessionPlan.getInstance().setPlanSport(
+                                new PlanSport(
+                                        defaultSport.getName(),
+                                        defaultSport.getPhoto(),
+                                        intStart,
+                                        intEnd,
+                                        Constants.ModePlan.NO));
+                        SportPlanRepository.getInstance().addSportPlan();
                     }
                 }
             }
@@ -223,7 +220,7 @@ public class CreateSportPlanDetailsDialogFragment extends BaseDialogFragment
      *
      */
 
-    private double convertStringToInt(String message){
+    private double convertStringToDouble(String message){
         String [] parts = message.split(":");
         String first = parts[0];
         String second = parts[1];
@@ -241,7 +238,7 @@ public class CreateSportPlanDetailsDialogFragment extends BaseDialogFragment
     private void onClickButtonDelete(){
         buttonDelete.setOnClickListener(v -> {
             showLoading();
-            SessionUser.getInstance().firebaseAdmin.deleteSportPlan(defaultSport.getName());
+            SportPlanRepository.getInstance().deleteSportPlan(defaultSport.getName());
         });
     }
 
@@ -250,10 +247,8 @@ public class CreateSportPlanDetailsDialogFragment extends BaseDialogFragment
      */
 
     @Override
-    public void downloadSportPlanFirebase(boolean end) {
-        if(end==true){
-            planSports = new ArrayList<>();
-            planSports = SessionUser.getInstance().firebaseAdmin.allPlanSport;
+    public void getSportPlan(boolean status, List<PlanSport> planSports) {
+        if(status){
             for(PlanSport item : planSports){
                 current = item;
                 if(item.getName().equals(defaultSport.getName())){
@@ -307,8 +302,8 @@ public class CreateSportPlanDetailsDialogFragment extends BaseDialogFragment
     }
 
     @Override
-    public void insertSportPlanFirebase(boolean end) {
-        if(end){
+    public void addSportPlan(boolean status) {
+        if(status){
             Toast.makeText(getContext(),defaultSport.getName()+" "+getString(R.string.add_create_sport),Toast.LENGTH_LONG).show();
             buttonSave.setEnabled(false);
             buttonDelete.setEnabled(true);
@@ -317,8 +312,8 @@ public class CreateSportPlanDetailsDialogFragment extends BaseDialogFragment
     }
 
     @Override
-    public void deleteSportPlanFirebase(boolean end) {
-        if(end==true){
+    public void deleteSportPlan(boolean status) {
+        if(status){
             buttonSave.setEnabled(true);
             buttonDelete.setEnabled(false);
             hideLoading();
@@ -327,8 +322,8 @@ public class CreateSportPlanDetailsDialogFragment extends BaseDialogFragment
     }
 
     @Override
-    public void updateSportPlanFirebase(boolean end) {}
+    public void updateSportPlan(boolean status, List<PlanSport> updateList) {}
     @Override
-    public void emptySportPlanFirebase(boolean end) {}
+    public void emptySportPlan(boolean status) {}
 
 }

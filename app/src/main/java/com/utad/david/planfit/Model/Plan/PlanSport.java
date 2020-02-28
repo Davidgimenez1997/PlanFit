@@ -4,6 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import com.utad.david.planfit.Model.Sport.DefaultSport;
 
+import java.util.UUID;
+
 public class PlanSport
         implements Comparable<PlanSport>,
         Parcelable{
@@ -23,12 +25,12 @@ public class PlanSport
 
     }
 
-    public PlanSport(String name, String photo, double timeStart, double timeEnd, String id, String isOk) {
+    public PlanSport(String name, String photo, double timeStart, double timeEnd, String isOk) {
         this.name = name;
         this.photo = photo;
         this.timeStart = timeStart;
         this.timeEnd = timeEnd;
-        this.id = id;
+        this.id = UUID.randomUUID().toString();
         this.isOk = isOk;
     }
 

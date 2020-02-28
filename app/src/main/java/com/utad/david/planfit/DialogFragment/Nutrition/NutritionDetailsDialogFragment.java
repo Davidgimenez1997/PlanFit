@@ -15,8 +15,9 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Activitys.WebViewActivity;
 import com.utad.david.planfit.Base.BaseDialogFragment;
-import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
-import com.utad.david.planfit.Data.SessionUser;
+import com.utad.david.planfit.Data.Favorite.Nutrition.GetNutritionFavorite;
+import com.utad.david.planfit.Data.Favorite.Nutrition.NutritionFavoriteRepository;
+import com.utad.david.planfit.Model.Nutrition.DefaultNutrition;
 import com.utad.david.planfit.Model.Nutrition.NutritionGainVolume;
 import com.utad.david.planfit.Model.Nutrition.NutritionSlimming;
 import com.utad.david.planfit.Model.Nutrition.NutritionToning;
@@ -25,11 +26,11 @@ import com.utad.david.planfit.Utils.Constants;
 import com.utad.david.planfit.Utils.Utils;
 import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
-import java.util.ArrayList;
 import java.util.List;
 
-public class NutritionDetailsDialogFragment extends BaseDialogFragment
-        implements FirebaseAdmin.FirebaseAdminFavoriteNutrition {
+public class NutritionDetailsDialogFragment
+        extends BaseDialogFragment
+        implements GetNutritionFavorite {
 
     /******************************** VARIABLES *************************************+/
      *
@@ -52,10 +53,6 @@ public class NutritionDetailsDialogFragment extends BaseDialogFragment
     private Button buttonInsert;
     private Button buttonDelete;
     private Button buttonClose;
-
-    private List<NutritionSlimming> nutritionSlimmingList;
-    private List<NutritionToning> nutritionToningList;
-    private List<NutritionGainVolume> nutritionGainVolumeList;
 
     /******************************** INTERFAZ *************************************+/
      *
@@ -81,8 +78,8 @@ public class NutritionDetailsDialogFragment extends BaseDialogFragment
         fragment.setArguments(args);
 
         if(UtilsNetwork.checkConnectionInternetDevice(context)){
-            SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteNutrition(fragment);
-            SessionUser.getInstance().firebaseAdmin.downloadSlimmingNutritionFavorite();
+            NutritionFavoriteRepository.getInstance().setGetNutritionFavorite(fragment);
+            NutritionFavoriteRepository.getInstance().getSlimmingNutritionFavorite();
         }else{
             Toast.makeText(context,"Comprueba su conexion de internet y reinice la aplicación",Toast.LENGTH_LONG).show();
         }
@@ -102,8 +99,8 @@ public class NutritionDetailsDialogFragment extends BaseDialogFragment
         fragment.setArguments(args);
 
         if(UtilsNetwork.checkConnectionInternetDevice(context)){
-            SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteNutrition(fragment);
-            SessionUser.getInstance().firebaseAdmin.downloadGainVolumeNutritionFavorite();
+            NutritionFavoriteRepository.getInstance().setGetNutritionFavorite(fragment);
+            NutritionFavoriteRepository.getInstance().getGainVolumeNutritionFavorite();
         }else{
             Toast.makeText(context,"Comprueba su conexion de internet y reinice la aplicación",Toast.LENGTH_LONG).show();
         }
@@ -123,8 +120,8 @@ public class NutritionDetailsDialogFragment extends BaseDialogFragment
         fragment.setArguments(args);
 
         if(UtilsNetwork.checkConnectionInternetDevice(context)){
-            SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteNutrition(fragment);
-            SessionUser.getInstance().firebaseAdmin.downloadToningNutritionFavorite();
+            NutritionFavoriteRepository.getInstance().setGetNutritionFavorite(fragment);
+            NutritionFavoriteRepository.getInstance().getToningNutritionFavorite();
         }else{
             Toast.makeText(context,"Comprueba su conexion de internet y reinice la aplicación",Toast.LENGTH_LONG).show();
         }
@@ -262,13 +259,13 @@ public class NutritionDetailsDialogFragment extends BaseDialogFragment
                 showLoading();
                 switch (option){
                     case 0:
-                        SessionUser.getInstance().firebaseAdmin.addFavoriteNutritionCouldFirestore(nutritionSlimming);
+                        NutritionFavoriteRepository.getInstance().addFavoriteNutritionnSlimming(nutritionSlimming);
                         break;
                     case 1:
-                        SessionUser.getInstance().firebaseAdmin.addFavoriteNutritionToningCouldFirestore(nutritionToning);
+                        NutritionFavoriteRepository.getInstance().addFavoriteNutritionToning(nutritionToning);
                         break;
                     case 2:
-                        SessionUser.getInstance().firebaseAdmin.addFavoriteNutritionGainVolumeCouldFirestore(nutritionGainVolume);
+                        NutritionFavoriteRepository.getInstance().addFavoriteNutritionGainVolume(nutritionGainVolume);
                         break;
                 }
             });
@@ -287,13 +284,13 @@ public class NutritionDetailsDialogFragment extends BaseDialogFragment
                 showLoading();
                 switch (option){
                     case 0:
-                        SessionUser.getInstance().firebaseAdmin.deleteFavoriteNutritionSlimming(nutritionSlimming);
+                        NutritionFavoriteRepository.getInstance().deleteFavoriteNutritionSlimming(nutritionSlimming);
                         break;
                     case 1:
-                        SessionUser.getInstance().firebaseAdmin.deleteFavoriteNutritionToning(nutritionToning);
+                        NutritionFavoriteRepository.getInstance().deleteFavoriteNutritionToning(nutritionToning);
                         break;
                     case 2:
-                        SessionUser.getInstance().firebaseAdmin.deleteFavoriteNutritionGainVolume(nutritionGainVolume);
+                        NutritionFavoriteRepository.getInstance().deleteFavoriteNutritionGainVolume(nutritionGainVolume);
                         break;
                 }
             });
@@ -307,8 +304,8 @@ public class NutritionDetailsDialogFragment extends BaseDialogFragment
      */
 
     @Override
-    public void inserNutritionFavoriteFirebase(boolean end) {
-        if(end){
+    public void addNutritionFavorite(boolean status) {
+        if(status){
             buttonInsert.setEnabled(false);
             buttonDelete.setEnabled(true);
             hideLoading();
@@ -328,8 +325,8 @@ public class NutritionDetailsDialogFragment extends BaseDialogFragment
     }
 
     @Override
-    public void deleteFavoriteNutrition(boolean end) {
-        if(end==true){
+    public void deleteNutritionFavorite(boolean status) {
+        if(status){
             buttonInsert.setEnabled(true);
             buttonDelete.setEnabled(false);
             hideLoading();
@@ -348,45 +345,49 @@ public class NutritionDetailsDialogFragment extends BaseDialogFragment
     }
 
     @Override
-    public void downloandCollectionNutritionFavorite(boolean end) {
-        if(end){
+    public void getNutritionSlimmingFavorite(boolean status, List<NutritionSlimming> nutritionSlimmings) {
+        if (status) {
             hideLoading();
-            switch (option){
-                case 0:
-                    nutritionSlimmingList = new ArrayList<>();
-                    nutritionSlimmingList = SessionUser.getInstance().firebaseAdmin.nutritionSlimmingListNutritionFavorite;
-                    for(int i = 0; i< nutritionSlimmingList.size(); i++){
-                        if(nutritionSlimmingList.get(i).getName().equals(nutritionSlimming.getName())){
-                            buttonInsert.setEnabled(false);
-                            buttonDelete.setEnabled(true);
-                        }
-                    }
-                    break;
-                case 1:
-                    nutritionToningList = new ArrayList<>();
-                    nutritionToningList = SessionUser.getInstance().firebaseAdmin.nutritionToningListNutritionFavorite;
-                    for(int i = 0; i< nutritionToningList.size(); i++){
-                        if(nutritionToningList.get(i).getName().equals(nutritionToning.getName())){
-                            buttonInsert.setEnabled(false);
-                            buttonDelete.setEnabled(true);
-                        }
-                    }
-                    break;
-                case 2:
-                    nutritionGainVolumeList = new ArrayList<>();
-                    nutritionGainVolumeList = SessionUser.getInstance().firebaseAdmin.nutritionGainVolumeListNutritionFavorite;
-                    for(int i = 0; i< nutritionGainVolumeList.size(); i++){
-                        if(nutritionGainVolumeList.get(i).getName().equals(nutritionGainVolume.getName())){
-                            buttonInsert.setEnabled(false);
-                            buttonDelete.setEnabled(true);
-                        }
-                    }
-                    break;
+            for(int i = 0; i< nutritionSlimmings.size(); i++){
+                if(nutritionSlimmings.get(i).getName().equals(nutritionSlimming.getName())){
+                    buttonInsert.setEnabled(false);
+                    buttonDelete.setEnabled(true);
+                    return;
+                }
             }
-
         }
     }
 
     @Override
-    public void emptyCollectionNutritionFavorite(boolean end) {}
+    public void getNutritionToningFavorite(boolean status, List<NutritionToning> nutritionTonings) {
+        if (status) {
+            hideLoading();
+            for(int i = 0; i< nutritionTonings.size(); i++){
+                if(nutritionTonings.get(i).getName().equals(nutritionToning.getName())){
+                    buttonInsert.setEnabled(false);
+                    buttonDelete.setEnabled(true);
+                    return;
+                }
+            }
+        }
+    }
+
+    @Override
+    public void getNutritionGainVolumeFavorite(boolean status, List<NutritionGainVolume> nutritionGainVolumes) {
+        if (status) {
+            hideLoading();
+            for(int i = 0; i< nutritionGainVolumes.size(); i++){
+                if(nutritionGainVolumes.get(i).getName().equals(nutritionGainVolume.getName())){
+                    buttonInsert.setEnabled(false);
+                    buttonDelete.setEnabled(true);
+                    return;
+                }
+            }
+        }
+    }
+
+    @Override
+    public void emptyNutritionFavorite(boolean status) {}
+    @Override
+    public void getNutritionAllFavorite(boolean status, List<DefaultNutrition> defaultNutritions) {}
 }

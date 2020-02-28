@@ -15,8 +15,9 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Activitys.YoutubeActivity;
 import com.utad.david.planfit.Base.BaseDialogFragment;
-import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
-import com.utad.david.planfit.Data.SessionUser;
+import com.utad.david.planfit.Data.Favorite.Sport.GetSportFavorite;
+import com.utad.david.planfit.Data.Favorite.Sport.SportFavoriteRepository;
+import com.utad.david.planfit.Model.Sport.DefaultSport;
 import com.utad.david.planfit.Model.Sport.SportGainVolume;
 import com.utad.david.planfit.Model.Sport.SportSlimming;
 import com.utad.david.planfit.Model.Sport.SportToning;
@@ -25,11 +26,10 @@ import com.utad.david.planfit.Utils.Constants;
 import com.utad.david.planfit.Utils.Utils;
 import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
-import java.util.ArrayList;
 import java.util.List;
 
 public class SportDetailsDialogFragment extends BaseDialogFragment
-        implements FirebaseAdmin.FirebaseAdminFavoriteSport {
+        implements GetSportFavorite {
 
     /******************************** VARIABLES *************************************+/
      *
@@ -40,11 +40,11 @@ public class SportDetailsDialogFragment extends BaseDialogFragment
     public SportToning sportToning;
     public Callback listener;
     public int option;
-    private static String SLIMMING = Constants.DeportesDetails.EXTRA_SLIMMING;
-    private static String GAINVOLUME = Constants.DeportesDetails.EXTRA_GAINVOLUME;
-    private static String TONING = Constants.DeportesDetails.EXTRA_TONING;
-    private static String OPTION = Constants.DeportesDetails.EXTRA_OPTION;
-    private String URL = Constants.DeportesDetails.EXTRA_URL;
+    private static String SLIMMING = Constants.SportDetails.EXTRA_SLIMMING;
+    private static String GAINVOLUME = Constants.SportDetails.EXTRA_GAINVOLUME;
+    private static String TONING = Constants.SportDetails.EXTRA_TONING;
+    private static String OPTION = Constants.SportDetails.EXTRA_OPTION;
+    private String URL = Constants.SportDetails.EXTRA_URL;
 
     private TextView textViewTitle;
     private Button buttonOpenYoutube;
@@ -53,10 +53,6 @@ public class SportDetailsDialogFragment extends BaseDialogFragment
     private Button buttonInsert;
     private Button buttonDelete;
     private Button buttonClose;
-
-    private List<SportSlimming> sportSlimmingList;
-    private List<SportToning> sportToningList;
-    private List<SportGainVolume> sportGainVolumeList;
 
 
     /******************************** INTERFAZ *************************************+/
@@ -83,8 +79,8 @@ public class SportDetailsDialogFragment extends BaseDialogFragment
         fragment.setArguments(args);
 
         if(UtilsNetwork.checkConnectionInternetDevice(context)){
-            SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteSport(fragment);
-            SessionUser.getInstance().firebaseAdmin.downloadSlimmingSportFavorite();
+            SportFavoriteRepository.getInstance().setGetSportFavorite(fragment);
+            SportFavoriteRepository.getInstance().getSlimmingSportFavorite();
         }else{
             Toast.makeText(context,"Comprueba su conexion de internet y reinice la aplicación",Toast.LENGTH_LONG).show();
         }
@@ -104,8 +100,8 @@ public class SportDetailsDialogFragment extends BaseDialogFragment
         fragment.setArguments(args);
 
         if(UtilsNetwork.checkConnectionInternetDevice(context)){
-            SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteSport(fragment);
-            SessionUser.getInstance().firebaseAdmin.downloadGainVolumeSportFavorite();
+            SportFavoriteRepository.getInstance().setGetSportFavorite(fragment);
+            SportFavoriteRepository.getInstance().getGainVolumeSportFavorite();
         }else{
             Toast.makeText(context,"Comprueba su conexion de internet y reinice la aplicación",Toast.LENGTH_LONG).show();
         }
@@ -125,8 +121,8 @@ public class SportDetailsDialogFragment extends BaseDialogFragment
         fragment.setArguments(args);
 
         if(UtilsNetwork.checkConnectionInternetDevice(context)){
-            SessionUser.getInstance().firebaseAdmin.setFirebaseAdminFavoriteSport(fragment);
-            SessionUser.getInstance().firebaseAdmin.downloadToningSportFavorite();
+            SportFavoriteRepository.getInstance().setGetSportFavorite(fragment);
+            SportFavoriteRepository.getInstance().getToningSportFavorite();
         }else{
             Toast.makeText(context,"Comprueba su conexion de internet y reinice la aplicación",Toast.LENGTH_LONG).show();
         }
@@ -255,13 +251,13 @@ public class SportDetailsDialogFragment extends BaseDialogFragment
                 showLoading();
                 switch (option){
                     case 0:
-                        SessionUser.getInstance().firebaseAdmin.addFavoriteSportSlimmingCouldFirestore(sportSlimming);
+                        SportFavoriteRepository.getInstance().addFavoriteSportSlimming(sportSlimming);
                         break;
                     case 1:
-                        SessionUser.getInstance().firebaseAdmin.addFavoriteSportToningCouldFirestore(sportToning);
+                        SportFavoriteRepository.getInstance().addFavoriteSportToning(sportToning);
                         break;
                     case 2:
-                        SessionUser.getInstance().firebaseAdmin.addFavoriteSportGainVolumeCouldFirestore(sportGainVolume);
+                        SportFavoriteRepository.getInstance().addFavoriteSportGainVolume(sportGainVolume);
                         break;
                 }
             });
@@ -281,13 +277,13 @@ public class SportDetailsDialogFragment extends BaseDialogFragment
                 showLoading();
                 switch (option){
                     case 0:
-                        SessionUser.getInstance().firebaseAdmin.deleteFavoriteSportSlimming(sportSlimming);
+                        SportFavoriteRepository.getInstance().deleteFavoriteSportSlimming(sportSlimming);
                         break;
                     case 1:
-                        SessionUser.getInstance().firebaseAdmin.deleteFavoriteSportToning(sportToning);
+                        SportFavoriteRepository.getInstance().deleteFavoriteSportToning(sportToning);
                         break;
                     case 2:
-                        SessionUser.getInstance().firebaseAdmin.deleteFavoriteSportGainVolume(sportGainVolume);
+                        SportFavoriteRepository.getInstance().deleteFavoriteSportGainVolume(sportGainVolume);
                         break;
                 }
             });
@@ -302,8 +298,8 @@ public class SportDetailsDialogFragment extends BaseDialogFragment
      */
 
     @Override
-    public void inserSportFavoriteFirebase(boolean end) {
-        if(end){
+    public void addSportFavorite(boolean status) {
+        if(status){
             buttonInsert.setEnabled(false);
             buttonDelete.setEnabled(true);
             hideLoading();
@@ -322,8 +318,8 @@ public class SportDetailsDialogFragment extends BaseDialogFragment
     }
 
     @Override
-    public void deleteFavoriteSport(boolean end) {
-        if(end==true){
+    public void deleteSportFavorite(boolean status) {
+        if(status){
             buttonInsert.setEnabled(true);
             buttonDelete.setEnabled(false);
             hideLoading();
@@ -342,45 +338,50 @@ public class SportDetailsDialogFragment extends BaseDialogFragment
     }
 
     @Override
-    public void downloandCollectionSportFavorite(boolean end) {
-        if(end){
+    public void getSportSlimmingFavorite(boolean status, List<SportSlimming> sportSlimmings) {
+        if (status) {
             hideLoading();
-            switch (option){
-                case 0:
-                    sportSlimmingList = new ArrayList<>();
-                        sportSlimmingList = SessionUser.getInstance().firebaseAdmin.sportSlimmingListSportFavorite;
-                        for(int i = 0; i< sportSlimmingList.size(); i++){
-                            if(sportSlimmingList.get(i).getName().equals(sportSlimming.getName())){
-                                buttonInsert.setEnabled(false);
-                                buttonDelete.setEnabled(true);
-                            }
-                        }
-                    break;
-                case 1:
-                    sportToningList = new ArrayList<>();
-                        sportToningList = SessionUser.getInstance().firebaseAdmin.sportToningListSportFavorite;
-                        for(int i = 0; i< sportToningList.size(); i++){
-                            if(sportToningList.get(i).getName().equals(sportToning.getName())){
-                                buttonInsert.setEnabled(false);
-                                buttonDelete.setEnabled(true);
-                            }
-                        }
-                    break;
-                case 2:
-                    sportGainVolumeList = new ArrayList<>();
-                     sportGainVolumeList = SessionUser.getInstance().firebaseAdmin.sportGainVolumeListSportFavorite;
-                        for(int i = 0; i< sportGainVolumeList.size(); i++){
-                            if(sportGainVolumeList.get(i).getName().equals(sportGainVolume.getName())){
-                                buttonInsert.setEnabled(false);
-                                buttonDelete.setEnabled(true);
-                            }
-                        }
-                    break;
+            for(int i = 0; i< sportSlimmings.size(); i++){
+                if(sportSlimmings.get(i).getName().equals(sportSlimming.getName())){
+                    buttonInsert.setEnabled(false);
+                    buttonDelete.setEnabled(true);
+                    return;
+                }
             }
-
         }
     }
 
     @Override
-    public void emptyCollectionSportFavorite(boolean end) {}
+    public void getSportToningFavorite(boolean status, List<SportToning> sportTonings) {
+        if (status) {
+            hideLoading();
+            for(int i = 0; i< sportTonings.size(); i++){
+                if(sportTonings.get(i).getName().equals(sportToning.getName())){
+                    buttonInsert.setEnabled(false);
+                    buttonDelete.setEnabled(true);
+                    return;
+                }
+            }
+        }
+    }
+
+    @Override
+    public void getSportGainVolumeFavorite(boolean status, List<SportGainVolume> sportGainVolumes) {
+        if (status) {
+            hideLoading();
+            for(int i = 0; i< sportGainVolumes.size(); i++){
+                if(sportGainVolumes.get(i).getName().equals(sportGainVolume.getName())){
+                    buttonInsert.setEnabled(false);
+                    buttonDelete.setEnabled(true);
+                    return;
+                }
+            }
+        }
+    }
+
+    @Override
+    public void getSportAllFavorite(boolean status, List<DefaultSport> defaultSports) {}
+
+    @Override
+    public void emptySportFavorite(boolean status) {}
 }
