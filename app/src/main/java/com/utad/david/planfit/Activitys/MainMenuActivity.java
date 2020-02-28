@@ -8,6 +8,8 @@ import android.widget.Toast;
 import com.utad.david.planfit.Base.BaseActivity;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
+import com.utad.david.planfit.Data.User.User.GetUser;
+import com.utad.david.planfit.Data.User.User.UserRepository;
 import com.utad.david.planfit.DialogFragment.User.EditUserProfilerDialogFragment;
 import com.utad.david.planfit.DialogFragment.User.InfoAboutAppDialogFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Plan.FragmentCreatePlan;
@@ -25,7 +27,7 @@ import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Plan.Show.Spor
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Sport.SportGainVolumeFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Sport.SportSlimmingFragment;
 import com.utad.david.planfit.Fragments.FragmentsMainMenuActivity.Sport.SportToningFragment;
-import com.utad.david.planfit.Model.User;
+import com.utad.david.planfit.Model.User.User;
 import com.utad.david.planfit.R;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -47,7 +49,7 @@ import io.fabric.sdk.android.Fabric;
 
 public class MainMenuActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        FirebaseAdmin.FirebaseAdminInsertAndDownloandListener,
+        GetUser,
         RootFragment.Callback,
         EditUserProfilerDialogFragment.Callback,
         FragmentCreatePlan.Callback,
@@ -78,8 +80,8 @@ public class MainMenuActivity extends BaseActivity
 
         Fabric.with(this, new Crashlytics());
 
-        SessionUser.getInstance().firebaseAdmin.setFirebaseAdminInsertAndDownloandListener(this);
-        SessionUser.getInstance().firebaseAdmin.dowloandDataUserFirebase();
+        UserRepository.getInstance().setGetUser(this);
+        UserRepository.getInstance().getUserData();
 
         findById();
 
@@ -335,7 +337,7 @@ public class MainMenuActivity extends BaseActivity
             case R.id.nav_user:
                 navigationView.getMenu().findItem(R.id.nav_user).setChecked(true);
                 Intent intent = new Intent(this, ChatActivity.class);
-                intent.putExtra(Constants.ConfigChat.EXTRA_NAME, SessionUser.getInstance().firebaseAdmin.userDataFirebase.getNickName());
+                intent.putExtra(Constants.ConfigChat.EXTRA_NAME, UserRepository.getInstance().getUser().getNickName());
                 startActivityForResult(intent,22);
                 break;
         }
@@ -373,22 +375,22 @@ public class MainMenuActivity extends BaseActivity
      */
 
     @Override
-    public void downloadUserDataInFirebase(boolean end) {
-        if(end==true){
+    public void getUserData(boolean status) {
+        if(status){
             hideLoading();
-            putInfoUserInHeaderMenu(SessionUser.getInstance().firebaseAdmin.userDataFirebase);
-            checkPhotoUserNull(SessionUser.getInstance().firebaseAdmin.userDataFirebase);
+            putInfoUserInHeaderMenu(UserRepository.getInstance().getUser());
+            checkPhotoUserNull(UserRepository.getInstance().getUser());
         }else{
-            if(SessionUser.getInstance().firebaseAdmin.userDataFirebase.getImgUser()!=null){
+            if(UserRepository.getInstance().getUser().getImgUser()!=null){
                 hideLoading();
-                putInfoUserInHeaderMenu(SessionUser.getInstance().firebaseAdmin.userDataFirebase);
-                checkPhotoUserNull(SessionUser.getInstance().firebaseAdmin.userDataFirebase);
+                putInfoUserInHeaderMenu(UserRepository.getInstance().getUser());
+                checkPhotoUserNull(UserRepository.getInstance().getUser());
             }
         }
     }
 
     @Override
-    public void insertUserDataInFirebase(boolean end) {}
+    public void addUserData(boolean status) {}
 
     /******************************** CARGA LA PRIMERA PANTALLA *************************************+/
      *

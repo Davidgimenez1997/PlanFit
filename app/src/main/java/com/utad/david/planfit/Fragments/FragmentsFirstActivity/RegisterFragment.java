@@ -117,10 +117,12 @@ public class RegisterFragment extends BaseFragment {
     private void onClickButtonContinue(){
         buttonContinue.setOnClickListener(v -> {
             try {
-                String pass = UtilsEncryptDecryptAES.encrypt(passwordRegister.getText().toString().trim());
+                String password = UtilsEncryptDecryptAES.encrypt(passwordRegister.getText().toString().trim());
                 if (mListener!=null){
-                    SessionUser.getInstance().user.setEmail(emailRegister.getText().toString().trim());
-                    SessionUser.getInstance().user.setPassword(pass);
+                    SessionUser.getInstance().setCredentials(
+                            emailRegister.getText().toString().trim(),
+                            password
+                    );
                     mListener.clickButtonContinue();
                 }
             } catch (Exception e) {

@@ -10,8 +10,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.utad.david.planfit.Model.ChatMessage;
-import com.utad.david.planfit.Model.User;
+import com.utad.david.planfit.Model.Chat.ChatMessage;
+import com.utad.david.planfit.Model.User.User;
 import com.utad.david.planfit.Utils.Constants;
 import com.utad.david.planfit.Utils.UtilsEncryptDecryptAES;
 

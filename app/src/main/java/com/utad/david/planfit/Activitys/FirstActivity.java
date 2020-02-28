@@ -10,6 +10,7 @@ import com.utad.david.planfit.Data.User.Register.RegisterRepository;
 import com.utad.david.planfit.Fragments.FragmentsFirstActivity.LoginFragment;
 import com.utad.david.planfit.Fragments.FragmentsFirstActivity.RegisterDetailsFragmet;
 import com.utad.david.planfit.Fragments.FragmentsFirstActivity.RegisterFragment;
+import com.utad.david.planfit.Model.User.UserCredentials;
 import com.utad.david.planfit.R;
 import com.utad.david.planfit.Data.SessionUser;
 import com.crashlytics.android.Crashlytics;
@@ -119,10 +120,8 @@ import io.fabric.sdk.android.Fabric;
 
         @Override
         protected Void doInBackground(Void... voids) {
-            LoginRepository.getInstance().loginWithEmailAndPassword(
-                    SessionUser.getInstance().user.getEmail(),
-                    SessionUser.getInstance().user.getPassword()
-            );
+            UserCredentials userCredentials = SessionUser.getInstance().getUserCredentials();
+            LoginRepository.getInstance().loginWithEmailAndPassword(userCredentials);
             return null;
         }
     }
@@ -131,10 +130,8 @@ import io.fabric.sdk.android.Fabric;
 
         @Override
         protected Void doInBackground(Void... voids) {
-            RegisterRepository.getInstance().registerWithEmailAndPassword(
-                    SessionUser.getInstance().user.getEmail(),
-                    SessionUser.getInstance().user.getPassword()
-            );
+            UserCredentials userCredentials = SessionUser.getInstance().getUserCredentials();
+            RegisterRepository.getInstance().registerWithEmailAndPassword(userCredentials);
             return null;
         }
     }

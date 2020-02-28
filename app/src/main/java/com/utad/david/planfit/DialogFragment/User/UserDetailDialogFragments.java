@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.utad.david.planfit.Base.BaseDialogFragment;
-import com.utad.david.planfit.Model.User;
+import com.utad.david.planfit.Model.User.User;
 import com.utad.david.planfit.R;
 import com.utad.david.planfit.Utils.Constants;
 import com.utad.david.planfit.Utils.Utils;

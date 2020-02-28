@@ -98,7 +98,7 @@ public class Constants {
     public interface CollectionsNames {
         String USER = "users";
         String USERS = "users/";
-
+        String IMAGES = "images/";
         String DETAILS = "/detalles";
 
         String SPORTS = "deportes/";
@@ -117,6 +117,15 @@ public class Constants {
 
         String DEVELOPER = "developer_info";
         String DOCUMENT_DEVELOPER = "david";
+    }
+
+    public interface ModelUser {
+        String EMAIL = "email";
+        String PASSWORD = "password";
+        String NAME = "fullName";
+        String NICK = "nickName";
+        String IMG = "imgUser";
+        String UID = "uid";
     }
 
     public interface ModelSportFavorite {

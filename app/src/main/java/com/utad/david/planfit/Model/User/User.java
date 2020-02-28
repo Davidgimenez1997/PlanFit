@@ -1,4 +1,4 @@
-package com.utad.david.planfit.Model;
+package com.utad.david.planfit.Model.User;
 
 import android.os.Parcel;
 import android.os.Parcelable;

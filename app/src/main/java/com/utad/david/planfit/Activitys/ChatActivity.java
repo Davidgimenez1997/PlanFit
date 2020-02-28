@@ -20,11 +20,11 @@ import com.utad.david.planfit.Adapter.Chat.ChatAdapter;
 import com.utad.david.planfit.Base.BaseActivity;
 import com.utad.david.planfit.Data.Chat.ChatRepository;
 import com.utad.david.planfit.Data.Chat.GetChat;
-import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
+import com.utad.david.planfit.Data.User.User.UserRepository;
 import com.utad.david.planfit.DialogFragment.User.UserDetailDialogFragments;
-import com.utad.david.planfit.Model.ChatMessage;
-import com.utad.david.planfit.Model.User;
+import com.utad.david.planfit.Model.Chat.ChatMessage;
+import com.utad.david.planfit.Model.User.User;
 import com.utad.david.planfit.R;
 import com.utad.david.planfit.Utils.Constants;
 import com.utad.david.planfit.Utils.Utils;
@@ -196,8 +196,8 @@ public class ChatActivity
                         .getReference()
                         .push()
                         .setValue(new ChatMessage(etMessage.getText().toString(),
-                                SessionUser.getInstance().firebaseAdmin.userDataFirebase.getNickName(),
-                                FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                UserRepository.getInstance().getUser().getNickName(),
+                                UserRepository.getInstance().getCurrentUser().getUid())
                         );
                 etMessage.setText("");
                 Utils.closeKeyboard(this,etMessage);

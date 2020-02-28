@@ -153,10 +153,12 @@ public class LoginFragment extends BaseFragment
             buttonLogin.setOnClickListener(v -> {
                 if (mListener!=null){
                     showLoginDialog();
-                    SessionUser.getInstance().user.setEmail(emailLogin.getText().toString().trim());
                     try {
                         String password = UtilsEncryptDecryptAES.encrypt(passwordLogin.getText().toString().trim());
-                        SessionUser.getInstance().user.setPassword(password);
+                        SessionUser.getInstance().setCredentials(
+                                emailLogin.getText().toString().trim(),
+                                password
+                        );
                         mListener.clickButtonLogin();
                     } catch (Exception e) {
                         e.printStackTrace();

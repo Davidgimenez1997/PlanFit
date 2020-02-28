@@ -29,6 +29,8 @@ import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
 import com.utad.david.planfit.Data.User.Register.GetRegister;
 import com.utad.david.planfit.Data.User.Register.RegisterRepository;
+import com.utad.david.planfit.Data.User.User.GetUser;
+import com.utad.david.planfit.Data.User.User.UserRepository;
 import com.utad.david.planfit.R;
 import com.utad.david.planfit.Utils.Constants;
 import com.utad.david.planfit.Utils.Utils;
@@ -47,7 +49,7 @@ import static com.utad.david.planfit.Utils.Constants.RequestPermissions.REQUEST_
 
 public class RegisterDetailsFragmet extends BaseFragment
         implements GetRegister,
-        FirebaseAdmin.FirebaseAdminInsertAndDownloandListener,
+        GetUser,
         EasyPermissions.PermissionCallbacks {
 
     /******************************** VARIABLES *************************************+/
@@ -101,7 +103,7 @@ public class RegisterDetailsFragmet extends BaseFragment
         if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
             Fabric.with(getContext(), new Crashlytics());
             RegisterRepository.getInstance().setGetRegister(this);
-            SessionUser.getInstance().firebaseAdmin.setFirebaseAdminInsertAndDownloandListener(this);
+            UserRepository.getInstance().setGetUser(this);
         }else{
             Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
         }
@@ -243,9 +245,9 @@ public class RegisterDetailsFragmet extends BaseFragment
                     final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
                     imageViewUser.setImageBitmap(selectedImage);
                     if(imageUri!=null){
-                        SessionUser.getInstance().user.setImgUser(imageUri.toString());
+                        SessionUser.getInstance().setPhoto(imageUri.toString());
                     }else{
-                        SessionUser.getInstance().user.setImgUser(null);
+                        SessionUser.getInstance().setPhoto(null);
                     }
 
                 } catch (FileNotFoundException e) {
@@ -258,9 +260,9 @@ public class RegisterDetailsFragmet extends BaseFragment
                 imageViewUser.setImageBitmap(photo);
                 imageUri = Utils.getImageUri(getContext(), photo);
                 if(imageUri!=null){
-                    SessionUser.getInstance().user.setImgUser(imageUri.toString());
+                    SessionUser.getInstance().setPhoto(imageUri.toString());
                 }else{
-                    SessionUser.getInstance().user.setImgUser(null);
+                    SessionUser.getInstance().setPhoto(null);
                 }
             }
         }else {
@@ -322,12 +324,17 @@ public class RegisterDetailsFragmet extends BaseFragment
     }
 
     private void setDataUser(){
-        SessionUser.getInstance().user.setFullName(fullName.getText().toString());
-        SessionUser.getInstance().user.setNickName(nickName.getText().toString());
-        if(SessionUser.getInstance().user.getImgUser()!=null){
-            SessionUser.getInstance().user.setImgUser(imageUri.toString());
+        SessionUser.getInstance().setDataUser(fullName.getText().toString(),
+                nickName.getText().toString(),
+                imageUri.toString());
+        if(SessionUser.getInstance().checkImg()){
+            SessionUser.getInstance().setDataUser(fullName.getText().toString(),
+                    nickName.getText().toString(),
+                    imageUri.toString());
         }else{
-            SessionUser.getInstance().user.setImgUser(null);
+            SessionUser.getInstance().setDataUser(fullName.getText().toString(),
+                    nickName.getText().toString(),
+                    null);
         }
     }
 
@@ -369,8 +376,8 @@ public class RegisterDetailsFragmet extends BaseFragment
     public void registerWithEmailAndPassword(boolean status) {
         if (status) {
             endRegister=true;
-            Toast.makeText(getContext(), getString(R.string.info_register)+" "+SessionUser.getInstance().user.getFullName().trim(), Toast.LENGTH_LONG).show();
-            SessionUser.getInstance().firebaseAdmin.addDataUserCouldFirestore();
+            Toast.makeText(getContext(), getString(R.string.info_register)+" "+ SessionUser.getInstance().getUser().getFullName().trim(), Toast.LENGTH_LONG).show();
+            UserRepository.getInstance().addUserData();
         } else {
             dismissRegisterDetailsDialog();
             Toast.makeText(getContext(), getString(R.string.err_register), Toast.LENGTH_LONG).show();
@@ -380,9 +387,9 @@ public class RegisterDetailsFragmet extends BaseFragment
     }
 
     @Override
-    public void insertUserDataInFirebase(boolean end) {
+    public void addUserData(boolean status) {
         if(endRegister){
-            if(end){
+            if(status){
                 dismissRegisterDetailsDialog();
                 Intent intent = new Intent(getContext(), MainMenuActivity.class);
                 startActivity(intent);
@@ -399,7 +406,7 @@ public class RegisterDetailsFragmet extends BaseFragment
     }
 
     @Override
-    public void downloadUserDataInFirebase(boolean end) {}
+    public void getUserData(boolean status) {}
 
     /******************************** EasyPermissions.PermissionCallbacks *************************************+/
      *

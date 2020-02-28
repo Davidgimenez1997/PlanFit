@@ -26,11 +26,12 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Activitys.FirstActivity;
 import com.utad.david.planfit.Base.BaseDialogFragment;
+import com.utad.david.planfit.Data.User.User.UserRepository;
 import com.utad.david.planfit.Utils.Constants;
 import com.utad.david.planfit.Utils.Utils;
 import com.utad.david.planfit.Data.Firebase.FirebaseAdmin;
 import com.utad.david.planfit.Data.SessionUser;
-import com.utad.david.planfit.Model.User;
+import com.utad.david.planfit.Model.User.User;
 import com.utad.david.planfit.R;
 import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
@@ -114,7 +115,8 @@ public class EditUserProfilerDialogFragment extends BaseDialogFragment
         v.setBackgroundResource(R.drawable.corner_dialog_fragment);
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-        userUpdate = SessionUser.getInstance().firebaseAdmin.userDataFirebase;
+        userUpdate = UserRepository.getInstance().getUser();
+
 
         if(userUpdate!=null){
 
@@ -157,7 +159,7 @@ public class EditUserProfilerDialogFragment extends BaseDialogFragment
     }
 
     private void putData(){
-        User user = SessionUser.getInstance().firebaseAdmin.userDataFirebase;
+        User user = UserRepository.getInstance().getUser();
         if(user !=null){
             editTextNickName.setText(user.getNickName());
             editTextFullName.setText(user.getFullName());
@@ -406,7 +408,7 @@ public class EditUserProfilerDialogFragment extends BaseDialogFragment
             if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
                 showDialog(getString(R.string.title_delete_boto),getString(R.string.message_delete_photo));
                 mProgress.show();
-                SessionUser.getInstance().firebaseAdmin.userDataFirebase = userUpdate;
+                UserRepository.getInstance().setUser(userUpdate);
                 SessionUser.getInstance().firebaseAdmin.deletePhoto();
             }else{
                 Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
@@ -431,7 +433,7 @@ public class EditUserProfilerDialogFragment extends BaseDialogFragment
             if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
                 showDialog(getString(R.string.title_update_foto),getString(R.string.message_update_photo));
                 mProgress.show();
-                SessionUser.getInstance().firebaseAdmin.userDataFirebase = userUpdate;
+                UserRepository.getInstance().setUser(userUpdate);
                 SessionUser.getInstance().firebaseAdmin.updatePhotoUserInFirebase();
             }else{
                 Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
@@ -457,7 +459,7 @@ public class EditUserProfilerDialogFragment extends BaseDialogFragment
             if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
                 showDialog(getString(R.string.title_update_name),getString(R.string.message_update_name));
                 mProgress.show();
-                SessionUser.getInstance().firebaseAdmin.userDataFirebase = userUpdate;
+                UserRepository.getInstance().setUser(userUpdate);
                 SessionUser.getInstance().firebaseAdmin.updateFullNameUserInFirebase();
             }else{
                 Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
@@ -483,7 +485,7 @@ public class EditUserProfilerDialogFragment extends BaseDialogFragment
                 if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
                     showDialog(getString(R.string.title_update_nick),getString(R.string.message_update_nick));
                     mProgress.show();
-                    SessionUser.getInstance().firebaseAdmin.userDataFirebase = userUpdate;
+                    UserRepository.getInstance().setUser(userUpdate);
                     SessionUser.getInstance().firebaseAdmin.updateNickNameUserInFirebase();
                 }else{
                     Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
@@ -565,8 +567,8 @@ public class EditUserProfilerDialogFragment extends BaseDialogFragment
             if(mListener!=null){
                 mProgress.dismiss();
                 imageView.setImageResource(R.drawable.icon_gallery);
-                SessionUser.getInstance().user.setImgUser(null);
-                userUpdate.setImgUser(null);
+                SessionUser.getInstance().deletePhoto();
+                userUpdate.setImgUser("");
                 mListener.updateData(userUpdate);
                 Toast.makeText(getContext(),getString(R.string.delete_photo_info),Toast.LENGTH_LONG).show();
             }

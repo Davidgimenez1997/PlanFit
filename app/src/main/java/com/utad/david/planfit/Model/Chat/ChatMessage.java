@@ -1,4 +1,4 @@
-package com.utad.david.planfit.Model;
+package com.utad.david.planfit.Model.Chat;
 
 import java.util.Date;
 
