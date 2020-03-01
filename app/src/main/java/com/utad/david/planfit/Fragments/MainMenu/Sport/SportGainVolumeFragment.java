@@ -20,6 +20,7 @@ import com.utad.david.planfit.Model.Sport.SportSlimming;
 import com.utad.david.planfit.Model.Sport.SportToning;
 import com.utad.david.planfit.R;
 import com.utad.david.planfit.Utils.Constants;
+import com.utad.david.planfit.Utils.SharedPreferencesManager;
 import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 import java.util.Collections;
@@ -40,6 +41,8 @@ public class SportGainVolumeFragment extends BaseFragment
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private SportDetailsDialogFragment newFragment;
+    private boolean configureRecycleView;
+    private List<SportGainVolume> sportsCache;
 
     /******************************** NEW INSTANCE *************************************+/
      *
@@ -68,8 +71,13 @@ public class SportGainVolumeFragment extends BaseFragment
 
         if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
             showLoading();
-            SportRepository.getInstance().setGetSport(this);
-            SportRepository.getInstance().getGainVolumeSport();
+            this.sportsCache = SharedPreferencesManager.loadSportGainVolume(getContext(), SharedPreferencesManager.SPORT_GAIN_VOLUMEN_TAG);
+            if (this.sportsCache == null) {
+                SportRepository.getInstance().setGetSport(this);
+                SportRepository.getInstance().getGainVolumeSport();
+            } else {
+                this.configureRecycleView = true;
+            }
             Fabric.with(getContext(), new Crashlytics());
         }else{
             hideLoading();
@@ -93,12 +101,33 @@ public class SportGainVolumeFragment extends BaseFragment
         mLayoutManager = new GridLayoutManager(getContext(), 2);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
+        if (configureRecycleView) {
+            this.configureRecycleView(this.sportsCache);
+            hideLoading();
+        }
+
         return view;
+    }
+
+    private void configureRecycleView (List<SportGainVolume> data) {
+        mAdapter = new SportGainVolumeAdapter(data, item -> {
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            Fragment prev = getFragmentManager().findFragmentByTag(Constants.TagDialogFragment.TAG);
+            if (prev != null) {
+                transaction.remove(prev);
+            }
+            transaction.addToBackStack(null);
+            newFragment = SportDetailsDialogFragment.newInstanceGainVolume(item,2,getContext());
+            newFragment.setListener(fragment);
+            newFragment.show(transaction, Constants.TagDialogFragment.TAG);
+        });
+        mRecyclerView.setAdapter(mAdapter);
     }
 
     /******************************** CALLBACK DE SportDetailsDialogFragment.Callback *************************************+/
      *
      */
+
     @Override
     public void onClickClose() {
         newFragment.dismiss();
@@ -111,20 +140,10 @@ public class SportGainVolumeFragment extends BaseFragment
     @Override
     public void getGainVolumeSports(boolean status, List<SportGainVolume> data) {
         if(status){
-            hideLoading();
             Collections.sort(data);
-            mAdapter = new SportGainVolumeAdapter(data, item -> {
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                Fragment prev = getFragmentManager().findFragmentByTag(Constants.TagDialogFragment.TAG);
-                if (prev != null) {
-                    transaction.remove(prev);
-                }
-                transaction.addToBackStack(null);
-                newFragment = SportDetailsDialogFragment.newInstanceGainVolume(item,2,getContext());
-                newFragment.setListener(fragment);
-                newFragment.show(transaction, Constants.TagDialogFragment.TAG);
-            });
-            mRecyclerView.setAdapter(mAdapter);
+            SharedPreferencesManager.saveSportGainVolume(data, getContext(), SharedPreferencesManager.SPORT_GAIN_VOLUMEN_TAG);
+            this.configureRecycleView(data);
+            hideLoading();
         }
     }
 

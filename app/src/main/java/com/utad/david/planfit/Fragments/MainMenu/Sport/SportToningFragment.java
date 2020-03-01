@@ -20,6 +20,7 @@ import com.utad.david.planfit.Model.Sport.SportSlimming;
 import com.utad.david.planfit.Model.Sport.SportToning;
 import com.utad.david.planfit.R;
 import com.utad.david.planfit.Utils.Constants;
+import com.utad.david.planfit.Utils.SharedPreferencesManager;
 import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 import java.util.Collections;
@@ -40,6 +41,8 @@ public class SportToningFragment extends BaseFragment
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private SportDetailsDialogFragment newFragment;
+    private boolean configureRecycleView;
+    private List<SportToning> sportsCache;
 
     /******************************** NEW INSTANCE *************************************+/
      *
@@ -69,8 +72,13 @@ public class SportToningFragment extends BaseFragment
 
         if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
             showLoading();
-            SportRepository.getInstance().setGetSport(this);
-            SportRepository.getInstance().getToningSport();
+            this.sportsCache = SharedPreferencesManager.loadSportToning(getContext(), SharedPreferencesManager.SPORT_TONING_TAG);
+            if (this.sportsCache == null) {
+                SportRepository.getInstance().setGetSport(this);
+                SportRepository.getInstance().getToningSport();
+            } else {
+                this.configureRecycleView = true;
+            }
             Fabric.with(getContext(), new Crashlytics());
         }else{
             hideLoading();
@@ -94,7 +102,27 @@ public class SportToningFragment extends BaseFragment
         mLayoutManager = new GridLayoutManager(getContext(), 2);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
+        if (configureRecycleView) {
+            this.configureRecycleView(this.sportsCache);
+            hideLoading();
+        }
+
         return view;
+    }
+
+    private void configureRecycleView (List<SportToning> data) {
+        mAdapter = new SportToningAdapter(data, item -> {
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            Fragment prev = getFragmentManager().findFragmentByTag(Constants.TagDialogFragment.TAG);
+            if (prev != null) {
+                transaction.remove(prev);
+            }
+            transaction.addToBackStack(null);
+            newFragment = SportDetailsDialogFragment.newInstanceToning(item,1,getContext());
+            newFragment.setListener(fragment);
+            newFragment.show(transaction, Constants.TagDialogFragment.TAG);
+        });
+        mRecyclerView.setAdapter(mAdapter);
     }
 
 
@@ -114,20 +142,10 @@ public class SportToningFragment extends BaseFragment
     @Override
     public void getToningSports(boolean status, List<SportToning> data) {
         if(status){
-            hideLoading();
             Collections.sort(data);
-            mAdapter = new SportToningAdapter(data, item -> {
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                Fragment prev = getFragmentManager().findFragmentByTag(Constants.TagDialogFragment.TAG);
-                if (prev != null) {
-                    transaction.remove(prev);
-                }
-                transaction.addToBackStack(null);
-                newFragment = SportDetailsDialogFragment.newInstanceToning(item,1,getContext());
-                newFragment.setListener(fragment);
-                newFragment.show(transaction, Constants.TagDialogFragment.TAG);
-            });
-            mRecyclerView.setAdapter(mAdapter);
+            SharedPreferencesManager.saveSportToning(data, getContext(), SharedPreferencesManager.SPORT_TONING_TAG);
+            this.configureRecycleView(data);
+            hideLoading();
         }
     }
 
