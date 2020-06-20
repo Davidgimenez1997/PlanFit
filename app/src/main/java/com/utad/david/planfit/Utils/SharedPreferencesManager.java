@@ -21,11 +21,8 @@ import java.util.List;
 public class SharedPreferencesManager {
 
     public static final String SPORT_SLIMING_TAG = "SportSlimming";
-    public static final String SPORT_FAVORITE_SLIMING_TAG = "SportFavoriteSlimming";
     public static final String SPORT_TONING_TAG = "SportToning";
-    public static final String SPORT_FAVORITE_TONING_TAG = "SportFavoriteToning";
     public static final String SPORT_GAIN_VOLUMEN_TAG = "SportGainVolumen";
-    public static final String SPORT_FAVORITE_GAIN_VOLUMEN_TAG = "SportGainFavoriteVolumen";
 
     public static final String NUTRITION_SLIMING_TAG = "NutritionSlimming";
     public static final String NUTRITION_TONING_TAG = "NutritionToning";

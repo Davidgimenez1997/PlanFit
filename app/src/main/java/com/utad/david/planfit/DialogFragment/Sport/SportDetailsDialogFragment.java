@@ -27,6 +27,7 @@ import com.utad.david.planfit.Utils.Utils;
 import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SportDetailsDialogFragment extends BaseDialogFragment
         implements GetSportFavorite {
@@ -35,16 +36,16 @@ public class SportDetailsDialogFragment extends BaseDialogFragment
      *
      */
 
-    public SportSlimming sportSlimming;
-    public SportGainVolume sportGainVolume;
-    public SportToning sportToning;
-    public Callback listener;
-    public int option;
     private static String SLIMMING = Constants.SportDetails.EXTRA_SLIMMING;
     private static String GAINVOLUME = Constants.SportDetails.EXTRA_GAINVOLUME;
     private static String TONING = Constants.SportDetails.EXTRA_TONING;
     private static String OPTION = Constants.SportDetails.EXTRA_OPTION;
     private String URL = Constants.SportDetails.EXTRA_URL;
+
+    public SportSlimming sportSlimming;
+    public SportGainVolume sportGainVolume;
+    public SportToning sportToning;
+    public int option;
 
     private TextView textViewTitle;
     private Button buttonOpenYoutube;
@@ -53,7 +54,11 @@ public class SportDetailsDialogFragment extends BaseDialogFragment
     private Button buttonInsert;
     private Button buttonDelete;
     private Button buttonClose;
+    public Callback listener;
 
+    private List<SportSlimming> sportSlimmings;
+    private List<SportToning> sportTonings;
+    private List<SportGainVolume> sportGainVolumes;
 
     /******************************** INTERFAZ *************************************+/
      *
@@ -77,14 +82,6 @@ public class SportDetailsDialogFragment extends BaseDialogFragment
         args.putParcelable(SLIMMING, sportSlimming);
         args.putInt(OPTION, option);
         fragment.setArguments(args);
-
-        if(UtilsNetwork.checkConnectionInternetDevice(context)){
-            SportFavoriteRepository.getInstance().setGetSportFavorite(fragment);
-            SportFavoriteRepository.getInstance().getSlimmingSportFavorite();
-        }else{
-            Toast.makeText(context,"Comprueba su conexion de internet y reinice la aplicación",Toast.LENGTH_LONG).show();
-        }
-
         return fragment;
     }
 
@@ -98,14 +95,6 @@ public class SportDetailsDialogFragment extends BaseDialogFragment
         args.putParcelable(GAINVOLUME, sportGainVolume);
         args.putInt(OPTION, option);
         fragment.setArguments(args);
-
-        if(UtilsNetwork.checkConnectionInternetDevice(context)){
-            SportFavoriteRepository.getInstance().setGetSportFavorite(fragment);
-            SportFavoriteRepository.getInstance().getGainVolumeSportFavorite();
-        }else{
-            Toast.makeText(context,"Comprueba su conexion de internet y reinice la aplicación",Toast.LENGTH_LONG).show();
-        }
-
         return fragment;
     }
 
@@ -119,14 +108,6 @@ public class SportDetailsDialogFragment extends BaseDialogFragment
         args.putParcelable(TONING, sportToning);
         args.putInt(OPTION, option);
         fragment.setArguments(args);
-
-        if(UtilsNetwork.checkConnectionInternetDevice(context)){
-            SportFavoriteRepository.getInstance().setGetSportFavorite(fragment);
-            SportFavoriteRepository.getInstance().getToningSportFavorite();
-        }else{
-            Toast.makeText(context,"Comprueba su conexion de internet y reinice la aplicación",Toast.LENGTH_LONG).show();
-        }
-
         return fragment;
     }
 
@@ -158,7 +139,8 @@ public class SportDetailsDialogFragment extends BaseDialogFragment
 
         showLoading();
         findById(view);
-        putData();
+        getData();
+        setData();
         onClickButtonOpenYoutube();
         onClickButtonOpenInsertFavorite();
         onClickButtonOpenDeleteFavorite();
@@ -181,20 +163,40 @@ public class SportDetailsDialogFragment extends BaseDialogFragment
         buttonClose = v.findViewById(R.id.close_info_sport);
     }
 
-    private void putData() {
+    private void getData() {
+        if (UtilsNetwork.checkConnectionInternetDevice(getContext())) {
+            SportFavoriteRepository.getInstance().setGetSportFavorite(this);
+            switch (option){
+                case Constants.SportNutritionOption.SLIMMING:
+                    SportFavoriteRepository.getInstance().getSlimmingSportFavorite();
+                    break;
+                case Constants.SportNutritionOption.TONING:
+                    SportFavoriteRepository.getInstance().getToningSportFavorite();
+                    break;
+                case Constants.SportNutritionOption.GAIN_VOLUMEN:
+                    SportFavoriteRepository.getInstance().getGainVolumeSportFavorite();
+                    break;
+            }
+        } else {
+            Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
+        }
+
+    }
+
+    private void setData() {
         switch (option){
-            case 0:
+            case Constants.SportNutritionOption.SLIMMING:
                 textViewTitle.setText(sportSlimming.getName());
                 textViewDescription.setText(sportSlimming.getDescription());
                 Utils.loadImage(sportSlimming.getPhoto(),imageViewSport,Utils.PLACEHOLDER_GALLERY);
 
                 break;
-            case 1:
+            case Constants.SportNutritionOption.TONING:
                 textViewTitle.setText(sportToning.getName());
                 textViewDescription.setText(sportToning.getDescription());
                 Utils.loadImage(sportToning.getPhoto(),imageViewSport,Utils.PLACEHOLDER_GALLERY);
                 break;
-            case 2:
+            case Constants.SportNutritionOption.GAIN_VOLUMEN:
                 textViewTitle.setText(sportGainVolume.getName());
                 textViewDescription.setText(sportGainVolume.getDescription());
                 Utils.loadImage(sportGainVolume.getPhoto(),imageViewSport,Utils.PLACEHOLDER_GALLERY);
@@ -223,13 +225,13 @@ public class SportDetailsDialogFragment extends BaseDialogFragment
             buttonOpenYoutube.setOnClickListener(v -> {
                 Intent intent = new Intent(getContext(), YoutubeActivity.class);
                 switch (option){
-                    case 0:
+                    case Constants.SportNutritionOption.SLIMMING:
                         intent.putExtra(URL, sportSlimming.getVideo());
                         break;
-                    case 1:
+                    case Constants.SportNutritionOption.TONING:
                         intent.putExtra(URL, sportToning.getVideo());
                         break;
-                    case 2:
+                    case Constants.SportNutritionOption.GAIN_VOLUMEN:
                         intent.putExtra(URL, sportGainVolume.getVideo());
                         break;
                 }
@@ -250,13 +252,13 @@ public class SportDetailsDialogFragment extends BaseDialogFragment
             buttonInsert.setOnClickListener(v -> {
                 showLoading();
                 switch (option){
-                    case 0:
+                    case Constants.SportNutritionOption.SLIMMING:
                         SportFavoriteRepository.getInstance().addFavoriteSportSlimming(sportSlimming);
                         break;
-                    case 1:
+                    case Constants.SportNutritionOption.TONING:
                         SportFavoriteRepository.getInstance().addFavoriteSportToning(sportToning);
                         break;
-                    case 2:
+                    case Constants.SportNutritionOption.GAIN_VOLUMEN:
                         SportFavoriteRepository.getInstance().addFavoriteSportGainVolume(sportGainVolume);
                         break;
                 }
@@ -276,13 +278,13 @@ public class SportDetailsDialogFragment extends BaseDialogFragment
             buttonDelete.setOnClickListener(v -> {
                 showLoading();
                 switch (option){
-                    case 0:
+                    case Constants.SportNutritionOption.SLIMMING:
                         SportFavoriteRepository.getInstance().deleteFavoriteSportSlimming(sportSlimming);
                         break;
-                    case 1:
+                    case Constants.SportNutritionOption.TONING:
                         SportFavoriteRepository.getInstance().deleteFavoriteSportToning(sportToning);
                         break;
-                    case 2:
+                    case Constants.SportNutritionOption.GAIN_VOLUMEN:
                         SportFavoriteRepository.getInstance().deleteFavoriteSportGainVolume(sportGainVolume);
                         break;
                 }
@@ -304,13 +306,13 @@ public class SportDetailsDialogFragment extends BaseDialogFragment
             buttonDelete.setEnabled(true);
             hideLoading();
             switch (option){
-                case 0:
+                case Constants.SportNutritionOption.SLIMMING:
                     Toast.makeText(getContext(),sportSlimming.getName()+" "+getString(R.string.agregarafavoritos),Toast.LENGTH_LONG).show();
                     break;
-                case 1:
+                case Constants.SportNutritionOption.TONING:
                     Toast.makeText(getContext(),sportToning.getName()+" "+getString(R.string.agregarafavoritos),Toast.LENGTH_LONG).show();
                     break;
-                case 2:
+                case Constants.SportNutritionOption.GAIN_VOLUMEN:
                     Toast.makeText(getContext(),sportGainVolume.getName()+" "+getString(R.string.agregarafavoritos),Toast.LENGTH_LONG).show();
                     break;
             }
@@ -324,13 +326,13 @@ public class SportDetailsDialogFragment extends BaseDialogFragment
             buttonDelete.setEnabled(false);
             hideLoading();
             switch (option){
-                case 0:
+                case Constants.SportNutritionOption.SLIMMING:
                     Toast.makeText(getContext(),sportSlimming.getName()+" "+getString(R.string.eliminarafavoritos),Toast.LENGTH_LONG).show();
                     break;
-                case 1:
+                case Constants.SportNutritionOption.TONING:
                     Toast.makeText(getContext(),sportToning.getName()+" "+getString(R.string.eliminarafavoritos),Toast.LENGTH_LONG).show();
                     break;
-                case 2:
+                case Constants.SportNutritionOption.GAIN_VOLUMEN:
                     Toast.makeText(getContext(),sportGainVolume.getName()+" "+getString(R.string.eliminarafavoritos),Toast.LENGTH_LONG).show();
                     break;
             }
@@ -340,13 +342,11 @@ public class SportDetailsDialogFragment extends BaseDialogFragment
     @Override
     public void getSportSlimmingFavorite(boolean status, List<SportSlimming> sportSlimmings) {
         if (status) {
+            this.sportSlimmings = sportSlimmings;
             hideLoading();
-            for(int i = 0; i< sportSlimmings.size(); i++){
-                if(sportSlimmings.get(i).getName().equals(sportSlimming.getName())){
-                    buttonInsert.setEnabled(false);
-                    buttonDelete.setEnabled(true);
-                    return;
-                }
+            if (checkIsFavorite(this.sportSlimmings, this.sportTonings, this.sportGainVolumes)) {
+                buttonInsert.setEnabled(false);
+                buttonDelete.setEnabled(true);
             }
         }
     }
@@ -354,13 +354,11 @@ public class SportDetailsDialogFragment extends BaseDialogFragment
     @Override
     public void getSportToningFavorite(boolean status, List<SportToning> sportTonings) {
         if (status) {
+            this.sportTonings = sportTonings;
             hideLoading();
-            for(int i = 0; i< sportTonings.size(); i++){
-                if(sportTonings.get(i).getName().equals(sportToning.getName())){
-                    buttonInsert.setEnabled(false);
-                    buttonDelete.setEnabled(true);
-                    return;
-                }
+            if (checkIsFavorite(this.sportSlimmings, this.sportTonings, this.sportGainVolumes)){
+                buttonInsert.setEnabled(false);
+                buttonDelete.setEnabled(true);
             }
         }
     }
@@ -368,16 +366,40 @@ public class SportDetailsDialogFragment extends BaseDialogFragment
     @Override
     public void getSportGainVolumeFavorite(boolean status, List<SportGainVolume> sportGainVolumes) {
         if (status) {
+            this.sportGainVolumes = sportGainVolumes;
             hideLoading();
-            for(int i = 0; i< sportGainVolumes.size(); i++){
-                if(sportGainVolumes.get(i).getName().equals(sportGainVolume.getName())){
-                    buttonInsert.setEnabled(false);
-                    buttonDelete.setEnabled(true);
-                    return;
-                }
+            if (checkIsFavorite(this.sportSlimmings, this.sportTonings, this.sportGainVolumes)){
+                buttonInsert.setEnabled(false);
+                buttonDelete.setEnabled(true);
             }
         }
     }
+
+    private boolean checkIsFavorite (List<SportSlimming> sportSlimmings, List<SportToning> sportTonings, List<SportGainVolume> sportGainVolumes) {
+        boolean isFavorite = false;
+        switch (option) {
+            case Constants.SportNutritionOption.SLIMMING:
+                List<SportSlimming> slimmings = sportSlimmings.stream()
+                        .filter(item -> item.getName().equals(sportSlimming.getName()))
+                        .collect(Collectors.toList());
+                isFavorite = slimmings.size() != 0;
+                return isFavorite;
+            case Constants.SportNutritionOption.TONING:
+                List<SportToning> tonings = sportTonings.stream()
+                        .filter(item -> item.getName().equals(sportToning.getName()))
+                        .collect(Collectors.toList());
+                isFavorite = tonings.size() != 0;
+                return isFavorite;
+            case Constants.SportNutritionOption.GAIN_VOLUMEN:
+                List<SportGainVolume> gainVolumes = sportGainVolumes.stream()
+                        .filter(item -> item.getName().equals(sportGainVolume.getName()))
+                        .collect(Collectors.toList());
+                isFavorite = gainVolumes.size() != 0;
+                return isFavorite;
+        }
+        return isFavorite;
+    }
+
 
     @Override
     public void getSportAllFavorite(boolean status, List<DefaultSport> defaultSports) {}
