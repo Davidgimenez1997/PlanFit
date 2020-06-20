@@ -20,6 +20,7 @@ import com.utad.david.planfit.Model.Nutrition.NutritionSlimming;
 import com.utad.david.planfit.Model.Nutrition.NutritionToning;
 import com.utad.david.planfit.R;
 import com.utad.david.planfit.Utils.Constants;
+import com.utad.david.planfit.Utils.SharedPreferencesManager;
 import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 import java.util.Collections;
@@ -40,6 +41,8 @@ public class NutritionToningFragment extends BaseFragment
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private NutritionDetailsDialogFragment newFragment;
+    private boolean configureRecycleView;
+    private List<NutritionToning> nutritionCache;
 
     /******************************** NEW INSTANCE *************************************+/
      *
@@ -69,8 +72,13 @@ public class NutritionToningFragment extends BaseFragment
 
         if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
             showLoading();
-            NutritionRepository.getInstance().setGetNutrition(this);
-            NutritionRepository.getInstance().getToningNutrition();
+            this.nutritionCache = SharedPreferencesManager.loadNutritionToning(getContext(), SharedPreferencesManager.NUTRITION_TONING_TAG);
+            if (this.nutritionCache == null) {
+                NutritionRepository.getInstance().setGetNutrition(this);
+                NutritionRepository.getInstance().getToningNutrition();
+            } else {
+                this.configureRecycleView = true;
+            }
             Fabric.with(getContext(), new Crashlytics());
         }else{
             hideLoading();
@@ -93,7 +101,27 @@ public class NutritionToningFragment extends BaseFragment
         mLayoutManager = new GridLayoutManager(getContext(), 2);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
+        if (configureRecycleView) {
+            this.configureRecycleView(this.nutritionCache);
+            hideLoading();
+        }
+
         return view;
+    }
+
+    private void configureRecycleView (List<NutritionToning> data) {
+        mAdapter = new NutritionToningAdapter(data, item -> {
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            Fragment prev = getFragmentManager().findFragmentByTag(Constants.TagDialogFragment.TAG);
+            if (prev != null) {
+                transaction.remove(prev);
+            }
+            transaction.addToBackStack(null);
+            newFragment = NutritionDetailsDialogFragment.newInstanceToning(item, 1, getContext());
+            newFragment.setCallbackNutrition(fragment);
+            newFragment.show(transaction, Constants.TagDialogFragment.TAG);
+        });
+        mRecyclerView.setAdapter(mAdapter);
     }
 
     /******************************** CALLBACK DE NutritionDetailsDialogFragment.Callback *************************************+/
@@ -112,20 +140,10 @@ public class NutritionToningFragment extends BaseFragment
     @Override
     public void getToningNutritions(boolean status, List<NutritionToning> data) {
         if(status){
-            hideLoading();
             Collections.sort(data);
-            mAdapter = new NutritionToningAdapter(data, item -> {
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                Fragment prev = getFragmentManager().findFragmentByTag(Constants.TagDialogFragment.TAG);
-                if (prev != null) {
-                    transaction.remove(prev);
-                }
-                transaction.addToBackStack(null);
-                newFragment = NutritionDetailsDialogFragment.newInstanceToning(item,1,getContext());
-                newFragment.setCallbackNutrition(fragment);
-                newFragment.show(transaction, Constants.TagDialogFragment.TAG);
-            });
-            mRecyclerView.setAdapter(mAdapter);
+            SharedPreferencesManager.saveNutritionToning(data, getContext(), SharedPreferencesManager.NUTRITION_TONING_TAG);
+            this.configureRecycleView(data);
+            hideLoading();
         }
     }
 

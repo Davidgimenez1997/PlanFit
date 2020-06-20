@@ -78,6 +78,12 @@ public class Constants {
         String EXTRA_URL = "URL";
     }
 
+    public interface SportNutritionOption {
+        int SLIMMING = 0;
+        int TONING = 1;
+        int GAIN_VOLUMEN = 2;
+    }
+
     public interface NutritionFavoriteDetails {
         String EXTRA_NUTRICION = "NUTRITION";
     }

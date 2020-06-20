@@ -27,6 +27,7 @@ import com.utad.david.planfit.Utils.Utils;
 import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class NutritionDetailsDialogFragment
         extends BaseDialogFragment
@@ -54,6 +55,10 @@ public class NutritionDetailsDialogFragment
     private Button buttonDelete;
     private Button buttonClose;
 
+    private List<NutritionSlimming> nutritionSlimmings;
+    private List<NutritionToning> nutritionTonings;
+    private List<NutritionGainVolume> nutritionGainVolumes;
+
     /******************************** INTERFAZ *************************************+/
      *
      */
@@ -76,14 +81,6 @@ public class NutritionDetailsDialogFragment
         args.putParcelable(SLIMMING, nutritionSlimming);
         args.putInt(OPTION, option);
         fragment.setArguments(args);
-
-        if(UtilsNetwork.checkConnectionInternetDevice(context)){
-            NutritionFavoriteRepository.getInstance().setGetNutritionFavorite(fragment);
-            NutritionFavoriteRepository.getInstance().getSlimmingNutritionFavorite();
-        }else{
-            Toast.makeText(context,"Comprueba su conexion de internet y reinice la aplicación",Toast.LENGTH_LONG).show();
-        }
-
         return fragment;
     }
 
@@ -97,14 +94,6 @@ public class NutritionDetailsDialogFragment
         args.putParcelable(GAINVOLUME, nutritionGainVolume);
         args.putInt(OPTION, option);
         fragment.setArguments(args);
-
-        if(UtilsNetwork.checkConnectionInternetDevice(context)){
-            NutritionFavoriteRepository.getInstance().setGetNutritionFavorite(fragment);
-            NutritionFavoriteRepository.getInstance().getGainVolumeNutritionFavorite();
-        }else{
-            Toast.makeText(context,"Comprueba su conexion de internet y reinice la aplicación",Toast.LENGTH_LONG).show();
-        }
-
         return fragment;
     }
 
@@ -118,14 +107,6 @@ public class NutritionDetailsDialogFragment
         args.putParcelable(TONING, nutritionToning);
         args.putInt(OPTION, option);
         fragment.setArguments(args);
-
-        if(UtilsNetwork.checkConnectionInternetDevice(context)){
-            NutritionFavoriteRepository.getInstance().setGetNutritionFavorite(fragment);
-            NutritionFavoriteRepository.getInstance().getToningNutritionFavorite();
-        }else{
-            Toast.makeText(context,"Comprueba su conexion de internet y reinice la aplicación",Toast.LENGTH_LONG).show();
-        }
-
         return fragment;
     }
 
@@ -158,6 +139,7 @@ public class NutritionDetailsDialogFragment
         showLoading();
         findById(view);
         putData();
+        setData();
         onClickButtonOpenRecipe();
         onClickButtonOpenInsertFavorite();
         onClickButtonOpenDeleteFavorite();
@@ -181,18 +163,38 @@ public class NutritionDetailsDialogFragment
     }
 
     private void putData() {
+        if (UtilsNetwork.checkConnectionInternetDevice(getContext())) {
+            NutritionFavoriteRepository.getInstance().setGetNutritionFavorite(this);
+            switch (option){
+                case Constants.SportNutritionOption.SLIMMING:
+                    NutritionFavoriteRepository.getInstance().getSlimmingNutritionFavorite();
+                    break;
+                case Constants.SportNutritionOption.TONING:
+                    NutritionFavoriteRepository.getInstance().getToningNutritionFavorite();
+                    break;
+                case Constants.SportNutritionOption.GAIN_VOLUMEN:
+                    NutritionFavoriteRepository.getInstance().getGainVolumeNutritionFavorite();
+                    break;
+            }
+        } else {
+            Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
+        }
+
+    }
+
+    private void setData() {
         switch (option){
-            case 0:
+            case Constants.SportNutritionOption.SLIMMING:
                 textViewTitle.setText(nutritionSlimming.getName());
                 textViewDescription.setText(nutritionSlimming.getDescription());
                 Utils.loadImage(nutritionSlimming.getPhoto(),imageViewSport,Utils.PLACEHOLDER_GALLERY);
                 break;
-            case 1:
+            case Constants.SportNutritionOption.TONING:
                 textViewTitle.setText(nutritionToning.getName());
                 textViewDescription.setText(nutritionToning.getDescription());
                 Utils.loadImage(nutritionToning.getPhoto(),imageViewSport,Utils.PLACEHOLDER_GALLERY);
                 break;
-            case 2:
+            case Constants.SportNutritionOption.GAIN_VOLUMEN:
                 textViewTitle.setText(nutritionGainVolume.getName());
                 textViewDescription.setText(nutritionGainVolume.getDescription());
                 Utils.loadImage(nutritionGainVolume.getPhoto(),imageViewSport,Utils.PLACEHOLDER_GALLERY);
@@ -223,15 +225,15 @@ public class NutritionDetailsDialogFragment
                 String title = null,url = null;
 
                 switch (option){
-                    case 0:
+                    case Constants.SportNutritionOption.SLIMMING:
                         title = nutritionSlimming.getName();
                         url = nutritionSlimming.getUrl();
                         break;
-                    case 1:
+                    case Constants.SportNutritionOption.TONING:
                         title = nutritionToning.getName();
                         url = nutritionToning.getUrl();
                         break;
-                    case 2:
+                    case Constants.SportNutritionOption.GAIN_VOLUMEN:
                         title = nutritionGainVolume.getName();
                         url = nutritionGainVolume.getUrl();
                         break;
@@ -258,13 +260,13 @@ public class NutritionDetailsDialogFragment
             buttonInsert.setOnClickListener(v -> {
                 showLoading();
                 switch (option){
-                    case 0:
+                    case Constants.SportNutritionOption.SLIMMING:
                         NutritionFavoriteRepository.getInstance().addFavoriteNutritionnSlimming(nutritionSlimming);
                         break;
-                    case 1:
+                    case Constants.SportNutritionOption.TONING:
                         NutritionFavoriteRepository.getInstance().addFavoriteNutritionToning(nutritionToning);
                         break;
-                    case 2:
+                    case Constants.SportNutritionOption.GAIN_VOLUMEN:
                         NutritionFavoriteRepository.getInstance().addFavoriteNutritionGainVolume(nutritionGainVolume);
                         break;
                 }
@@ -283,13 +285,13 @@ public class NutritionDetailsDialogFragment
             buttonDelete.setOnClickListener(v -> {
                 showLoading();
                 switch (option){
-                    case 0:
+                    case Constants.SportNutritionOption.SLIMMING:
                         NutritionFavoriteRepository.getInstance().deleteFavoriteNutritionSlimming(nutritionSlimming);
                         break;
-                    case 1:
+                    case Constants.SportNutritionOption.TONING:
                         NutritionFavoriteRepository.getInstance().deleteFavoriteNutritionToning(nutritionToning);
                         break;
-                    case 2:
+                    case Constants.SportNutritionOption.GAIN_VOLUMEN:
                         NutritionFavoriteRepository.getInstance().deleteFavoriteNutritionGainVolume(nutritionGainVolume);
                         break;
                 }
@@ -310,13 +312,13 @@ public class NutritionDetailsDialogFragment
             buttonDelete.setEnabled(true);
             hideLoading();
             switch (option){
-                case 0:
+                case Constants.SportNutritionOption.SLIMMING:
                     Toast.makeText(getContext(),nutritionSlimming.getName()+" "+getString(R.string.agregarafavoritos),Toast.LENGTH_LONG).show();
                     break;
-                case 1:
+                case Constants.SportNutritionOption.TONING:
                     Toast.makeText(getContext(),nutritionToning.getName()+" "+getString(R.string.agregarafavoritos),Toast.LENGTH_LONG).show();
                     break;
-                case 2:
+                case Constants.SportNutritionOption.GAIN_VOLUMEN:
                     Toast.makeText(getContext(),nutritionGainVolume.getName()+" "+getString(R.string.agregarafavoritos),Toast.LENGTH_LONG).show();
                     break;
             }
@@ -331,13 +333,13 @@ public class NutritionDetailsDialogFragment
             buttonDelete.setEnabled(false);
             hideLoading();
             switch (option){
-                case 0:
+                case Constants.SportNutritionOption.SLIMMING:
                     Toast.makeText(getContext(),nutritionSlimming.getName()+" "+getString(R.string.eliminarafavoritos),Toast.LENGTH_LONG).show();
                     break;
-                case 1:
+                case Constants.SportNutritionOption.TONING:
                     Toast.makeText(getContext(),nutritionToning.getName()+" "+getString(R.string.eliminarafavoritos),Toast.LENGTH_LONG).show();
                     break;
-                case 2:
+                case Constants.SportNutritionOption.GAIN_VOLUMEN:
                     Toast.makeText(getContext(),nutritionGainVolume.getName()+" "+getString(R.string.eliminarafavoritos),Toast.LENGTH_LONG).show();
                     break;
             }
@@ -347,13 +349,11 @@ public class NutritionDetailsDialogFragment
     @Override
     public void getNutritionSlimmingFavorite(boolean status, List<NutritionSlimming> nutritionSlimmings) {
         if (status) {
+            this.nutritionSlimmings = nutritionSlimmings;
             hideLoading();
-            for(int i = 0; i< nutritionSlimmings.size(); i++){
-                if(nutritionSlimmings.get(i).getName().equals(nutritionSlimming.getName())){
-                    buttonInsert.setEnabled(false);
-                    buttonDelete.setEnabled(true);
-                    return;
-                }
+            if (checkIsFavorite(this.nutritionSlimmings, this.nutritionTonings, this.nutritionGainVolumes)) {
+                buttonInsert.setEnabled(false);
+                buttonDelete.setEnabled(true);
             }
         }
     }
@@ -361,13 +361,11 @@ public class NutritionDetailsDialogFragment
     @Override
     public void getNutritionToningFavorite(boolean status, List<NutritionToning> nutritionTonings) {
         if (status) {
+            this.nutritionTonings = nutritionTonings;
             hideLoading();
-            for(int i = 0; i< nutritionTonings.size(); i++){
-                if(nutritionTonings.get(i).getName().equals(nutritionToning.getName())){
-                    buttonInsert.setEnabled(false);
-                    buttonDelete.setEnabled(true);
-                    return;
-                }
+            if (checkIsFavorite(this.nutritionSlimmings, this.nutritionTonings, this.nutritionGainVolumes)) {
+                buttonInsert.setEnabled(false);
+                buttonDelete.setEnabled(true);
             }
         }
     }
@@ -375,15 +373,38 @@ public class NutritionDetailsDialogFragment
     @Override
     public void getNutritionGainVolumeFavorite(boolean status, List<NutritionGainVolume> nutritionGainVolumes) {
         if (status) {
+            this.nutritionGainVolumes = nutritionGainVolumes;
             hideLoading();
-            for(int i = 0; i< nutritionGainVolumes.size(); i++){
-                if(nutritionGainVolumes.get(i).getName().equals(nutritionGainVolume.getName())){
-                    buttonInsert.setEnabled(false);
-                    buttonDelete.setEnabled(true);
-                    return;
-                }
+            if (checkIsFavorite(this.nutritionSlimmings, this.nutritionTonings, this.nutritionGainVolumes)) {
+                buttonInsert.setEnabled(false);
+                buttonDelete.setEnabled(true);
             }
         }
+    }
+
+    private boolean checkIsFavorite (List<NutritionSlimming> nutritionSlimmings, List<NutritionToning> nutritionTonings, List<NutritionGainVolume> nutritionGainVolumes) {
+        boolean isFavorite = false;
+        switch (option) {
+            case Constants.SportNutritionOption.SLIMMING:
+                List<NutritionSlimming> slimmings = nutritionSlimmings.stream()
+                        .filter(item -> item.getName().equals(nutritionSlimming.getName()))
+                        .collect(Collectors.toList());
+                isFavorite = slimmings.size() != 0;
+                return isFavorite;
+            case Constants.SportNutritionOption.TONING:
+                List<NutritionToning> tonings = nutritionTonings.stream()
+                        .filter(item -> item.getName().equals(nutritionToning.getName()))
+                        .collect(Collectors.toList());
+                isFavorite = tonings.size() != 0;
+                return isFavorite;
+            case Constants.SportNutritionOption.GAIN_VOLUMEN:
+                List<NutritionGainVolume> gainVolumes = nutritionGainVolumes.stream()
+                        .filter(item -> item.getName().equals(nutritionGainVolume.getName()))
+                        .collect(Collectors.toList());
+                isFavorite = gainVolumes.size() != 0;
+                return isFavorite;
+        }
+        return isFavorite;
     }
 
     @Override
