@@ -11,17 +11,17 @@ import com.utad.david.planfit.Utils.Utils;
 
 public class SportFavoriteViewHolder extends BaseViewHolder {
 
-    private TextView nameSlimming;
-    private ImageView photoSlimming;
+    private TextView nameSportFavorite;
+    private ImageView photoSportFavorite;
 
     public SportFavoriteViewHolder(View v) {
         super(v);
-        nameSlimming = v.findViewById(R.id.nameSlimming);
-        photoSlimming = v.findViewById(R.id.imageSlimming);
+        this.nameSportFavorite = v.findViewById(R.id.nameItemRecycleview);
+        this.photoSportFavorite = v.findViewById(R.id.imageItemRecycleview);
     }
 
     public void setData(DefaultSport defaultSport){
-        nameSlimming.setText(defaultSport.getName());
-        Utils.loadImage(defaultSport.getPhoto(),photoSlimming,Utils.PLACEHOLDER_GALLERY);
+        this.nameSportFavorite.setText(defaultSport.getName());
+        Utils.loadImage(defaultSport.getPhoto(), this.photoSportFavorite, Utils.PLACEHOLDER_GALLERY);
     }
 }

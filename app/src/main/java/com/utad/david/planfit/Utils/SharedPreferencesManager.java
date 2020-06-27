@@ -7,9 +7,7 @@ import android.preference.PreferenceManager;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 
-import com.utad.david.planfit.Model.Sport.SportSlimming;
-import com.utad.david.planfit.Model.Sport.SportToning;
-import com.utad.david.planfit.Model.Sport.SportGainVolume;
+import com.utad.david.planfit.Model.Sport.DefaultSport;
 
 import com.utad.david.planfit.Model.Nutrition.NutritionSlimming;
 import com.utad.david.planfit.Model.Nutrition.NutritionToning;
@@ -20,6 +18,8 @@ import java.util.List;
 
 public class SharedPreferencesManager {
 
+    public static final String RESET_SHARED_PREFERENCES = "RESETSHAREDPREFERENCES";
+
     public static final String SPORT_SLIMING_TAG = "SportSlimming";
     public static final String SPORT_TONING_TAG = "SportToning";
     public static final String SPORT_GAIN_VOLUMEN_TAG = "SportGainVolumen";
@@ -28,56 +28,48 @@ public class SharedPreferencesManager {
     public static final String NUTRITION_TONING_TAG = "NutritionToning";
     public static final String NUTRITION_GAIN_VOLUMEN_TAG = "NutritionGainVolumen";
 
-    // Save Sport In Shared Preferences
+    /**
+     * Clear all shared preferences for update structure
+     * @param context use to shared preferences
+     */
+    public static void clearAllSharedPreferences(Context context) {
+        SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
+        int resetSharedPreferences = appSharedPrefs.getInt(RESET_SHARED_PREFERENCES, 0);
+        SharedPreferences.Editor prefsEditor = appSharedPrefs.edit();
+        if (resetSharedPreferences == 0) {
+            prefsEditor.clear();
+            prefsEditor.putInt(RESET_SHARED_PREFERENCES, 1);
 
-    public static void saveSportSlimming(List<SportSlimming> list, Context context, String name) {
+        }
+        prefsEditor.commit();
+    }
+
+    /**
+     * Save Sport List Get Firebase In SharedPreferences
+     * @param list to save
+     * @param context use to share preferences
+     * @param tag search share preferences
+     */
+    public static void saveSportList(List<DefaultSport> list, Context context, String tag) {
         SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
         SharedPreferences.Editor prefsEditor = appSharedPrefs.edit();
         Gson gson = new Gson();
         String json = gson.toJson(list);
-        prefsEditor.putString(name, json);
+        prefsEditor.putString(tag, json);
         prefsEditor.commit();
     }
 
-    public static void saveSportToning(List<SportToning> list, Context context, String name) {
-        SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
-        SharedPreferences.Editor prefsEditor = appSharedPrefs.edit();
-        Gson gson = new Gson();
-        String json = gson.toJson(list);
-        prefsEditor.putString(name, json);
-        prefsEditor.commit();
-    }
-
-    public static void saveSportGainVolume(List<SportGainVolume> list, Context context, String name) {
-        SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
-        SharedPreferences.Editor prefsEditor = appSharedPrefs.edit();
-        Gson gson = new Gson();
-        String json = gson.toJson(list);
-        prefsEditor.putString(name, json);
-        prefsEditor.commit();
-    }
-
-    // Load Sport In Shared Preferences
-
-    public static List<SportSlimming> loadSportSlimming(Context context, String name) {
+    /**
+     * Load Sport list Save In SharedPreferences
+     * @param context use to sharedpreferences
+     * @param tag search share preferences
+     * @return sport list
+     */
+    public static List<DefaultSport> loadSportList(Context context, String tag) {
         SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
         Gson gson = new Gson();
-        String json = appSharedPrefs.getString(name, "");
-        return gson.fromJson(json, new TypeToken<ArrayList<SportSlimming>>(){}.getType());
-    }
-
-    public static List<SportToning> loadSportToning(Context context, String name) {
-        SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
-        Gson gson = new Gson();
-        String json = appSharedPrefs.getString(name, "");
-        return gson.fromJson(json, new TypeToken<ArrayList<SportToning>>(){}.getType());
-    }
-
-    public static List<SportGainVolume> loadSportGainVolume(Context context, String name) {
-        SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
-        Gson gson = new Gson();
-        String json = appSharedPrefs.getString(name, "");
-        return gson.fromJson(json, new TypeToken<ArrayList<SportGainVolume>>(){}.getType());
+        String json = appSharedPrefs.getString(tag, "");
+        return gson.fromJson(json, new TypeToken<ArrayList<DefaultSport>>(){}.getType());
     }
 
     // Save Nutrition In Shared Preferences

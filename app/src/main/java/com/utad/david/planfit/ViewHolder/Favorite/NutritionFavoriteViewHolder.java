@@ -16,8 +16,8 @@ public class NutritionFavoriteViewHolder extends BaseViewHolder {
 
     public NutritionFavoriteViewHolder(View v) {
         super(v);
-        nameSlimming = v.findViewById(R.id.nameSlimming);
-        photoSlimming = v.findViewById(R.id.imageSlimming);
+        nameSlimming = v.findViewById(R.id.nameItemRecycleview);
+        photoSlimming = v.findViewById(R.id.imageItemRecycleview);
     }
 
     public void setData(DefaultNutrition defaultNutrition){

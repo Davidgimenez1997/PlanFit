@@ -1,4 +1,4 @@
-package com.utad.david.planfit.DialogFragment.Favorite;
+package com.utad.david.planfit.DialogFragment.Favorite.Sport;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -16,24 +16,16 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Activitys.YoutubeActivity;
 import com.utad.david.planfit.Base.BaseDialogFragment;
-import com.utad.david.planfit.Data.Favorite.Sport.GetSportFavorite;
-import com.utad.david.planfit.Data.Favorite.Sport.SportFavoriteRepository;
 import com.utad.david.planfit.Model.Sport.DefaultSport;
-import com.utad.david.planfit.Model.Sport.SportGainVolume;
-import com.utad.david.planfit.Model.Sport.SportSlimming;
-import com.utad.david.planfit.Model.Sport.SportToning;
 import com.utad.david.planfit.R;
 import com.utad.david.planfit.Utils.Constants;
 import com.utad.david.planfit.Utils.Utils;
 import com.utad.david.planfit.Utils.UtilsNetwork;
-
-import java.util.List;
-
 import io.fabric.sdk.android.Fabric;
 
-public class SportFavoriteDetailsDialogFragment
+public class SportDetailsFavoriteDialogFragment
         extends BaseDialogFragment
-        implements GetSportFavorite {
+        implements SportDetailsFavoriteView {
 
     /******************************** VARIABLES *************************************+/
      *
@@ -49,7 +41,8 @@ public class SportFavoriteDetailsDialogFragment
     private ImageView imageViewSport;
     private Button buttonClose;
     private Button buttonDelete;
-    private Callback listener;
+    private Callback callback;
+    private SportDetailsFavoritePresenter sportDetailsFavoritePresenter;
 
     /******************************** INTERFAZ *************************************+/
      *
@@ -57,11 +50,11 @@ public class SportFavoriteDetailsDialogFragment
 
     public interface Callback {
         void onClickClose();
-        void setDataChange();
+        void setDataChange(DefaultSport item);
     }
 
-    public void setListener(Callback listener) {
-        this.listener = listener;
+    public void setListener(Callback callback) {
+        this.callback = callback;
     }
 
 
@@ -69,8 +62,8 @@ public class SportFavoriteDetailsDialogFragment
      *
      */
 
-    public static SportFavoriteDetailsDialogFragment newInstance(DefaultSport defaultSport) {
-        SportFavoriteDetailsDialogFragment fragment = new SportFavoriteDetailsDialogFragment();
+    public static SportDetailsFavoriteDialogFragment newInstance(DefaultSport defaultSport) {
+        SportDetailsFavoriteDialogFragment fragment = new SportDetailsFavoriteDialogFragment();
         Bundle args = new Bundle();
         args.putParcelable(SPORT, defaultSport);
         fragment.setArguments(args);
@@ -85,14 +78,14 @@ public class SportFavoriteDetailsDialogFragment
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
+        this.sportDetailsFavoritePresenter = new SportDetailsFavoritePresenter(this);
+
+        if (this.sportDetailsFavoritePresenter.checkInternetInDevice(getContext())) {
             Fabric.with(getContext(),new Crashlytics());
-            SportFavoriteRepository.getInstance().setGetSportFavorite(this);
-        }else{
-            Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
         }
 
-        defaultSport = getArguments().getParcelable(SPORT);
+        this.defaultSport = getArguments().getParcelable(SPORT);
+        this.sportDetailsFavoritePresenter.setSportFavorite(this.defaultSport);
     }
 
 
@@ -103,11 +96,11 @@ public class SportFavoriteDetailsDialogFragment
         view.setBackgroundResource(R.drawable.corner_dialog_fragment);
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-        findById(view);
-        putData();
-        onClickButtonOpenYoutube();
-        onClickCloseButton();
-        onClickButtonDelete();
+        this.findById(view);
+        this.putData();
+        this.onClickButtonOpenYoutube();
+        this.onClickCloseButton();
+        this.onClickButtonDelete();
 
         return view;
     }
@@ -117,18 +110,18 @@ public class SportFavoriteDetailsDialogFragment
      */
 
     public void findById(View v) {
-        textViewTitle = v.findViewById(R.id.textTitleSport);
-        buttonOpenRecipe = v.findViewById(R.id.open_youtube_sport);
-        textViewDescription = v.findViewById(R.id.textviewDescriptionSport);
-        imageViewSport = v.findViewById(R.id.imageViewSport);
-        buttonClose = v.findViewById(R.id.close_favorite_sport);
-        buttonDelete = v.findViewById(R.id.delete_favorite_sport);
+        this.textViewTitle = v.findViewById(R.id.textTitleSport);
+        this.buttonOpenRecipe = v.findViewById(R.id.open_youtube_sport);
+        this.textViewDescription = v.findViewById(R.id.textviewDescriptionSport);
+        this.imageViewSport = v.findViewById(R.id.imageViewSport);
+        this.buttonClose = v.findViewById(R.id.close_favorite_sport);
+        this.buttonDelete = v.findViewById(R.id.delete_favorite_sport);
     }
 
     private void putData() {
-        textViewTitle.setText(defaultSport.getName());
-        textViewDescription.setText(defaultSport.getDescription());
-        Utils.loadImage(defaultSport.getPhoto(),imageViewSport,Utils.PLACEHOLDER_GALLERY);
+        this.textViewTitle.setText(this.defaultSport.getName());
+        this.textViewDescription.setText(this.defaultSport.getDescription());
+        Utils.loadImage(this.defaultSport.getPhoto(), this.imageViewSport, Utils.PLACEHOLDER_GALLERY);
     }
 
     /******************************** ABRE EL VIDEO EN LA ACTIVITY DE YOUTUBE *************************************+/
@@ -136,15 +129,15 @@ public class SportFavoriteDetailsDialogFragment
      */
 
     private void onClickButtonOpenYoutube() {
-        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
-            buttonOpenRecipe.setOnClickListener(v -> {
+        if (this.sportDetailsFavoritePresenter.checkInternetInDevice(getContext())) {
+            this.buttonOpenRecipe.setOnClickListener(v -> {
                 Intent intent = new Intent(getContext(), YoutubeActivity.class);
-                intent.putExtra(URL, defaultSport.getVideo());
+                intent.putExtra(URL, this.defaultSport.getVideo());
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
             });
-        }else{
-            buttonOpenRecipe.setEnabled(false);
+        } else {
+            this.buttonOpenRecipe.setEnabled(false);
         }
 
     }
@@ -154,9 +147,9 @@ public class SportFavoriteDetailsDialogFragment
      */
 
     private void onClickCloseButton(){
-        buttonClose.setOnClickListener(v -> {
-            if(listener!=null){
-                listener.onClickClose();
+        this.buttonClose.setOnClickListener(v -> {
+            if (callback != null) {
+                this.callback.onClickClose();
             }
         });
     }
@@ -166,44 +159,30 @@ public class SportFavoriteDetailsDialogFragment
      */
 
     private void onClickButtonDelete(){
-        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
-            buttonDelete.setOnClickListener(v -> {
-                if(listener!=null){
-                    SportFavoriteRepository.getInstance().deleteDefaultSportFavorite(defaultSport);
-                    dismiss();
+        if (UtilsNetwork.checkConnectionInternetDevice(getContext())) {
+            this.buttonDelete.setOnClickListener(v -> {
+                if (this.callback != null) {
+                    this.sportDetailsFavoritePresenter.onClickDeleleSport();
                     dismiss();
                 }
             });
-        }else{
-            buttonDelete.setEnabled(false);
+        } else {
+            this.buttonDelete.setEnabled(false);
         }
 
     }
 
-    /******************************** CALLBACK DE FIREBASE *************************************+/
+    /******************************** CALLBACK DEL PRESENTER *************************************+/
      *
      */
 
     @Override
-    public void deleteSportFavorite(boolean status) {
-        if(status){
-            if(listener!=null){
-                listener.setDataChange();
-            }
-        }
+    public void deviceOfflineMessage() {
+        Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
     }
 
     @Override
-    public void addSportFavorite(boolean status) {}
-    @Override
-    public void getSportSlimmingFavorite(boolean status, List<SportSlimming> sportSlimmings) {}
-    @Override
-    public void getSportToningFavorite(boolean status, List<SportToning> sportTonings) {}
-    @Override
-    public void getSportGainVolumeFavorite(boolean status, List<SportGainVolume> sportGainVolumes) {}
-    @Override
-    public void getSportAllFavorite(boolean status, List<DefaultSport> defaultSports) {}
-    @Override
-    public void emptySportFavorite(boolean status) {}
-
+    public void deleteSportFavorite() {
+        this.callback.setDataChange(this.defaultSport);
+    }
 }

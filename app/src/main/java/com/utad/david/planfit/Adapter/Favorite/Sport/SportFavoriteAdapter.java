@@ -12,21 +12,24 @@ import java.util.List;
 public class SportFavoriteAdapter extends RecyclerView.Adapter<SportFavoriteViewHolder> {
 
     private List<DefaultSport> defaultSports;
-    private Callback listener;
+    private Callback callback;
 
     public interface Callback {
         void onItemClick(DefaultSport item);
     }
 
-    public SportFavoriteAdapter(List<DefaultSport> defaultSports, Callback listener) {
+    public SportFavoriteAdapter(List<DefaultSport> defaultSports, Callback callback) {
         this.defaultSports = defaultSports;
-        this.listener = listener;
+        this.callback = callback;
     }
 
-    public void dataChangedDeleteSport(List<DefaultSport> defaultSports){
-        this.defaultSports.clear();
-        this.defaultSports.addAll(defaultSports);
-        notifyDataSetChanged();
+    public void dataChangedDeleteSport(DefaultSport item){
+        this.defaultSports.remove(item);
+        this.notifyDataSetChanged();
+    }
+
+    public List<DefaultSport> getDefaultSports() {
+        return this.defaultSports;
     }
 
     @Override
@@ -37,18 +40,18 @@ public class SportFavoriteAdapter extends RecyclerView.Adapter<SportFavoriteView
 
     @Override
     public void onBindViewHolder(SportFavoriteViewHolder holder, int position) {
-        final DefaultSport current = defaultSports.get(position);
+        final DefaultSport current = this.defaultSports.get(position);
         holder.setData(current);
         holder.itemView.setOnClickListener(v -> {
-            if(listener!=null){
-                listener.onItemClick(current);
+            if (this.callback != null) {
+                this.callback.onItemClick(current);
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return defaultSports.size();
+        return this.defaultSports.size();
     }
 
 }

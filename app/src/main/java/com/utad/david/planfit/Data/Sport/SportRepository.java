@@ -3,11 +3,8 @@ package com.utad.david.planfit.Data.Sport;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.utad.david.planfit.Model.Sport.SportGainVolume;
-import com.utad.david.planfit.Model.Sport.SportSlimming;
-import com.utad.david.planfit.Model.Sport.SportToning;
+import com.utad.david.planfit.Model.Sport.DefaultSport;
 import com.utad.david.planfit.Utils.Constants;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,57 +34,36 @@ public class SportRepository {
         this.getSport = getSport;
     }
 
-    // Get Sport Data
 
-    public void getSlimmingSport() {
+    /**
+     * Get sport list for firebase by type
+     * @param type filter sport list
+     */
+    public void getSportList(int type) {
         if (this.getSport != null) {
-            String COLLECTION_SPORT_SLIMMING = Constants.CollectionsNames.SPORT_SLIMMING;
-            CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_SPORT_SLIMMING);
+            String collectionName  = "";
+            switch (type) {
+                case Constants.SportNutritionOption.SLIMMING:
+                    collectionName = Constants.CollectionsNames.SPORT_SLIMMING;
+                    break;
+                case Constants.SportNutritionOption.TONING:
+                    collectionName = Constants.CollectionsNames.SPORT_TONING;
+                    break;
+                case Constants.SportNutritionOption.GAIN_VOLUMEN:
+                    collectionName = Constants.CollectionsNames.SPORT_GAIN_VOLUME;
+                    break;
+            }
+            CollectionReference collectionReference = firebaseFirestore.collection(collectionName);
             collectionReference.addSnapshotListener((queryDocumentSnapshots, e) -> {
                 if (e != null) {
-                    this.getSport.getSlimmingSports(false, null);
+                    this.getSport.getSportList(false, null, -1);
                 }
-                List<SportSlimming> sportSlimmingList = new ArrayList<>();
+                List<DefaultSport> sportSlimmingList = new ArrayList<>();
                 for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                    sportSlimmingList.add(doc.toObject(SportSlimming.class));
+                    sportSlimmingList.add(doc.toObject(DefaultSport.class));
                 }
-                this.getSport.getSlimmingSports(true, sportSlimmingList);
+                this.getSport.getSportList(true, sportSlimmingList, type);
             });
         }
     }
-
-    public void getToningSport() {
-        if (this.getSport != null) {
-            String COLLECTION_SPORT_TONING = Constants.CollectionsNames.SPORT_TONING;
-            CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_SPORT_TONING);
-            collectionReference.addSnapshotListener((queryDocumentSnapshots, e) -> {
-                if (e != null) {
-                    this.getSport.getToningSports(false, null);
-                }
-                List<SportToning> sportToningList = new ArrayList<>();
-                for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                    sportToningList.add(doc.toObject(SportToning.class));
-                }
-                this.getSport.getToningSports(true, sportToningList);
-            });
-        }
-    }
-
-    public void getGainVolumeSport() {
-        if (this.getSport != null) {
-            String COLLECTION_SPORT_GAIN_VOLUME = Constants.CollectionsNames.SPORT_GAIN_VOLUME;
-            CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_SPORT_GAIN_VOLUME);
-            collectionReference.addSnapshotListener((queryDocumentSnapshots, e) -> {
-                if (e != null) {
-                    this.getSport.getGainVolumeSports(false, null);
-                }
-                List<SportGainVolume> sportGainVolumes = new ArrayList<>();
-                for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                    sportGainVolumes.add(doc.toObject(SportGainVolume.class));
-                }
-                this.getSport.getGainVolumeSports(true, sportGainVolumes);
-            });
-        }
-    }
-
 }

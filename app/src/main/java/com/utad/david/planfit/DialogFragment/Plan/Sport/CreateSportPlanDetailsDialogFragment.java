@@ -11,21 +11,16 @@ import android.view.ViewGroup;
 import android.widget.*;
 import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Base.BaseDialogFragment;
-import com.utad.david.planfit.Data.Plan.SessionPlan;
-import com.utad.david.planfit.Data.Plan.Sport.GetSportPlan;
-import com.utad.david.planfit.Data.Plan.Sport.SportPlanRepository;
 import com.utad.david.planfit.Model.Plan.PlanSport;
 import com.utad.david.planfit.Model.Sport.DefaultSport;
 import com.utad.david.planfit.R;
 import com.utad.david.planfit.Utils.Constants;
 import com.utad.david.planfit.Utils.Utils;
-import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
-import java.math.BigDecimal;
 import java.util.List;
 
 public class CreateSportPlanDetailsDialogFragment extends BaseDialogFragment
-        implements GetSportPlan {
+        implements CreateSportPlanDetailsView {
 
     /******************************** VARIABLES *************************************+/
      *
@@ -44,7 +39,7 @@ public class CreateSportPlanDetailsDialogFragment extends BaseDialogFragment
     private Callback listener;
     private String timeStart;
     private String timeEnd;
-    private PlanSport current;
+    private CreateSportPlanDetailsPresenter createSportPlanDetailsPresenter;
 
     /******************************** INTERFAZ *************************************+/
      *
@@ -78,17 +73,15 @@ public class CreateSportPlanDetailsDialogFragment extends BaseDialogFragment
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
+        this.createSportPlanDetailsPresenter = new CreateSportPlanDetailsPresenter(this);
+
+        if(this.createSportPlanDetailsPresenter.checkInternetDevice(getContext())){
             showLoading();
             Fabric.with(getContext(),new Crashlytics());
-            SportPlanRepository.getInstance().setGetSportPlan(this);
-            SportPlanRepository.getInstance().getSportPlan();
-        }else{
-            hideLoading();
-            Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
         }
 
-        defaultSport = getArguments().getParcelable(SPORT);
+        this.defaultSport = getArguments().getParcelable(SPORT);
+        this.createSportPlanDetailsPresenter.setSportFavorite(this.defaultSport);
     }
 
     @Override
@@ -98,22 +91,21 @@ public class CreateSportPlanDetailsDialogFragment extends BaseDialogFragment
         view.setBackgroundResource(R.drawable.corner_dialog_fragment);
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
-            findById(view);
-            putData();
-            configureSpinnerDiseng();
-            onClickButtonClose();
-            onClickButtonSave();
-            onClickButtonDelete();
-            configureSpinnerStart();
-            configureSpinnerEnd();
-        }else{
-            findById(view);
-            configureSpinnerDiseng();
-            onClickButtonClose();
-            putData();
-            buttonSave.setEnabled(false);
-            buttonDelete.setEnabled(false);
+        this.findById(view);
+        if(this.createSportPlanDetailsPresenter.checkInternetDevice(getContext())){
+            this.configureSpinnerDiseng();
+            this.onClickButtonClose();
+            this.putData();
+            this.onClickButtonSave();
+            this.onClickButtonDelete();
+            this.configureSpinnerStart();
+            this.configureSpinnerEnd();
+        } else {
+            this.configureSpinnerDiseng();
+            this.onClickButtonClose();
+            this.putData();
+            this.buttonSave.setEnabled(false);
+            this.buttonDelete.setEnabled(false);
         }
 
         return view;
@@ -124,28 +116,24 @@ public class CreateSportPlanDetailsDialogFragment extends BaseDialogFragment
      */
 
     private void findById(View view) {
-        textViewTitle = view.findViewById(R.id.textTitleCreateSport);
-        imageViewSport = view.findViewById(R.id.imageViewCreateSport);
-        spinnerStart = view.findViewById(R.id.spinner_comienzo);
-        spinnerEnd = view.findViewById(R.id.spinner_fin);
-        buttonSave = view.findViewById(R.id.save_create_sport);
-        buttonDelete = view.findViewById(R.id.close_create_sport);
-        buttonClose = view.findViewById(R.id.close_create_sport2);
+        this.textViewTitle = view.findViewById(R.id.textTitleCreateSport);
+        this.imageViewSport = view.findViewById(R.id.imageViewCreateSport);
+        this.spinnerStart = view.findViewById(R.id.spinner_comienzo);
+        this.spinnerEnd = view.findViewById(R.id.spinner_fin);
+        this.buttonSave = view.findViewById(R.id.save_create_sport);
+        this.buttonDelete = view.findViewById(R.id.close_create_sport);
+        this.buttonClose = view.findViewById(R.id.close_create_sport2);
     }
 
     private void configureSpinnerDiseng() {
-        ArrayAdapter spinnerArrayAdapter = ArrayAdapter.createFromResource(getContext(), R.array.timePlan, R.layout.spinner_item);
-        spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_item);
-        spinnerEnd.setAdapter(spinnerArrayAdapter);
-
-        ArrayAdapter spinnerArrayAdapter1 = ArrayAdapter.createFromResource(getContext(), R.array.timePlan, R.layout.spinner_item);
-        spinnerArrayAdapter1.setDropDownViewResource(R.layout.spinner_item);
-        spinnerStart.setAdapter(spinnerArrayAdapter1);
+        ArrayAdapter arrayAdapter = this.createSportPlanDetailsPresenter.getSpinnerArrayAdapter(getContext());
+        this.spinnerEnd.setAdapter(arrayAdapter);
+        this.spinnerStart.setAdapter(arrayAdapter);
     }
 
     private void putData() {
-        textViewTitle.setText(defaultSport.getName());
-        Utils.loadImage(defaultSport.getPhoto(),imageViewSport,Utils.PLACEHOLDER_GALLERY);
+        this.textViewTitle.setText(this.defaultSport.getName());
+        Utils.loadImage(this.defaultSport.getPhoto(), imageViewSport, Utils.PLACEHOLDER_GALLERY);
     }
 
     /******************************** ONCLICK SPINNER *************************************+/
@@ -153,10 +141,10 @@ public class CreateSportPlanDetailsDialogFragment extends BaseDialogFragment
      */
 
     private void configureSpinnerStart() {
-        spinnerStart.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        this.spinnerStart.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                timeStart=spinnerStart.getSelectedItem().toString();
+                timeStart = spinnerStart.getSelectedItem().toString();
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) { }
@@ -164,10 +152,10 @@ public class CreateSportPlanDetailsDialogFragment extends BaseDialogFragment
     }
 
     private void configureSpinnerEnd() {
-        spinnerEnd.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        this.spinnerEnd.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                timeEnd=spinnerEnd.getSelectedItem().toString();
+                timeEnd = spinnerEnd.getSelectedItem().toString();
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {}
@@ -179,9 +167,9 @@ public class CreateSportPlanDetailsDialogFragment extends BaseDialogFragment
      */
 
     private void onClickButtonClose() {
-        buttonClose.setOnClickListener(v -> {
-            if(listener!=null){
-                listener.onClickClose();
+        this.buttonClose.setOnClickListener(v -> {
+            if (this.listener != null) {
+                this.listener.onClickClose();
             }
         });
     }
@@ -191,44 +179,16 @@ public class CreateSportPlanDetailsDialogFragment extends BaseDialogFragment
      */
 
     private void onClickButtonSave() {
-        buttonSave.setOnClickListener(v -> {
-            if(timeStart.equals(timeEnd)){
+        this.buttonSave.setOnClickListener(v -> {
+            if (this.timeStart.equals(this.timeEnd)) {
                 Toast.makeText(getContext(),getString(R.string.info_create_plan),Toast.LENGTH_LONG).show();
-            }else{
-                if(listener!=null){
-                    double intStart = convertStringToDouble(timeStart);
-                    double intEnd = convertStringToDouble(timeEnd);
-                    if(intStart>intEnd){
-                        Toast.makeText(getContext(),"No puedes terminar antes de empezar",Toast.LENGTH_LONG).show();
-                    }else{
-                        showLoading();
-                        SessionPlan.getInstance().setPlanSport(
-                                new PlanSport(
-                                        defaultSport.getName(),
-                                        defaultSport.getPhoto(),
-                                        intStart,
-                                        intEnd,
-                                        Constants.ModePlan.NO));
-                        SportPlanRepository.getInstance().addSportPlan();
-                    }
+            } else {
+                if  (this.listener != null) {
+                    showLoading();
+                    this.createSportPlanDetailsPresenter.createSportPlan(timeStart, timeEnd);
                 }
             }
         });
-    }
-
-    /******************************** CONVIERTE STRING A INT *************************************+/
-     *
-     */
-
-    private double convertStringToDouble(String message){
-        String [] parts = message.split(":");
-        String first = parts[0];
-        String second = parts[1];
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(first);
-        stringBuilder.append(".");
-        stringBuilder.append(second);
-        return Double.parseDouble(stringBuilder.toString());
     }
 
     /******************************** BORRAR PLAN *************************************+/
@@ -236,94 +196,64 @@ public class CreateSportPlanDetailsDialogFragment extends BaseDialogFragment
      */
 
     private void onClickButtonDelete(){
-        buttonDelete.setOnClickListener(v -> {
+        this.buttonDelete.setOnClickListener(v -> {
             showLoading();
-            SportPlanRepository.getInstance().deleteSportPlan(defaultSport.getName());
+            this.createSportPlanDetailsPresenter.deletePlan();
         });
     }
 
-    /******************************** CALLBACK DE FIREBASE *************************************+/
+    /******************************** CALLBACK DEL PRESENTER *************************************+/
      *
      */
 
     @Override
-    public void getSportPlan(boolean status, List<PlanSport> planSports) {
-        if(status){
-            for(PlanSport item : planSports){
-                current = item;
-                if(item.getName().equals(defaultSport.getName())){
-                    buttonSave.setEnabled(false);
-                    buttonDelete.setEnabled(true);
+    public void deviceOfflineMessage() {
+        hideLoading();
+        Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
+    }
 
-                    String [] timePlanArr = getResources().getStringArray(R.array.timePlan);
+    @Override
+    public void errorSelectedTimes() {
+        Toast.makeText(getContext(),"No puedes terminar antes de empezar",Toast.LENGTH_LONG).show();
+    }
 
-                    String timeStart;
-                    String str_timeStart = String.valueOf(current.getTimeStart());
-                    BigDecimal bigDecimal_start = new BigDecimal(str_timeStart);
-                    long first_start = bigDecimal_start.longValue();
-                    BigDecimal second_start = bigDecimal_start.remainder(BigDecimal.ONE);
-                    StringBuilder stringBuilder_start = new StringBuilder(second_start.toString());
-                    stringBuilder_start.delete(0,2);
-                    if(stringBuilder_start.toString().length()==1){
-                        timeStart = ("0"+Long.valueOf(first_start)+":"+stringBuilder_start.toString()+"0");
-                    }else{
-                        timeStart = ("0"+Long.valueOf(first_start)+":"+stringBuilder_start.toString());
+    @Override
+    public void addSportPlan() {
+        Toast.makeText(getContext(),defaultSport.getName()+" "+getString(R.string.add_create_sport),Toast.LENGTH_LONG).show();
+        buttonSave.setEnabled(false);
+        buttonDelete.setEnabled(true);
+        hideLoading();
+    }
+
+    @Override
+    public void deleteSportPlan() {
+        buttonSave.setEnabled(true);
+        buttonDelete.setEnabled(false);
+        hideLoading();
+        Toast.makeText(getContext(),defaultSport.getName()+" "+getString(R.string.delete_create_sport),Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void getSportPlan(List<PlanSport> planSports) {
+        for (PlanSport item : planSports) {
+            if (item.getName().equals(this.defaultSport.getName())) {
+                this.buttonSave.setEnabled(false);
+                this.buttonDelete.setEnabled(true);
+                String [] timePlanArr = getResources().getStringArray(R.array.timePlan);
+                String timeStart = this.createSportPlanDetailsPresenter.getTimes(item.getTimeStart());
+                String timeEnd = this.createSportPlanDetailsPresenter.getTimes(item.getTimeEnd());
+                for (int i = 0; i < timePlanArr.length; i++) {
+                    if (timePlanArr[i].equals(timeStart)) {
+                        spinnerStart.setSelection(i);
                     }
-
-                    String timeEnd;
-                    String str_timeEnd = String.valueOf(current.getTimeEnd());
-                    BigDecimal bigDecimal_end = new BigDecimal(str_timeEnd);
-                    long first_end = bigDecimal_end.longValue();
-                    BigDecimal second_End = bigDecimal_end.remainder(BigDecimal.ONE);
-                    StringBuilder stringBuilder_end = new StringBuilder(second_End.toString());
-                    stringBuilder_end.delete(0,2);
-                    if(stringBuilder_end.toString().length()==1){
-                        timeEnd = ("0"+Long.valueOf(first_end)+":"+stringBuilder_end.toString()+"0");
-                    }else{
-                        timeEnd = ("0"+Long.valueOf(first_end)+":"+stringBuilder_end.toString());
-                    }
-
-
-                    for(int i=0;i<timePlanArr.length;i++){
-                        if(timePlanArr[i].equals(timeStart)){
-                            spinnerStart.setSelection(i);
-                        }
-                    }
-
-                    for(int i=0;i<timePlanArr.length;i++){
-                        if(timePlanArr[i].equals(timeEnd)){
-                            spinnerEnd.setSelection(i);
-                        }
-                    }
-                    hideLoading();
                 }
+                for (int i = 0;i < timePlanArr.length; i++){
+                    if (timePlanArr[i].equals(timeEnd)) {
+                        spinnerEnd.setSelection(i);
+                    }
+                }
+                hideLoading();
             }
         }
     }
-
-    @Override
-    public void addSportPlan(boolean status) {
-        if(status){
-            Toast.makeText(getContext(),defaultSport.getName()+" "+getString(R.string.add_create_sport),Toast.LENGTH_LONG).show();
-            buttonSave.setEnabled(false);
-            buttonDelete.setEnabled(true);
-            hideLoading();
-        }
-    }
-
-    @Override
-    public void deleteSportPlan(boolean status) {
-        if(status){
-            buttonSave.setEnabled(true);
-            buttonDelete.setEnabled(false);
-            hideLoading();
-            Toast.makeText(getContext(),defaultSport.getName()+" "+getString(R.string.delete_create_sport),Toast.LENGTH_LONG).show();
-        }
-    }
-
-    @Override
-    public void updateSportPlan(boolean status, List<PlanSport> updateList) {}
-    @Override
-    public void emptySportPlan(boolean status) {}
-
 }

@@ -12,21 +12,21 @@ import java.util.List;
 public class NutritionFavoriteAdapter extends RecyclerView.Adapter<NutritionFavoriteViewHolder> {
 
     private List<DefaultNutrition> defaultNutritions;
-    private Callback listener;
+    private Callback callback;
 
     public interface Callback {
         void onItemClick(DefaultNutrition item);
     }
 
-    public NutritionFavoriteAdapter(List<DefaultNutrition> defaultNutritions, Callback listener) {
+    public NutritionFavoriteAdapter(List<DefaultNutrition> defaultNutritions, Callback callback) {
         this.defaultNutritions = defaultNutritions;
-        this.listener = listener;
+        this.callback = callback;
     }
 
     public void dataChangedDeleteSport(List<DefaultNutrition> defaultNutritions){
         this.defaultNutritions.clear();
         this.defaultNutritions.addAll(defaultNutritions);
-        notifyDataSetChanged();
+        this.notifyDataSetChanged();
     }
 
     @Override
@@ -40,8 +40,8 @@ public class NutritionFavoriteAdapter extends RecyclerView.Adapter<NutritionFavo
         final DefaultNutrition current = defaultNutritions.get(position);
         holder.setData(current);
         holder.itemView.setOnClickListener(v -> {
-            if(listener!=null){
-                listener.onItemClick(current);
+            if (callback != null ){
+                callback.onItemClick(current);
             }
         });
     }

@@ -15,7 +15,7 @@ import com.utad.david.planfit.Fragments.MainMenu.Plan.FragmentCreatePlan;
 import com.utad.david.planfit.Fragments.MainMenu.Plan.Create.Nutrition.NutritionCreatePlanFragment;
 import com.utad.david.planfit.Fragments.MainMenu.Plan.Create.Sport.SportCreatePlanFragment;
 import com.utad.david.planfit.Fragments.MainMenu.Favorite.NutritionFavoriteFragment;
-import com.utad.david.planfit.Fragments.MainMenu.Favorite.SportFavoriteFragment;
+import com.utad.david.planfit.Fragments.MainMenu.Favorite.Sport.SportFavoriteFragment;
 import com.utad.david.planfit.Fragments.MainMenu.RootFragment;
 import com.utad.david.planfit.Fragments.MainMenu.Nutrition.NutritionGainVolumeFragment;
 import com.utad.david.planfit.Fragments.MainMenu.Nutrition.NutritionSlimmingFragment;
@@ -23,9 +23,7 @@ import com.utad.david.planfit.Fragments.MainMenu.Nutrition.NutritionToningFragme
 import com.utad.david.planfit.Fragments.MainMenu.Plan.FragmentShowPlan;
 import com.utad.david.planfit.Fragments.MainMenu.Plan.Show.Nutrition.ShowNutritionPlanFragment;
 import com.utad.david.planfit.Fragments.MainMenu.Plan.Show.Sport.ShowSportPlanFragment;
-import com.utad.david.planfit.Fragments.MainMenu.Sport.SportGainVolumeFragment;
-import com.utad.david.planfit.Fragments.MainMenu.Sport.SportSlimmingFragment;
-import com.utad.david.planfit.Fragments.MainMenu.Sport.SportToningFragment;
+import com.utad.david.planfit.Fragments.MainMenu.Sport.SportFragment;
 import com.utad.david.planfit.Model.User.User;
 import com.utad.david.planfit.R;
 import android.support.design.widget.NavigationView;
@@ -42,6 +40,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Utils.Constants;
+import com.utad.david.planfit.Utils.SharedPreferencesManager;
 import com.utad.david.planfit.Utils.Utils;
 import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
@@ -49,7 +48,10 @@ import io.fabric.sdk.android.Fabric;
 public class MainMenuActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         GetUser,
-        RootFragment.Callback,
+        RootFragment.Sport,
+        RootFragment.Nutrition,
+        RootFragment.Favorite,
+        RootFragment.Plan,
         EditUserProfilerDialogFragment.Callback,
         FragmentCreatePlan.Callback,
         FragmentShowPlan.Callback{
@@ -99,6 +101,7 @@ public class MainMenuActivity extends BaseActivity
         setTitle(R.string.titulo_deportes);
         navigateFragmentSport();
         onClickNavigetionHeaderView();
+        SharedPreferencesManager.clearAllSharedPreferences(getApplicationContext());
     }
 
 
@@ -420,33 +423,33 @@ public class MainMenuActivity extends BaseActivity
 
     @Override
     public void clickOnAdelgazarSport() {
-        SportSlimmingFragment sportSlimmingFragment = new SportSlimmingFragment();
-        sportSlimmingFragment.newInstanceSlimming();
-        sportSlimmingFragment.setToolbarRunnable(() -> setTitle(R.string.deportes_adelgazar));
+        SportFragment sportFragment = new SportFragment();
+        sportFragment.newInstance(Constants.SportNutritionOption.SLIMMING);
+        sportFragment.setToolbarRunnable(() -> setTitle(R.string.deportes_adelgazar));
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.content_frame, sportSlimmingFragment);
+        fragmentTransaction.replace(R.id.content_frame, sportFragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
 
     @Override
     public void clickOnTonificarSport() {
-        SportToningFragment sportToningFragment = new SportToningFragment();
-        sportToningFragment.newInstanceSlimming();
-        sportToningFragment.setToolbarRunnable(() -> setTitle(R.string.deporte_tonificar));
+        SportFragment sportFragment = new SportFragment();
+        sportFragment.newInstance(Constants.SportNutritionOption.TONING);
+        sportFragment.setToolbarRunnable(() -> setTitle(R.string.deporte_tonificar));
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.content_frame, sportToningFragment);
+        fragmentTransaction.replace(R.id.content_frame, sportFragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
 
     @Override
     public void clickOnGanarVolumenSport() {
-        SportGainVolumeFragment sportGainVolumeFragment = new SportGainVolumeFragment();
-        sportGainVolumeFragment.newInstanceSlimming();
-        sportGainVolumeFragment.setToolbarRunnable(() -> setTitle(R.string.deporte_ganar_volumen));
+        SportFragment sportFragment = new SportFragment();
+        sportFragment.newInstance(Constants.SportNutritionOption.GAIN_VOLUMEN);
+        sportFragment.setToolbarRunnable(() -> setTitle(R.string.deporte_ganar_volumen));
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.content_frame, sportGainVolumeFragment);
+        fragmentTransaction.replace(R.id.content_frame, sportFragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
@@ -495,7 +498,7 @@ public class MainMenuActivity extends BaseActivity
     @Override
     public void clickSportFavorite() {
         SportFavoriteFragment sportFavoriteFragment = new SportFavoriteFragment();
-        sportFavoriteFragment.newInstanceSlimming();
+        sportFavoriteFragment.newInstance();
         sportFavoriteFragment.setToolbarRunnable(() -> setTitle(R.string.deportes_favoritos));
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, sportFavoriteFragment);

@@ -2,18 +2,18 @@ package com.utad.david.planfit.Fragments.MainMenu.Plan;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
+import com.utad.david.planfit.Base.BaseFragment;
 import com.utad.david.planfit.R;
 import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 
-public class FragmentCreatePlan extends Fragment {
+public class FragmentCreatePlan extends BaseFragment {
 
     /******************************** VARIABLES *************************************+/
      *
@@ -39,7 +39,7 @@ public class FragmentCreatePlan extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof Callback) {
-            mlistener = (Callback) context;
+            this.mlistener = (Callback) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement Callback");
@@ -49,7 +49,7 @@ public class FragmentCreatePlan extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        mlistener = null;
+        this.mlistener = null;
 
     }
 
@@ -65,10 +65,10 @@ public class FragmentCreatePlan extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
+        if (UtilsNetwork.checkConnectionInternetDevice(getContext())) {
             Fabric.with(getContext(), new Crashlytics());
-        }else{
-            Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(getContext(),getString(R.string.info_network_device), Toast.LENGTH_LONG).show();
         }
 
     }
@@ -78,14 +78,14 @@ public class FragmentCreatePlan extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_create_plan, container, false);
 
-        if(toolbarRunnable != null) {
-            toolbarRunnable.run();
+        if (this.toolbarRunnable != null) {
+            this.toolbarRunnable.run();
         }
 
-        findById(view);
-        onClickOpenSport();
-        onClickOpenNutrition();
-        onClickSaveAndClose();
+        this.findById(view);
+        this.onClickOpenSport();
+        this.onClickOpenNutrition();
+        this.onClickSaveAndClose();
 
         return view;
     }
@@ -96,9 +96,9 @@ public class FragmentCreatePlan extends Fragment {
      */
 
     private void findById(View view){
-        buttonSelectSport = view.findViewById(R.id.button_select_sport);
-        buttonSelectNutrition = view.findViewById(R.id.button_Select_nutrition);
-        buttonSaveAndExit = view.findViewById(R.id.button_exit);
+        this.buttonSelectSport = view.findViewById(R.id.button_select_sport);
+        this.buttonSelectNutrition = view.findViewById(R.id.button_Select_nutrition);
+        this.buttonSaveAndExit = view.findViewById(R.id.button_exit);
 
     }
 
@@ -107,10 +107,10 @@ public class FragmentCreatePlan extends Fragment {
      */
 
     private void onClickSaveAndClose(){
-        buttonSaveAndExit.setOnClickListener(v -> {
-            if (mlistener != null) {
+        this.buttonSaveAndExit.setOnClickListener(v -> {
+            if (this.mlistener != null) {
                 getActivity().getSupportFragmentManager().popBackStack();
-                mlistener.onClickSaveAndExit();
+                this.mlistener.onClickSaveAndExit();
             }
         });
     }
@@ -120,14 +120,14 @@ public class FragmentCreatePlan extends Fragment {
      */
 
     private void onClickOpenSport() {
-        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
-            buttonSelectSport.setOnClickListener(v -> {
-                if(mlistener!=null){
-                    mlistener.onClickSportPlan();
+        if (UtilsNetwork.checkConnectionInternetDevice(getContext())) {
+            this.buttonSelectSport.setOnClickListener(v -> {
+                if (this.mlistener != null){
+                    this.mlistener.onClickSportPlan();
                 }
             });
-        }else{
-            buttonSelectSport.setEnabled(false);
+        } else {
+            this.buttonSelectSport.setEnabled(false);
         }
     }
 
@@ -136,14 +136,14 @@ public class FragmentCreatePlan extends Fragment {
      */
 
     private void onClickOpenNutrition() {
-        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
-            buttonSelectNutrition.setOnClickListener(v -> {
-                if(mlistener!=null){
-                    mlistener.onClickNutritionPlan();
+        if (UtilsNetwork.checkConnectionInternetDevice(getContext())) {
+            this.buttonSelectNutrition.setOnClickListener(v -> {
+                if(this.mlistener != null){
+                    this.mlistener.onClickNutritionPlan();
                 }
             });
-        }else{
-            buttonSelectNutrition.setEnabled(false);
+        } else {
+            this.buttonSelectNutrition.setEnabled(false);
         }
     }
 

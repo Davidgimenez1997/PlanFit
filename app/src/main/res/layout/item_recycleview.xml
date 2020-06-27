@@ -11,14 +11,14 @@
             android:layout_height="wrap_content">
 
         <ImageView
-                android:id="@+id/imageSlimming"
+                android:id="@+id/imageItemRecycleview"
                 android:layout_width="match_parent"
                 android:src="@drawable/icon_gallery"
                 android:layout_height="130dp"
                 android:scaleType="centerCrop"/>
 
         <TextView
-                android:id="@+id/nameSlimming"
+                android:id="@+id/nameItemRecycleview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"

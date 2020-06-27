@@ -26,14 +26,14 @@ public class ChatAdapter extends FirebaseListAdapter<ChatMessage> {
     }
 
     @Override
-    protected void populateView(View v, ChatMessage model, int position) {
+    protected void populateView(View view, ChatMessage model, int position) {
 
-        TextView messageText = v.findViewById(R.id.message_text);
-        TextView messageUser = v.findViewById(R.id.message_user);
-        TextView messageTime = v.findViewById(R.id.message_time);
+        TextView messageText = view.findViewById(R.id.message_text);
+        TextView messageUser = view.findViewById(R.id.message_user);
+        TextView messageTime = view.findViewById(R.id.message_time);
 
-        v.setOnClickListener(v1 -> {
-            if(callback!=null){
+        view.setOnClickListener(v1 -> {
+            if (callback != null) {
                 callback.onItemClick(model);
             }
         });
