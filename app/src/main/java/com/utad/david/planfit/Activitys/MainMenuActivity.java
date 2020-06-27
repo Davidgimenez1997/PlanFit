@@ -5,6 +5,8 @@ import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
+
+import com.utad.david.planfit.Activitys.WebView.WebViewActivity;
 import com.utad.david.planfit.Base.BaseActivity;
 import com.utad.david.planfit.Data.User.SessionUser;
 import com.utad.david.planfit.Data.User.User.GetUser;

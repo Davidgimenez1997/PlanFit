@@ -11,7 +11,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
-import com.utad.david.planfit.Activitys.WebViewActivity;
+import com.utad.david.planfit.Activitys.WebView.WebViewActivity;
 import com.utad.david.planfit.Base.BaseDialogFragment;
 import com.utad.david.planfit.Data.User.Developer.DeveloperRepository;
 import com.utad.david.planfit.Data.User.Developer.GetDeveloper;

@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
-import com.utad.david.planfit.Activitys.WebViewActivity;
+import com.utad.david.planfit.Activitys.WebView.WebViewActivity;
 import com.utad.david.planfit.Base.BaseDialogFragment;
 import com.utad.david.planfit.Data.Favorite.Nutrition.GetNutritionFavorite;
 import com.utad.david.planfit.Data.Favorite.Nutrition.NutritionFavoriteRepository;

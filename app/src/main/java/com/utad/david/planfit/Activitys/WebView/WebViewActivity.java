@@ -1,4 +1,4 @@
-package com.utad.david.planfit.Activitys;
+package com.utad.david.planfit.Activitys.WebView;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -21,9 +21,8 @@ import android.webkit.WebViewClient;
 import com.utad.david.planfit.Base.BaseActivity;
 import com.utad.david.planfit.R;
 import com.utad.david.planfit.Utils.Constants;
-import com.utad.david.planfit.Utils.Utils;
 
-public class WebViewActivity extends BaseActivity {
+public class WebViewActivity extends BaseActivity implements WebViewView {
 
 
     /******************************** VARIABLES *************************************+/
@@ -35,27 +34,25 @@ public class WebViewActivity extends BaseActivity {
     public static String EXTRA_MODE = Constants.ModeWebView.EXTRA_MODE;
 
     private WebView webView;
-    private String title;
-    private String url;
-    private int mode;
     private Toolbar toolbar;
+    private WebViewPresenter webViewPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_web_view);
 
+        this.webViewPresenter = new WebViewPresenter(this);
+
         Bundle extras = getIntent().getExtras();
-        if(extras != null){
-            title = extras.getString(EXTRA_TITLE);
-            url = extras.getString(EXTRA_URL);
-            mode = extras.getInt(EXTRA_MODE);
+        if (extras != null){
+            this.webViewPresenter.setExtras(extras.getString(EXTRA_TITLE), extras.getString(EXTRA_URL), extras.getInt(EXTRA_MODE));
         }
 
-        toolbar = findViewById(R.id.toolbar);
-        webView = findViewById(R.id.webView);
+        this.toolbar = findViewById(R.id.toolbar);
+        this.webView = findViewById(R.id.webView);
 
-        setUI();
+        this.setUI();
     }
 
     /******************************** CONFIGURA LA VISTA *************************************+/
@@ -63,9 +60,9 @@ public class WebViewActivity extends BaseActivity {
      */
 
     private void setUI() {
-        setSupportActionBar(toolbar);
-        setTitle(title);
-        configureWebView(url);
+        this.setSupportActionBar(toolbar);
+        this.setTitle(this.webViewPresenter.getTitle());
+        this.configureWebView(this.webViewPresenter.getUrl());
     }
 
 
@@ -74,11 +71,11 @@ public class WebViewActivity extends BaseActivity {
      */
 
     private void configureWebView(String url){
-        webView.setVerticalScrollBarEnabled(false);
-        WebSettings webSettings = webView.getSettings();
+        this.webView.setVerticalScrollBarEnabled(false);
+        WebSettings webSettings = this.webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
-        webView.setWebChromeClient(new WebChromeClient());
-        webView.setWebViewClient(new WebViewClient() {
+        this.webView.setWebChromeClient(new WebChromeClient());
+        this.webView.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
@@ -113,7 +110,7 @@ public class WebViewActivity extends BaseActivity {
                 hideLoading();
             }
         });
-        webView.loadUrl(url);
+        this.webView.loadUrl(url);
     }
 
     /******************************** SI LE DAS ATRAS DENTRO DEL WEBVIEW *************************************+/
@@ -123,15 +120,8 @@ public class WebViewActivity extends BaseActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
-            switch (keyCode) {
-                case KeyEvent.KEYCODE_BACK:
-                    if (webView.canGoBack()) {
-                        webView.goBack();
-                    } else {
-                        finish();
-                    }
-                    return true;
-            }
+            this.webViewPresenter.onKeyDown(keyCode, event, this.webView.canGoBack());
+            return true;
         }
         return super.onKeyDown(keyCode, event);
     }
@@ -142,10 +132,10 @@ public class WebViewActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        if (webView.canGoBack()) {
-            webView.goBack();
+        if (this.webView.canGoBack()) {
+            this.webView.goBack();
         } else {
-            finish();
+            this.finish();
         }
     }
 
@@ -158,7 +148,7 @@ public class WebViewActivity extends BaseActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_option_web, menu);
-        switch (mode){
+        switch (this.webViewPresenter.getMode()){
                 case Constants.ModeWebView.MODE_RECIPE:
                     menu.getItem(0).setTitle(getString(R.string.mode_recipe));
                     break;
@@ -181,13 +171,9 @@ public class WebViewActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()){
-            case R.id.nav_open_web:
-                openBrowser(url);
-                break;
+        if (item.getItemId() == R.id.nav_open_web) {
+            this.openBrowser(this.webViewPresenter.getUrl());
         }
-
         return true;
     }
 
@@ -198,6 +184,21 @@ public class WebViewActivity extends BaseActivity {
     private void openBrowser(String url) {
         Intent i = new Intent(Intent.ACTION_VIEW);
         i.setData(Uri.parse(url));
-        startActivity(i);
+        this.startActivity(i);
+    }
+
+
+    /******************************** CALLBACK DEL PRESENTER *************************************+/
+     *
+     */
+
+    @Override
+    public void goBackWebView() {
+        this.webView.goBack();
+    }
+
+    @Override
+    public void finishActivity() {
+        this.finish();
     }
 }
