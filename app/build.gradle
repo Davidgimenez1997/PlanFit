@@ -18,8 +18,8 @@ android {
         applicationId "com.utad.david.planfit"
         minSdkVersion 24
         targetSdkVersion 28
-        versionCode 22
-        versionName "4"
+        versionCode 23
+        versionName "5"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.config
     }
