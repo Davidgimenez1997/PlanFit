@@ -6,27 +6,30 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.utad.david.planfit.Model.Nutrition.DefaultNutrition;
 import com.utad.david.planfit.R;
-import com.utad.david.planfit.ViewHolder.Favorite.NutritionFavoriteViewHolder;
+import com.utad.david.planfit.ViewHolder.Favorite.Nutrition.NutritionFavoriteViewHolder;
 import java.util.List;
 
 public class NutritionFavoriteAdapter extends RecyclerView.Adapter<NutritionFavoriteViewHolder> {
 
     private List<DefaultNutrition> defaultNutritions;
-    private Callback listener;
+    private Callback callback;
 
     public interface Callback {
         void onItemClick(DefaultNutrition item);
     }
 
-    public NutritionFavoriteAdapter(List<DefaultNutrition> defaultNutritions, Callback listener) {
+    public NutritionFavoriteAdapter(List<DefaultNutrition> defaultNutritions, Callback callback) {
         this.defaultNutritions = defaultNutritions;
-        this.listener = listener;
+        this.callback = callback;
     }
 
-    public void dataChangedDeleteSport(List<DefaultNutrition> defaultNutritions){
-        this.defaultNutritions.clear();
-        this.defaultNutritions.addAll(defaultNutritions);
-        notifyDataSetChanged();
+    public void dataChangedDeleteSport(DefaultNutrition item){
+        this.defaultNutritions.remove(item);
+        this.notifyDataSetChanged();
+    }
+
+    public List<DefaultNutrition> getDefaultNutritions() {
+        return defaultNutritions;
     }
 
     @Override
@@ -37,18 +40,18 @@ public class NutritionFavoriteAdapter extends RecyclerView.Adapter<NutritionFavo
 
     @Override
     public void onBindViewHolder(NutritionFavoriteViewHolder holder, int position) {
-        final DefaultNutrition current = defaultNutritions.get(position);
+        final DefaultNutrition current = this.defaultNutritions.get(position);
         holder.setData(current);
         holder.itemView.setOnClickListener(v -> {
-            if(listener!=null){
-                listener.onItemClick(current);
+            if (this.callback != null ){
+                this.callback.onItemClick(current);
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return defaultNutritions.size();
+        return this.defaultNutritions.size();
     }
 }
 

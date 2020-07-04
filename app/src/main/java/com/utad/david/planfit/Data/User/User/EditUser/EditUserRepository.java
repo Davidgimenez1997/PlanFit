@@ -51,14 +51,15 @@ public class EditUserRepository {
         this.getEditUser = getEditUser;
     }
 
-    // Delete Photo
-
+    /**
+     * Delete photo user
+     */
     public void deletePhoto() {
         if (this.getEditUser != null) {
             this.currentUser = this.firebaseAuth.getCurrentUser();
-            StorageReference desertRef = storageReference.child(Constants.CollectionsNames.IMAGES + this.currentUser.getUid());
-            desertRef.delete().addOnSuccessListener(aVoid -> {
-                DocumentReference myUserRef = firebaseFirestore.collection(Constants.CollectionsNames.USER).document(currentUser.getUid());
+            StorageReference userRef = this.storageReference.child(Constants.CollectionsNames.IMAGES + this.currentUser.getUid());
+            userRef.delete().addOnSuccessListener(aVoid -> {
+                DocumentReference myUserRef = this.firebaseFirestore.collection(Constants.CollectionsNames.USER).document(this.currentUser.getUid());
                 Map<String, Object> user = new HashMap<>();
                 user.put(Constants.ModelUser.IMG, "");
                 myUserRef.update(user)
@@ -68,44 +69,73 @@ public class EditUserRepository {
         }
     }
 
-    // Update Photo
-
+    /**
+     * Update photo user
+     */
     public void updatePhoto() {
         this.currentUser = this.firebaseAuth.getCurrentUser();
         if (this.getEditUser != null) {
-            StorageReference desertRef = storageReference.child(Constants.CollectionsNames.IMAGES + currentUser.getUid());
-            desertRef.delete().addOnSuccessListener(aVoid -> {
-                this.updateImage(UserRepository.getInstance().getUser().getImgUser());
-                DocumentReference myUserRef = firebaseFirestore.collection(Constants.CollectionsNames.USER).document(currentUser.getUid());
+            StorageReference userRef = this.storageReference.child(Constants.CollectionsNames.IMAGES + this.currentUser.getUid());
+            userRef.delete().addOnSuccessListener(aVoid -> {
+                DocumentReference myUserRef = this.firebaseFirestore.collection(Constants.CollectionsNames.USER).document(this.currentUser.getUid());
                 Map<String, Object> user = new HashMap<>();
                 user.put(Constants.ModelUser.IMG, UserRepository.getInstance().getUser().getImgUser());
                 myUserRef.update(user)
-                        .addOnSuccessListener(aVoid1 -> this.getEditUser.updatePhoto(true))
+                        .addOnSuccessListener(aVoid1 ->  {
+                            this.updateImage(UserRepository.getInstance().getUser().getImgUser());
+                        })
                         .addOnFailureListener(e -> this.getEditUser.updatePhoto(false));
             }).addOnFailureListener(exception -> {
                 this.updateImage(UserRepository.getInstance().getUser().getImgUser());
-                this.getEditUser.updateFullName(true);
             });
 
         }
     }
 
+    /**
+     * Update  imagen  user
+     * @param image update
+     */
     private void updateImage(String image) {
         this.currentUser = this.firebaseAuth.getCurrentUser();
         if(image!=null){
             Uri uri = Uri.parse(image);
-            StorageReference ref = storageReference.child(Constants.CollectionsNames.IMAGES + currentUser.getUid());
+            StorageReference ref = this.storageReference.child(Constants.CollectionsNames.IMAGES + this.currentUser.getUid());
             ref.putFile(uri)
-                    .addOnSuccessListener(taskSnapshot -> SessionUser.getInstance().getUser().setImgUser(image));
+                    .addOnSuccessListener(taskSnapshot ->   {
+                        SessionUser.getInstance().getUser().setImgUser(image);
+                        this.addPhotoUser();
+                    }).addOnFailureListener(e -> {
+                        this.getEditUser.updatePhoto(false);
+            });
         }
     }
 
-    // Update Name
+    /**
+     * Add photo user
+     */
+    private void addPhotoUser() {
+        this.currentUser = this.firebaseAuth.getCurrentUser();
+        if (this.getEditUser != null) {
+            DocumentReference myUserRef = this.firebaseFirestore.collection(Constants.CollectionsNames.USER).document(this.currentUser.getUid());
+            Map<String, Object> user = new HashMap<>();
+            user.put(Constants.ModelUser.IMG, UserRepository.getInstance().getUser().getImgUser());
+            myUserRef.update(user)
+                    .addOnSuccessListener(aVoid1 ->  {
+                        this.updateImage(UserRepository.getInstance().getUser().getImgUser());
+                        this.getEditUser.updatePhoto(true);
+                    })
+                    .addOnFailureListener(e -> this.getEditUser.updatePhoto(false));
+        }
+    }
 
+    /**
+     * Update full name user
+     */
     public void updateFullName() {
         this.currentUser = this.firebaseAuth.getCurrentUser();
         if (this.getEditUser != null) {
-            DocumentReference myUserRef = firebaseFirestore.collection(Constants.CollectionsNames.USER).document(currentUser.getUid());
+            DocumentReference myUserRef = this.firebaseFirestore.collection(Constants.CollectionsNames.USER).document(this.currentUser.getUid());
             Map<String, Object> user = new HashMap<>();
             user.put(Constants.ModelUser.NAME, UserRepository.getInstance().getUser().getFullName());
             myUserRef.update(user)
@@ -114,12 +144,13 @@ public class EditUserRepository {
         }
     }
 
-    // Update Nick
-
+    /**
+     * Update nick user
+     */
     public void updateNickName() {
         this.currentUser = this.firebaseAuth.getCurrentUser();
         if (this.getEditUser != null) {
-            DocumentReference myUserRef = firebaseFirestore.collection(Constants.CollectionsNames.USER).document(currentUser.getUid());
+            DocumentReference myUserRef = this.firebaseFirestore.collection(Constants.CollectionsNames.USER).document(this.currentUser.getUid());
             Map<String, Object> user = new HashMap<>();
             user.put(Constants.ModelUser.NICK, UserRepository.getInstance().getUser().getNickName());
             myUserRef.update(user)
@@ -128,20 +159,21 @@ public class EditUserRepository {
         }
     }
 
-    // Delete User
-
+    /**
+     * Delete user
+     */
     public void deleteAccount() {
         if (this.getEditUser != null) {
             this.currentUser = this.firebaseAuth.getCurrentUser();
-            firebaseFirestore.collection(Constants.CollectionsNames.USER).document(currentUser.getUid())
+            firebaseFirestore.collection(Constants.CollectionsNames.USER).document(this.currentUser.getUid())
                     .delete()
                     .addOnSuccessListener(aVoid -> {
-                        if(UserRepository.getInstance().getUser().getImgUser().equals("")){
+                        if (UserRepository.getInstance().getUser().getImgUser().equals("")) {
                             reauthenticateUserDeleteAccount();
-                        }else{
-                            StorageReference desertRef = storageReference.child(Constants.CollectionsNames.IMAGES + currentUser.getUid());
-                            desertRef.delete()
-                                    .addOnSuccessListener(aVoid1 -> reauthenticateUserDeleteAccount())
+                        } else {
+                            StorageReference userRef = this.storageReference.child(Constants.CollectionsNames.IMAGES + currentUser.getUid());
+                            userRef.delete()
+                                    .addOnSuccessListener(aVoid1 -> this.reauthenticateUserDeleteAccount())
                                     .addOnFailureListener(exception -> this.getEditUser.deleteUser(false));
                         }
                     })
@@ -149,8 +181,9 @@ public class EditUserRepository {
         }
     }
 
-    // Reauthenticate User
-
+    /**
+     * Reauthenticate user
+     */
     private void reauthenticateUserDeleteAccount(){
         this.currentUser = this.firebaseAuth.getCurrentUser();
         this.currentUser = FirebaseAuth.getInstance().getCurrentUser();

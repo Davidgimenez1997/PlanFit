@@ -16,19 +16,16 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Adapter.Plan.Show.Sport.ShowSportPlanAdapter;
 import com.utad.david.planfit.Base.BaseFragment;
-import com.utad.david.planfit.Data.Plan.Sport.GetSportPlan;
-import com.utad.david.planfit.Data.Plan.Sport.SportPlanRepository;
+import com.utad.david.planfit.Fragments.MainMenu.Plan.Show.Sport.Details.DetailsSportPlanFragment;
 import com.utad.david.planfit.Model.Plan.PlanSport;
 import com.utad.david.planfit.R;
 import com.utad.david.planfit.Utils.Constants;
-import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class ShowSportPlanFragment extends BaseFragment
-        implements GetSportPlan {
+        implements ShowSportPlanView{
 
     /******************************** VARIABLES *************************************+/
      *
@@ -41,6 +38,7 @@ public class ShowSportPlanFragment extends BaseFragment
     private FragmentActivity myContext;
     private ArrayList<ArrayList<PlanSport>> listToListPlan;
     private Runnable toolbarRunnable;
+    private ShowSportPlanPresenter showSportPlanPresenter;
 
     /******************************** SET Runnable *************************************+/
      *
@@ -57,7 +55,7 @@ public class ShowSportPlanFragment extends BaseFragment
 
     @Override
     public void onAttach(Activity activity) {
-        myContext=(FragmentActivity) activity;
+        this.myContext = (FragmentActivity) activity;
         super.onAttach(activity);
     }
 
@@ -71,24 +69,22 @@ public class ShowSportPlanFragment extends BaseFragment
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_show_sport_plan, container, false);
 
-        if(toolbarRunnable != null) {
-            toolbarRunnable.run();
+        if (this.toolbarRunnable != null) {
+            this.toolbarRunnable.run();
         }
 
-        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
+        this.showSportPlanPresenter = new ShowSportPlanPresenter(this);
+
+        if (this.showSportPlanPresenter.checkInternetDevice(getContext())) {
             showLoading();
-            SportPlanRepository.getInstance().setGetSportPlan(this);
-            SportPlanRepository.getInstance().getSportPlan();
             Fabric.with(getContext(), new Crashlytics());
-        }else{
-            Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
         }
 
-        mRecyclerView = view.findViewById(R.id.recycler_view_nutrition);
-        linearLayout = view.findViewById(R.id.linear_empty_favorites);
-        mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new GridLayoutManager(getContext(), 1);
-        mRecyclerView.setLayoutManager(mLayoutManager);
+        this.mRecyclerView = view.findViewById(R.id.recycler_view_nutrition);
+        this.linearLayout = view.findViewById(R.id.linear_empty_favorites);
+        this.mRecyclerView.setHasFixedSize(true);
+        this.mLayoutManager = new GridLayoutManager(getContext(), 1);
+        this.mRecyclerView.setLayoutManager(this.mLayoutManager);
 
         return view;
     }
@@ -99,119 +95,107 @@ public class ShowSportPlanFragment extends BaseFragment
         Fabric.with(getContext(), new Crashlytics());
     }
 
-    /******************************** CALLBACK FIREBASE *************************************+/
+    /******************************** CALLBACK DEL PRESENTER *************************************+/
      *
      */
 
     @Override
-    public void getSportPlan(boolean status, List<PlanSport> planSports) {
-        if(status){
-            hideLoading();
-            linearLayout.setVisibility(View.GONE);
-            mRecyclerView.setVisibility(View.VISIBLE);
+    public void getSportPlan(List<PlanSport> planSports) {
+        hideLoading();
+        this.linearLayout.setVisibility(View.GONE);
+        this.mRecyclerView.setVisibility(View.VISIBLE);
 
-            final ArrayList<PlanSport> arrSport = new ArrayList<>();
-            for(PlanSport item:planSports){
-                arrSport.add(item);
+        final ArrayList<PlanSport> arrSport = new ArrayList<>();
+        for(PlanSport item:planSports){
+            arrSport.add(item);
+        }
+        this.showSportPlanPresenter.shortArray(arrSport);
+
+        this.listToListPlan = new ArrayList<>();
+        double time = arrSport.get(0).getTimeStart();
+        ArrayList<PlanSport> aux = new ArrayList<>();
+        int count = 0;
+        this.listToListPlan.add(aux);
+
+        for (int i = 0;i < arrSport.size(); i++) {
+            if (arrSport.get(i).getTimeStart() != time) {
+                count = count + 1;
+                ArrayList<PlanSport> aux2 = new ArrayList<>();
+                this.listToListPlan.add(aux2);
             }
-            Collections.sort(arrSport);
+            this.listToListPlan.get(count).add(arrSport.get(i));
+            time = arrSport.get(i).getTimeStart();
+        }
 
-            listToListPlan = new ArrayList<>();
-            double time = arrSport.get(0).getTimeStart();
-            ArrayList<PlanSport> aux = new ArrayList<>();
-            int count =0;
-            listToListPlan.add(aux);
+        this.configurateRecycleView(this.listToListPlan);
+        this.showSportPlanPresenter.checkArraySize(arrSport, planSports);
+    }
 
-            for(int i=0;i<arrSport.size();i++){
-                if(arrSport.get(i).getTimeStart() != time){
-                    count=count+1;
-                    ArrayList<PlanSport> aux2 = new ArrayList<>();
-                    listToListPlan.add(aux2);
+    private void configurateRecycleView(ArrayList<ArrayList<PlanSport>> list) {
+        this.mAdapter = new ShowSportPlanAdapter(list, planSportsDetails -> {
+            DetailsSportPlanFragment detailsSportPlanFragment = DetailsSportPlanFragment.newInstance(planSportsDetails);
+            detailsSportPlanFragment.setToolbarRunnable(() -> getActivity().setTitle(getResources().getString(R.string.plan_deporte)));
+            FragmentManager fragManager = this.myContext.getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
+            fragmentTransaction.replace(R.id.content_frame, detailsSportPlanFragment);
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
+        });
+        this.mRecyclerView.setAdapter(this.mAdapter);
+
+    }
+
+    @Override
+    public void updateSportPlan(List<PlanSport> updateList) {
+        hideLoading();
+        boolean endOk = true;
+        final ArrayList<PlanSport> arrSport = new ArrayList<>();
+        for (PlanSport item : updateList) {
+            arrSport.add(item);
+        }
+        this.showSportPlanPresenter.shortArray(arrSport);
+        for (int i = 0; i < arrSport.size(); i++) {
+            if (arrSport.get(i).getIsOk().equals(Constants.ModePlan.NO)) {
+                endOk = false;
+            }
+        }
+        this.createDialogs(endOk, arrSport);
+    }
+
+    private void createDialogs(boolean endOk, ArrayList<PlanSport> arrSport) {
+        if (endOk) {
+            final CharSequence[] items = {getString(R.string.restablecer),getString(R.string.cancelar)};
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setTitle(getString(R.string.mensaje_complete_all_plan));
+            builder.setItems(items, (dialog, itemDialog) -> {
+                switch (itemDialog) {
+                    case 0:
+                        showLoading();
+                        for (PlanSport planSport : arrSport){
+                            planSport.setIsOk(Constants.ModePlan.NO);
+                            this.showSportPlanPresenter.updatePlan(planSport);
+                        }
+                        this.mAdapter.notifyDataSetChanged();
+                        break;
+                    case 1:
+                        dialog.dismiss();
+                        break;
                 }
-                listToListPlan.get(count).add(arrSport.get(i));
-                time= arrSport.get(i).getTimeStart();
-            }
-
-            mAdapter = new ShowSportPlanAdapter(listToListPlan, planSportsDetails -> {
-                DetailsSportPlanFragment detailsSportPlanFragment = DetailsSportPlanFragment.newInstance(planSportsDetails);
-                detailsSportPlanFragment.setToolbarRunnable(new Runnable() {
-                    @Override
-                    public void run() {
-                        getActivity().setTitle(getResources().getString(R.string.plan_deporte));
-                    }
-                });
-                FragmentManager fragManager = myContext.getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
-                fragmentTransaction.replace(R.id.content_frame, detailsSportPlanFragment);
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
             });
-            mRecyclerView.setAdapter(mAdapter);
 
-            if(arrSport.size()==0){
-                updateSportPlan(false, null);
-            }else{
-                updateSportPlan(true, planSports);
-            }
+            builder.show();
         }
     }
 
     @Override
-    public void updateSportPlan(boolean status, List<PlanSport> updateList) {
-        if(status){
-            hideLoading();
-            boolean endOk = true;
-
-            final ArrayList<PlanSport> arrSport = new ArrayList<>();
-            for(PlanSport item:updateList){
-                arrSport.add(item);
-            }
-
-            Collections.sort(arrSport);
-
-            for(int i=0;i<arrSport.size();i++){
-                if(arrSport.get(i).getIsOk().equals(Constants.ModePlan.NO)){
-                    endOk = false;
-                }
-            }
-
-            if(endOk){
-                final CharSequence[] items = {getString(R.string.restablecer),getString(R.string.cancelar)};
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle(getString(R.string.mensaje_complete_all_plan));
-                builder.setItems(items, (dialog, itemDialog) -> {
-                    switch (itemDialog) {
-                        case 0:
-                            showLoading();
-                            for (PlanSport planSport:arrSport){
-                                planSport.setIsOk(Constants.ModePlan.NO);
-                                SportPlanRepository.getInstance().updatePlanSport(planSport);
-                            }
-                            mAdapter.notifyDataSetChanged();
-                            break;
-                        case 1:
-                            dialog.dismiss();
-                            break;
-                    }
-                });
-
-                builder.show();
-            }
-        }
+    public void emptySportPlan() {
+        hideLoading();
+        this.linearLayout.setVisibility(View.VISIBLE);
+        this.mRecyclerView.setVisibility(View.GONE);
     }
 
     @Override
-    public void emptySportPlan(boolean status) {
-        if(status){
-            hideLoading();
-            linearLayout.setVisibility(View.VISIBLE);
-            mRecyclerView.setVisibility(View.GONE);
-        }
+    public void deviceOfflineMessage() {
+        Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
     }
-
-    @Override
-    public void addSportPlan(boolean status) {}
-
-    @Override
-    public void deleteSportPlan(boolean status) {}
 }

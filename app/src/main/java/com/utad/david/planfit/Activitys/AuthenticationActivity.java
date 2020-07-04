@@ -8,9 +8,9 @@ import com.utad.david.planfit.Base.BaseActivity;
 import com.utad.david.planfit.Data.User.Login.LoginRepository;
 import com.utad.david.planfit.Data.User.Register.RegisterRepository;
 import com.utad.david.planfit.Fragments.Authentication.Login.LoginFragment;
-import com.utad.david.planfit.Fragments.Authentication.Register.RegisterDetailsFragmet;
+import com.utad.david.planfit.Fragments.Authentication.Register.Details.RegisterDetailsFragmet;
 import com.utad.david.planfit.Fragments.Authentication.Register.RegisterFragment;
-import com.utad.david.planfit.Model.User.UserCredentials;
+import com.utad.david.planfit.Model.User.Credentials;
 import com.utad.david.planfit.R;
 import com.utad.david.planfit.Data.User.SessionUser;
 import com.crashlytics.android.Crashlytics;
@@ -28,8 +28,6 @@ import io.fabric.sdk.android.Fabric;
     private LoginFragment loginFragment;
     private RegisterFragment registerFragment;
     private RegisterDetailsFragmet registerDetailsFragmet;
-
-    private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
 
     @Override
@@ -43,11 +41,11 @@ import io.fabric.sdk.android.Fabric;
             if (savedInstanceState != null) {
                 return;
             }
-            loginFragment = new LoginFragment();
+            this.loginFragment = new LoginFragment();
 
-            fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.add(R.id.frameLayout_FirstActivity, loginFragment);
-            fragmentTransaction.commit();
+            this.fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            this.fragmentTransaction.add(R.id.frameLayout_FirstActivity, this.loginFragment);
+            this.fragmentTransaction.commit();
         }
 
     }
@@ -73,18 +71,18 @@ import io.fabric.sdk.android.Fabric;
 
     @Override
     public void clickButtonContinue() {
-        registerDetailsFragmet = new RegisterDetailsFragmet();
+        this.registerDetailsFragmet = new RegisterDetailsFragmet();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.frameLayout_FirstActivity, registerDetailsFragmet);
+        transaction.replace(R.id.frameLayout_FirstActivity, this.registerDetailsFragmet);
         transaction.addToBackStack(null);
         transaction.commit();
     }
 
     @Override
     public void clickButtonBack() {
-        loginFragment = new LoginFragment();
+        this.loginFragment = new LoginFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.frameLayout_FirstActivity, loginFragment);
+        transaction.replace(R.id.frameLayout_FirstActivity, this.loginFragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }
@@ -95,9 +93,9 @@ import io.fabric.sdk.android.Fabric;
 
     @Override
     public void clickButtonRegister() {
-        registerFragment = new RegisterFragment();
+        this.registerFragment = new RegisterFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.frameLayout_FirstActivity, registerFragment);
+        transaction.replace(R.id.frameLayout_FirstActivity, this.registerFragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }
@@ -105,9 +103,9 @@ import io.fabric.sdk.android.Fabric;
 
     @Override
     public void clickButtonBackDetails() {
-        registerFragment = new RegisterFragment();
+        this.registerFragment = new RegisterFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.frameLayout_FirstActivity, registerFragment);
+        transaction.replace(R.id.frameLayout_FirstActivity, this.registerFragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }
@@ -120,8 +118,8 @@ import io.fabric.sdk.android.Fabric;
 
         @Override
         protected Void doInBackground(Void... voids) {
-            UserCredentials userCredentials = SessionUser.getInstance().getUserCredentials();
-            LoginRepository.getInstance().loginWithEmailAndPassword(userCredentials);
+            Credentials credentials = SessionUser.getInstance().getCredentials();
+            LoginRepository.getInstance().loginWithEmailAndPassword(credentials);
             return null;
         }
     }
@@ -130,8 +128,8 @@ import io.fabric.sdk.android.Fabric;
 
         @Override
         protected Void doInBackground(Void... voids) {
-            UserCredentials userCredentials = SessionUser.getInstance().getUserCredentials();
-            RegisterRepository.getInstance().registerWithEmailAndPassword(userCredentials);
+            Credentials credentials = SessionUser.getInstance().getCredentials();
+            RegisterRepository.getInstance().registerWithEmailAndPassword(credentials);
             return null;
         }
     }

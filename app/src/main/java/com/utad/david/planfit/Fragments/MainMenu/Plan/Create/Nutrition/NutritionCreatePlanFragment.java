@@ -13,22 +13,17 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Adapter.Plan.Create.Nutrition.CreateNutritionPlanAdapter;
 import com.utad.david.planfit.Base.BaseFragment;
-import com.utad.david.planfit.Data.Favorite.Nutrition.GetNutritionFavorite;
-import com.utad.david.planfit.Data.Favorite.Nutrition.NutritionFavoriteRepository;
 import com.utad.david.planfit.DialogFragment.Plan.Nutrition.CreateNutritionPlanDetailsDialogFragment;
 import com.utad.david.planfit.Model.Nutrition.DefaultNutrition;
-import com.utad.david.planfit.Model.Nutrition.NutritionGainVolume;
-import com.utad.david.planfit.Model.Nutrition.NutritionSlimming;
-import com.utad.david.planfit.Model.Nutrition.NutritionToning;
 import com.utad.david.planfit.R;
 import com.utad.david.planfit.Utils.Constants;
-import com.utad.david.planfit.Utils.UtilsNetwork;
+
 import io.fabric.sdk.android.Fabric;
-import java.util.Collections;
+
 import java.util.List;
 
 public class NutritionCreatePlanFragment extends BaseFragment
-        implements GetNutritionFavorite,
+        implements NutritionCreatePlanView,
         CreateNutritionPlanDetailsDialogFragment.Callback {
 
     /******************************** VARIABLES *************************************+/
@@ -42,6 +37,7 @@ public class NutritionCreatePlanFragment extends BaseFragment
     private LinearLayout linearLayout;
     private CreateNutritionPlanDetailsDialogFragment newFragment;
     private Runnable toolbarRunnable;
+    private NutritionCreatePlanPresenter nutritionCreatePlanPresenter;
 
     /******************************** NEW INSTANCE *************************************+/
      *
@@ -68,15 +64,10 @@ public class NutritionCreatePlanFragment extends BaseFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
+        this.nutritionCreatePlanPresenter = new NutritionCreatePlanPresenter(this);
+        if (this.nutritionCreatePlanPresenter.checkInternetInDevice(getContext())) {
             showLoading();
             Fabric.with(getContext(), new Crashlytics());
-            NutritionFavoriteRepository.getInstance().setGetNutritionFavorite(this);
-            NutritionFavoriteRepository.getInstance().getAllNutritionFavorite();
-        }else{
-            hideLoading();
-            Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
         }
     }
 
@@ -85,15 +76,15 @@ public class NutritionCreatePlanFragment extends BaseFragment
         View  view =  inflater.inflate(R.layout.fragment_nutrition_create_plan, container, false);
 
 
-        if(toolbarRunnable != null) {
-            toolbarRunnable.run();
+        if (this.toolbarRunnable != null) {
+            this.toolbarRunnable.run();
         }
 
-        mRecyclerView = view.findViewById(R.id.recycler_view_nutrition);
-        linearLayout = view.findViewById(R.id.linear_empty_favorites);
-        mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new GridLayoutManager(getContext(), 2);
-        mRecyclerView.setLayoutManager(mLayoutManager);
+        this.mRecyclerView = view.findViewById(R.id.recycler_view_nutrition);
+        this.linearLayout = view.findViewById(R.id.linear_empty_favorites);
+        this.mRecyclerView.setHasFixedSize(true);
+        this.mLayoutManager = new GridLayoutManager(getContext(), 2);
+        this.mRecyclerView.setLayoutManager(this.mLayoutManager);
 
         return view;
     }
@@ -104,7 +95,7 @@ public class NutritionCreatePlanFragment extends BaseFragment
 
     @Override
     public void onClickClose() {
-        newFragment.dismiss();
+        this.newFragment.dismiss();
     }
 
     /******************************** CALLBACK FIREBASE *************************************+/
@@ -112,44 +103,40 @@ public class NutritionCreatePlanFragment extends BaseFragment
      */
 
     @Override
-    public void getNutritionAllFavorite(boolean status, List<DefaultNutrition> defaultNutritions) {
-        if(status){
-            hideLoading();
-            linearLayout.setVisibility(View.GONE);
-            mRecyclerView.setVisibility(View.VISIBLE);
-            Collections.sort(defaultNutritions);
-            mAdapter = new CreateNutritionPlanAdapter(defaultNutritions, item -> {
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                Fragment prev = getFragmentManager().findFragmentByTag(Constants.TagDialogFragment.TAG);
-                if (prev != null) {
-                    transaction.remove(prev);
-                }
-                transaction.addToBackStack(null);
-                newFragment = CreateNutritionPlanDetailsDialogFragment.newInstance(item);
-                newFragment.setListener(fragment);
-                newFragment.show(transaction, Constants.TagDialogFragment.TAG);
-            });
-            mRecyclerView.setAdapter(mAdapter);
-        }
+    public void deviceOfflineMessage() {
+        hideLoading();
+        Toast.makeText(getContext(), getString(R.string.info_network_device), Toast.LENGTH_LONG).show();
     }
 
     @Override
-    public void emptyNutritionFavorite(boolean status) {
-        if(status){
-            hideLoading();
-            linearLayout.setVisibility(View.VISIBLE);
-            mRecyclerView.setVisibility(View.GONE);
-        }
+    public void getNutritionFavoriteList(List<DefaultNutrition> list) {
+        hideLoading();
+        this.linearLayout.setVisibility(View.GONE);
+        this.mRecyclerView.setVisibility(View.VISIBLE);
+        this.mAdapter = new CreateNutritionPlanAdapter(list, item -> {
+            this.nutritionCreatePlanPresenter.onClickItem(item);
+        });
+        this.mRecyclerView.setAdapter(mAdapter);
     }
 
     @Override
-    public void addNutritionFavorite(boolean status) {}
+    public void clickItem(DefaultNutrition item) {
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        Fragment prev = getFragmentManager().findFragmentByTag(Constants.TagDialogFragment.TAG);
+        if (prev != null) {
+            transaction.remove(prev);
+        }
+        transaction.addToBackStack(null);
+        this.newFragment = CreateNutritionPlanDetailsDialogFragment.newInstance(item);
+        this.newFragment.setListener(this.fragment);
+        this.newFragment.show(transaction, Constants.TagDialogFragment.TAG);
+    }
+
     @Override
-    public void deleteNutritionFavorite(boolean status) {}
-    @Override
-    public void getNutritionSlimmingFavorite(boolean status, List<NutritionSlimming> nutritionSlimmings) {}
-    @Override
-    public void getNutritionToningFavorite(boolean status, List<NutritionToning> nutritionTonings) {}
-    @Override
-    public void getNutritionGainVolumeFavorite(boolean status, List<NutritionGainVolume> nutritionGainVolumes) {}
+    public void getEmptyNutritionFavoriteList() {
+        hideLoading();
+        this.linearLayout.setVisibility(View.VISIBLE);
+        this.mRecyclerView.setVisibility(View.GONE);
+    }
+
 }

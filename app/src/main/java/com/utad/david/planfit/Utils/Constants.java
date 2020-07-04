@@ -71,10 +71,8 @@ public class Constants {
     }
 
     public interface SportDetails {
-        String EXTRA_SLIMMING = "SLIMMING";
-        String EXTRA_GAINVOLUME = "GAINVOLUME";
-        String EXTRA_TONING = "TONING";
-        String EXTRA_OPTION = "OPTION";
+        String EXTRA_MODE = "MODE";
+        String EXTRA_ITEM = "ITEM";
         String EXTRA_URL = "URL";
     }
 
@@ -82,6 +80,7 @@ public class Constants {
         int SLIMMING = 0;
         int TONING = 1;
         int GAIN_VOLUMEN = 2;
+        String EXTRA_MODE = "MODE";
     }
 
     public interface NutritionFavoriteDetails {

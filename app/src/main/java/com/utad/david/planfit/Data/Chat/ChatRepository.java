@@ -47,8 +47,10 @@ public class ChatRepository {
         this.getChat = getChat;
     }
 
-    // Delete Message In The Chat
-
+    /**
+     * Delete chat message
+     * @param message for search delete
+     */
     public void deleteMessageInChat(ChatMessage message) {
         if (this.getChat != null) {
             DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
@@ -75,10 +77,12 @@ public class ChatRepository {
         }
     }
 
-    // Get User Details
-
+    /**
+     * Get user details
+     * @param message for search user
+     */
     public void getUserDetailsByMessage(ChatMessage message) {
-        DocumentReference myUserRef = firebaseFirestore.collection(Constants.CollectionsNames.USER).document(message.getMessageUserId());
+        DocumentReference myUserRef = this.firebaseFirestore.collection(Constants.CollectionsNames.USER).document(message.getMessageUserId());
         if (this.getChat != null) {
             myUserRef.addSnapshotListener((snapshot, e) -> {
                 if (e != null) {
@@ -100,13 +104,18 @@ public class ChatRepository {
         }
     }
 
+
+    /**
+     * Get user photo
+     * @param uid for user
+     */
     private void getUserPhoto(String uid) {
         this.storageReference.child(Constants.CollectionsNames.IMAGES + uid).getDownloadUrl().addOnSuccessListener(uri -> {
             this.userDetails.setImgUser(uri.toString());
-            this.getChat.getUserDetails(true,this.userDetails);
+            this.getChat.getUserDetails(true, this.userDetails);
         }).addOnFailureListener(exception -> {
             this.userDetails.setImgUser("");
-            this.getChat.getUserDetails(true,this.userDetails);
+            this.getChat.getUserDetails(true, this.userDetails);
         });
     }
 

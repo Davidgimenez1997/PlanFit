@@ -11,17 +11,17 @@ import com.utad.david.planfit.Utils.Utils;
 
 public class CreatePlanNutritionViewHolder extends BaseViewHolder {
 
-    public TextView nameSlimming;
-    private ImageView photoSlimming;
+    public TextView namePlanNutrition;
+    private ImageView photoPlanNutrition;
 
     public CreatePlanNutritionViewHolder(View v) {
         super(v);
-        nameSlimming = v.findViewById(R.id.nameSlimming);
-        photoSlimming = v.findViewById(R.id.imageSlimming);
+        this.namePlanNutrition = v.findViewById(R.id.nameItemRecycleview);
+        this.photoPlanNutrition = v.findViewById(R.id.imageItemRecycleview);
     }
 
     public void setData(DefaultNutrition defaultNutrition){
-        nameSlimming.setText(defaultNutrition.getName());
-        Utils.loadImage(defaultNutrition.getPhoto(),photoSlimming,Utils.PLACEHOLDER_GALLERY);
+        this.namePlanNutrition.setText(defaultNutrition.getName());
+        Utils.loadImage(defaultNutrition.getPhoto(), this.photoPlanNutrition, Utils.PLACEHOLDER_GALLERY);
     }
 }

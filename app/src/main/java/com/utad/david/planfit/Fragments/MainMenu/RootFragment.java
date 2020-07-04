@@ -24,8 +24,6 @@ public class RootFragment extends BaseFragment {
     private static String SELECTED = "SELECTED";
     private int selected;
     private Runnable toolbarRunnable;
-    private Callback mListener;
-
 
     private TextView textViewInfo;
     private Button first_button;
@@ -33,31 +31,55 @@ public class RootFragment extends BaseFragment {
     private Button three_button;
     private boolean isDeviceNetwork;
 
-    /******************************** INTERFAZ *************************************+/
+    private Context context;
+    private Sport sports;
+    private Nutrition nutritions;
+    private Favorite favorites;
+    private Plan plans;
+
+    /******************************** INTERFAZES *************************************+/
      *
      */
 
-    public interface Callback {
+    public interface Sport {
         void clickOnAdelgazarSport();
         void clickOnTonificarSport();
         void clickOnGanarVolumenSport();
+    }
 
+    public interface Nutrition {
         void clickOnAdelgazarNutrition();
         void clickOnTonificarNutrition();
         void clickOnGanarVolumenNutrition();
+    }
 
-        void clickOnCreatePlan();
-        void clickOnShowPlan();
-
+    public interface Favorite {
         void clickSportFavorite();
         void clickNutritionFavorite();
+    }
+
+    public interface Plan {
+        void clickOnCreatePlan();
+        void clickOnShowPlan();
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof Callback) {
-            mListener = (Callback) context;
+        this.context = context;
+        if (context != null) {
+            if (context instanceof Sport) {
+                this.sports = (Sport) context;
+            }
+            if (context instanceof Nutrition) {
+                this.nutritions = (Nutrition) context;
+            }
+            if (context instanceof Favorite) {
+                this.favorites = (Favorite) context;
+            }
+            if (context instanceof Plan) {
+                this.plans = (Plan) context;
+            }
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement Callback");
@@ -67,7 +89,15 @@ public class RootFragment extends BaseFragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+        if (this.context instanceof Sport) {
+            this.sports = null;
+        } else if (this.context instanceof Nutrition) {
+            this.nutritions = null;
+        } else if (this.context instanceof Favorite) {
+            this.favorites = null;
+        } else if (this.context instanceof Plan) {
+            this.plans = null;
+        }
     }
 
     /******************************** NEW INSTANCE *************************************+/
@@ -100,8 +130,9 @@ public class RootFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
         Fabric.with(getContext(), new Crashlytics());
 
-        selected = getArguments().getInt(SELECTED);
-
+        if (getArguments() != null) {
+            this.selected = getArguments().getInt(SELECTED);
+        }
     }
 
     @Override
@@ -110,34 +141,26 @@ public class RootFragment extends BaseFragment {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.root_fragment, container, false);
 
-        if(toolbarRunnable != null) {
-            toolbarRunnable.run();
+        if (this.toolbarRunnable != null) {
+            this.toolbarRunnable.run();
         }
 
-        if (UtilsNetwork.checkConnectionInternetDevice(getContext())) {
-            isDeviceNetwork = true;
-        }else{
-            isDeviceNetwork = false;
-        }
+        this.isDeviceNetwork = UtilsNetwork.checkConnectionInternetDevice(this.context);
 
-        if(toolbarRunnable != null) {
-            toolbarRunnable.run();
-        }
+        this.findViewById(view);
 
-        findViewById(view);
-
-        switch (selected){
+        switch (this.selected){
             case Constants.ModeRootFragment.MODE_SPORT:
-                configViewSport();
+                this.configViewSport();
                 break;
             case Constants.ModeRootFragment.MODE_NUTRITION:
-                configViewNutrition();
+                this.configViewNutrition();
                 break;
             case Constants.ModeRootFragment.MODE_FAVORITE:
-                configFavorite();
+                this.configFavorite();
                 break;
             case Constants.ModeRootFragment.MODE_PLAN:
-                configViewPlan();
+                this.configViewPlan();
                 break;
 
         }
@@ -151,47 +174,10 @@ public class RootFragment extends BaseFragment {
      */
 
     private void findViewById(View view){
-        textViewInfo = view.findViewById(R.id.textViewInfo);
-        first_button = view.findViewById(R.id.first_button);
-        second_button = view.findViewById(R.id.second_button);
-        three_button = view.findViewById(R.id.three_button);
-    }
-
-    /******************************** CONFIGURA FAVORITOS *************************************+/
-     *
-     */
-
-    private void configFavorite() {
-        textViewInfo.setText(R.string.itemfavoritos);
-        first_button.setText(R.string.first_nav_name);
-        second_button.setText(R.string.two_nav_name);
-        three_button.setVisibility(View.INVISIBLE);
-
-        if(isDeviceNetwork){
-            onClickFavoriteSport();
-            onClickFavoriteNutrition();
-        }else{
-            Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
-            first_button.setEnabled(false);
-            second_button.setEnabled(false);
-            three_button.setEnabled(false);
-        }
-    }
-
-    private void onClickFavoriteNutrition() {
-        second_button.setOnClickListener(v -> {
-            if(mListener!=null){
-                mListener.clickNutritionFavorite();
-            }
-        });
-    }
-
-    private void onClickFavoriteSport() {
-        first_button.setOnClickListener(v -> {
-            if(mListener!=null){
-                mListener.clickSportFavorite();
-            }
-        });
+        this.textViewInfo = view.findViewById(R.id.textViewInfo);
+        this.first_button = view.findViewById(R.id.first_button);
+        this.second_button = view.findViewById(R.id.second_button);
+        this.three_button = view.findViewById(R.id.three_button);
     }
 
     /******************************** CONFIGURA DEPORTES *************************************+/
@@ -199,44 +185,40 @@ public class RootFragment extends BaseFragment {
      */
 
     private void configViewSport(){
-        textViewInfo.setText(getString(R.string.first_nav_name));
-        first_button.setText(getString(R.string.adelgazar));
-        second_button.setText(getString(R.string.tonificar));
-        three_button.setText(getString(R.string.ganar_volumen));
+        this.textViewInfo.setText(getString(R.string.first_nav_name));
+        this.first_button.setText(getString(R.string.adelgazar));
+        this.second_button.setText(getString(R.string.tonificar));
+        this.three_button.setText(getString(R.string.ganar_volumen));
 
-        if(isDeviceNetwork){
-            onClickAdelgazarSport();
-            onClickTonificarSport();
-            onClickGainVolumeSport();
-        }else{
-            Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
-            first_button.setEnabled(false);
-            second_button.setEnabled(false);
-            three_button.setEnabled(false);
+        if (this.isDeviceNetwork) {
+            this.onClickAdelgazarSport();
+            this.onClickTonificarSport();
+            this.onClickGainVolumeSport();
+        } else {
+           this.deviceOffline();
         }
-
     }
 
     private void onClickAdelgazarSport(){
-        first_button.setOnClickListener(v -> {
-            if(mListener!=null){
-                mListener.clickOnAdelgazarSport();
+        this.first_button.setOnClickListener(v -> {
+            if (this.sports != null) {
+                this.sports.clickOnAdelgazarSport();
             }
         });
     }
 
     private void onClickTonificarSport(){
-        second_button.setOnClickListener(v -> {
-            if(mListener!=null){
-                mListener.clickOnTonificarSport();
+        this.second_button.setOnClickListener(v -> {
+            if (this.sports != null) {
+                this.sports.clickOnTonificarSport();
             }
         });
     }
 
     private void onClickGainVolumeSport(){
-        three_button.setOnClickListener(v -> {
-            if(mListener!=null){
-                mListener.clickOnGanarVolumenSport();
+        this.three_button.setOnClickListener(v -> {
+            if (this.sports != null) {
+                this.sports.clickOnGanarVolumenSport();
             }
         });
     }
@@ -246,43 +228,74 @@ public class RootFragment extends BaseFragment {
      */
 
     private void configViewNutrition(){
-        textViewInfo.setText(getString(R.string.two_nav_name));
-        first_button.setText(getString(R.string.adelgazar));
-        second_button.setText(getString(R.string.tonificar));
-        three_button.setText(getString(R.string.ganar_volumen));
+        this.textViewInfo.setText(getString(R.string.two_nav_name));
+        this.first_button.setText(getString(R.string.adelgazar));
+        this.second_button.setText(getString(R.string.tonificar));
+        this.three_button.setText(getString(R.string.ganar_volumen));
 
-        if(isDeviceNetwork){
-            onClickAdelgazarNutrition();
-            onClickTonificarNutrition();
-            onClickGainVolumeNutrition();
-        }else{
-            Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
-            first_button.setEnabled(false);
-            second_button.setEnabled(false);
-            three_button.setEnabled(false);
+        if (this.isDeviceNetwork) {
+            this.onClickAdelgazarNutrition();
+            this.onClickTonificarNutrition();
+            this.onClickGainVolumeNutrition();
+        } else {
+            this.deviceOffline();
         }
     }
 
     private void onClickAdelgazarNutrition(){
-        first_button.setOnClickListener(v -> {
-            if(mListener!=null){
-                mListener.clickOnAdelgazarNutrition();
+        this.first_button.setOnClickListener(v -> {
+            if (this.nutritions != null){
+                this.nutritions.clickOnAdelgazarNutrition();
             }
         });
     }
 
     private void onClickTonificarNutrition(){
-        second_button.setOnClickListener(v -> {
-            if(mListener!=null){
-                mListener.clickOnTonificarNutrition();
+        this.second_button.setOnClickListener(v -> {
+            if (this.nutritions != null) {
+                this.nutritions.clickOnTonificarNutrition();
             }
         });
     }
 
     private void onClickGainVolumeNutrition(){
-        three_button.setOnClickListener(v -> {
-            if(mListener!=null){
-                mListener.clickOnGanarVolumenNutrition();
+        this.three_button.setOnClickListener(v -> {
+            if (this.nutritions != null) {
+                this.nutritions.clickOnGanarVolumenNutrition();
+            }
+        });
+    }
+
+    /******************************** CONFIGURA FAVORITOS *************************************+/
+     *
+     */
+
+    private void configFavorite() {
+        this.textViewInfo.setText(R.string.itemfavoritos);
+        this.first_button.setText(R.string.first_nav_name);
+        this.second_button.setText(R.string.two_nav_name);
+        this.three_button.setVisibility(View.INVISIBLE);
+
+        if (this.isDeviceNetwork) {
+            this.onClickFavoriteSport();
+            this.onClickFavoriteNutrition();
+        } else {
+            this.deviceOffline();
+        }
+    }
+
+    private void onClickFavoriteNutrition() {
+        this.second_button.setOnClickListener(v -> {
+            if (this.favorites != null) {
+                this.favorites.clickNutritionFavorite();
+            }
+        });
+    }
+
+    private void onClickFavoriteSport() {
+        this.first_button.setOnClickListener(v -> {
+            if (this.favorites != null) {
+                this.favorites.clickSportFavorite();
             }
         });
     }
@@ -292,36 +305,40 @@ public class RootFragment extends BaseFragment {
      */
 
     private void configViewPlan(){
-        textViewInfo.setText(getString(R.string.estas_preparado));
-        first_button.setText(getString(R.string.crear_plan));
-        second_button.setText(getString(R.string.ver_tu_plan));
-        three_button.setVisibility(View.INVISIBLE);
+        this.textViewInfo.setText(getString(R.string.estas_preparado));
+        this.first_button.setText(getString(R.string.crear_plan));
+        this.second_button.setText(getString(R.string.ver_tu_plan));
+        this.three_button.setVisibility(View.INVISIBLE);
 
-        if(isDeviceNetwork){
-            onClickCreatePlan();
-            onClickShowPlan();
-        }else{
-            Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
-            first_button.setEnabled(false);
-            second_button.setEnabled(false);
-            three_button.setEnabled(false);
+        if (this.isDeviceNetwork) {
+            this.onClickCreatePlan();
+            this.onClickShowPlan();
+        } else {
+            this.deviceOffline();
         }
     }
 
     private void onClickCreatePlan() {
-        first_button.setOnClickListener(v -> {
-            if(mListener!=null){
-                mListener.clickOnCreatePlan();
+        this.first_button.setOnClickListener(v -> {
+            if (this.plans != null) {
+                this.plans.clickOnCreatePlan();
             }
         });
     }
 
     private void onClickShowPlan() {
-        second_button.setOnClickListener(v -> {
-            if(mListener!=null){
-                mListener.clickOnShowPlan();
+        this.second_button.setOnClickListener(v -> {
+            if (this.plans != null) {
+                this.plans.clickOnShowPlan();
             }
         });
+    }
+
+    private void deviceOffline() {
+        Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
+        this.first_button.setEnabled(false);
+        this.second_button.setEnabled(false);
+        this.three_button.setEnabled(false);
     }
 }
 

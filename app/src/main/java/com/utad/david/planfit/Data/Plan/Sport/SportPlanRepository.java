@@ -44,31 +44,15 @@ public class SportPlanRepository {
         this.getSportPlan = getSportPlan;
     }
 
-    // Add Sport Plan
-
-    public void addSportPlan() {
-        if(this.getSportPlan != null){
-            Map<String, Object> planSport = new HashMap<>();
-            planSport.put(Constants.ModelSportPlan.NAME, SessionPlan.getInstance().getPlanSport().getName());
-            planSport.put(Constants.ModelSportPlan.PHOTO, SessionPlan.getInstance().getPlanSport().getPhoto());
-            planSport.put(Constants.ModelSportPlan.TIME_START, SessionPlan.getInstance().getPlanSport().getTimeStart());
-            planSport.put(Constants.ModelSportPlan.TIME_END, SessionPlan.getInstance().getPlanSport().getTimeEnd());
-            planSport.put(Constants.ModelSportPlan.IS_OK, SessionPlan.getInstance().getPlanSport().getIsOk());
-            planSport.put(Constants.ModelSportPlan.ID,SessionPlan.getInstance().getPlanSport().getId());
-            String COLLECTION_PLAN_SPORT_USER = Constants.CollectionsNames.USERS + this.currentUser.getUid() + Constants.CollectionsNames.SPORTS_PLAN;
-            firebaseFirestore.collection(COLLECTION_PLAN_SPORT_USER).document(SessionPlan.getInstance().getPlanSport().getId())
-                    .set(planSport)
-                    .addOnSuccessListener(aVoid -> this.getSportPlan.addSportPlan(true))
-                    .addOnFailureListener(e -> this.getSportPlan.addSportPlan(false));
-        }
-    }
-
-    // Get Sports Plan
-
+    /**
+     * Get sport plan for user
+     * If get data call to getSportPlan
+     * If empty list call to emptySportPlan
+     */
     public void getSportPlan() {
         if (this.getSportPlan != null) {
-            String COLLECTION_PLAN_SPORT_USER = Constants.CollectionsNames.USERS + this.currentUser.getUid() + Constants.CollectionsNames.SPORTS_PLAN;
-            CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_PLAN_SPORT_USER);
+            String collectionName = Constants.CollectionsNames.USERS + this.currentUser.getUid() + Constants.CollectionsNames.SPORTS_PLAN;
+            CollectionReference collectionReference = this.firebaseFirestore.collection(collectionName);
             collectionReference.addSnapshotListener((queryDocumentSnapshots, e) -> {
                 if (e != null) {
                     this.getSportPlan.getSportPlan(false, null);
@@ -78,30 +62,54 @@ public class SportPlanRepository {
                 for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                     planSports.add(doc.toObject(PlanSport.class));
                 }
-                if(planSports.size()==0) {
+                if (planSports.size() == 0) {
                     this.getSportPlan.emptySportPlan(true);
                 }
 
-                if(planSports.size()!=0){
+                if (planSports.size() != 0) {
                     this.getSportPlan.getSportPlan(true, planSports);
                 }
             });
         }
     }
 
-    // Delete Sport Plan
+    /**
+     * Add  sport favorite in plan
+     * Use SessionPlan for get sport plan
+     */
+    public void addSportPlan() {
+        if (this.getSportPlan != null) {
+            Map<String, Object> planSport = new HashMap<>();
+            PlanSport item = SessionPlan.getInstance().getPlanSport();
+            planSport.put(Constants.ModelSportPlan.NAME, item.getName());
+            planSport.put(Constants.ModelSportPlan.PHOTO, item.getPhoto());
+            planSport.put(Constants.ModelSportPlan.TIME_START, item.getTimeStart());
+            planSport.put(Constants.ModelSportPlan.TIME_END, item.getTimeEnd());
+            planSport.put(Constants.ModelSportPlan.IS_OK, item.getIsOk());
+            planSport.put(Constants.ModelSportPlan.ID, item.getId());
+            String collectionName = Constants.CollectionsNames.USERS + this.currentUser.getUid() + Constants.CollectionsNames.SPORTS_PLAN;
+            this.firebaseFirestore.collection(collectionName).document(SessionPlan.getInstance().getPlanSport().getId())
+                    .set(planSport)
+                    .addOnSuccessListener(aVoid -> this.getSportPlan.addSportPlan(true))
+                    .addOnFailureListener(e -> this.getSportPlan.addSportPlan(false));
+        }
+    }
 
+    /**
+     * Delete sport plan
+     * @param namePlanSport for delete sport plan
+     */
     public void deleteSportPlan(String namePlanSport){
-        if(this.getSportPlan != null){
-            String COLLECTION_PLAN_SPORT_USER = Constants.CollectionsNames.USERS + this.currentUser.getUid() + Constants.CollectionsNames.SPORTS_PLAN;
-            firebaseFirestore.collection(COLLECTION_PLAN_SPORT_USER)
+        if (this.getSportPlan != null) {
+            String collectionName = Constants.CollectionsNames.USERS + this.currentUser.getUid() + Constants.CollectionsNames.SPORTS_PLAN;
+            this.firebaseFirestore.collection(collectionName)
                     .whereEqualTo(Constants.ModelSportPlan.NAME, namePlanSport)
                     .get()
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
                                 String id = documentSnapshot.getId();
-                                firebaseFirestore.collection(COLLECTION_PLAN_SPORT_USER).document(id)
+                                this.firebaseFirestore.collection(collectionName).document(id)
                                         .delete()
                                         .addOnSuccessListener(aVoid -> this.getSportPlan.deleteSportPlan(true))
                                         .addOnFailureListener(e -> this.getSportPlan.deleteSportPlan(false));
@@ -111,12 +119,14 @@ public class SportPlanRepository {
         }
     }
 
-    // Update Plan
-
+    /**
+     * Update sport plan
+     * @param planSport update item
+     */
     public void updatePlanSport(PlanSport planSport) {
         if (this.getSportPlan != null) {
-            String COLLECTION_PLAN_SPORT_USER = Constants.CollectionsNames.USERS + this.currentUser.getUid() + Constants.CollectionsNames.SPORTS_PLAN;
-            DocumentReference myUserRef = firebaseFirestore.collection(COLLECTION_PLAN_SPORT_USER).document(planSport.getId());
+            String collectionName = Constants.CollectionsNames.USERS + this.currentUser.getUid() + Constants.CollectionsNames.SPORTS_PLAN;
+            DocumentReference myUserRef = this.firebaseFirestore.collection(collectionName).document(planSport.getId());
             Map<String, Object> plan = new HashMap<>();
             plan.put(Constants.ModelSportPlan.IS_OK, planSport.getIsOk());
             myUserRef.update(plan)

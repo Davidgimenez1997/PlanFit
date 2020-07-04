@@ -1,11 +1,9 @@
-
 package com.utad.david.planfit.Fragments.Authentication.Register;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,14 +12,10 @@ import android.widget.EditText;
 import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Base.BaseFragment;
-import com.utad.david.planfit.Utils.UtilsEncryptDecryptAES;
-import com.utad.david.planfit.Data.User.SessionUser;
 import com.utad.david.planfit.R;
-import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
-import java.util.regex.Pattern;
 
-public class RegisterFragment extends BaseFragment {
+public class RegisterFragment extends BaseFragment implements RegisterView {
 
     /******************************** VARIABLES *************************************+/
      *
@@ -34,6 +28,7 @@ public class RegisterFragment extends BaseFragment {
     private String emailUser;
     private String passwordUser;
     private Callback mListener;
+    private RegisterPresenter registerPresenter;
 
     /******************************** INTERFAZ *************************************+/
      *
@@ -48,7 +43,7 @@ public class RegisterFragment extends BaseFragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof Callback) {
-            mListener = (Callback) context;
+            this.mListener = (Callback) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement Callback");
@@ -58,7 +53,7 @@ public class RegisterFragment extends BaseFragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+        this.mListener = null;
     }
 
     /******************************** CONFIGURE UI *************************************+/
@@ -68,15 +63,15 @@ public class RegisterFragment extends BaseFragment {
     @Override
     public void onStart() {
         super.onStart();
-        if(!UtilsNetwork.checkConnectionInternetDevice(getContext())){
-            Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
-        }
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fabric.with(getContext(), new Crashlytics());
+        this.registerPresenter = new RegisterPresenter(this);
+        if (this.registerPresenter.checkInternetDevice(getContext())) {
+            Fabric.with(getContext(), new Crashlytics());
+        }
     }
 
     @Override
@@ -84,10 +79,10 @@ public class RegisterFragment extends BaseFragment {
 
         View view =  inflater.inflate(R.layout.fragment_register, container, false);
 
-        findViewById(view);
-        onClickButtonBack();
-        onClickButtonContinue();
-        configView();
+        this.findViewById(view);
+        this.onClickButtonBack();
+        this.onClickButtonContinue();
+        this.configView();
 
         return view;
     }
@@ -97,17 +92,17 @@ public class RegisterFragment extends BaseFragment {
      */
 
     private void configView(){
-        emailRegister.setText("");
-        passwordRegister.setText("");
-        emailRegister.addTextChangedListener(textWatcherRegisterFragment);
-        passwordRegister.addTextChangedListener(textWatcherRegisterFragment);
+        this.emailRegister.setText("");
+        this.passwordRegister.setText("");
+        this.emailRegister.addTextChangedListener(this.textWatcherRegisterFragment);
+        this.passwordRegister.addTextChangedListener(this.textWatcherRegisterFragment);
     }
 
     private void findViewById(View view){
-        emailRegister = view.findViewById(R.id.emailRegister);
-        passwordRegister = view.findViewById(R.id.passwordRegister);
-        buttonContinue = view.findViewById(R.id.buttonContinue);
-        buttonBack = view.findViewById(R.id.buttonBack);
+        this.emailRegister = view.findViewById(R.id.emailRegister);
+        this.passwordRegister = view.findViewById(R.id.passwordRegister);
+        this.buttonContinue = view.findViewById(R.id.buttonContinue);
+        this.buttonBack = view.findViewById(R.id.buttonBack);
     }
 
     /******************************** ONCLICK CONTINUE *************************************+/
@@ -115,20 +110,8 @@ public class RegisterFragment extends BaseFragment {
      */
 
     private void onClickButtonContinue(){
-        buttonContinue.setOnClickListener(v -> {
-            try {
-                String password = UtilsEncryptDecryptAES.encrypt(passwordRegister.getText().toString().trim());
-                if (mListener!=null){
-                    SessionUser.getInstance().setCredentials(
-                            emailRegister.getText().toString().trim(),
-                            password
-                    );
-                    mListener.clickButtonContinue();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
+        this.buttonContinue.setOnClickListener(v -> {
+            this.registerPresenter.setCredentials(this.emailRegister.getText().toString().trim(), this.passwordRegister.getText().toString().trim());
         });
     }
 
@@ -137,9 +120,9 @@ public class RegisterFragment extends BaseFragment {
      */
 
     private void onClickButtonBack(){
-        buttonBack.setOnClickListener(v -> {
-            if(mListener!=null){
-                mListener.clickButtonBack();
+        this.buttonBack.setOnClickListener(v -> {
+            if (this.mListener != null) {
+                this.mListener.clickButtonBack();
             }
         });
     }
@@ -159,45 +142,32 @@ public class RegisterFragment extends BaseFragment {
         public void afterTextChanged(Editable s) {
             emailUser = emailRegister.getText().toString().trim();
             passwordUser = passwordRegister.getText().toString().trim();
-            buttonContinue.setEnabled(enableButton());
-            if (!enableButton()) {
-                if (!emailValidate(emailUser)) {
-                    emailRegister.setError(getString(R.string.err_email));
-                }
-                if (!passValidate(emailUser)) {
-                    passwordRegister.setError(getString(R.string.err_password));
-                }
+            if (!registerPresenter.emailValidate(emailUser) && registerPresenter.passwordValidate(passwordUser)) {
+                emailRegister.setError(getString(R.string.err_email));
             }
+            if (!registerPresenter.passwordValidate(passwordUser) && registerPresenter.emailValidate(emailUser)) {
+                passwordRegister.setError(getString(R.string.err_password));
+            }
+            if (!registerPresenter.emailValidate(emailUser) && !registerPresenter.passwordValidate(passwordUser)) {
+                emailRegister.setError(getString(R.string.err_email));
+                passwordRegister.setError(getString(R.string.err_password));
+            }
+            boolean validated = registerPresenter.enableButtonContinuee(getContext(), emailUser, passwordUser);
+            buttonContinue.setEnabled(validated);
         }
     };
 
-    private boolean enableButton() {
-        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
-            if (emailValidate(emailUser) && passValidate(passwordUser)) {
-                return true;
-            } else {
-                return false;
-            }
-        }else{
-            return false;
-        }
+    /******************************** CALLBACK DEL PRESENTER *************************************+/
+     *
+     */
+
+    @Override
+    public void onClickContinue() {
+        this.mListener.clickButtonContinue();
     }
 
-    private boolean emailValidate(String str_email) {
-        Pattern pattern = Patterns.EMAIL_ADDRESS;
-        if (pattern.matcher(str_email).matches()) {
-            return true;
-        } else {
-            return false;
-
-        }
-    }
-
-    public boolean passValidate(String str_password) {
-        if (str_password.length() >= 6) {
-            return true;
-        } else {
-            return false;
-        }
+    @Override
+    public void deviceOfflineMessage() {
+        Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
     }
 }

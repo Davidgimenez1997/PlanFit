@@ -31,18 +31,18 @@ public class CreateSportPlanAdapter extends RecyclerView.Adapter<CreatePlanSport
 
     @Override
     public void onBindViewHolder(CreatePlanSportViewHolder holder, int position) {
-        final DefaultSport current = defaultSports.get(position);
+        final DefaultSport current = this.defaultSports.get(position);
         holder.setData(current);
         holder.itemView.setOnClickListener(v -> {
-            if(listener!=null){
-                listener.onItemClick(current);
+            if (this.listener != null) {
+                this.listener.onItemClick(current);
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return defaultSports.size();
+        return this.defaultSports.size();
     }
 }
 

@@ -66,17 +66,27 @@ public class UserRepository {
         return firebaseAuth;
     }
 
-    // Logout
-
+    /**
+     * Logout user
+     */
     public void logout() {
         FirebaseAuth.getInstance().signOut();
     }
 
-    // Add User Info
-
+    /**
+     * Add user data in firebase
+     */
     public void addUserData() {
         if (this.getUser != null) {
             this.currentUser = this.firebaseAuth.getCurrentUser();
+            String password = SessionUser.getInstance().getUser().getPassword();
+            try {
+                String passwordEncrypt = UtilsEncryptDecryptAES.encrypt(password);
+                SessionUser.getInstance().getUser().setPassword(passwordEncrypt);
+                SessionUser.getInstance().getCredentials().setPassword(passwordEncrypt);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             Map<String, Object> map = new HashMap<>();
             this.addImage(SessionUser.getInstance().getUser().getImgUser());
             map.put(Constants.ModelUser.EMAIL, SessionUser.getInstance().getUser().getEmail());
@@ -97,6 +107,10 @@ public class UserRepository {
         }
     }
 
+    /**
+     * Add the photo user
+     * @param image for add
+     */
     private void addImage(String image) {
         this.currentUser = this.firebaseAuth.getCurrentUser();
         if(image!=null){
@@ -107,8 +121,9 @@ public class UserRepository {
         }
     }
 
-    // Get User
-
+    /**
+     * Get user details
+     */
     public void getUserData() {
         if (this.getUser != null) {
             this.currentUser = this.firebaseAuth.getCurrentUser();
@@ -122,6 +137,7 @@ public class UserRepository {
                     this.user = user;
                     try {
                         this.user.setPassword(UtilsEncryptDecryptAES.decrypt(user.getPassword()));
+                        SessionUser.getInstance().setUser(this.user);
                         this.getPhoto();
                     } catch (Exception e1) {
                         e1.printStackTrace();
@@ -133,10 +149,14 @@ public class UserRepository {
         }
     }
 
+    /**
+     * Get photo for user
+     */
     public void getPhoto() {
         this.currentUser = this.firebaseAuth.getCurrentUser();
         this.storageReference.child(Constants.CollectionsNames.IMAGES + currentUser.getUid()).getDownloadUrl().addOnSuccessListener(uri -> {
             this.user.setImgUser(uri.toString());
+            SessionUser.getInstance().setUser(this.user);
             this.getUser.getUserData(true);
         }).addOnFailureListener(exception -> this.getUser.getUserData(false));
     }

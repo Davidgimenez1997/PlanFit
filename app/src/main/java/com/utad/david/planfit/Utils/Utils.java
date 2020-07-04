@@ -33,15 +33,13 @@ public class Utils {
 
     public static void showSoftKeyboard(Context context,View view) {
         if (view.requestFocus()) {
-            InputMethodManager imm = (InputMethodManager)
-                    context.getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
         }
     }
 
     public static void loadImage(String imageUri, final ImageView imageView, final int placeholder) {
         RequestOptions requestOptions = new RequestOptions();
-
         Glide.with(PlanFitApplication.getAppContext())
                 .setDefaultRequestOptions(requestOptions.placeholder(placeholder))
                 .load(imageUri)

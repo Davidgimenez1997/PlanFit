@@ -31,12 +31,12 @@ public class ShowSportPlanAdapter extends RecyclerView.Adapter<ShowPlanSportView
 
     @Override
     public void onBindViewHolder(ShowPlanSportViewHolder holder, final int position) {
-        final ArrayList<PlanSport> current = planSports.get(position);
+        final ArrayList<PlanSport> current = this.planSports.get(position);
         holder.setData(current);
 
         holder.itemView.setOnClickListener(v -> {
-            if(listener!=null){
-                listener.onItemClick(current);
+            if (this.listener != null) {
+                this.listener.onItemClick(current);
             }
         });
 
@@ -44,7 +44,7 @@ public class ShowSportPlanAdapter extends RecyclerView.Adapter<ShowPlanSportView
 
     @Override
     public int getItemCount() {
-        return planSports.size();
+        return this.planSports.size();
     }
 
 }

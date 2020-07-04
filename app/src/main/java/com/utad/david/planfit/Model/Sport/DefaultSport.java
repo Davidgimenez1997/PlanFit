@@ -17,9 +17,7 @@ public class DefaultSport
     private String description;
     private String type;
 
-    public DefaultSport() {
-
-    }
+    public DefaultSport() {}
 
     /******************************** COMPARA POR NOMBRE ALFABETICAMENTE *************************************+/
      *

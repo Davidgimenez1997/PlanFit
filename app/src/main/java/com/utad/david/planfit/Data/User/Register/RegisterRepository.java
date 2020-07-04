@@ -2,7 +2,7 @@ package com.utad.david.planfit.Data.User.Register;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.utad.david.planfit.Model.User.UserCredentials;
+import com.utad.david.planfit.Model.User.Credentials;
 
 public class RegisterRepository {
 
@@ -29,20 +29,20 @@ public class RegisterRepository {
         this.getRegister = getRegister;
     }
 
-    // Register Whit Email And Password
-
-    public void registerWithEmailAndPassword(UserCredentials userCredentials) {
+    /**
+     * Register user whit email and password
+     * @param credentials using for register
+     */
+    public void registerWithEmailAndPassword(Credentials credentials) {
         if (this.getRegister != null) {
-            this.firebaseAuth.createUserWithEmailAndPassword(userCredentials.getEmail(), userCredentials.getPassword())
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            this.currentUser = firebaseAuth.getCurrentUser();
-                            this.getRegister.registerWithEmailAndPassword(true);
-                        } else {
-                            this.getRegister.registerWithEmailAndPassword(false);
-                        }
-                    });
-        }
+            this.firebaseAuth.createUserWithEmailAndPassword(credentials.getEmail(), credentials.getPassword())
+                    .addOnSuccessListener(authResult -> {
+                        this.currentUser = firebaseAuth.getCurrentUser();
+                        this.getRegister.registerWithEmailAndPassword(true);
+                    }).addOnFailureListener(e -> {
+                this.getRegister.registerWithEmailAndPassword(false);
 
+            });
+        }
     }
 }
