@@ -31,18 +31,18 @@ public class CreateNutritionPlanAdapter extends RecyclerView.Adapter<CreatePlanN
 
     @Override
     public void onBindViewHolder(CreatePlanNutritionViewHolder holder, int position) {
-        final DefaultNutrition current = defaultNutritions.get(position);
+        final DefaultNutrition current = this.defaultNutritions.get(position);
         holder.setData(current);
         holder.itemView.setOnClickListener(v -> {
-            if(listener!=null){
-                listener.onItemClick(current);
+            if (this.listener != null) {
+                this.listener.onItemClick(current);
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return defaultNutritions.size();
+        return this.defaultNutritions.size();
     }
 }
 

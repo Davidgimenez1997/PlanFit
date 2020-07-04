@@ -13,7 +13,7 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Adapter.Favorite.Sport.SportFavoriteAdapter;
 import com.utad.david.planfit.Base.BaseFragment;
-import com.utad.david.planfit.DialogFragment.Favorite.Sport.SportDetailsFavoriteDialogFragment;
+import com.utad.david.planfit.DialogFragment.Favorite.Sport.SportDetailsFavoriteDialogDialogFragment;
 import com.utad.david.planfit.Model.Sport.DefaultSport;
 import com.utad.david.planfit.R;
 import com.utad.david.planfit.Utils.Constants;
@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class SportFavoriteFragment extends BaseFragment
-        implements SportDetailsFavoriteDialogFragment.Callback,
+        implements SportDetailsFavoriteDialogDialogFragment.Callback,
         SportFavoriteView {
 
     /******************************** VARIABLES *************************************+/
@@ -34,7 +34,7 @@ public class SportFavoriteFragment extends BaseFragment
     private SportFavoriteAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private LinearLayout linearLayout;
-    private SportDetailsFavoriteDialogFragment sportDetailsFavoriteDialogFragment;
+    private SportDetailsFavoriteDialogDialogFragment sportDetailsFavoriteDialogFragment;
     private SportFavoritePresenter sportFavoritePresenter;
 
 
@@ -140,7 +140,7 @@ public class SportFavoriteFragment extends BaseFragment
                 transaction.remove(prev);
             }
             transaction.addToBackStack(null);
-            this.sportDetailsFavoriteDialogFragment = SportDetailsFavoriteDialogFragment.newInstance(item);
+            this.sportDetailsFavoriteDialogFragment = SportDetailsFavoriteDialogDialogFragment.newInstance(item);
             this.sportDetailsFavoriteDialogFragment.setListener(this);
             this.sportDetailsFavoriteDialogFragment.show(transaction, Constants.TagDialogFragment.TAG);
         });

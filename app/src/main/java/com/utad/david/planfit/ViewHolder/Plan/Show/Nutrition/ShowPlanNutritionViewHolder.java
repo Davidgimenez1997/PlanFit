@@ -17,29 +17,31 @@ public class ShowPlanNutritionViewHolder extends BaseViewHolder {
 
     public ShowPlanNutritionViewHolder(View v) {
         super(v);
-        timeStart = v.findViewById(R.id.timeStart);
+        this.timeStart = v.findViewById(R.id.timeStart);
     }
 
     public void setData(ArrayList<PlanNutrition> planNutrition){
-        for(int i=0;i<planNutrition.size();i++){
+        for (int i = 0; i < planNutrition.size(); i++) {
             this.setTypes(planNutrition.get(i));
         }
     }
 
     private void setTypes(PlanNutrition planNutrition) {
+        String text = "";
         switch (planNutrition.getType()){
             case Constants.TypesPlanNutrition.MODE_DESAYUNO:
-                timeStart.setText(Constants.TypesPlanNutrition.DESAYUNO);
+                text = Constants.TypesPlanNutrition.DESAYUNO;
                 break;
             case Constants.TypesPlanNutrition.MODE_COMIDA:
-                timeStart.setText(Constants.TypesPlanNutrition.COMIDA);
+                text = Constants.TypesPlanNutrition.COMIDA;
                 break;
             case Constants.TypesPlanNutrition.MODE_MERIENDA:
-                timeStart.setText(Constants.TypesPlanNutrition.MERIENDA);
+                text = Constants.TypesPlanNutrition.MERIENDA;
                 break;
             case Constants.TypesPlanNutrition.MODE_CENA:
-                timeStart.setText(Constants.TypesPlanNutrition.CENA);
+                text = Constants.TypesPlanNutrition.CENA;
                 break;
         }
+        this.timeStart.setText(text);
     }
 }

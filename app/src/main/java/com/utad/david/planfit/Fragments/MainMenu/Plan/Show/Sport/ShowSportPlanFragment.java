@@ -55,7 +55,7 @@ public class ShowSportPlanFragment extends BaseFragment
 
     @Override
     public void onAttach(Activity activity) {
-        myContext = (FragmentActivity) activity;
+        this.myContext = (FragmentActivity) activity;
         super.onAttach(activity);
     }
 
@@ -69,8 +69,8 @@ public class ShowSportPlanFragment extends BaseFragment
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_show_sport_plan, container, false);
 
-        if (toolbarRunnable != null) {
-            toolbarRunnable.run();
+        if (this.toolbarRunnable != null) {
+            this.toolbarRunnable.run();
         }
 
         this.showSportPlanPresenter = new ShowSportPlanPresenter(this);
@@ -80,11 +80,11 @@ public class ShowSportPlanFragment extends BaseFragment
             Fabric.with(getContext(), new Crashlytics());
         }
 
-        mRecyclerView = view.findViewById(R.id.recycler_view_nutrition);
-        linearLayout = view.findViewById(R.id.linear_empty_favorites);
-        mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new GridLayoutManager(getContext(), 1);
-        mRecyclerView.setLayoutManager(mLayoutManager);
+        this.mRecyclerView = view.findViewById(R.id.recycler_view_nutrition);
+        this.linearLayout = view.findViewById(R.id.linear_empty_favorites);
+        this.mRecyclerView.setHasFixedSize(true);
+        this.mLayoutManager = new GridLayoutManager(getContext(), 1);
+        this.mRecyclerView.setLayoutManager(this.mLayoutManager);
 
         return view;
     }
@@ -119,7 +119,7 @@ public class ShowSportPlanFragment extends BaseFragment
 
         for (int i = 0;i < arrSport.size(); i++) {
             if (arrSport.get(i).getTimeStart() != time) {
-                count = count+1;
+                count = count + 1;
                 ArrayList<PlanSport> aux2 = new ArrayList<>();
                 this.listToListPlan.add(aux2);
             }
@@ -154,7 +154,7 @@ public class ShowSportPlanFragment extends BaseFragment
             arrSport.add(item);
         }
         this.showSportPlanPresenter.shortArray(arrSport);
-        for (int i = 0;i < arrSport.size(); i++) {
+        for (int i = 0; i < arrSport.size(); i++) {
             if (arrSport.get(i).getIsOk().equals(Constants.ModePlan.NO)) {
                 endOk = false;
             }

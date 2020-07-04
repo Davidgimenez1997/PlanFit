@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.utad.david.planfit.Model.Sport.DefaultSport;
 import com.utad.david.planfit.R;
-import com.utad.david.planfit.ViewHolder.Favorite.SportFavoriteViewHolder;
+import com.utad.david.planfit.ViewHolder.Favorite.Sport.SportFavoriteViewHolder;
 import java.util.List;
 
 public class SportFavoriteAdapter extends RecyclerView.Adapter<SportFavoriteViewHolder> {

@@ -8,29 +8,22 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-import com.google.firebase.auth.*;
-import com.utad.david.planfit.Activitys.MainMenuActivity;
+
+import com.utad.david.planfit.Activitys.MainMenu.MainMenuActivity;
 import com.utad.david.planfit.Base.BaseFragment;
-import com.utad.david.planfit.Data.User.SessionUser;
-import com.utad.david.planfit.Data.User.Login.GetLogin;
-import com.utad.david.planfit.Data.User.Login.LoginRepository;
 import com.utad.david.planfit.Fragments.Authentication.Register.RegisterFragment;
-import com.utad.david.planfit.Utils.UtilsEncryptDecryptAES;
 import com.utad.david.planfit.R;
 import com.crashlytics.android.Crashlytics;
-import com.utad.david.planfit.Utils.UtilsNetwork;
 import io.fabric.sdk.android.Fabric;
-import java.util.regex.Pattern;
 
 public class LoginFragment extends BaseFragment
-        implements GetLogin {
+        implements LoginView {
 
     /******************************** VARIABLES *************************************+/
      *
@@ -43,7 +36,8 @@ public class LoginFragment extends BaseFragment
     private Button buttonRegister;
     private String emailUser;
     private String passwordUser;
-    public Context context;
+    private Context context;
+    private LoginPresenter presenter;
 
     /******************************** INTERFAZ *************************************+/
      *
@@ -58,7 +52,7 @@ public class LoginFragment extends BaseFragment
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof Callback) {
-            mListener = (Callback) context;
+            this.mListener = (Callback) context;
             this.context = context;
         } else {
             throw new RuntimeException(context.toString()
@@ -69,7 +63,7 @@ public class LoginFragment extends BaseFragment
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+        this.mListener = null;
     }
 
 
@@ -84,12 +78,13 @@ public class LoginFragment extends BaseFragment
 
        View view = inflater.inflate(R.layout.fragment_login, container, false);
 
-       findViewById(view);
-       onClickButtonLogin();
-       onClickButtonRegister();
-       configView();
-       checkStatusUserFirebase();
-       createLoginDialog();
+       this.presenter = new LoginPresenter(this);
+       this.findViewById(view);
+       this.onClickButtonLogin();
+       this.onClickButtonRegister();
+       this.configView();
+       this.checkStatusUserFirebase();
+       this.createLoginDialog();
 
        return view;
     }
@@ -99,17 +94,17 @@ public class LoginFragment extends BaseFragment
      */
 
     private void configView(){
-        emailLogin.setText("");
-        passwordLogin.setText("");
-        emailLogin.addTextChangedListener(textWatcherLoginFragment);
-        passwordLogin.addTextChangedListener(textWatcherLoginFragment);
+        this.emailLogin.setText("");
+        this.passwordLogin.setText("");
+        this.emailLogin.addTextChangedListener(this.textWatcherLoginFragment);
+        this.passwordLogin.addTextChangedListener(this.textWatcherLoginFragment);
     }
 
     private void findViewById(View view){
-        emailLogin = view.findViewById(R.id.emailLogin);
-        passwordLogin = view.findViewById(R.id.passwordLogin);
-        buttonLogin = view.findViewById(R.id.buttonLogin);
-        buttonRegister = view.findViewById(R.id.buttonRegister);
+        this.emailLogin = view.findViewById(R.id.emailLogin);
+        this.passwordLogin = view.findViewById(R.id.passwordLogin);
+        this.buttonLogin = view.findViewById(R.id.buttonLogin);
+        this.buttonRegister = view.findViewById(R.id.buttonRegister);
     }
 
     /******************************** CONFIGURA EL ESTADO DEL USUARIO *************************************+/
@@ -119,31 +114,14 @@ public class LoginFragment extends BaseFragment
     @Override
     public void onStart() {
         super.onStart();
-        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
-            LoginRepository.getInstance().firebaseAuth.addAuthStateListener(LoginRepository.getInstance().authStateListener);
-            LoginRepository.getInstance().firebaseAuth.addAuthStateListener(
-                    LoginRepository.getInstance().authStateListener
-            );
-            LoginRepository.getInstance().setGetLogin(this);
-            LoginRepository.getInstance().firebaseAuth = FirebaseAuth.getInstance();
-        }else{
-            Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
+        if (this.presenter.checkInternetDevice(getContext())) {
+            this.presenter.checkAuthStateListener();
         }
     }
 
     private void checkStatusUserFirebase(){
-        LoginRepository.getInstance().authStateListener = firebaseAuth -> {
-            LoginRepository.getInstance().currentUser = firebaseAuth.getCurrentUser();
-            if (LoginRepository.getInstance().currentUser != null) {
-                Activity activity = getActivity();
-                if(activity!=null){
-                    Intent intent = new Intent(context, MainMenuActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    activity.startActivity(intent);
-                    activity.finish();
-                }
-            }
-        };
+        this.presenter.navigateToMainMenuIsUserLoged(this);
+
     }
 
     /******************************** ONCLICK LOGIN *************************************+/
@@ -151,23 +129,14 @@ public class LoginFragment extends BaseFragment
      */
 
     private void onClickButtonLogin(){
-            buttonLogin.setOnClickListener(v -> {
-                if (mListener!=null){
-                    showLoginDialog();
-                    try {
-                        String password = UtilsEncryptDecryptAES.encrypt(passwordLogin.getText().toString().trim());
-                        SessionUser.getInstance().setCredentials(
-                                emailLogin.getText().toString().trim(),
-                                password
-                        );
-                        mListener.clickButtonLogin();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }else{
-                    dismissLoginDialog();
-                }
-            });
+        this.buttonLogin.setOnClickListener(v -> {
+            if (this.mListener != null) {
+                showLoginDialog();
+                this.presenter.setCredentials(this.passwordLogin.getText().toString().trim(), this.emailLogin.getText().toString().trim());
+            } else {
+                dismissLoginDialog();
+            }
+        });
     }
 
     /******************************** ONCLICK REGISTER *************************************+/
@@ -175,9 +144,9 @@ public class LoginFragment extends BaseFragment
      */
 
     private void onClickButtonRegister(){
-        buttonRegister.setOnClickListener(v -> {
-            if(mListener!=null){
-                mListener.clickButtonRegister();
+        this.buttonRegister.setOnClickListener(v -> {
+            if (this.mListener != null) {
+                this.mListener.clickButtonRegister();
             }
         });
     }
@@ -197,85 +166,79 @@ public class LoginFragment extends BaseFragment
         public void afterTextChanged(Editable s) {
             emailUser = emailLogin.getText().toString().trim();
             passwordUser = passwordLogin.getText().toString().trim();
-            buttonLogin.setEnabled(enableButton());
-            if (!enableButton()) {
-                if (!emailValidate(emailUser)) {
-                    emailLogin.setError(getString(R.string.err_email));
-                }
-                if (!passValidate(emailUser)) {
-                    passwordLogin.setError(getString(R.string.err_password));
-                }
+            if (!presenter.emailValidate(emailUser) && presenter.passwordValidate(passwordUser)) {
+                emailLogin.setError(getString(R.string.err_email));
             }
+            if (!presenter.passwordValidate(passwordUser) && presenter.emailValidate(emailUser)) {
+                passwordLogin.setError(getString(R.string.err_password));
+            }
+            if (!presenter.emailValidate(emailUser) && !presenter.passwordValidate(passwordUser)) {
+                emailLogin.setError(getString(R.string.err_email));
+                passwordLogin.setError(getString(R.string.err_password));
+            }
+            boolean validated = presenter.enableButtonLogin(getContext(), emailUser, passwordUser);
+            buttonLogin.setEnabled(validated);
         }
     };
-
-    private boolean enableButton() {
-        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
-            if (emailValidate(emailUser) && passValidate(passwordUser)) {
-                return true;
-            } else {
-                return false;
-            }
-        }else{
-            return false;
-        }
-    }
-
-    private boolean emailValidate(String str_email) {
-        Pattern pattern = Patterns.EMAIL_ADDRESS;
-        if (pattern.matcher(str_email).matches()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public boolean passValidate(String str_password) {
-        if (str_password.length() >= 6) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 
     /******************************** ERROR AL INICIAR SESION *************************************+/
      *
      */
 
     private void errorSingInRegister(String title){
-        if(mListener!=null){
+        if (this.mListener != null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
-            builder.setMessage(title)
-                    .setPositiveButton(R.string.info_dialog_err, (dialog, id) -> {
-                        RegisterFragment registerFragment = new RegisterFragment();
-                        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                        transaction.replace(R.id.frameLayout_FirstActivity, registerFragment);
-                        transaction.addToBackStack(null);
-                        transaction.commit();
-                    });
+            builder.setMessage(title).setPositiveButton(R.string.info_dialog_err, (dialog, id) -> {
+                this.navigateToRegisterFragment();
+            });
             builder.create();
             builder.show();
         }
     }
 
-    /******************************** CALLBACK DE FIREBASE *************************************+/
+    private void navigateToRegisterFragment() {
+        RegisterFragment registerFragment = new RegisterFragment();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.frameLayout_FirstActivity, registerFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    /******************************** CALLBACK DEL PRESENTER *************************************+/
      *
      */
 
     @Override
-    public void loginWhitEmailAndPassword(boolean status) {
-        if (status) {
-            Toast.makeText(getContext(), getString(R.string.info_login_ok), Toast.LENGTH_LONG).show();
-            dismissLoginDialog();
-            Intent intent = new Intent(getContext(),MainMenuActivity.class);
-            startActivity(intent);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            getActivity().finish();
-        } else {
-            dismissLoginDialog();
-            errorSingInRegister(getString(R.string.err_login_fail));
-        }
+    public void okLogin() {
+        Toast.makeText(getContext(), getString(R.string.info_login_ok), Toast.LENGTH_LONG).show();
+        dismissLoginDialog();
+        Intent intent = new Intent(getContext(),MainMenuActivity.class);
+        startActivity(intent);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        getActivity().finish();
     }
 
+    @Override
+    public void errorLogin() {
+        dismissLoginDialog();
+        this.errorSingInRegister(getString(R.string.err_login_fail));
+    }
 
+    @Override
+    public void navigateToMainMenu(Activity activity) {
+        Intent intent = new Intent(context, MainMenuActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        activity.startActivity(intent);
+        activity.finish();
+    }
+
+    @Override
+    public void clickLoginButton() {
+        this.mListener.clickButtonLogin();
+    }
+
+    @Override
+    public void deviceOffline() {
+        Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
+    }
 }

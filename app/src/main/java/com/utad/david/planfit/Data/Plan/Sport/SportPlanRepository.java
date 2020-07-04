@@ -52,7 +52,7 @@ public class SportPlanRepository {
     public void getSportPlan() {
         if (this.getSportPlan != null) {
             String collectionName = Constants.CollectionsNames.USERS + this.currentUser.getUid() + Constants.CollectionsNames.SPORTS_PLAN;
-            CollectionReference collectionReference = firebaseFirestore.collection(collectionName);
+            CollectionReference collectionReference = this.firebaseFirestore.collection(collectionName);
             collectionReference.addSnapshotListener((queryDocumentSnapshots, e) -> {
                 if (e != null) {
                     this.getSportPlan.getSportPlan(false, null);
@@ -88,7 +88,7 @@ public class SportPlanRepository {
             planSport.put(Constants.ModelSportPlan.IS_OK, item.getIsOk());
             planSport.put(Constants.ModelSportPlan.ID, item.getId());
             String collectionName = Constants.CollectionsNames.USERS + this.currentUser.getUid() + Constants.CollectionsNames.SPORTS_PLAN;
-            firebaseFirestore.collection(collectionName).document(SessionPlan.getInstance().getPlanSport().getId())
+            this.firebaseFirestore.collection(collectionName).document(SessionPlan.getInstance().getPlanSport().getId())
                     .set(planSport)
                     .addOnSuccessListener(aVoid -> this.getSportPlan.addSportPlan(true))
                     .addOnFailureListener(e -> this.getSportPlan.addSportPlan(false));
@@ -102,14 +102,14 @@ public class SportPlanRepository {
     public void deleteSportPlan(String namePlanSport){
         if (this.getSportPlan != null) {
             String collectionName = Constants.CollectionsNames.USERS + this.currentUser.getUid() + Constants.CollectionsNames.SPORTS_PLAN;
-            firebaseFirestore.collection(collectionName)
+            this.firebaseFirestore.collection(collectionName)
                     .whereEqualTo(Constants.ModelSportPlan.NAME, namePlanSport)
                     .get()
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
                                 String id = documentSnapshot.getId();
-                                firebaseFirestore.collection(collectionName).document(id)
+                                this.firebaseFirestore.collection(collectionName).document(id)
                                         .delete()
                                         .addOnSuccessListener(aVoid -> this.getSportPlan.deleteSportPlan(true))
                                         .addOnFailureListener(e -> this.getSportPlan.deleteSportPlan(false));
@@ -126,7 +126,7 @@ public class SportPlanRepository {
     public void updatePlanSport(PlanSport planSport) {
         if (this.getSportPlan != null) {
             String collectionName = Constants.CollectionsNames.USERS + this.currentUser.getUid() + Constants.CollectionsNames.SPORTS_PLAN;
-            DocumentReference myUserRef = firebaseFirestore.collection(collectionName).document(planSport.getId());
+            DocumentReference myUserRef = this.firebaseFirestore.collection(collectionName).document(planSport.getId());
             Map<String, Object> plan = new HashMap<>();
             plan.put(Constants.ModelSportPlan.IS_OK, planSport.getIsOk());
             myUserRef.update(plan)

@@ -48,7 +48,7 @@ public class SportFavoriteRepository {
     public void getSportFavoriteListByType(String type) {
         if (this.getSportFavorite != null) {
             String collectionName = Constants.CollectionsNames.USERS + this.currentUser.getUid() + Constants.CollectionsNames.SPORTS_FAVORITE;
-            CollectionReference collectionReference = firebaseFirestore.collection(collectionName);
+            CollectionReference collectionReference = this.firebaseFirestore.collection(collectionName);
             collectionReference.whereEqualTo(Constants.ModelSportFavorite.TYPE, type)
                     .addSnapshotListener((queryDocumentSnapshots, e) -> {
                         if (e != null) {
@@ -71,7 +71,7 @@ public class SportFavoriteRepository {
     public void getSportFavoriteList() {
         if (this.getSportFavorite != null) {
             String collectionName = Constants.CollectionsNames.USERS + this.currentUser.getUid() + Constants.CollectionsNames.SPORTS_FAVORITE;
-            CollectionReference collectionReference = firebaseFirestore.collection(collectionName);
+            CollectionReference collectionReference = this.firebaseFirestore.collection(collectionName);
             collectionReference.addSnapshotListener((queryDocumentSnapshots, e) -> {
                 if (e != null) {
                     this.getSportFavorite.getSportFavoriteList(false, null);
@@ -121,14 +121,14 @@ public class SportFavoriteRepository {
     public void deleteFavoriteSport(DefaultSport defaultSport) {
         if (this.getSportFavorite !=  null) {
             String collectionName = Constants.CollectionsNames.USERS + this.currentUser.getUid() + Constants.CollectionsNames.SPORTS_FAVORITE;
-            firebaseFirestore.collection(collectionName)
+            this.firebaseFirestore.collection(collectionName)
                     .whereEqualTo(Constants.ModelSportFavorite.NAME, defaultSport.getName())
                     .get()
                     .addOnCompleteListener(task -> {
                         if(task.isSuccessful()){
                             for (QueryDocumentSnapshot documentSnapshot : task.getResult()){
                                 String id = documentSnapshot.getId();
-                                firebaseFirestore.collection(collectionName).document(id)
+                                this.firebaseFirestore.collection(collectionName).document(id)
                                         .delete()
                                         .addOnSuccessListener(aVoid -> this.getSportFavorite.deleteSportFavorite(true))
                                         .addOnFailureListener(e -> this.getSportFavorite.deleteSportFavorite(false));

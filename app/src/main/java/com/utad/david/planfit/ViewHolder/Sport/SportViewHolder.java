@@ -22,7 +22,7 @@ public class SportViewHolder extends BaseViewHolder {
 
     public void setData(DefaultSport defaultSport){
         this.nameSport.setText(defaultSport.getName());
-        Utils.loadImage(defaultSport.getPhoto(),this.photoSport,Utils.PLACEHOLDER_GALLERY);
+        Utils.loadImage(defaultSport.getPhoto(), this.photoSport, Utils.PLACEHOLDER_GALLERY);
 
     }
 }

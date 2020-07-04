@@ -2,7 +2,7 @@ package com.utad.david.planfit.Data.User.Login;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.utad.david.planfit.Model.User.UserCredentials;
+import com.utad.david.planfit.Model.User.Credentials;
 
 public class LoginRepository {
 
@@ -32,11 +32,13 @@ public class LoginRepository {
         this.getLogin = getLogin;
     }
 
-    // Login Whit Email And Password
-
-    public void loginWithEmailAndPassword(UserCredentials userCredentials) {
+    /**
+     * Login whit email and password
+     * @param credentials using in loggin
+     */
+    public void loginWithEmailAndPassword(Credentials credentials) {
         if (this.getLogin != null) {
-            this.firebaseAuth.signInWithEmailAndPassword(userCredentials.getEmail(), userCredentials.getPassword())
+            this.firebaseAuth.signInWithEmailAndPassword(credentials.getEmail(), credentials.getPassword())
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             this.currentUser = this.firebaseAuth.getCurrentUser();

@@ -6,34 +6,29 @@ import android.net.NetworkInfo;
 
 public class UtilsNetwork {
 
-    public static final int TYPE_WIFI = 1;
-    public static final int TYPE_MOBILE = 2;
-    public static final int TYPE_NOT_CONNECTED = 0;
-    public static final int NETWORK_STATUS_NOT_CONNECTED = 0;
-    public static final int NETWORK_STATUS_WIFI = 1;
-    public static final int NETWORK_STATUS_MOBILE = 2;
+    private static int TYPE_WIFI = 1;
+    private static int TYPE_MOBILE = 2;
+    private static int TYPE_NOT_CONNECTED = 0;
+    private static int NETWORK_STATUS_NOT_CONNECTED = 0;
+    private static int NETWORK_STATUS_WIFI = 1;
+    private static int NETWORK_STATUS_MOBILE = 2;
 
-    public static boolean checkConnectionInternetDevice(Context context){
-
+    public static boolean checkConnectionInternetDevice(Context context) {
         boolean isConnected = false;
-
-        if(getConnectivityStatusString(context)==NETWORK_STATUS_NOT_CONNECTED){
-            isConnected=false;
-        }else if(getConnectivityStatus(context)==NETWORK_STATUS_MOBILE
-                || getConnectivityStatus(context)==NETWORK_STATUS_WIFI){
-            isConnected=true;
+        if (getConnectivityStatus(context) == NETWORK_STATUS_MOBILE || getConnectivityStatus(context) == NETWORK_STATUS_WIFI) {
+            isConnected = true;
+        } else if (getConnectivityStatusString(context) == NETWORK_STATUS_NOT_CONNECTED) {
+            isConnected = false;
         }
         return isConnected;
     }
 
     private static int getConnectivityStatus(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         if (null != activeNetwork) {
             if(activeNetwork.getType() == ConnectivityManager.TYPE_WIFI)
                 return TYPE_WIFI;
-
             if(activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE)
                 return TYPE_MOBILE;
         }

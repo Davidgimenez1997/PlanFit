@@ -28,6 +28,10 @@ public class DetailsSportPlanPresenter implements GetSportPlan {
         }
     }
 
+    public void updatePlan(PlanSport item) {
+        SportPlanRepository.getInstance().updatePlanSport(item);
+    }
+
     @Override
     public void getSportPlan(boolean status, List<PlanSport> planSports) {
         this.view.getSportPlan();

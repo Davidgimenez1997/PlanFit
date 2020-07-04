@@ -30,9 +30,9 @@ public class YoutubeActivity extends YouTubeBaseActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_youtube);
-        youTubePlayerView = findViewById(R.id.youtube_player);
-        urlData = getIntent().getStringExtra(URL);
-        onInitializedListener();
+        this.youTubePlayerView = findViewById(R.id.youtube_player);
+        this.urlData = getIntent().getStringExtra(URL);
+        this.onInitializedListener();
     }
 
     /******************************** CONFIGURA LA REPRODUCION DEL VIDEO *************************************+/
@@ -40,7 +40,7 @@ public class YoutubeActivity extends YouTubeBaseActivity {
      */
 
     private void onInitializedListener(){
-        onInitializedListener = new YouTubePlayer.OnInitializedListener(){
+        this.onInitializedListener = new YouTubePlayer.OnInitializedListener(){
             @Override
             public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
                 youTubePlayer.setFullscreen(true);
@@ -52,6 +52,6 @@ public class YoutubeActivity extends YouTubeBaseActivity {
 
             }
         };
-        youTubePlayerView.initialize(YoutubePlayerConfig.getApiKey(),onInitializedListener);
+        this.youTubePlayerView.initialize(YoutubePlayerConfig.getApiKey(),onInitializedListener);
     }
 }

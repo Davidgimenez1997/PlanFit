@@ -3,16 +3,11 @@ package com.utad.david.planfit.Utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
-
+import com.utad.david.planfit.Model.Developer.Developer;
+import com.utad.david.planfit.Model.Nutrition.DefaultNutrition;
 import com.utad.david.planfit.Model.Sport.DefaultSport;
-
-import com.utad.david.planfit.Model.Nutrition.NutritionSlimming;
-import com.utad.david.planfit.Model.Nutrition.NutritionToning;
-import com.utad.david.planfit.Model.Nutrition.NutritionGainVolume;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +22,8 @@ public class SharedPreferencesManager {
     public static final String NUTRITION_SLIMING_TAG = "NutritionSlimming";
     public static final String NUTRITION_TONING_TAG = "NutritionToning";
     public static final String NUTRITION_GAIN_VOLUMEN_TAG = "NutritionGainVolumen";
+
+    public static final String DEVELOPER_INFO = "DeveloperInfo";
 
     /**
      * Clear all shared preferences for update structure
@@ -72,56 +69,60 @@ public class SharedPreferencesManager {
         return gson.fromJson(json, new TypeToken<ArrayList<DefaultSport>>(){}.getType());
     }
 
-    // Save Nutrition In Shared Preferences
-
-    public static void saveNutritionSlimming(List<NutritionSlimming> list, Context context, String name) {
+    /**
+     * Save Nutrition List Get Firebase In SharedPreferences
+     * @param list to save
+     * @param context use to share preferences
+     * @param tag search share preferences
+     */
+    public static void saveNutritionList(List<DefaultNutrition> list, Context context, String tag) {
         SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
         SharedPreferences.Editor prefsEditor = appSharedPrefs.edit();
         Gson gson = new Gson();
         String json = gson.toJson(list);
-        prefsEditor.putString(name, json);
+        prefsEditor.putString(tag, json);
         prefsEditor.commit();
     }
 
-    public static void saveNutritionToning(List<NutritionToning> list, Context context, String name) {
+    /**
+     * Load Nutrition list Save In SharedPreferences
+     * @param context use to sharedpreferences
+     * @param tag search share preferences
+     * @return nutrition list
+     */
+    public static List<DefaultNutrition> loadNutritionList(Context context, String tag) {
+        SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
+        Gson gson = new Gson();
+        String json = appSharedPrefs.getString(tag, "");
+        return gson.fromJson(json, new TypeToken<ArrayList<DefaultNutrition>>(){}.getType());
+    }
+
+    /**
+     * Save developer data in SharedPreferences
+     * @param developer info to save
+     * @param context use to sharedpreferences
+     * @param tag for search
+     */
+    public static void saveDeveloper(Developer developer, Context context, String tag) {
         SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
         SharedPreferences.Editor prefsEditor = appSharedPrefs.edit();
-        Gson gson = new Gson();
-        String json = gson.toJson(list);
-        prefsEditor.putString(name, json);
+        Gson gson =  new Gson();
+        String json = gson.toJson(developer);
+        prefsEditor.putString(tag, json);
         prefsEditor.commit();
     }
 
-    public static void saveNutritionGainVolume(List<NutritionGainVolume> list, Context context, String name) {
-        SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
-        SharedPreferences.Editor prefsEditor = appSharedPrefs.edit();
-        Gson gson = new Gson();
-        String json = gson.toJson(list);
-        prefsEditor.putString(name, json);
-        prefsEditor.commit();
-    }
-
-    // Load Nutrition In Shared Preferences
-
-    public static List<NutritionSlimming> loadNutritionSlimming(Context context, String name) {
+    /**
+     * Load  developer info
+     * @param context use to sharedpreferences
+     * @param tag for search info
+     * @return developer data
+     */
+    public static Developer loadDeveloper(Context context, String tag) {
         SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
         Gson gson = new Gson();
-        String json = appSharedPrefs.getString(name, "");
-        return gson.fromJson(json, new TypeToken<ArrayList<NutritionSlimming>>(){}.getType());
-    }
-
-    public static List<NutritionToning> loadNutritionToning(Context context, String name) {
-        SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
-        Gson gson = new Gson();
-        String json = appSharedPrefs.getString(name, "");
-        return gson.fromJson(json, new TypeToken<ArrayList<NutritionToning>>(){}.getType());
-    }
-
-    public static List<NutritionGainVolume> loadNutritionGainVolume(Context context, String name) {
-        SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
-        Gson gson = new Gson();
-        String json = appSharedPrefs.getString(name, "");
-        return gson.fromJson(json, new TypeToken<ArrayList<NutritionGainVolume>>(){}.getType());
+        String json = appSharedPrefs.getString(tag, "");
+        return gson.fromJson(json, Developer.class);
     }
 
 }

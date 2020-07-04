@@ -25,7 +25,6 @@ public class SportFragment extends BaseFragment implements SportDetailsDialogFra
 
     private SportFragment fragment;
     private Runnable toolbarRunnable;
-
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -56,16 +55,14 @@ public class SportFragment extends BaseFragment implements SportDetailsDialogFra
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_sport_recycleview, container, false);
 
-        if(toolbarRunnable != null) {
-            toolbarRunnable.run();
+        if (this.toolbarRunnable != null) {
+            this.toolbarRunnable.run();
         }
 
-        // this.mode = getArguments().getInt(MODE);
-
-        mRecyclerView = view.findViewById(R.id.recycler_view_sport);
-        mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new GridLayoutManager(getContext(), 2);
-        mRecyclerView.setLayoutManager(mLayoutManager);
+        this.mRecyclerView = view.findViewById(R.id.recycler_view_sport);
+        this.mRecyclerView.setHasFixedSize(true);
+        this.mLayoutManager = new GridLayoutManager(getContext(), 2);
+        this.mRecyclerView.setLayoutManager(mLayoutManager);
 
         showLoading();
         switch (this.mode) {
@@ -82,7 +79,6 @@ public class SportFragment extends BaseFragment implements SportDetailsDialogFra
         this.sportPresenter.loadData();
 
         return view;
-
     }
 
     @Override
@@ -92,7 +88,7 @@ public class SportFragment extends BaseFragment implements SportDetailsDialogFra
     }
 
     private void configureRecycleView (List<DefaultSport> data) {
-        mAdapter = new SportAdapter(data, item -> {
+        this.mAdapter = new SportAdapter(data, item -> {
             switch (this.mode) {
                 case Constants.SportNutritionOption.SLIMMING:
                     this.sportPresenter.onListItemClick(item, this.mode);
@@ -105,7 +101,7 @@ public class SportFragment extends BaseFragment implements SportDetailsDialogFra
                     break;
             }
         });
-        mRecyclerView.setAdapter(mAdapter);
+        this.mRecyclerView.setAdapter(this.mAdapter);
     }
 
     @Override

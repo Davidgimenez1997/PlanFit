@@ -9,9 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
-import com.utad.david.planfit.Adapter.Plan.Show.Sport.ShowDetailsSportPlanAdapter;
+import com.utad.david.planfit.Adapter.Plan.Show.Sport.Details.ShowDetailsSportPlanAdapter;
 import com.utad.david.planfit.Base.BaseFragment;
-import com.utad.david.planfit.Data.Plan.Sport.SportPlanRepository;
 import com.utad.david.planfit.Model.Plan.PlanSport;
 import com.utad.david.planfit.R;
 import com.utad.david.planfit.Utils.Constants;
@@ -125,8 +124,8 @@ public class DetailsSportPlanFragment extends BaseFragment
                     } else if (item.getIsOk().equals(Constants.ModePlan.NO)) {
                         item.setIsOk(Constants.ModePlan.YES);
                     }
-                    SportPlanRepository.getInstance().updatePlanSport(item);
-                    mAdapter.notifyDataSetChanged();
+                    this.detailsSportPlanPresenter.updatePlan(item);
+                    this.mAdapter.notifyDataSetChanged();
                     hideLoading();
                     break;
                 case 1:

@@ -44,63 +44,71 @@ public class NutritionPlanRepository {
         this.getNutritionPlan = getNutritionPlan;
     }
 
-    // Add Nutrition Plan
-
-    public void addNutritionPlan() {
-        if(this.getNutritionPlan != null){
-            Map<String, Object> planNutrition = new HashMap<>();
-            planNutrition.put(Constants.ModelNutritionPlan.NAME, SessionPlan.getInstance().getPlanNutrition().getName());
-            planNutrition.put(Constants.ModelNutritionPlan.PHOTO, SessionPlan.getInstance().getPlanNutrition().getPhoto());
-            planNutrition.put(Constants.ModelNutritionPlan.TYPE, SessionPlan.getInstance().getPlanNutrition().getType());
-            planNutrition.put(Constants.ModelNutritionPlan.IS_OK, SessionPlan.getInstance().getPlanNutrition().getIsOk());
-            planNutrition.put(Constants.ModelNutritionPlan.ID, SessionPlan.getInstance().getPlanNutrition().getId());
-            String COLLECTION_PLAN_NUTRITION_USER = Constants.CollectionsNames.USERS + currentUser.getUid() + Constants.CollectionsNames.NUTRITION_PLAN;
-            firebaseFirestore.collection(COLLECTION_PLAN_NUTRITION_USER).document(SessionPlan.getInstance().getPlanNutrition().getId())
-                    .set(planNutrition)
-                    .addOnSuccessListener(aVoid -> this.getNutritionPlan.addNutritionPlan(true))
-                    .addOnFailureListener(e -> this.getNutritionPlan.addNutritionPlan(false));
-        }
-    }
-
-    // Get Nutrition Plan
-
-    public void getNutrtionPlan() {
+    /**
+     * Get nutrition plan for user
+     * If get data call to getNutritionPlan
+     * If empty list call to emptyNutritionPlan
+     */
+    public void getNutritionPlan() {
         if (this.getNutritionPlan != null) {
-            String COLLECTION_PLAN_NUTRITION_USER = Constants.CollectionsNames.USERS + currentUser.getUid() + Constants.CollectionsNames.NUTRITION_PLAN;
-            CollectionReference collectionReference = firebaseFirestore.collection(COLLECTION_PLAN_NUTRITION_USER);
+            String collectionName = Constants.CollectionsNames.USERS + this.currentUser.getUid() + Constants.CollectionsNames.NUTRITION_PLAN;
+            CollectionReference collectionReference = this.firebaseFirestore.collection(collectionName);
             collectionReference.addSnapshotListener((queryDocumentSnapshots, e) -> {
                 if (e != null) {
                     this.getNutritionPlan.getNutritiontPlan(false, null);
                 }
                 List<PlanNutrition> planNutritions = new ArrayList<>();
+                this.planNutrition = planNutritions;
                 for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                     planNutritions.add(doc.toObject(PlanNutrition.class));
                 }
-                this.planNutrition = planNutritions;
-                if(planNutritions.size()==0){
+                if (planNutritions.size() == 0) {
                     this.getNutritionPlan.emptyNutritionPlan(true);
                 }
 
-                if(planNutritions.size()!=0){
+                if (planNutritions.size() != 0) {
                     this.getNutritionPlan.getNutritiontPlan(true, planNutritions);
                 }
             });
         }
     }
 
-    // Delete Nutrition Plan
+    /**
+     * Add  nutrition favorite in plan
+     * Use SessionPlan for get nutrition plan
+     */
+    public void addNutritionPlan() {
+        if (this.getNutritionPlan != null) {
+            Map<String, Object> planNutrition = new HashMap<>();
+            PlanNutrition item = SessionPlan.getInstance().getPlanNutrition();
+            planNutrition.put(Constants.ModelNutritionPlan.NAME, item.getName());
+            planNutrition.put(Constants.ModelNutritionPlan.PHOTO, item.getPhoto());
+            planNutrition.put(Constants.ModelNutritionPlan.TYPE, item.getType());
+            planNutrition.put(Constants.ModelNutritionPlan.IS_OK, item.getIsOk());
+            planNutrition.put(Constants.ModelNutritionPlan.ID, item.getId());
+            String collectioName = Constants.CollectionsNames.USERS + this.currentUser.getUid() + Constants.CollectionsNames.NUTRITION_PLAN;
+            this.firebaseFirestore.collection(collectioName).document(SessionPlan.getInstance().getPlanNutrition().getId())
+                    .set(planNutrition)
+                    .addOnSuccessListener(aVoid -> this.getNutritionPlan.addNutritionPlan(true))
+                    .addOnFailureListener(e -> this.getNutritionPlan.addNutritionPlan(false));
+        }
+    }
 
-    public void deleteNutritionPlan(String namePlanSport){
-        if(this.getNutritionPlan != null){
-            String COLLECTION_PLAN_NUTRITION_USER = Constants.CollectionsNames.USERS + currentUser.getUid() + Constants.CollectionsNames.NUTRITION_PLAN;
-            firebaseFirestore.collection(COLLECTION_PLAN_NUTRITION_USER)
-                    .whereEqualTo(Constants.ModelNutritionPlan.NAME, namePlanSport)
+    /**
+     * Delete nutrition plan
+     * @param namePlanNutrition for delete sport plan
+     */
+    public void deleteNutritionPlan(String namePlanNutrition) {
+        if (this.getNutritionPlan != null) {
+            String collectionName = Constants.CollectionsNames.USERS + this.currentUser.getUid() + Constants.CollectionsNames.NUTRITION_PLAN;
+            this.firebaseFirestore.collection(collectionName)
+                    .whereEqualTo(Constants.ModelNutritionPlan.NAME, namePlanNutrition)
                     .get()
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
                                 String id = documentSnapshot.getId();
-                                firebaseFirestore.collection(COLLECTION_PLAN_NUTRITION_USER).document(id)
+                                this.firebaseFirestore.collection(collectionName).document(id)
                                         .delete()
                                         .addOnSuccessListener(aVoid -> this.getNutritionPlan.deleteNutritionPlan(true))
                                         .addOnFailureListener(e -> this.getNutritionPlan.deleteNutritionPlan(false));
@@ -110,12 +118,14 @@ public class NutritionPlanRepository {
         }
     }
 
-    // Update Nutrition Plan
-
-    public void updatePlanNutrtion(PlanNutrition planNutrition) {
+    /**
+     * Update nutrition plan
+     * @param planNutrition update item
+     */
+    public void updatePlanNutrition(PlanNutrition planNutrition) {
         if (this.getNutritionPlan != null) {
-            String COLLECTION_PLAN_NUTRITION_USER = Constants.CollectionsNames.USERS + currentUser.getUid() + Constants.CollectionsNames.NUTRITION_PLAN;
-            DocumentReference myUserRef = firebaseFirestore.collection(COLLECTION_PLAN_NUTRITION_USER).document(planNutrition.getId());
+            String collectioName = Constants.CollectionsNames.USERS + this.currentUser.getUid() + Constants.CollectionsNames.NUTRITION_PLAN;
+            DocumentReference myUserRef = this.firebaseFirestore.collection(collectioName).document(planNutrition.getId());
             Map<String, Object> plan = new HashMap<>();
             plan.put(Constants.ModelNutritionPlan.IS_OK, planNutrition.getIsOk());
             myUserRef.update(plan)

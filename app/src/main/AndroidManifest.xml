@@ -31,7 +31,7 @@
         </activity>
 
         <activity
-                android:name=".Activitys.MainMenuActivity"
+                android:name=".Activitys.MainMenu.MainMenuActivity"
                 android:screenOrientation="portrait">
         </activity>
 
@@ -44,7 +44,7 @@
                 android:screenOrientation="portrait">
         </activity>
         <activity
-                android:name=".Activitys.ChatActivity"
+                android:name=".Activitys.Chat.ChatActivity"
                 android:screenOrientation="portrait">
         </activity>
 

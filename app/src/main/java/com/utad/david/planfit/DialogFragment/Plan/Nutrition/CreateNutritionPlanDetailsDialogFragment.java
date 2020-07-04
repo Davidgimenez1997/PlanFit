@@ -24,7 +24,7 @@ import io.fabric.sdk.android.Fabric;
 import java.util.List;
 
 public class CreateNutritionPlanDetailsDialogFragment extends BaseDialogFragment
-        implements GetNutritionPlan {
+        implements CreateNutritionPlanDetailsDialogView {
 
     /******************************** VARIABLES *************************************+/
      *
@@ -44,8 +44,10 @@ public class CreateNutritionPlanDetailsDialogFragment extends BaseDialogFragment
     private Button buttonSave;
     private Button buttonClose;
     private Button buttonDelete;
-    private Callback listener;
+    private Callback callback;
     private int type;
+    private CreateNutritionPlanDetailsDialogPresenter createNutritionPlanDetailsDialogPresenter;
+
 
     /******************************** INTERFAZ *************************************+/
      *
@@ -55,8 +57,8 @@ public class CreateNutritionPlanDetailsDialogFragment extends BaseDialogFragment
         void onClickClose();
     }
 
-    public void setListener(Callback listener) {
-        this.listener = listener;
+    public void setListener(Callback callback) {
+        this.callback = callback;
     }
 
     /******************************** NEW INSTANCE *************************************+/
@@ -79,17 +81,15 @@ public class CreateNutritionPlanDetailsDialogFragment extends BaseDialogFragment
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
+        this.createNutritionPlanDetailsDialogPresenter = new CreateNutritionPlanDetailsDialogPresenter(this);
+
+        if (this.createNutritionPlanDetailsDialogPresenter.checkInternetDevice(getContext())) {
             showLoading();
             Fabric.with(getContext(),new Crashlytics());
-            NutritionPlanRepository.getInstance().setGetNutritionPlan(this);
-            NutritionPlanRepository.getInstance().getNutrtionPlan();
-        }else{
-            hideLoading();
-            Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
         }
 
-        defaultNutrition = getArguments().getParcelable(NUTRITION);
+        this.defaultNutrition = getArguments().getParcelable(NUTRITION);
+        this.createNutritionPlanDetailsDialogPresenter.setNutritionFavorite(this.defaultNutrition);
     }
 
     @Override
@@ -99,21 +99,21 @@ public class CreateNutritionPlanDetailsDialogFragment extends BaseDialogFragment
         view.setBackgroundResource(R.drawable.corner_dialog_fragment);
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-        if(UtilsNetwork.checkConnectionInternetDevice(getContext())){
-            findById(view);
-            configureSpinnerDiseng();
-            putData();
+        if (this.createNutritionPlanDetailsDialogPresenter.checkInternetDevice(getContext())) {
+            this.findById(view);
+            this.configureSpinnerDiseng();
+            this.putData();
+            this.onClickButtonClose();
+            this.onClickButtonSave();
+            this.onClickButtonDelete();
+            this.configureSpinnerType();
+        } else {
+            this.findById(view);
+            this.configureSpinnerDiseng();
             onClickButtonClose();
-            onClickButtonSave();
-            onClickButtonDelete();
-            configureSpinnerType();
-        }else{
-            findById(view);
-            configureSpinnerDiseng();
-            onClickButtonClose();
-            putData();
-            buttonSave.setEnabled(false);
-            buttonDelete.setEnabled(false);
+            this.putData();
+            this.buttonSave.setEnabled(false);
+            this.buttonDelete.setEnabled(false);
         }
 
         return view;
@@ -124,23 +124,22 @@ public class CreateNutritionPlanDetailsDialogFragment extends BaseDialogFragment
      */
 
     private void findById(View view) {
-        textViewTitle = view.findViewById(R.id.textTitleCreateSport);
-        imageViewNutrtion = view.findViewById(R.id.imageViewCreateSport);
-        spinnerType = view.findViewById(R.id.spinner_comienzo);
-        buttonSave = view.findViewById(R.id.save_create_sport);
-        buttonDelete = view.findViewById(R.id.close_create_sport);
-        buttonClose = view.findViewById(R.id.close_create_sport2);
+        this.textViewTitle = view.findViewById(R.id.textTitleCreateSport);
+        this.imageViewNutrtion = view.findViewById(R.id.imageViewCreateSport);
+        this.spinnerType = view.findViewById(R.id.spinner_comienzo);
+        this.buttonSave = view.findViewById(R.id.save_create_sport);
+        this.buttonDelete = view.findViewById(R.id.close_create_sport);
+        this.buttonClose = view.findViewById(R.id.close_create_sport2);
     }
 
     private void configureSpinnerDiseng() {
-        ArrayAdapter spinnerArrayAdapter = ArrayAdapter.createFromResource(getContext(), R.array.nutrition, R.layout.spinner_item);
-        spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_item);
-        spinnerType.setAdapter(spinnerArrayAdapter);
+        ArrayAdapter arrayAdapter = this.createNutritionPlanDetailsDialogPresenter.getSpinnerArrayAdapter(getContext());
+        this.spinnerType.setAdapter(arrayAdapter);
     }
 
     private void putData() {
-        textViewTitle.setText(defaultNutrition.getName());
-        Utils.loadImage(defaultNutrition.getPhoto(),imageViewNutrtion,Utils.PLACEHOLDER_GALLERY);
+        this.textViewTitle.setText(this.defaultNutrition.getName());
+        Utils.loadImage(this.defaultNutrition.getPhoto(), this.imageViewNutrtion, Utils.PLACEHOLDER_GALLERY);
     }
 
     /******************************** ONCLICK SPINNER *************************************+/
@@ -148,23 +147,10 @@ public class CreateNutritionPlanDetailsDialogFragment extends BaseDialogFragment
      */
 
     private void configureSpinnerType() {
-        spinnerType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        this.spinnerType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                switch (spinnerType.getSelectedItem().toString()){
-                    case Constants.TypesPlanNutrition.DESAYUNO:
-                        type=1;
-                        break;
-                    case Constants.TypesPlanNutrition.COMIDA:
-                        type=2;
-                        break;
-                    case Constants.TypesPlanNutrition.MERIENDA:
-                        type=3;
-                        break;
-                    case Constants.TypesPlanNutrition.CENA:
-                        type=4;
-                        break;
-                }
+                type = createNutritionPlanDetailsDialogPresenter.setType(spinnerType.getSelectedItem().toString());
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) { }
@@ -176,9 +162,9 @@ public class CreateNutritionPlanDetailsDialogFragment extends BaseDialogFragment
      */
 
     private void onClickButtonClose() {
-        buttonClose.setOnClickListener(v -> {
-            if(listener!=null){
-                listener.onClickClose();
+        this.buttonClose.setOnClickListener(v -> {
+            if (this.callback != null) {
+                this.callback.onClickClose();
             }
         });
     }
@@ -188,15 +174,9 @@ public class CreateNutritionPlanDetailsDialogFragment extends BaseDialogFragment
      */
 
     private void onClickButtonSave() {
-        buttonSave.setOnClickListener(v -> {
-            SessionPlan.getInstance().setPlanNutrition(
-                    new PlanNutrition(
-                            defaultNutrition.getName(),
-                            defaultNutrition.getPhoto(),
-                            type,
-                            Constants.ModePlan.NO
-                    ));
-            NutritionPlanRepository.getInstance().addNutritionPlan();
+        this.buttonSave.setOnClickListener(v -> {
+            showLoading();
+            this.createNutritionPlanDetailsDialogPresenter.createNutritionPlan(this.type);
         });
     }
 
@@ -205,77 +185,68 @@ public class CreateNutritionPlanDetailsDialogFragment extends BaseDialogFragment
      */
 
     private void onClickButtonDelete(){
-        buttonDelete.setOnClickListener(v -> {
+        this.buttonDelete.setOnClickListener(v -> {
             showLoading();
-            NutritionPlanRepository.getInstance().deleteNutritionPlan(defaultNutrition.getName());
+            this.createNutritionPlanDetailsDialogPresenter.deletePlan();
         });
     }
 
-    /******************************** CALLBACK DE FIREBASE *************************************+/
+    /******************************** CALLBACK DEL PRESENTER *************************************+/
      *
      */
 
     @Override
-    public void addNutritionPlan(boolean status) {
-        if(status){
-            buttonSave.setEnabled(false);
-            buttonDelete.setEnabled(true);
-            hideLoading();
-            Toast.makeText(getContext(),defaultNutrition.getName()+" "+getString(R.string.add_create_nutrition),Toast.LENGTH_LONG).show();
-        }
+    public void deviceOfflineMessage() {
+        hideLoading();
+        Toast.makeText(getContext(),getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
     }
 
     @Override
-    public void getNutritiontPlan(boolean status, List<PlanNutrition> planNutritions) {
-        if(status){
-            hideLoading();
-            for(PlanNutrition item : planNutritions){
-                if(item.getName().equals(defaultNutrition.getName())){
-                    buttonSave.setEnabled(false);
-                    buttonDelete.setEnabled(true);
+    public void deletetNutritionPlan() {
+        this.buttonSave.setEnabled(true);
+        this.buttonDelete.setEnabled(false);
+        hideLoading();
+        Toast.makeText(getContext(),this.defaultNutrition.getName()+" "+getString(R.string.delete_create_nutrition),Toast.LENGTH_LONG).show();
+    }
 
-                    int type = item.getType();
-                    String strType = null;
-                    switch (type){
-                        case 1:
-                            strType = DESAYUNO;
-                            break;
-                        case 2:
-                            strType = COMIDA;
-                            break;
-                        case 3:
-                            strType = MERIENDA;
-                            break;
-                        case 4:
-                            strType = CENA;
-                            break;
+    @Override
+    public void addNutritionPlan() {
+        this.buttonSave.setEnabled(false);
+        this.buttonDelete.setEnabled(true);
+        hideLoading();
+        Toast.makeText(getContext(),this.defaultNutrition.getName()+" "+getString(R.string.add_create_nutrition),Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void getNutritionPlan(List<PlanNutrition> planNutrition) {
+        hideLoading();
+        for(PlanNutrition item : planNutrition) {
+            if (item.getName().equals(this.defaultNutrition.getName())) {
+                this.buttonSave.setEnabled(false);
+                this.buttonDelete.setEnabled(true);
+                int type = item.getType();
+                String strType = null;
+                switch (type) {
+                    case 1:
+                        strType = DESAYUNO;
+                        break;
+                    case 2:
+                        strType = COMIDA;
+                        break;
+                    case 3:
+                        strType = MERIENDA;
+                        break;
+                    case 4:
+                        strType = CENA;
+                        break;
+                }
+                String[] arrType = getResources().getStringArray(R.array.nutrition);
+                for (int i = 0; i < arrType.length; i++) {
+                    if (arrType[i].equals(strType)) {
+                        this.spinnerType.setSelection(i);
                     }
-
-                    String [] arrType = getResources().getStringArray(R.array.nutrition);
-
-                    for(int i=0;i<arrType.length;i++){
-                        if(arrType[i].equals(strType)){
-                            spinnerType.setSelection(i);
-                        }
-                    }
-
                 }
             }
         }
     }
-
-    @Override
-    public void deleteNutritionPlan(boolean status) {
-        if(status){
-            buttonSave.setEnabled(true);
-            buttonDelete.setEnabled(false);
-            hideLoading();
-            Toast.makeText(getContext(),defaultNutrition.getName()+" "+getString(R.string.delete_create_nutrition),Toast.LENGTH_LONG).show();
-        }
-    }
-
-    @Override
-    public void emptyNutritionPlan(boolean status) {}
-    @Override
-    public void updateNutritionPlan(boolean status, List<PlanNutrition> updateList) {}
 }

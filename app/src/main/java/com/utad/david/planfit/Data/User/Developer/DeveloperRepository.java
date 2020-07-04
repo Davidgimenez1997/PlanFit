@@ -29,12 +29,13 @@ public class DeveloperRepository {
         this.getDeveloper = getDeveloper;
     }
 
-    // Get Developer Info
-
+    /**
+     * Get developer information
+     */
     public void getDeveloperInfo() {
-        String COLLECTION_DEVELOPER_INFO_FIREBASE = Constants.CollectionsNames.DEVELOPER;
-        String DOCUMENT_DEVELOPER_INFO_FIREBASE = Constants.CollectionsNames.DOCUMENT_DEVELOPER;
-        DocumentReference myDeveloperRef = this.firebaseFirestore.collection(COLLECTION_DEVELOPER_INFO_FIREBASE).document(DOCUMENT_DEVELOPER_INFO_FIREBASE);
+        String collectionName = Constants.CollectionsNames.DEVELOPER;
+        String documentName = Constants.CollectionsNames.DOCUMENT_DEVELOPER;
+        DocumentReference myDeveloperRef = this.firebaseFirestore.collection(collectionName).document(documentName);
         if (this.getDeveloper != null) {
             myDeveloperRef.addSnapshotListener((snapshot, e) -> {
                 if (e != null) {

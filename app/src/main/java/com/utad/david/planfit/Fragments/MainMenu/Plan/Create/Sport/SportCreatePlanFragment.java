@@ -13,7 +13,7 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Adapter.Plan.Create.Sport.CreateSportPlanAdapter;
 import com.utad.david.planfit.Base.BaseFragment;
-import com.utad.david.planfit.DialogFragment.Plan.Sport.CreateSportPlanDetailsDialogFragment;
+import com.utad.david.planfit.DialogFragment.Plan.Sport.CreateSportPlanDetailsDialogDialogFragment;
 import com.utad.david.planfit.Model.Sport.DefaultSport;
 import com.utad.david.planfit.R;
 import com.utad.david.planfit.Utils.Constants;
@@ -22,7 +22,7 @@ import java.util.List;
 
 public class SportCreatePlanFragment extends BaseFragment
         implements SportCreatePlanView,
-        CreateSportPlanDetailsDialogFragment.Callback {
+        CreateSportPlanDetailsDialogDialogFragment.Callback {
 
     /******************************** VARIABLES *************************************+/
      *
@@ -33,7 +33,7 @@ public class SportCreatePlanFragment extends BaseFragment
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private LinearLayout linearLayout;
-    private CreateSportPlanDetailsDialogFragment newFragment;
+    private CreateSportPlanDetailsDialogDialogFragment newFragment;
     private Runnable toolbarRunnable;
     private SportCreatePlanPresenter sportCreatePlanPresenter;
 
@@ -75,15 +75,15 @@ public class SportCreatePlanFragment extends BaseFragment
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_sport_create_plan, container, false);
 
-        if(toolbarRunnable != null) {
-            toolbarRunnable.run();
+        if (this.toolbarRunnable != null) {
+            this.toolbarRunnable.run();
         }
 
-        mRecyclerView = view.findViewById(R.id.recycler_view_sport);
-        linearLayout = view.findViewById(R.id.linear_empty_favorites);
-        mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new GridLayoutManager(getContext(), 2);
-        mRecyclerView.setLayoutManager(mLayoutManager);
+        this.mRecyclerView = view.findViewById(R.id.recycler_view_sport);
+        this.linearLayout = view.findViewById(R.id.linear_empty_favorites);
+        this.mRecyclerView.setHasFixedSize(true);
+        this.mLayoutManager = new GridLayoutManager(getContext(), 2);
+        this.mRecyclerView.setLayoutManager(this.mLayoutManager);
 
         return view;
     }
@@ -94,7 +94,7 @@ public class SportCreatePlanFragment extends BaseFragment
 
     @Override
     public void onClickClose() {
-        newFragment.dismiss();
+        this.newFragment.dismiss();
     }
 
     /******************************** CALLBACK DEL PRESENTER *************************************+/
@@ -110,12 +110,12 @@ public class SportCreatePlanFragment extends BaseFragment
     @Override
     public void getSportFavoriteList(List<DefaultSport> list) {
         hideLoading();
-        linearLayout.setVisibility(View.GONE);
-        mRecyclerView.setVisibility(View.VISIBLE);
-        mAdapter = new CreateSportPlanAdapter(list, item -> {
+        this.linearLayout.setVisibility(View.GONE);
+        this.mRecyclerView.setVisibility(View.VISIBLE);
+        this.mAdapter = new CreateSportPlanAdapter(list, item -> {
             this.sportCreatePlanPresenter.onClickItem(item);
         });
-        mRecyclerView.setAdapter(mAdapter);
+        this.mRecyclerView.setAdapter(mAdapter);
     }
 
     @Override
@@ -126,15 +126,15 @@ public class SportCreatePlanFragment extends BaseFragment
             transaction.remove(prev);
         }
         transaction.addToBackStack(null);
-        newFragment = CreateSportPlanDetailsDialogFragment.newInstance(item);
-        newFragment.setListener(fragment);
-        newFragment.show(transaction, Constants.TagDialogFragment.TAG);
+        this.newFragment = CreateSportPlanDetailsDialogDialogFragment.newInstance(item);
+        this.newFragment.setListener(this.fragment);
+        this.newFragment.show(transaction, Constants.TagDialogFragment.TAG);
     }
 
     @Override
     public void getEmptySportFavoriteList() {
         hideLoading();
-        linearLayout.setVisibility(View.VISIBLE);
-        mRecyclerView.setVisibility(View.GONE);
+        this.linearLayout.setVisibility(View.VISIBLE);
+        this.mRecyclerView.setVisibility(View.GONE);
     }
 }

@@ -2,9 +2,7 @@ package com.utad.david.planfit.Utils;
 
 public class YoutubePlayerConfig {
 
-    public YoutubePlayerConfig() {
-
-    }
+    public YoutubePlayerConfig() {}
 
     /******************************** API KEY YoutubePlayer *************************************+/
      *

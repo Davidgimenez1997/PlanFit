@@ -34,7 +34,6 @@ public class SportRepository {
         this.getSport = getSport;
     }
 
-
     /**
      * Get sport list for firebase by type
      * @param type filter sport list
@@ -53,16 +52,16 @@ public class SportRepository {
                     collectionName = Constants.CollectionsNames.SPORT_GAIN_VOLUME;
                     break;
             }
-            CollectionReference collectionReference = firebaseFirestore.collection(collectionName);
+            CollectionReference collectionReference = this.firebaseFirestore.collection(collectionName);
             collectionReference.addSnapshotListener((queryDocumentSnapshots, e) -> {
                 if (e != null) {
                     this.getSport.getSportList(false, null, -1);
                 }
-                List<DefaultSport> sportSlimmingList = new ArrayList<>();
+                List<DefaultSport> items = new ArrayList<>();
                 for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                    sportSlimmingList.add(doc.toObject(DefaultSport.class));
+                    items.add(doc.toObject(DefaultSport.class));
                 }
-                this.getSport.getSportList(true, sportSlimmingList, type);
+                this.getSport.getSportList(true, items, type);
             });
         }
     }

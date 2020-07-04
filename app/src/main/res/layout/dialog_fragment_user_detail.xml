@@ -6,7 +6,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_welcome"
-        tools:context=".DialogFragment.User.UserDetailDialogFragments">
+        tools:context=".DialogFragment.User.UserDetailChat.UserDetailChatDialogFragments">
 
     <ImageView
             android:layout_width="150dp"

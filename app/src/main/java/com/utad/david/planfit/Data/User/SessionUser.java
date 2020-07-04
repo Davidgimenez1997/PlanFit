@@ -1,17 +1,17 @@
 package com.utad.david.planfit.Data.User;
 
 import com.utad.david.planfit.Model.User.User;
-import com.utad.david.planfit.Model.User.UserCredentials;
+import com.utad.david.planfit.Model.User.Credentials;
 
 public class SessionUser {
 
     private static SessionUser instance = new SessionUser();
 
     private User user;
-    private UserCredentials userCredentials;
+    private Credentials credentials;
 
     private SessionUser() {
-        this.userCredentials = new UserCredentials();
+        this.credentials = new Credentials();
         this.user = new User();
     }
 
@@ -37,8 +37,8 @@ public class SessionUser {
     public void setCredentials(String email, String password) {
         this.user.setEmail(email);
         this.user.setPassword(password);
-        this.userCredentials.setEmail(email);
-        this.userCredentials.setPassword(password);
+        this.credentials.setEmail(email);
+        this.credentials.setPassword(password);
     }
 
     public void setPhoto(String photo) {
@@ -53,8 +53,8 @@ public class SessionUser {
         return this.user.getImgUser() != null;
     }
 
-    public UserCredentials getUserCredentials() {
-        return this.userCredentials;
+    public Credentials getCredentials() {
+        return this.credentials;
     }
 
     public void setDataUser(String name, String nick, String img) {
@@ -68,6 +68,10 @@ public class SessionUser {
     }
 
     public User getUser() {
-        return user;
+        return this.user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

@@ -32,17 +32,17 @@ public class ShowNutritionPlanAdapter extends RecyclerView.Adapter<ShowPlanNutri
 
     @Override
     public void onBindViewHolder(ShowPlanNutritionViewHolder holder, final int position) {
-        ArrayList<PlanNutrition> current = planNutritions.get(position);
+        ArrayList<PlanNutrition> current = this.planNutritions.get(position);
         holder.setData(current);
         holder.itemView.setOnClickListener(v -> {
-            if(listener!=null){
-                listener.onItemClick(current);
+            if (this.listener != null) {
+                this.listener.onItemClick(current);
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return planNutritions.size();
+        return this.planNutritions.size();
     }
 }
