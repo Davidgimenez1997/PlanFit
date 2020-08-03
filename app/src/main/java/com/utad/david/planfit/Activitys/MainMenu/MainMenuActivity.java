@@ -5,7 +5,6 @@ import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
-
 import com.utad.david.planfit.Activitys.AuthenticationActivity;
 import com.utad.david.planfit.Activitys.Chat.ChatActivity;
 import com.utad.david.planfit.Activitys.WebView.WebViewActivity;
@@ -91,10 +90,10 @@ public class MainMenuActivity extends BaseActivity
         this.setUi();
         LayoutInflater.from(getBaseContext()).inflate(R.layout.activity_main_menu_navheader, navigationView);
         this.navigationView.setNavigationItemSelectedListener(this);
-        this.findByIdNavigetionView();
+        this.findByIdNavigationView();
         this.setTitle(R.string.titulo_deportes);
         this.navigateFragmentSport();
-        this.onClickNavigetionHeaderView();
+        this.onClickNavigationHeaderView();
         SharedPreferencesManager.clearAllSharedPreferences(getApplicationContext());
     }
 
@@ -113,14 +112,10 @@ public class MainMenuActivity extends BaseActivity
      *
      */
 
-    public void onClickNavigetionHeaderView(){
+    public void onClickNavigationHeaderView(){
         this.navigationHeaderView = this.navigationView.getHeaderView(0);
         this.navigationHeaderView.setOnClickListener(v -> {
-            if (this.presenter.checkInternetDevice(this)) {
-                this.editUser();
-                assert this.drawer != null;
-                this.drawer.closeDrawer(GravityCompat.START);
-            }
+            this.presenter.clickHeaderMenu(this);
         });
     }
 
@@ -134,7 +129,7 @@ public class MainMenuActivity extends BaseActivity
         this.navigationView = findViewById(R.id.nav_view);
     }
 
-    public void findByIdNavigetionView() {
+    public void findByIdNavigationView() {
         this.imagemenu = this.navigationView.findViewById(R.id.imagemenuUser);
         this.nickname = this.navigationView.findViewById(R.id.nickNameMenuUser);
         this.email = this.navigationView.findViewById(R.id.emailUserMenu);
@@ -144,32 +139,13 @@ public class MainMenuActivity extends BaseActivity
      *
      */
 
-    public void putInfoUserInHeaderMenu(User user) {
+    public void setUserInfoInHeaderMenu(User user) {
         this.nickname.setText(user.getNickName());
         this.email.setText(user.getEmail());
+        this.presenter.checkImagenUser(user.getImgUser());
     }
 
-    /******************************** COMPRUEBA LA FOTO DEL USUARIO, SINO PONE UNA POR DEFECTO *************************************+/
-     *
-     */
-
-    public void checkPhotoUserNull(User user) {
-        if (user.getImgUser() != null) {
-            this.putPhotoUser(user.getImgUser());
-        } else {
-            this.imagemenu.setImageResource(Utils.PLACEHOLDER_USER);
-        }
-    }
-
-    /******************************** USA LA LIBRERIA GLIDE PARA PONER UNA FOTO *************************************+/
-     *
-     */
-
-    private void putPhotoUser(String imgUser) {
-        Utils.loadImage(imgUser, this.imagemenu, Utils.PLACEHOLDER_USER);
-    }
-
-    /******************************** BOTON ATRAS DEL TELEFONO *************************************+/
+    /******************************** BOTON ATRAS *************************************+/
      *
      */
 
@@ -199,27 +175,21 @@ public class MainMenuActivity extends BaseActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.action_logout:
-                if (this.presenter.checkInternetDevice(this)) {
-                    this.logout();
-                }
-                break;
-            case R.id.action_edit_user:
-                if (this.presenter.checkInternetDevice(this)) {
-                    this.editUser();
-                }
-                break;
-            case R.id.action_about_app:
-                if (this.presenter.checkInternetDevice(this)) {
-                    this.aboutApp();
-                }
-                break;
-            case R.id.polity:
-                if (this.presenter.checkInternetDevice(this)) {
-                    this.openPolity();
-                }
-                break;
+        if (this.presenter.checkInternetDevice(this)) {
+            switch (item.getItemId()){
+                case R.id.action_logout:
+                    this.clickLogout();
+                    break;
+                case R.id.action_edit_user:
+                    this.openEditUserDialog();
+                    break;
+                case R.id.action_about_app:
+                    this.openInfoAboutAppDialog();
+                    break;
+                case R.id.polity:
+                    this.openPolityAppDialog();
+                    break;
+            }
         }
         return true;
     }
@@ -228,7 +198,7 @@ public class MainMenuActivity extends BaseActivity
      *
      */
 
-    private void openPolity() {
+    private void openPolityAppDialog() {
         Intent intent = new Intent(this, WebViewActivity.class);
         intent.putExtra(WebViewActivity.EXTRA_TITLE, Constants.ConfigWebView.TITLE_PRIVACITY);
         intent.putExtra(WebViewActivity.EXTRA_URL, Constants.ConfigWebView.URL_PRIVACITY);
@@ -237,7 +207,7 @@ public class MainMenuActivity extends BaseActivity
         startActivity(intent);
     }
 
-    private void aboutApp() {
+    private void openInfoAboutAppDialog() {
         this.fragmentTransaction = this.fragmentManager.beginTransaction();
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(Constants.TagDialogFragment.TAG);
         if (fragment != null) {
@@ -247,7 +217,7 @@ public class MainMenuActivity extends BaseActivity
         infoAboutAppDialogFragment.show(this.fragmentTransaction,Constants.TagDialogFragment.TAG);
     }
 
-    private void editUser() {
+    private void openEditUserDialog() {
         this.fragmentTransaction = getSupportFragmentManager().beginTransaction();
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(Constants.TagDialogFragment.TAG);
         if (fragment != null) {
@@ -257,7 +227,7 @@ public class MainMenuActivity extends BaseActivity
         editUserProfilerDialogFragment.show(this.fragmentTransaction,Constants.TagDialogFragment.TAG);
     }
 
-    private void logout() {
+    private void clickLogout() {
         this.presenter.logout();
     }
 
@@ -276,76 +246,19 @@ public class MainMenuActivity extends BaseActivity
      */
 
     private void displaySelectedScreen(int itemId) {
-        Fragment fragment = null;
-        int seleted = 0;
-        switch (itemId) {
-            case R.id.nav_deportes:
-                this.navigationView.getMenu().findItem(R.id.nav_deportes).setChecked(true);
-                seleted = Constants.ModeRootFragment.MODE_SPORT;
-                fragment = RootFragment.newInstance(seleted);
-                break;
-            case R.id.nav_nutricion:
-                this.navigationView.getMenu().findItem(R.id.nav_nutricion).setChecked(true);
-                seleted = Constants.ModeRootFragment.MODE_NUTRITION;
-                fragment = RootFragment.newInstance(seleted);
-                break;
-            case R.id.nav_favorite:
-                this.navigationView.getMenu().findItem(R.id.nav_favorite).setChecked(true);
-                seleted = Constants.ModeRootFragment.MODE_FAVORITE;
-                fragment = RootFragment.newInstance(seleted);
-                break;
-            case R.id.nav_crear_tu_plan:
-                this.navigationView.getMenu().findItem(R.id.nav_crear_tu_plan).setChecked(true);
-                seleted = Constants.ModeRootFragment.MODE_PLAN;
-                fragment = RootFragment.newInstance(seleted);
-                break;
-            case R.id.nav_user:
-                this.navigationView.getMenu().findItem(R.id.nav_user).setChecked(true);
-                Intent intent = new Intent(this, ChatActivity.class);
-                intent.putExtra(Constants.ConfigChat.EXTRA_NAME, UserRepository.getInstance().getUser().getNickName());
-                startActivityForResult(intent,22);
-                break;
-        }
-
-        if (fragment != null) {
-            int finalSeleted = seleted;
-            ((RootFragment) fragment).setToolbarRunnable(() -> {
-                switch (finalSeleted){
-                    case Constants.ModeRootFragment.MODE_SPORT:
-                        this.setTitle(R.string.titulo_deportes);
-                        break;
-                    case Constants.ModeRootFragment.MODE_NUTRITION:
-                        this.setTitle(R.string.titulo_nutricion);
-                        break;
-                    case Constants.ModeRootFragment.MODE_FAVORITE:
-                        this.setTitle(R.string.titulo_favoritos);
-                        break;
-                    case Constants.ModeRootFragment.MODE_PLAN:
-                        this.setTitle(R.string.titulo_plan);
-                        break;
-                }
-            });
-            this.fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            this.fragmentTransaction.replace(R.id.content_frame, fragment);
-            this.fragmentTransaction.addToBackStack(null);
-            this.fragmentTransaction.commit();
-        }
-
-        this.drawer = findViewById(R.id.drawer_layout);
-        this.drawer.closeDrawer(GravityCompat.START);
+        this.presenter.onClickDrawerMenu(itemId);
     }
-
 
     /******************************** CARGA LA PRIMERA PANTALLA *************************************+/
      *
      */
 
     public void navigateFragmentSport(){
-        this.navigationView.getMenu().findItem(R.id.nav_deportes).setChecked(true);
-        Fragment fragment = RootFragment.newInstance(Constants.ModeRootFragment.MODE_SPORT);
-        ((RootFragment) fragment).setToolbarRunnable(() -> setTitle(R.string.titulo_deportes));
+        this.checkOptionMenuHeader(R.id.nav_deportes);
+        RootFragment rootFragment = this.presenter.getRootFragmentByType(Constants.ModeRootFragment.MODE_SPORT);
+        rootFragment.setToolbarRunnable(() -> setTitle(R.string.titulo_deportes));
         this.fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        this.fragmentTransaction.replace(R.id.content_frame, fragment);
+        this.fragmentTransaction.replace(R.id.content_frame, rootFragment);
         this.fragmentTransaction.commit();
     }
 
@@ -355,8 +268,7 @@ public class MainMenuActivity extends BaseActivity
 
     @Override
     public void updateData(User user) {
-        this.putInfoUserInHeaderMenu(user);
-        this.checkPhotoUserNull(user);
+        this.setUserInfoInHeaderMenu(user);
     }
 
     /******************************** CALLBACK DEPORTE *************************************+/
@@ -365,35 +277,17 @@ public class MainMenuActivity extends BaseActivity
 
     @Override
     public void clickOnAdelgazarSport() {
-        SportFragment sportFragment = new SportFragment();
-        sportFragment.newInstance(Constants.SportNutritionOption.SLIMMING);
-        sportFragment.setToolbarRunnable(() -> setTitle(R.string.deportes_adelgazar));
-        this.fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        this.fragmentTransaction.replace(R.id.content_frame, sportFragment);
-        this.fragmentTransaction.addToBackStack(null);
-        this.fragmentTransaction.commit();
+        this.presenter.clickSportByType(Constants.SportNutritionOption.SLIMMING, R.string.deportes_adelgazar);
     }
 
     @Override
     public void clickOnTonificarSport() {
-        SportFragment sportFragment = new SportFragment();
-        sportFragment.newInstance(Constants.SportNutritionOption.TONING);
-        sportFragment.setToolbarRunnable(() -> setTitle(R.string.deporte_tonificar));
-        this.fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        this.fragmentTransaction.replace(R.id.content_frame, sportFragment);
-        this.fragmentTransaction.addToBackStack(null);
-        this.fragmentTransaction.commit();
+        this.presenter.clickSportByType(Constants.SportNutritionOption.TONING, R.string.deporte_tonificar);
     }
 
     @Override
     public void clickOnGanarVolumenSport() {
-        SportFragment sportFragment = new SportFragment();
-        sportFragment.newInstance(Constants.SportNutritionOption.GAIN_VOLUMEN);
-        sportFragment.setToolbarRunnable(() -> setTitle(R.string.deporte_ganar_volumen));
-        this.fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        this.fragmentTransaction.replace(R.id.content_frame, sportFragment);
-        this.fragmentTransaction.addToBackStack(null);
-        this.fragmentTransaction.commit();
+        this.presenter.clickSportByType(Constants.SportNutritionOption.GAIN_VOLUMEN, R.string.deporte_ganar_volumen);
     }
 
     /******************************** CALLBACK NUTRICIÓN *************************************+/
@@ -402,35 +296,17 @@ public class MainMenuActivity extends BaseActivity
 
     @Override
     public void clickOnAdelgazarNutrition() {
-        NutritionFragment nutritionFragment = new NutritionFragment();
-        nutritionFragment.newInstance(Constants.SportNutritionOption.SLIMMING);
-        nutritionFragment.setToolbarRunnable(() -> setTitle(R.string.nutricion_adelgazar));
-        this.fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        this.fragmentTransaction.replace(R.id.content_frame, nutritionFragment);
-        this.fragmentTransaction.addToBackStack(null);
-        this.fragmentTransaction.commit();
+        this.presenter.clickNutritionByType(Constants.SportNutritionOption.SLIMMING, R.string.nutricion_adelgazar);
     }
 
     @Override
     public void clickOnTonificarNutrition() {
-        NutritionFragment nutritionFragment = new NutritionFragment();
-        nutritionFragment.newInstance(Constants.SportNutritionOption.TONING);
-        nutritionFragment.setToolbarRunnable(() -> setTitle(R.string.nutricion_tonificar));
-        this.fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        this.fragmentTransaction.replace(R.id.content_frame, nutritionFragment);
-        this.fragmentTransaction.addToBackStack(null);
-        this.fragmentTransaction.commit();
+        this.presenter.clickNutritionByType(Constants.SportNutritionOption.TONING, R.string.nutricion_tonificar);
     }
 
     @Override
     public void clickOnGanarVolumenNutrition() {
-        NutritionFragment nutritionFragment = new NutritionFragment();
-        nutritionFragment.newInstance(Constants.SportNutritionOption.GAIN_VOLUMEN);
-        nutritionFragment.setToolbarRunnable(() -> setTitle(R.string.nutricion_ganar_volumen));
-        this.fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        this.fragmentTransaction.replace(R.id.content_frame, nutritionFragment);
-        this.fragmentTransaction.addToBackStack(null);
-        this.fragmentTransaction.commit();
+        this.presenter.clickNutritionByType(Constants.SportNutritionOption.GAIN_VOLUMEN, R.string.nutricion_ganar_volumen);
     }
 
     /******************************** CALLBACK FAVORITOS *************************************+/
@@ -439,24 +315,12 @@ public class MainMenuActivity extends BaseActivity
 
     @Override
     public void clickSportFavorite() {
-        SportFavoriteFragment sportFavoriteFragment = new SportFavoriteFragment();
-        sportFavoriteFragment.newInstance();
-        sportFavoriteFragment.setToolbarRunnable(() -> setTitle(R.string.deportes_favoritos));
-        this.fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        this.fragmentTransaction.replace(R.id.content_frame, sportFavoriteFragment);
-        this.fragmentTransaction.addToBackStack(null);
-        this.fragmentTransaction.commit();
+        this.presenter.clickSportFavorite(R.string.deportes_favoritos);
     }
 
     @Override
     public void clickNutritionFavorite() {
-        NutritionFavoriteFragment nutritionFavoriteFragment = new NutritionFavoriteFragment();
-        nutritionFavoriteFragment.newInstance();
-        nutritionFavoriteFragment.setToolbarRunnable(() -> setTitle(R.string.nutricion_favorita));
-        this.fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        this.fragmentTransaction.replace(R.id.content_frame, nutritionFavoriteFragment);
-        this.fragmentTransaction.addToBackStack(null);
-        this.fragmentTransaction.commit();
+        this.presenter.clickNutritionFavorite(R.string.nutricion_favorita);
     }
 
     /******************************** CALLBACK PLAN *************************************+/
@@ -465,23 +329,13 @@ public class MainMenuActivity extends BaseActivity
 
     @Override
     public void clickOnCreatePlan() {
-        FragmentCreatePlan fragmentCreatePlan = new FragmentCreatePlan();
-        fragmentCreatePlan.setToolbarRunnable(() -> setTitle(R.string.crear_plan_title));
-        this.fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        this.fragmentTransaction.replace(R.id.content_frame, fragmentCreatePlan);
-        this.fragmentTransaction.addToBackStack(null);
-        this.fragmentTransaction.commit();
+        this.presenter.clickCreatePlan(R.string.crear_plan_title);
     }
 
 
     @Override
     public void clickOnShowPlan() {
-        FragmentShowPlan fragmentShowPlan = new FragmentShowPlan();
-        fragmentShowPlan.setToolbarRunnable(() -> setTitle(R.string.ver_tu_plan_title));
-        this.fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        this.fragmentTransaction.replace(R.id.content_frame, fragmentShowPlan);
-        this.fragmentTransaction.addToBackStack(null);
-        this.fragmentTransaction.commit();
+        this.presenter.clickShowPlan(R.string.ver_tu_plan_title);
     }
 
     /******************************** CALLBACK CREAR PLAN DEPORTE Y NUTRICIÓN *************************************+/
@@ -490,33 +344,17 @@ public class MainMenuActivity extends BaseActivity
 
     @Override
     public void onClickSportPlan() {
-        SportCreatePlanFragment sportCreatePlanFragment = new SportCreatePlanFragment();
-        sportCreatePlanFragment.newInstanceSlimming();
-        sportCreatePlanFragment.setToolbarRunnable(() -> setTitle(R.string.plan_deporte));
-        this.fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        this.fragmentTransaction.replace(R.id.content_frame, sportCreatePlanFragment);
-        this.fragmentTransaction.addToBackStack(null);
-        this.fragmentTransaction.commit();
+        this.presenter.clickSportPlan(R.string.plan_deporte);
     }
 
     @Override
     public void onClickNutritionPlan() {
-        NutritionCreatePlanFragment nutritionCreatePlanFragment = new NutritionCreatePlanFragment();
-        nutritionCreatePlanFragment.newInstanceSlimming();
-        nutritionCreatePlanFragment.setToolbarRunnable(() -> setTitle(R.string.plan_nutricion));
-        this.fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        this.fragmentTransaction.replace(R.id.content_frame, nutritionCreatePlanFragment);
-        this.fragmentTransaction.addToBackStack(null);
-        this.fragmentTransaction.commit();
+        this.presenter.clickNutritionPlan(R.string.plan_nutricion);
     }
 
     @Override
     public void onClickSaveAndExit() {
-        Fragment fragment = RootFragment.newInstance(Constants.ModeRootFragment.MODE_PLAN);
-        ((RootFragment) fragment).setToolbarRunnable(() -> setTitle(R.string.plan));
-        this.fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        this.fragmentTransaction.replace(R.id.content_frame, fragment);
-        this.fragmentTransaction.commit();
+        this.presenter.clickSaveExit(R.string.plan);
     }
 
     /******************************** CALLBACK VER PLAN DEPORTE Y NUTRICIÓN *************************************+/
@@ -525,31 +363,17 @@ public class MainMenuActivity extends BaseActivity
 
     @Override
     public void onClickButtonShowPlanSport() {
-        ShowSportPlanFragment showSportPlanFragment = new ShowSportPlanFragment();
-        showSportPlanFragment.setToolbarRunnable(() -> setTitle(R.string.plan_deporte));
-        this.fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        this.fragmentTransaction.replace(R.id.content_frame, showSportPlanFragment);
-        this.fragmentTransaction.addToBackStack(null);
-        this.fragmentTransaction.commit();
+        this.presenter.clickShowSportPlan(R.string.plan_deporte);
     }
 
     @Override
     public void onClickButtonShowPlanNutrition() {
-        ShowNutritionPlanFragment showNutritionPlanFragment = new ShowNutritionPlanFragment();
-        showNutritionPlanFragment.setToolbarRunnable(() -> setTitle(R.string.plan_nutricion));
-        this.fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        this.fragmentTransaction.replace(R.id.content_frame, showNutritionPlanFragment);
-        this.fragmentTransaction.addToBackStack(null);
-        this.fragmentTransaction.commit();
+        this.presenter.clickShowNutritionPlan(R.string.plan_nutricion);
     }
 
     @Override
     public void onClickButtonShowPlanClose() {
-        Fragment fragment = RootFragment.newInstance(Constants.ModeRootFragment.MODE_PLAN);
-        ((RootFragment) fragment).setToolbarRunnable(() -> setTitle(R.string.plan));
-        this.fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        this.fragmentTransaction.replace(R.id.content_frame, fragment);
-        this.fragmentTransaction.commit();
+        this.presenter.clickSaveExit(R.string.plan);
     }
 
     /******************************** CALLBACK DEL PRESENTER *************************************+/
@@ -559,6 +383,13 @@ public class MainMenuActivity extends BaseActivity
     @Override
     public void deviceOfflineMessage() {
         Toast.makeText(this,getString(R.string.info_network_device),Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void clickHeaderMenu() {
+        this.openEditUserDialog();
+        assert this.drawer != null;
+        this.drawer.closeDrawer(GravityCompat.START);
     }
 
     @Override
@@ -572,7 +403,182 @@ public class MainMenuActivity extends BaseActivity
     @Override
     public void getUserData() {
         this.hideLoading();
-        this.putInfoUserInHeaderMenu(UserRepository.getInstance().getUser());
-        this.checkPhotoUserNull(UserRepository.getInstance().getUser());
+        this.setUserInfoInHeaderMenu(UserRepository.getInstance().getUser());
+    }
+
+    @Override
+    public void setImagenUser(String imgUser) {
+        Utils.loadImage(imgUser, this.imagemenu, Utils.PLACEHOLDER_USER);
+    }
+
+    @Override
+    public void setDefaultImagen() {
+        this.imagemenu.setImageResource(R.drawable.icon_gallery);
+    }
+
+    @Override
+    public void clickDrawerMenu(int selected, RootFragment rootFragment, int itemId) {
+        if (rootFragment != null) {
+            this.checkOptionMenuHeader(itemId);
+            this.setTitleFragmentOptionSelected(selected, rootFragment);
+            this.fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            this.fragmentTransaction.replace(R.id.content_frame, rootFragment);
+            this.fragmentTransaction.addToBackStack(null);
+            this.fragmentTransaction.commit();
+            this.closeDrawerMenu();
+        }
+    }
+
+    private RootFragment setTitleFragmentOptionSelected(int selected, RootFragment fragmentOptionSelected) {
+        fragmentOptionSelected.setToolbarRunnable(() -> {
+            switch (selected){
+                case Constants.ModeRootFragment.MODE_SPORT:
+                    this.setTitle(R.string.titulo_deportes);
+                    break;
+                case Constants.ModeRootFragment.MODE_NUTRITION:
+                    this.setTitle(R.string.titulo_nutricion);
+                    break;
+                case Constants.ModeRootFragment.MODE_FAVORITE:
+                    this.setTitle(R.string.titulo_favoritos);
+                    break;
+                case Constants.ModeRootFragment.MODE_PLAN:
+                    this.setTitle(R.string.titulo_plan);
+                    break;
+            }
+        });
+        return fragmentOptionSelected;
+    }
+
+    @Override
+    public void clickChatDrawerMenu(int itemId) {
+        this.checkOptionMenuHeader(itemId);
+        Intent intent = new Intent(this, ChatActivity.class);
+        intent.putExtra(Constants.ConfigChat.EXTRA_NAME, UserRepository.getInstance().getUser().getNickName());
+        startActivityForResult(intent,22);
+        this.closeDrawerMenu();
+    }
+
+    private void checkOptionMenuHeader(int itemId) {
+        this.navigationView.getMenu().findItem(itemId).setChecked(true);
+    }
+
+    private void closeDrawerMenu() {
+        this.drawer = findViewById(R.id.drawer_layout);
+        this.drawer.closeDrawer(GravityCompat.START);
+    }
+
+    @Override
+    public void clickSportByType(int type, int title) {
+        SportFragment sportFragment = new SportFragment();
+        sportFragment.newInstance(type);
+        sportFragment.setToolbarRunnable(() -> setTitle(title));
+        this.fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        this.fragmentTransaction.replace(R.id.content_frame, sportFragment);
+        this.fragmentTransaction.addToBackStack(null);
+        this.fragmentTransaction.commit();
+    }
+
+    @Override
+    public void clickNutritionByType(int type, int tilte) {
+        NutritionFragment nutritionFragment = new NutritionFragment();
+        nutritionFragment.newInstance(type);
+        nutritionFragment.setToolbarRunnable(() -> setTitle(tilte));
+        this.fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        this.fragmentTransaction.replace(R.id.content_frame, nutritionFragment);
+        this.fragmentTransaction.addToBackStack(null);
+        this.fragmentTransaction.commit();
+    }
+
+    @Override
+    public void clickSportFavorite(int title) {
+        SportFavoriteFragment sportFavoriteFragment = new SportFavoriteFragment();
+        sportFavoriteFragment.newInstance();
+        sportFavoriteFragment.setToolbarRunnable(() -> setTitle(title));
+        this.fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        this.fragmentTransaction.replace(R.id.content_frame, sportFavoriteFragment);
+        this.fragmentTransaction.addToBackStack(null);
+        this.fragmentTransaction.commit();
+    }
+
+    @Override
+    public void clickNutritionFavorite(int title) {
+        NutritionFavoriteFragment nutritionFavoriteFragment = new NutritionFavoriteFragment();
+        nutritionFavoriteFragment.newInstance();
+        nutritionFavoriteFragment.setToolbarRunnable(() -> setTitle(title));
+        this.fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        this.fragmentTransaction.replace(R.id.content_frame, nutritionFavoriteFragment);
+        this.fragmentTransaction.addToBackStack(null);
+        this.fragmentTransaction.commit();
+    }
+
+    @Override
+    public void clickCreatePlan(int title) {
+        FragmentCreatePlan fragmentCreatePlan = new FragmentCreatePlan();
+        fragmentCreatePlan.setToolbarRunnable(() -> setTitle(title));
+        this.fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        this.fragmentTransaction.replace(R.id.content_frame, fragmentCreatePlan);
+        this.fragmentTransaction.addToBackStack(null);
+        this.fragmentTransaction.commit();
+    }
+
+    @Override
+    public void clickShowPlan(int title) {
+        FragmentShowPlan fragmentShowPlan = new FragmentShowPlan();
+        fragmentShowPlan.setToolbarRunnable(() -> setTitle(title));
+        this.fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        this.fragmentTransaction.replace(R.id.content_frame, fragmentShowPlan);
+        this.fragmentTransaction.addToBackStack(null);
+        this.fragmentTransaction.commit();
+    }
+
+    @Override
+    public void clickSportPlan(int title) {
+        SportCreatePlanFragment sportCreatePlanFragment = new SportCreatePlanFragment();
+        sportCreatePlanFragment.newInstanceSlimming();
+        sportCreatePlanFragment.setToolbarRunnable(() -> setTitle(title));
+        this.fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        this.fragmentTransaction.replace(R.id.content_frame, sportCreatePlanFragment);
+        this.fragmentTransaction.addToBackStack(null);
+        this.fragmentTransaction.commit();
+    }
+
+    @Override
+    public void clickNutritionPlan(int title) {
+        NutritionCreatePlanFragment nutritionCreatePlanFragment = new NutritionCreatePlanFragment();
+        nutritionCreatePlanFragment.newInstanceSlimming();
+        nutritionCreatePlanFragment.setToolbarRunnable(() -> setTitle(title));
+        this.fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        this.fragmentTransaction.replace(R.id.content_frame, nutritionCreatePlanFragment);
+        this.fragmentTransaction.addToBackStack(null);
+        this.fragmentTransaction.commit();
+    }
+
+    @Override
+    public void clickSaveExit(int title) {
+        RootFragment rootFragment = this.presenter.getRootFragmentByType(Constants.ModeRootFragment.MODE_PLAN);
+        rootFragment.setToolbarRunnable(() -> setTitle(title));
+        this.fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        this.fragmentTransaction.replace(R.id.content_frame, rootFragment);
+        this.fragmentTransaction.commit();
+    }
+
+    @Override
+    public void clickShowSportPlan(int title) {
+        ShowSportPlanFragment showSportPlanFragment = new ShowSportPlanFragment();
+        showSportPlanFragment.setToolbarRunnable(() -> setTitle(title));
+        this.fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        this.fragmentTransaction.replace(R.id.content_frame, showSportPlanFragment);
+        this.fragmentTransaction.addToBackStack(null);
+        this.fragmentTransaction.commit();
+    }
+
+    @Override
+    public void clickShowNutritionPlan(int title) {
+        ShowNutritionPlanFragment showNutritionPlanFragment = new ShowNutritionPlanFragment();
+        showNutritionPlanFragment.setToolbarRunnable(() -> setTitle(title));
+        this.fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        this.fragmentTransaction.replace(R.id.content_frame, showNutritionPlanFragment);
+        this.fragmentTransaction.addToBackStack(null);
+        this.fragmentTransaction.commit();
     }
 }
