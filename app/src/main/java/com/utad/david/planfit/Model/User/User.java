@@ -121,4 +121,16 @@ public class User
         dest.writeString(imgUser);
         dest.writeString(uid);
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", fullName='" + fullName + '\'' +
+                ", nickName='" + nickName + '\'' +
+                ", imgUser='" + imgUser + '\'' +
+                ", uid='" + uid + '\'' +
+                '}';
+    }
 }

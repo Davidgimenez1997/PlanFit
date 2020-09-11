@@ -9,7 +9,6 @@ public class Constants {
         int MODE_NUTRITION = 1;
         int MODE_FAVORITE = 2;
         int MODE_PLAN = 3;
-        int MODE_USER = 4;
     }
 
     public interface ModeWebView {

@@ -1,7 +1,6 @@
 package com.utad.david.planfit.Activitys;
 
 import android.os.AsyncTask;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
 import com.utad.david.planfit.Base.BaseActivity;

@@ -36,6 +36,7 @@ public class MainMenuPresenter implements GetUser {
 
     public void loadData() {
         UserRepository.getInstance().getUserData();
+        UserRepository.getInstance().getAllUsers();
     }
 
     public void checkImagenUser(String imgUser) {

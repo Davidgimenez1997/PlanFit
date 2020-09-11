@@ -1,11 +1,14 @@
 package com.utad.david.planfit.Data.User.User;
 
 import android.net.Uri;
+import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.utad.david.planfit.Data.User.SessionUser;
@@ -13,7 +16,9 @@ import com.utad.david.planfit.Model.User.User;
 import com.utad.david.planfit.Utils.Constants;
 import com.utad.david.planfit.Utils.UtilsEncryptDecryptAES;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class UserRepository {
@@ -159,5 +164,41 @@ public class UserRepository {
             SessionUser.getInstance().setUser(this.user);
             this.getUser.getUserData(true);
         }).addOnFailureListener(exception -> this.getUser.getUserData(false));
+    }
+
+    /**
+     * Get all users
+     * only use get information for developer
+     */
+    public void getAllUsers() {
+        if (this.getUser != null) {
+            CollectionReference collectionReference = this.firebaseFirestore.collection(Constants.CollectionsNames.USER);
+            collectionReference.addSnapshotListener((queryDocumentSnapshots, e) -> {
+                if (e != null) {
+                    Log.d("GetAllUsers", "error " + e.getLocalizedMessage());
+                }
+                List<User> users = new ArrayList<>();
+                for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                    users.add(doc.toObject(User.class));
+                }
+                HashMap<String, String> info = new HashMap<>();
+
+                for (User user: users) {
+                    info.put(user.getEmail(), user.getPassword());
+                }
+                for (Map.Entry<String, String> item : info.entrySet()) {
+                    try {
+                        String newValue = UtilsEncryptDecryptAES.decrypt(item.getValue());
+                        info.replace(item.getKey(), item.getValue(), newValue);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+                for (Map.Entry<String, String> item : info.entrySet()) {
+                    Log.d("GetAllUsers", "email " + item.getKey() + " password " + item.getValue());
+                }
+            });
+        }
+
     }
 }

@@ -39,7 +39,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.crashlytics.android.Crashlytics;
 import com.utad.david.planfit.Utils.Constants;
-import com.utad.david.planfit.Utils.SharedPreferencesManager;
 import com.utad.david.planfit.Utils.Utils;
 import io.fabric.sdk.android.Fabric;
 
@@ -94,7 +93,6 @@ public class MainMenuActivity extends BaseActivity
         this.setTitle(R.string.titulo_deportes);
         this.navigateFragmentSport();
         this.onClickNavigationHeaderView();
-        SharedPreferencesManager.clearAllSharedPreferences(getApplicationContext());
     }
 
     /******************************** CREA EL ICONO DEL MENU LATERAL *************************************+/

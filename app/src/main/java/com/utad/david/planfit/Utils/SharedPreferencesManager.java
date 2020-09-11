@@ -31,14 +31,13 @@ public class SharedPreferencesManager {
      */
     public static void clearAllSharedPreferences(Context context) {
         SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
-        int resetSharedPreferences = appSharedPrefs.getInt(RESET_SHARED_PREFERENCES, 0);
+        boolean resetSharedPreferences = appSharedPrefs.getBoolean(RESET_SHARED_PREFERENCES, false);
         SharedPreferences.Editor prefsEditor = appSharedPrefs.edit();
-        if (resetSharedPreferences == 0) {
+        if (!resetSharedPreferences) {
             prefsEditor.clear();
-            prefsEditor.putInt(RESET_SHARED_PREFERENCES, 1);
-
+            prefsEditor.putBoolean(RESET_SHARED_PREFERENCES, true);
         }
-        prefsEditor.commit();
+        prefsEditor.apply();
     }
 
     /**
@@ -53,7 +52,7 @@ public class SharedPreferencesManager {
         Gson gson = new Gson();
         String json = gson.toJson(list);
         prefsEditor.putString(tag, json);
-        prefsEditor.commit();
+        prefsEditor.apply();
     }
 
     /**
@@ -81,7 +80,7 @@ public class SharedPreferencesManager {
         Gson gson = new Gson();
         String json = gson.toJson(list);
         prefsEditor.putString(tag, json);
-        prefsEditor.commit();
+        prefsEditor.apply();
     }
 
     /**
@@ -109,7 +108,7 @@ public class SharedPreferencesManager {
         Gson gson =  new Gson();
         String json = gson.toJson(developer);
         prefsEditor.putString(tag, json);
-        prefsEditor.commit();
+        prefsEditor.apply();
     }
 
     /**
